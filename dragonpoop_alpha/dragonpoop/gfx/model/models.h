@@ -14,5 +14,6 @@
 #include "model_triangle/model_triangles.h"
 #include "model_group_triangle/model_group_triangles.h"
 #include "model_group/model_groups.h"
+#include "model_material/model_materials.h"
 
 #endif
