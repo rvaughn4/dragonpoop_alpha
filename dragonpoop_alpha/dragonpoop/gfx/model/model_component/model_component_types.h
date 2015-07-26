@@ -1,0 +1,18 @@
+
+#ifndef dragonpoop_model_component_types_h
+#define dragonpoop_model_component_types_h
+
+#define model_component_type_vertex 1
+#define model_component_type_triangle_vertex 2
+#define model_component_type_triangle 3
+#define model_component_type_group 4
+#define model_component_type_group_triangle 5
+#define model_component_type_material 6
+#define model_component_type_joint 7
+#define model_component_type_frame 8
+#define model_component_type_animation 9
+#define model_component_type_vertex_joint 10
+#define model_component_type_frame_joint 11
+#define model_component_type_animation_frame 12
+
+#endif
