@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7936993D1B6780E400A725B1 /* model_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7936993A1B6780E400A725B1 /* model_joint.cpp */; };
+		793699421B67835900A725B1 /* model_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7936993F1B67835900A725B1 /* model_animation.cpp */; };
 		7970E8981B64EFB2008E8328 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7970E8971B64EFB2008E8328 /* main.cpp */; };
 		7970E95D1B64F26E008E8328 /* bytetree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7970E8A21B64F26E008E8328 /* bytetree.cpp */; };
 		7970E95E1B64F26E008E8328 /* dpid_bytetree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7970E8A51B64F26E008E8328 /* dpid_bytetree.cpp */; };
@@ -93,6 +94,9 @@
 		7936993A1B6780E400A725B1 /* model_joint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_joint.cpp; sourceTree = "<group>"; };
 		7936993B1B6780E400A725B1 /* model_joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_joint.h; sourceTree = "<group>"; };
 		7936993C1B6780E400A725B1 /* model_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_joints.h; sourceTree = "<group>"; };
+		7936993F1B67835900A725B1 /* model_animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_animation.cpp; sourceTree = "<group>"; };
+		793699401B67835900A725B1 /* model_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_animation.h; sourceTree = "<group>"; };
+		793699411B67835900A725B1 /* model_animations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_animations.h; sourceTree = "<group>"; };
 		7970E8941B64EFB2008E8328 /* dragonpoop_alpha */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = dragonpoop_alpha; sourceTree = BUILT_PRODUCTS_DIR; };
 		7970E8971B64EFB2008E8328 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		7970E8A21B64F26E008E8328 /* bytetree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bytetree.cpp; sourceTree = "<group>"; };
@@ -286,6 +290,16 @@
 				7936993C1B6780E400A725B1 /* model_joints.h */,
 			);
 			path = model_joint;
+			sourceTree = "<group>";
+		};
+		7936993E1B67835900A725B1 /* model_animation */ = {
+			isa = PBXGroup;
+			children = (
+				7936993F1B67835900A725B1 /* model_animation.cpp */,
+				793699401B67835900A725B1 /* model_animation.h */,
+				793699411B67835900A725B1 /* model_animations.h */,
+			);
+			path = model_animation;
 			sourceTree = "<group>";
 		};
 		7970E88B1B64EFB2008E8328 = {
@@ -549,6 +563,7 @@
 			children = (
 				7970E9221B64F26E008E8328 /* model.cpp */,
 				7970E9231B64F26E008E8328 /* model.h */,
+				7936993E1B67835900A725B1 /* model_animation */,
 				793699391B6780E400A725B1 /* model_joint */,
 				7970E99E1B64F664008E8328 /* model_material */,
 				7970E9241B64F26E008E8328 /* model_component */,
@@ -768,6 +783,7 @@
 				7970E9941B64F26E008E8328 /* model_writelock.cpp in Sources */,
 				7970E97D1B64F26E008E8328 /* dpbitmap.cpp in Sources */,
 				7970E9621B64F26E008E8328 /* dpid.cpp in Sources */,
+				793699421B67835900A725B1 /* model_animation.cpp in Sources */,
 				7970E9971B64F26E008E8328 /* openglx_1o5_renderer_ref.cpp in Sources */,
 				7970E9701B64F26E008E8328 /* dptaskpool_ref.cpp in Sources */,
 				7970E97B1B64F26E008E8328 /* shared_obj_refkernal.cpp in Sources */,

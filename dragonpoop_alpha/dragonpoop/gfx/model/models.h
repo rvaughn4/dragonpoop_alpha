@@ -15,5 +15,7 @@
 #include "model_group_triangle/model_group_triangles.h"
 #include "model_group/model_groups.h"
 #include "model_material/model_materials.h"
+#include "model_joint/model_joints.h"
+#include "model_animation/model_animations.h"
 
 #endif
