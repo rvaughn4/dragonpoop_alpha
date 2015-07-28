@@ -17,5 +17,6 @@
 #include "model_material/model_materials.h"
 #include "model_joint/model_joints.h"
 #include "model_animation/model_animations.h"
+#include "model_frame/model_frames.h"
 
 #endif
