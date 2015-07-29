@@ -5,27 +5,16 @@ namespace dragonpoop
 {
 
     //ctor
-    model_triangle_vertex::model_triangle_vertex( dpid id ) : model_component( id, model_component_type_triangle_vertex )
+    model_triangle_vertex::model_triangle_vertex( dpid id, dpid triangle_id, dpid vertex_id ) : model_component( id, model_component_type_triangle_vertex )
     {
-
+        this->t_id = triangle_id;
+        this->v_id = vertex_id;
     }
 
     //dtor
     model_triangle_vertex::~model_triangle_vertex( void )
     {
 
-    }
-
-    //set triangle id
-    void model_triangle_vertex::setTriangleId( dpid id )
-    {
-        this->t_id = id;
-    }
-
-    //set vertex id
-    void model_triangle_vertex::setVertexId( dpid id )
-    {
-        this->v_id = id;
     }
 
     //get triangle id

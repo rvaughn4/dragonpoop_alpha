@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		790A78861B68DBA40046C55C /* model_animation_frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A78831B68DBA40046C55C /* model_animation_frame.cpp */; };
+		790A788B1B68E3EA0046C55C /* model_frame_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A78881B68E3EA0046C55C /* model_frame_joint.cpp */; };
 		7936993D1B6780E400A725B1 /* model_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7936993A1B6780E400A725B1 /* model_joint.cpp */; };
 		793699421B67835900A725B1 /* model_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7936993F1B67835900A725B1 /* model_animation.cpp */; };
 		793699471B678A9600A725B1 /* model_frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 793699441B678A9600A725B1 /* model_frame.cpp */; };
@@ -92,6 +94,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		790A78831B68DBA40046C55C /* model_animation_frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_animation_frame.cpp; sourceTree = "<group>"; };
+		790A78841B68DBA40046C55C /* model_animation_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_animation_frame.h; sourceTree = "<group>"; };
+		790A78851B68DBA40046C55C /* model_animation_frames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_animation_frames.h; sourceTree = "<group>"; };
+		790A78881B68E3EA0046C55C /* model_frame_joint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_frame_joint.cpp; sourceTree = "<group>"; };
+		790A78891B68E3EA0046C55C /* model_frame_joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_frame_joint.h; sourceTree = "<group>"; };
+		790A788A1B68E3EA0046C55C /* model_frame_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_frame_joints.h; sourceTree = "<group>"; };
 		7936993A1B6780E400A725B1 /* model_joint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_joint.cpp; sourceTree = "<group>"; };
 		7936993B1B6780E400A725B1 /* model_joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_joint.h; sourceTree = "<group>"; };
 		7936993C1B6780E400A725B1 /* model_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_joints.h; sourceTree = "<group>"; };
@@ -286,6 +294,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		790A78821B68DBA40046C55C /* model_animation_frame */ = {
+			isa = PBXGroup;
+			children = (
+				790A78831B68DBA40046C55C /* model_animation_frame.cpp */,
+				790A78841B68DBA40046C55C /* model_animation_frame.h */,
+				790A78851B68DBA40046C55C /* model_animation_frames.h */,
+			);
+			path = model_animation_frame;
+			sourceTree = "<group>";
+		};
+		790A78871B68E3EA0046C55C /* model_frame_joint */ = {
+			isa = PBXGroup;
+			children = (
+				790A78881B68E3EA0046C55C /* model_frame_joint.cpp */,
+				790A78891B68E3EA0046C55C /* model_frame_joint.h */,
+				790A788A1B68E3EA0046C55C /* model_frame_joints.h */,
+			);
+			path = model_frame_joint;
+			sourceTree = "<group>";
+		};
 		793699391B6780E400A725B1 /* model_joint */ = {
 			isa = PBXGroup;
 			children = (
@@ -577,6 +605,8 @@
 			children = (
 				7970E9221B64F26E008E8328 /* model.cpp */,
 				7970E9231B64F26E008E8328 /* model.h */,
+				790A78871B68E3EA0046C55C /* model_frame_joint */,
+				790A78821B68DBA40046C55C /* model_animation_frame */,
 				793699431B678A9600A725B1 /* model_frame */,
 				7936993E1B67835900A725B1 /* model_animation */,
 				793699391B6780E400A725B1 /* model_joint */,
@@ -766,6 +796,7 @@
 				7970E9721B64F26E008E8328 /* dpthread.cpp in Sources */,
 				7970E9921B64F26E008E8328 /* model_triangle_vertex.cpp in Sources */,
 				7970E9661B64F26E008E8328 /* dpmutex_readlock.cpp in Sources */,
+				790A788B1B68E3EA0046C55C /* model_frame_joint.cpp in Sources */,
 				7970E9791B64F26E008E8328 /* shared_obj_readlock.cpp in Sources */,
 				7970E9901B64F26E008E8328 /* model_task.cpp in Sources */,
 				7970E97C1B64F26E008E8328 /* shared_obj_writelock.cpp in Sources */,
@@ -775,6 +806,7 @@
 				7970E9841B64F26E008E8328 /* dpvertexindex_buffer.cpp in Sources */,
 				7970E9751B64F26E008E8328 /* shared_obj.cpp in Sources */,
 				7970E9761B64F26E008E8328 /* shared_obj_guard.cpp in Sources */,
+				790A78861B68DBA40046C55C /* model_animation_frame.cpp in Sources */,
 				793699471B678A9600A725B1 /* model_frame.cpp in Sources */,
 				7970E9871B64F26E008E8328 /* gfx_ref.cpp in Sources */,
 				7970E99A1B64F26E008E8328 /* renderer_readlock.cpp in Sources */,

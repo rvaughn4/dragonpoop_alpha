@@ -23,13 +23,9 @@ namespace dragonpoop
     public:
 
         //ctor
-        model_triangle_vertex( dpid id );
+        model_triangle_vertex( dpid id, dpid triangle_id, dpid vertex_id );
         //dtor
         virtual ~model_triangle_vertex( void );
-        //set triangle id
-        void setTriangleId( dpid id );
-        //set vertex id
-        void setVertexId( dpid id );
         //get triangle id
         dpid getTriangleId( void );
         //get vertex id

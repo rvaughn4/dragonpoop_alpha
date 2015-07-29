@@ -5,27 +5,16 @@ namespace dragonpoop
 {
 
     //ctor
-    model_group_triangle::model_group_triangle( dpid id ) : model_component( id, model_component_type_group_triangle )
+    model_group_triangle::model_group_triangle( dpid id, dpid group_id, dpid triangle_id ) : model_component( id, model_component_type_group_triangle )
     {
-
+        this->g_id = group_id;
+        this->t_id = triangle_id;
     }
 
     //dtor
     model_group_triangle::~model_group_triangle( void )
     {
 
-    }
-
-    //set triangle id
-    void model_group_triangle::setTriangleId( dpid id )
-    {
-        this->t_id = id;
-    }
-
-    //set group id
-    void model_group_triangle::setGroupId( dpid id )
-    {
-        this->g_id = id;
     }
 
     //get triangle id

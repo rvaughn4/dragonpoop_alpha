@@ -18,5 +18,7 @@
 #include "model_joint/model_joints.h"
 #include "model_animation/model_animations.h"
 #include "model_frame/model_frames.h"
+#include "model_animation_frame/model_animation_frames.h"
+#include "model_frame_joint/model_frame_joints.h"
 
 #endif

@@ -19,13 +19,9 @@ namespace dragonpoop
     public:
 
         //ctor
-        model_group_triangle( dpid id );
+        model_group_triangle( dpid id, dpid group_id, dpid triangle_id );
         //dtor
         virtual ~model_group_triangle( void );
-        //set triangle id
-        void setTriangleId( dpid id );
-        //set group id
-        void setGroupId( dpid id );
         //get triangle id
         dpid getTriangleId( void );
         //get group id
