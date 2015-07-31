@@ -130,4 +130,65 @@ namespace dragonpoop
         this->scmmt.append( *s );
     }
 
+    //add component to list and trees
+    void model::addComponent( model_component *c )
+    {
+        this->comps.lst.push_back( c );
+        this->comps.bytype.addLeaf( c->getType(), c );
+        this->comps.bytypeid.addLeaf( c->getType(), c->getId(), c );
+    }
+    
+    //add component, 1 parent
+    void model::addComponent( model_component *c, dpid p1 )
+    {
+        this->addComponent( c );
+        this->comps.bytypeowner.addLeaf( c->getType(), p1, c );
+    }
+    
+    //add component, 2 parents
+    void model::addComponent( model_component *c, dpid p1, dpid p2 )
+    {
+        this->addComponent( c, p1 );
+        this->comps.bytypeowner.addLeaf( c->getType(), p2, c );
+    }
+    
+    //find component by type and id
+    model_component *model::findComponent( uint16_t mtype, dpid id )
+    {
+        return this->comps.bytypeid.findLeaf( mtype, id );
+    }
+    
+    //find components by type
+    void model::getComponents( uint16_t mtype, std::list<model_component *> *l )
+    {
+        this->comps.bytype.findLeaves( mtype, l );
+    }
+    
+    //find components by type and 1 parent
+    void model::getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *l )
+    {
+        this->comps.bytypeowner.findLeaves( mtype, p1, l );
+    }
+    
+    //find components by type and 2 parents
+    void model::getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l )
+    {
+        std::list<model_component *> l1, l2;
+        std::list<model_component *>::iterator i1, i2;
+        
+        this->getComponentsByParent( mtype, p1, &l1 );
+        this->getComponentsByParent( mtype, p2, &l2 );
+        
+        
+    }
+    
+    //remove component
+    void model::removeComponent( model_component *c )
+    {
+        this->comps.lst.remove( c );
+        this->comps.bytype.removeLeaf( c );
+        this->comps.bytypeid.removeLeaf( c );
+        this->comps.bytypeowner.removeLeaf( c );
+    }
+    
 };

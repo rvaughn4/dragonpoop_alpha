@@ -5,11 +5,13 @@
 #include "../../core/shared_obj/shared_obj_readlock.h"
 #include "../../core/dpid/dpid.h"
 #include <string>
+#include <list>
 
 namespace dragonpoop
 {
     class model;
     class core;
+    class model_component;
 
     class model_readlock : public shared_obj_readlock
     {
@@ -39,6 +41,14 @@ namespace dragonpoop
         bool compareId( dpid id );
         //get comment
         void getComment( std::string *s );
+        //find component by type and id
+        model_component *findComponent( uint16_t mtype, dpid id );
+        //find components by type
+        void getComponents( uint16_t mtype, std::list<model_component *> *l );
+        //find components by type and 1 parent
+        void getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *l );
+        //find components by type and 2 parents
+        void getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l );
 
         friend class model;
     };

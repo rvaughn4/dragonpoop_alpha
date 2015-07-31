@@ -83,4 +83,53 @@ namespace dragonpoop
         this->t->appendComment( s );
     }
 
+    
+    //add component to list and trees
+    void model_writelock::addComponent( model_component *c )
+    {
+        this->t->addComponent( c );
+    }
+    
+    //add component, 1 parent
+    void model_writelock::addComponent( model_component *c, dpid p1 )
+    {
+        this->t->addComponent( c, p1 );
+    }
+    
+    //add component, 2 parents
+    void model_writelock::addComponent( model_component *c, dpid p1, dpid p2 )
+    {
+        this->t->addComponent( c, p1, p2 );
+    }
+    
+    //find component by type and id
+    model_component *model_writelock::findComponent( uint16_t mtype, dpid id )
+    {
+        return this->t->findComponent( mtype, id );
+    }
+    
+    //find components by type
+    void model_writelock::getComponents( uint16_t mtype, std::list<model_component *> *l )
+    {
+        this->t->getComponents( mtype, l );
+    }
+    
+    //find components by type and 1 parent
+    void model_writelock::getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *l )
+    {
+        this->t->getComponentsByParent( mtype, p1, l );
+    }
+    
+    //find components by type and 2 parents
+    void model_writelock::getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l )
+    {
+        this->t->getComponentsByParents( mtype, p1, p2, l );
+    }
+    
+    //remove component
+    void model_writelock::removeComponent( model_component *c )
+    {
+        this->t->removeComponent( c );
+    }
+    
 };

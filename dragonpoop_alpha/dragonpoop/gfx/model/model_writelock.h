@@ -5,12 +5,14 @@
 #include "../../core/shared_obj/shared_obj_writelock.h"
 #include "../../core/dpid/dpid.h"
 #include <string>
+#include <list>
 
 namespace dragonpoop
 {
     class model;
     class core;
     class dpthread_lock;
+    class model_component;
 
     class model_writelock : public shared_obj_writelock
     {
@@ -50,6 +52,23 @@ namespace dragonpoop
         void getComment( std::string *s );
         //append to comment
         void appendComment( std::string *s );
+        
+        //add component to list and trees
+        void addComponent( model_component *c );
+        //add component, 1 parent
+        void addComponent( model_component *c, dpid p1 );
+        //add component, 2 parents
+        void addComponent( model_component *c, dpid p1, dpid p2 );
+        //find component by type and id
+        model_component *findComponent( uint16_t mtype, dpid id );
+        //find components by type
+        void getComponents( uint16_t mtype, std::list<model_component *> *l );
+        //find components by type and 1 parent
+        void getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *l );
+        //find components by type and 2 parents
+        void getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l );
+        //remove component
+        void removeComponent( model_component *c );
 
         friend class model;
     };
