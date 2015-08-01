@@ -11,5 +11,6 @@
 #include "dpid/dpids.h"
 #include "core.h"
 #include "bytetree/bytetrees.h"
+#include "dpbuffer/dpbuffers.h"
 
 #endif
