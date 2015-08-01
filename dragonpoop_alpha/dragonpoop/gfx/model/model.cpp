@@ -175,11 +175,24 @@ namespace dragonpoop
     {
         std::list<model_component *> l1, l2;
         std::list<model_component *>::iterator i1, i2;
+        model_component *c1, *c2;
         
         this->getComponentsByParent( mtype, p1, &l1 );
         this->getComponentsByParent( mtype, p2, &l2 );
         
-        
+        for( i1 = l1.begin(); i1 != l1.end(); ++i1 )
+        {
+            c1 = *i1;
+            c2 = 0;
+            
+            for( i2 = l2.begin(); i2 != l2.end() && c2 != c1; ++i2 )
+            {
+                c2 = *i2;
+                
+                if( c2 == c1 )
+                    l->push_back( c2 );
+            }
+        }
     }
     
     //remove component
