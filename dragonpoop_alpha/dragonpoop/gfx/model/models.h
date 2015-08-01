@@ -22,4 +22,6 @@
 #include "model_frame_joint/model_frame_joints.h"
 #include "model_vertex_joint/model_vertex_joints.h"
 
+#include "model_loader/model_loaders.h"
+
 #endif
