@@ -12,6 +12,7 @@
 #include "model_loader_task.h"
 #include "model_loader_state.h"
 #include "model_loader_state_fail.h"
+#include "model_loader_state_openfile.h"
 
 #include <stdlib.h>
 
@@ -29,7 +30,7 @@ namespace dragonpoop
         
         this->buffer = 0;
         this->fname.assign( *fname );
-        this->cs = 0;
+        this->cs = new model_loader_state_openfile();
         
         ml = (model_writelock *)o.writeLock( m );
         this->m = (model_ref *)ml->getRef();
@@ -51,7 +52,23 @@ namespace dragonpoop
     //load model from file
     model_loader *model_loader::loadFile( core *c, dptaskpool_writelock *tp, const char *fname )
     {
-        return 0;
+        std::string sname, sext;
+        model_loader *l;
+        unsigned int l_dot, l_end;
+        
+        sname.assign( fname );
+        
+        l_end = (unsigned int)sname.size();
+        l_dot = (unsigned int)sname.rfind( "." );
+        if( l_dot >= l_end - 1 )
+            return 0;
+        
+        sext = sname.substr( l_dot + 1 );
+        
+        if( sext.compare( "ms3d" ) == 0 )
+            l = 0;
+        
+        return l;
     }
     
     //generate read lock

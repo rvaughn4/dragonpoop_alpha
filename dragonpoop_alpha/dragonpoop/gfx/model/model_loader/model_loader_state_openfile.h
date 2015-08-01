@@ -24,6 +24,7 @@ namespace dragonpoop
         //run state, returns next state
         virtual model_loader_state *run( dpthread_lock *thd, model_loader_writelock *ml );
         
+        friend class model_loader;
     };
     
 };
