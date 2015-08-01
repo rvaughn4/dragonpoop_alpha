@@ -11,6 +11,7 @@
 #include "../../../core/dptaskpool/dptaskpool_writelock.h"
 #include "model_loader_task.h"
 #include "model_loader_state.h"
+#include "model_loader_state_fail.h"
 
 #include <stdlib.h>
 
@@ -89,7 +90,7 @@ namespace dragonpoop
     //generate second state
     model_loader_state *model_loader::genState( dpbuffer *b )
     {
-        return 0;
+        return new model_loader_state_fail( b );
     }
     
     //returns true if sucessful

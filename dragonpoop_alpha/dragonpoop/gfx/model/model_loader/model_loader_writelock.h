@@ -34,6 +34,11 @@ namespace dragonpoop
         void run( dpthread_lock *thd );
         
         friend class model_loader;
+        friend class model_loader_state_close;
+        friend class model_loader_state_sucess;
+        friend class model_loader_state_fail;
+        friend class model_loader_state_openfile;
+
     };
     
 };

@@ -61,6 +61,8 @@ namespace dragonpoop
         friend class model_loader_writelock;
         friend class model_loader_state_openfile;
         friend class model_loader_state_close;
+        friend class model_loader_state_sucess;
+        friend class model_loader_state_fail;
         
     };
     
