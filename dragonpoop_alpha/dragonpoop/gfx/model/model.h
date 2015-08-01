@@ -96,6 +96,7 @@ namespace dragonpoop
 
         friend class model_readlock;
         friend class model_writelock;
+        friend class gfx;
     };
     
 };

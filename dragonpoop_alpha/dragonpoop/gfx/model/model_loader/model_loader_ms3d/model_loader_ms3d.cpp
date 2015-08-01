@@ -1,5 +1,6 @@
 
 #include "model_loader_ms3d.h"
+#include "model_loader_ms3d_state_parse_header.h"
 
 namespace dragonpoop
 {
@@ -19,7 +20,7 @@ namespace dragonpoop
     //generate second state
     model_loader_state *model_loader_ms3d::genState( dpbuffer *b )
     {
-        return 0;
+        return new model_loader_ms3d_state_parse_header( b );
     }
     
 };

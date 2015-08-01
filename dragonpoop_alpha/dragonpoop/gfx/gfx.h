@@ -15,6 +15,10 @@ namespace dragonpoop
     class core;
     class renderer;
     class gfx_writelock;
+    class model_ref;
+    class model;
+    class dptaskpool_ref;
+    class model_loader;
 
     class gfx : public shared_obj
     {
@@ -25,6 +29,19 @@ namespace dragonpoop
         gfx_task *gtsk;
         core *c;
         renderer *r;
+        dptaskpool_ref *tpr;
+        
+        std::list<model *> models;
+        std::list<model_loader *> loaders;
+        
+        //delete all models
+        void deleteModels( void );
+        //delete all loaders
+        void deleteLoaders( void );
+        //delete old models
+        void runModels( void );
+        //delete old loaders
+        void runLoaders( void );
 
     protected:
 
@@ -38,6 +55,14 @@ namespace dragonpoop
         void kill( void );
         //run gfx from task
         void run( dpthread_lock *thd, gfx_writelock *g );
+        //create model using name (if not exists, reuses if does), returns ref in pointer arg
+        bool createModel( dpthread_lock *thd, const char *mname, model_ref **r );
+        //create model and load model file into it
+        bool loadModel( dpthread_lock *thd, const char *mname, const char *file_name, model_ref **r, model_loader **mldr );
+        //find model by name
+        model_ref *findModel( const char *cname );
+        //find model by id
+        model_ref *findModel( dpid id );
 
     public:
 
