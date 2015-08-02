@@ -24,9 +24,9 @@ namespace dragonpoop
     protected:
         
         //make triangle
-        void makeTriangle( dpthread_lock *thd, ms3d_model_triangle_m *t, model_writelock *m );
+        void makeTriangle( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_triangle_m *t, model_writelock *m );
         //make triangle vertex
-        void makeTriangleVertex( dpthread_lock *thd, ms3d_model_triangle_m *t, model_writelock *m, model_triangle *tr, int vid );
+        void makeTriangleVertex( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_triangle_m *t, model_writelock *m, model_triangle *tr, int vid );
         
     public:
         

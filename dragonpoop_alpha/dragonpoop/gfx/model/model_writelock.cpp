@@ -216,4 +216,34 @@ namespace dragonpoop
         this->t->getTriangleVertexes( l, pid );
     }
     
+    //add a group triangle
+    model_group_triangle *model_writelock::makeGroupTriangle( dpid id, dpid group_id, dpid triangle_id )
+    {
+        return this->t->makeGroupTriangle( id, group_id, triangle_id );
+    }
+    
+    //find a group triangle
+    model_group_triangle *model_writelock::findGroupTriangle( dpid id )
+    {
+        return this->t->findGroupTriangle( id );
+    }
+    
+    //find a group triangle
+    model_group_triangle *model_writelock::findGroupTriangle( dpid group_id, dpid triangle_id )
+    {
+        return this->t->findGroupTriangle( group_id, triangle_id );
+    }
+    
+    //get all group triangles
+    void model_writelock::getGroupTriangles( std::list<model_group_triangle *> *l )
+    {
+        this->t->getGroupTriangles( l );
+    }
+    
+    //get all group triangles belonging to a group or triangle id
+    void model_writelock::getGroupTriangles( std::list<model_group_triangle *> *l, dpid pid )
+    {
+        this->t->getGroupTriangles( l, pid );
+    }
+    
 };

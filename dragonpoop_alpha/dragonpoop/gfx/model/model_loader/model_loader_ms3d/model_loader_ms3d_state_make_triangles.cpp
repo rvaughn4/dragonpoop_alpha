@@ -51,7 +51,7 @@ namespace dragonpoop
         for( i = 0; i < e; i++ )
         {
             v = &( ( *l )[ i ] );
-            this->makeTriangle( thd, v, m );
+            this->makeTriangle( thd, ml, v, m );
         }
         o.unlock();
         
@@ -59,7 +59,7 @@ namespace dragonpoop
     }
     
     //make triangle
-    void model_loader_ms3d_state_make_triangles::makeTriangle( dpthread_lock *thd, ms3d_model_triangle_m *t, model_writelock *m )
+    void model_loader_ms3d_state_make_triangles::makeTriangle( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_triangle_m *t, model_writelock *m )
     {
         model_triangle *mv;
         
@@ -68,15 +68,50 @@ namespace dragonpoop
             return;
         t->id = mv->getId();
         
-        this->makeTriangleVertex( thd, t, m, mv, 0 );
-        this->makeTriangleVertex( thd, t, m, mv, 1 );
-        this->makeTriangleVertex( thd, t, m, mv, 2 );
+        this->makeTriangleVertex( thd, ml, t, m, mv, 0 );
+        this->makeTriangleVertex( thd, ml, t, m, mv, 1 );
+        this->makeTriangleVertex( thd, ml, t, m, mv, 2 );
     }
     
     //make triangle vertex
-    void model_loader_ms3d_state_make_triangles::makeTriangleVertex( dpthread_lock *thd, ms3d_model_triangle_m *t, model_writelock *m, model_triangle *tr, int vid )
+    void model_loader_ms3d_state_make_triangles::makeTriangleVertex( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_triangle_m *t, model_writelock *m, model_triangle *tr, int vid )
     {
+        model_triangle_vertex *tv;
+        ms3d_model_vertex_m *v;
+        model_loader_ms3d *ldr;
+        std::vector<ms3d_model_vertex_m> *vz;
+        dpxyzw x;
+        dpst s;
         
+        ldr = (model_loader_ms3d *)ml->getLoader();
+        vz = ldr->verts;
+        
+        if( t->f.verticies[ vid ] < 0 || t->f.verticies[ vid ] >= vz->size() )
+            return;
+        v = &( ( *vz )[ t->f.verticies[ vid ] ] );
+        
+        tv = m->makeTriangleVertex( thd->genId(), t->id, v->id );
+        
+        x.x = t->f.normals[ vid ].x;
+        x.y = t->f.normals[ vid ].y;
+        x.z = t->f.normals[ vid ].z;
+        x.w = 1;
+        tv->setNormal( &x );
+        
+        s.s = t->f.s[ vid ];
+        s.t = t->f.t[ vid ];
+        tv->setTexCoord0( &s );
+        
+        s.s = t->f.s[ vid ];
+        s.t = t->f.t[ vid ];
+        tv->setTexCoord1( &s );
+        
+        if( vid == 0 )
+            tr->setVertex0( tv->getId() );
+        if( vid == 1 )
+            tr->setVertex1( tv->getId() );
+        if( vid == 2 )
+            tr->setVertex2( tv->getId() );
     }
     
 };
