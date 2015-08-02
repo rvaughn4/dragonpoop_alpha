@@ -999,20 +999,20 @@
 		79F107011B6ED076000723E4 /* model_instance */ = {
 			isa = PBXGroup;
 			children = (
+				79F1071E1B6ED076000723E4 /* model_instances.h */,
+				79F107101B6ED076000723E4 /* model_instance_readlock.cpp */,
+				79F107111B6ED076000723E4 /* model_instance_readlock.h */,
+				79F107121B6ED076000723E4 /* model_instance_ref.cpp */,
+				79F107131B6ED076000723E4 /* model_instance_ref.h */,
+				79F1071C1B6ED076000723E4 /* model_instance_writelock.cpp */,
+				79F1071D1B6ED076000723E4 /* model_instance_writelock.h */,
 				79F107021B6ED076000723E4 /* model_instance.cpp */,
 				79F107031B6ED076000723E4 /* model_instance.h */,
 				79F107041B6ED076000723E4 /* model_instance_animation */,
 				79F107081B6ED076000723E4 /* model_instance_group */,
 				79F1070C1B6ED076000723E4 /* model_instance_joint */,
-				79F107101B6ED076000723E4 /* model_instance_readlock.cpp */,
-				79F107111B6ED076000723E4 /* model_instance_readlock.h */,
-				79F107121B6ED076000723E4 /* model_instance_ref.cpp */,
-				79F107131B6ED076000723E4 /* model_instance_ref.h */,
 				79F107141B6ED076000723E4 /* model_instance_triangle_vertex */,
 				79F107181B6ED076000723E4 /* model_instance_vertex */,
-				79F1071C1B6ED076000723E4 /* model_instance_writelock.cpp */,
-				79F1071D1B6ED076000723E4 /* model_instance_writelock.h */,
-				79F1071E1B6ED076000723E4 /* model_instances.h */,
 			);
 			path = model_instance;
 			sourceTree = "<group>";
