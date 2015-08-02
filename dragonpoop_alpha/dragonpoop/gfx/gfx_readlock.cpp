@@ -28,5 +28,17 @@ namespace dragonpoop
     {
         return this->t->getCore();
     }
+    
+    //find model by name
+    model_ref *gfx_readlock::findModel( const char *cname )
+    {
+        return this->t->findModel( cname );
+    }
+    
+    //find model by id
+    model_ref *gfx_readlock::findModel( dpid id )
+    {
+        return this->t->findModel( id );
+    }
 
 };

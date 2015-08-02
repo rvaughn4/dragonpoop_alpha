@@ -4,11 +4,13 @@
 
 #include "../core/shared_obj/shared_obj_readlock.h"
 #include <list>
+#include "../core/dpid/dpid.h"
 
 namespace dragonpoop
 {
     class gfx;
     class core;
+    class model_ref;
 
     class gfx_readlock : public shared_obj_readlock
     {
@@ -30,6 +32,10 @@ namespace dragonpoop
         bool isRunning( void );
         //return core
         core *getCore( void );
+        //find model by name
+        model_ref *findModel( const char *cname );
+        //find model by id
+        model_ref *findModel( dpid id );
         
         friend class gfx;
     };
