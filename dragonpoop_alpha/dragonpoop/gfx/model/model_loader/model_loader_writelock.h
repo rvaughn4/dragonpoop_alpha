@@ -32,6 +32,8 @@ namespace dragonpoop
         bool wasSucessful( void );
         //run model loader from task
         void run( dpthread_lock *thd );
+        //get model loader
+        model_loader *getLoader( void );
         
         friend class model_loader;
         friend class model_loader_state_close;

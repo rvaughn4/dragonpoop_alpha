@@ -5,7 +5,7 @@ namespace dragonpoop
 {
     
     //ctor
-    dpbuffer_static::dpbuffer_static( char *p, unsigned int sz )
+    dpbuffer_static::dpbuffer_static( char *p, unsigned int sz ) : dpbuffer( sz )
     {
         this->buffer = p;
         this->size = sz;

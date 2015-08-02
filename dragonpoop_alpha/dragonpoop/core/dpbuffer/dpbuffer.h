@@ -17,7 +17,7 @@ namespace dragonpoop
     protected:
         
         //ctor
-        dpbuffer( void );
+        dpbuffer( unsigned int sz );
         //returns pointer to internal buffer
         virtual char *getInternalBuffer( void ) = 0;
         //returns internal buffer size

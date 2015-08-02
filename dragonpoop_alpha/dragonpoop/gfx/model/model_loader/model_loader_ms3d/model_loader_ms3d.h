@@ -3,6 +3,10 @@
 #define dragonpoop_model_loader_ms3d_h
 
 #include "../model_loader.h"
+#include "model_loader_ms3d_vertex.h"
+#include "model_loader_ms3d_triangle.h"
+#include "model_loader_ms3d_group.h"
+#include <vector>
 
 namespace dragonpoop
 {
@@ -11,6 +15,10 @@ namespace dragonpoop
     {
         
     private:
+        
+        std::atomic<std::vector<ms3d_model_vertex_m> *> verts;
+        std::atomic<std::vector<ms3d_model_triangle_m> *> tris;
+        std::atomic<std::vector<ms3d_model_group_m> *> groups;
         
     protected:
         
@@ -24,6 +32,10 @@ namespace dragonpoop
         //dtor
         virtual ~model_loader_ms3d( void );
         
+        
+        friend class model_loader_ms3d_state_parse_verts;
+        friend class model_loader_ms3d_state_parse_triangles;
+        friend class model_loader_ms3d_state_parse_groups;
     };
     
 };

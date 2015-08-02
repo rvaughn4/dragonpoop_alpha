@@ -5,9 +5,11 @@ namespace dragonpoop
 {
     
     //ctor
-    dpbuffer::dpbuffer( void )
+    dpbuffer::dpbuffer( unsigned int sz )
     {
-        
+        this->size = sz;
+        this->read_cursor = 0;
+        this->write_cursor = sz;
     }
     
     //dtor

@@ -13,6 +13,7 @@
 #include "model_loader_state.h"
 #include "model_loader_state_fail.h"
 #include "model_loader_state_openfile.h"
+#include "model_loader_ms3d/model_loader_ms3d.h"
 
 #include <stdlib.h>
 
@@ -36,21 +37,24 @@ namespace dragonpoop
         this->m = (model_ref *)ml->getRef();
         
         this->gtsk = new model_loader_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 500, 0 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 100, 1 );
         tp->addTask( this->tsk );
     }
     
     //dtor
     model_loader::~model_loader( void )
     {
+        delete this->gtsk;
+        delete this->tsk;
         if( this->cs )
             delete this->cs;
         if( this->buffer )
             free( this->buffer );
+        delete this->m;
     }
     
     //load model from file
-    model_loader *model_loader::loadFile( core *c, dptaskpool_writelock *tp, const char *fname )
+    model_loader *model_loader::loadFile( core *c, dptaskpool_writelock *tp, model_ref *m, const char *fname )
     {
         std::string sname, sext;
         model_loader *l;
@@ -65,8 +69,10 @@ namespace dragonpoop
         
         sext = sname.substr( l_dot + 1 );
         
+        l = 0;
+
         if( sext.compare( "ms3d" ) == 0 )
-            l = 0;
+            l = new model_loader_ms3d( c, tp, m, &sname );
         
         return l;
     }

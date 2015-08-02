@@ -7,7 +7,7 @@ namespace dragonpoop
 {
     
     //ctor
-    dpbuffer_dynamic::dpbuffer_dynamic( void )
+    dpbuffer_dynamic::dpbuffer_dynamic( void ) : dpbuffer( 0 )
     {
         this->buffer = 0;
         this->size = 0;

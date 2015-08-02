@@ -172,6 +172,7 @@ namespace dragonpoop
                 continue;
 //            d.push_back( p );
         }
+        o.unlock();
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
@@ -200,6 +201,7 @@ namespace dragonpoop
                 continue;
             d.push_back( p );
         }
+        o.unlock();
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
@@ -265,9 +267,14 @@ namespace dragonpoop
         if( !tp )
             return 0;
         
-        l = model_loader::loadFile( this->c, tp, file_name );
+        l = model_loader::loadFile( this->c, tp, pr, file_name );
         if( !l )
             return 0;
+        
+        if( r )
+            *r = pr;
+        else
+            delete pr;
         
         if( mldr )
             *mldr = l;

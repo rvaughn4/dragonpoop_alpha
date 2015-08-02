@@ -35,4 +35,10 @@ namespace dragonpoop
         this->t->run( thd, this );
     }
     
+    //get model loader
+    model_loader *model_loader_writelock::getLoader( void )
+    {
+        return this->t;
+    }
+    
 };

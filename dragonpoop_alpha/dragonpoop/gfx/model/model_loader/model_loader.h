@@ -55,7 +55,7 @@ namespace dragonpoop
         //returns true if running
         bool isRunning( void );
         //load model from file
-        static model_loader *loadFile( core *c, dptaskpool_writelock *tp, const char *fname );
+        static model_loader *loadFile( core *c, dptaskpool_writelock *tp, model_ref *m, const char *fname );
         
         friend class model_loader_readlock;
         friend class model_loader_writelock;

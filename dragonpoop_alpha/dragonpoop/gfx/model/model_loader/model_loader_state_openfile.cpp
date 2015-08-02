@@ -44,6 +44,8 @@ namespace dragonpoop
         if( !ml->t->buffer )
             return new model_loader_state_fail( 0 );
         
+        f.read( ml->t->buffer, sz );
+        
         b = new dpbuffer_static( ml->t->buffer, ml->t->size );
         if( !b )
             return new model_loader_state_fail( 0 );
