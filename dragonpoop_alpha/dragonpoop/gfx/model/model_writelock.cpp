@@ -168,4 +168,22 @@ namespace dragonpoop
         this->t->getTriangles( l );
     }
     
+    //add group
+    model_group *model_writelock::makeGroup( dpid id )
+    {
+        return this->t->makeGroup( id );
+    }
+    
+    //find group
+    model_group *model_writelock::findGroup( dpid id )
+    {
+        return this->t->findGroup( id );
+    }
+    
+    //get groups
+    void model_writelock::getGroups( std::list<model_group *> *l )
+    {
+        this->t->getGroups( l );
+    }
+    
 };

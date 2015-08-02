@@ -14,6 +14,7 @@ namespace dragonpoop
     class model_component;
     class model_vertex;
     class model_triangle;
+    class model_group;
 
     class model_readlock : public shared_obj_readlock
     {
@@ -59,6 +60,10 @@ namespace dragonpoop
         model_triangle *findTriangle( dpid id );
         //get triangles
         void getTriangles( std::list<model_triangle *> *l );
+        //find group
+        model_group *findGroup( dpid id );
+        //get groups
+        void getGroups( std::list<model_group *> *l );
 
         friend class model;
     };

@@ -11,6 +11,7 @@
 #include "../../core/dptaskpool/dptaskpool_writelock.h"
 #include "model_vertex/model_vertex.h"
 #include "model_triangle/model_triangle.h"
+#include "model_group/model_group.h"
 
 namespace dragonpoop
 {
@@ -283,6 +284,27 @@ namespace dragonpoop
     void model::getTriangles( std::list<model_triangle *> *l )
     {
         this->getComponents( model_component_type_triangle, (std::list<model_component *> *)l );
+    }
+    
+    //add group
+    model_group *model::makeGroup( dpid id )
+    {
+        model_group *c;
+        c = new model_group( id );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find group
+    model_group *model::findGroup( dpid id )
+    {
+        return (model_group *)this->findComponent( model_component_type_group, id );
+    }
+    
+    //get groups
+    void model::getGroups( std::list<model_group *> *l )
+    {
+        this->getComponents( model_component_type_group, (std::list<model_component *> *)l );
     }
     
 };

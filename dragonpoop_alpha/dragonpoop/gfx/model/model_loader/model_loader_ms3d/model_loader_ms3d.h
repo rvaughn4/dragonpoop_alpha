@@ -38,6 +38,7 @@ namespace dragonpoop
         friend class model_loader_ms3d_state_parse_triangles;
         friend class model_loader_ms3d_state_make_triangles;
         friend class model_loader_ms3d_state_parse_groups;
+        friend class model_loader_ms3d_state_make_groups;
         
         friend class model_loader_ms3d_state_cleanup;
     };

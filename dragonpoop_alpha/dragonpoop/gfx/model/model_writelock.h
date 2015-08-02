@@ -15,6 +15,7 @@ namespace dragonpoop
     class model_component;
     class model_vertex;
     class model_triangle;
+    class model_group;
 
     class model_writelock : public shared_obj_writelock
     {
@@ -82,6 +83,12 @@ namespace dragonpoop
         model_triangle *findTriangle( dpid id );
         //get triangles
         void getTriangles( std::list<model_triangle *> *l );
+        //add group
+        model_group *makeGroup( dpid id );
+        //find group
+        model_group *findGroup( dpid id );
+        //get groups
+        void getGroups( std::list<model_group *> *l );
 
         friend class model;
     };

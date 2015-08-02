@@ -101,4 +101,16 @@ namespace dragonpoop
         this->t->getTriangles( l );
     }
     
+    //find group
+    model_group *model_readlock::findGroup( dpid id )
+    {
+        return this->t->findGroup( id );
+    }
+    
+    //get groups
+    void model_readlock::getGroups( std::list<model_group *> *l )
+    {
+        this->t->getGroups( l );
+    }
+    
 };

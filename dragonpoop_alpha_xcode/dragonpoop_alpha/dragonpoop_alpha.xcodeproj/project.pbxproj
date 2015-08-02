@@ -96,6 +96,7 @@
 		79B9315C1B6E72F20054295B /* model_loader_ms3d_state_make_verts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B931591B6E72F20054295B /* model_loader_ms3d_state_make_verts.cpp */; };
 		79B9315F1B6E76C70054295B /* model_loader_ms3d_state_cleanup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B9315D1B6E76C70054295B /* model_loader_ms3d_state_cleanup.cpp */; };
 		79B931621B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B931601B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp */; };
+		79B931651B6E9C570054295B /* model_loader_ms3d_state_make_groups.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B931631B6E9C570054295B /* model_loader_ms3d_state_make_groups.cpp */; };
 		79E7444F1B6CD5F3005BFDE0 /* dpbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E7444C1B6CD5F3005BFDE0 /* dpbuffer.cpp */; };
 		79E744541B6CD650005BFDE0 /* dpbuffer_dynamic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E744501B6CD650005BFDE0 /* dpbuffer_dynamic.cpp */; };
 		79E744551B6CD650005BFDE0 /* dpbuffer_static.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E744521B6CD650005BFDE0 /* dpbuffer_static.cpp */; };
@@ -349,6 +350,8 @@
 		79B9315E1B6E76C70054295B /* model_loader_ms3d_state_cleanup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_cleanup.h; sourceTree = "<group>"; };
 		79B931601B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_triangles.cpp; sourceTree = "<group>"; };
 		79B931611B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_triangles.h; sourceTree = "<group>"; };
+		79B931631B6E9C570054295B /* model_loader_ms3d_state_make_groups.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_groups.cpp; sourceTree = "<group>"; };
+		79B931641B6E9C570054295B /* model_loader_ms3d_state_make_groups.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_groups.h; sourceTree = "<group>"; };
 		79E7444C1B6CD5F3005BFDE0 /* dpbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpbuffer.cpp; sourceTree = "<group>"; };
 		79E7444D1B6CD5F3005BFDE0 /* dpbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpbuffer.h; sourceTree = "<group>"; };
 		79E7444E1B6CD5F3005BFDE0 /* dpbuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpbuffers.h; sourceTree = "<group>"; };
@@ -927,6 +930,8 @@
 				79B9315A1B6E72F20054295B /* model_loader_ms3d_state_make_verts.h */,
 				79B931601B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp */,
 				79B931611B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.h */,
+				79B931631B6E9C570054295B /* model_loader_ms3d_state_make_groups.cpp */,
+				79B931641B6E9C570054295B /* model_loader_ms3d_state_make_groups.h */,
 				794610D71B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.cpp */,
 				794610D81B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.h */,
 				794610D91B6D42CE00311E86 /* model_loader_ms3d_state_parse_comments.cpp */,
@@ -1036,6 +1041,7 @@
 				7970E9841B64F26E008E8328 /* dpvertexindex_buffer.cpp in Sources */,
 				7970E9751B64F26E008E8328 /* shared_obj.cpp in Sources */,
 				79E744731B6CE622005BFDE0 /* model_loader_writelock.cpp in Sources */,
+				79B931651B6E9C570054295B /* model_loader_ms3d_state_make_groups.cpp in Sources */,
 				79E744661B6CE52A005BFDE0 /* model_loader.cpp in Sources */,
 				7970E9761B64F26E008E8328 /* shared_obj_guard.cpp in Sources */,
 				790A78861B68DBA40046C55C /* model_animation_frame.cpp in Sources */,

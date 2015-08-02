@@ -368,7 +368,7 @@ namespace dragonpoop
         shared_obj_guard g;
         uint64_t td, lowest_delay;
 
-        lowest_delay = 3000;
+        lowest_delay = 10000;
         while( t->trun )
         {
             tl = t->lock();
@@ -396,10 +396,10 @@ namespace dragonpoop
                 }
                 delete tl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay ) );
-                if( lowest_delay < 1000 )
+                if( lowest_delay < 10000 )
                     lowest_delay += 3 + lowest_delay;
-                if( lowest_delay > 1000 )
-                    lowest_delay = 1000;
+                if( lowest_delay > 10000 )
+                    lowest_delay = 10000;
                 t->getTaskFromPool();
                 continue;
             }

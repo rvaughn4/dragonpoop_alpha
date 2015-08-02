@@ -1,5 +1,6 @@
 
 #include "model_loader_ms3d_state_parse_groups.h"
+#include "model_loader_ms3d_state_make_groups.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_group.h"
 #include "model_loader_ms3d_state_cleanup.h"
@@ -67,7 +68,7 @@ namespace dragonpoop
             v->push_back( h );
         }
         
-        return new model_loader_ms3d_state_cleanup( this->b, this->m, 1 );
+        return new model_loader_ms3d_state_make_groups( this->b, this->m );
     }
     
 };
