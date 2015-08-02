@@ -10,6 +10,7 @@
 #include "model_loader_ms3d_state_cleanup.h"
 #include "../../model_group/model_group.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
+#include "../../model_group_triangle/model_group_triangle.h"
 
 #include <iostream>
 
@@ -34,12 +35,10 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         model_writelock *m;
-        model_group *mv;
         unsigned int i, e;
         model_loader_ms3d *t;
         ms3d_model_group_m *v;
         std::vector<ms3d_model_group_m> *l;
-        std::string s;
         
         m = (model_writelock *)o.writeLock( this->m );
         if( !m )
@@ -52,19 +51,50 @@ namespace dragonpoop
         for( i = 0; i < e; i++ )
         {
             v = &( ( *l )[ i ] );
-            
-            mv = m->makeGroup( thd->genId() );
-            if( !mv )
-                continue;
-            s.assign( (char *)v->f.name, sizeof( v->f.name ) );
-            mv->setName( &s );
-            
-            v->id = mv->getId();
+            this->makeGroup( thd, ml, v, m );
         }
         o.unlock();
         
         //return new model_loader_ms3d_state_parse_animation( this->b, this->m );
         return new model_loader_ms3d_state_cleanup( this->b, this->m, 1 );
+    }
+    
+    
+    //make triangle
+    void model_loader_ms3d_state_make_groups::makeGroup( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_group_m *t, model_writelock *m )
+    {
+        model_group *mv;
+        std::string s;
+        unsigned int i, e;
+        
+        mv = m->makeGroup( thd->genId() );
+        if( !mv )
+            return;
+        t->id = mv->getId();
+        s.assign( (char *)t->f.name, sizeof( t->f.name ) );
+        mv->setName( &s );
+        
+        e = t->f.cntTriangles;
+        for( i = 0; i < e; i++ )
+            this->makeGroupTriangle( thd, ml, t, m, mv, t->triangles[ i ].index );
+    }
+    
+    //make triangle vertex
+    void model_loader_ms3d_state_make_groups::makeGroupTriangle( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_group_m *t, model_writelock *m, model_group *tr, int vid )
+    {
+        model_group_triangle *tv;
+        ms3d_model_triangle_m *v;
+        model_loader_ms3d *ldr;
+        std::vector<ms3d_model_triangle_m> *vz;
+ 
+        ldr = (model_loader_ms3d *)ml->getLoader();
+        vz = ldr->tris;
+        
+        if( vid < 0 || vid >= vz->size() )
+            return;
+        v = &( ( *vz )[ vid ] );
+        
+        tv = m->makeGroupTriangle( thd->genId(), t->id, v->id );
     }
     
 };
