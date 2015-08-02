@@ -76,5 +76,29 @@ namespace dragonpoop
     {
         this->t->getComponentsByParents( mtype, p1, p2, l );
     }
+
+    //find vertex
+    model_vertex *model_readlock::findVertex( dpid id )
+    {
+        return this->t->findVertex( id );
+    }
+    
+    //get vertexes
+    void model_readlock::getVertexes( std::list<model_vertex *> *l )
+    {
+        this->t->getVertexes( l );
+    }
+    
+    //find triangle
+    model_triangle *model_readlock::findTriangle( dpid id )
+    {
+        return this->findTriangle( id );
+    }
+    
+    //get triangles
+    void model_readlock::getTriangles( std::list<model_triangle *> *l )
+    {
+        this->t->getTriangles( l );
+    }
     
 };

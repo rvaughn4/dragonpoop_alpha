@@ -132,4 +132,40 @@ namespace dragonpoop
         this->t->removeComponent( c );
     }
     
+    //add vertex
+    model_vertex *model_writelock::makeVertex( dpid id )
+    {
+        return this->t->makeVertex( id );
+    }
+    
+    //find vertex
+    model_vertex *model_writelock::findVertex( dpid id )
+    {
+        return this->t->findVertex( id );
+    }
+    
+    //get vertexes
+    void model_writelock::getVertexes( std::list<model_vertex *> *l )
+    {
+        this->t->getVertexes( l );
+    }
+    
+    //add triangle
+    model_triangle *model_writelock::makeTriangle( dpid id )
+    {
+        return this->t->makeTriangle( id );
+    }
+    
+    //find triangle
+    model_triangle *model_writelock::findTriangle( dpid id )
+    {
+        return this->findTriangle( id );
+    }
+    
+    //get triangles
+    void model_writelock::getTriangles( std::list<model_triangle *> *l )
+    {
+        this->t->getTriangles( l );
+    }
+    
 };

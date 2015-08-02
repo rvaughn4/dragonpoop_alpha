@@ -95,6 +95,7 @@
 		79B9315B1B6E72F20054295B /* model_loader_ms3d_state_make_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B931571B6E72F20054295B /* model_loader_ms3d_state_make_model.cpp */; };
 		79B9315C1B6E72F20054295B /* model_loader_ms3d_state_make_verts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B931591B6E72F20054295B /* model_loader_ms3d_state_make_verts.cpp */; };
 		79B9315F1B6E76C70054295B /* model_loader_ms3d_state_cleanup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B9315D1B6E76C70054295B /* model_loader_ms3d_state_cleanup.cpp */; };
+		79B931621B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B931601B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp */; };
 		79E7444F1B6CD5F3005BFDE0 /* dpbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E7444C1B6CD5F3005BFDE0 /* dpbuffer.cpp */; };
 		79E744541B6CD650005BFDE0 /* dpbuffer_dynamic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E744501B6CD650005BFDE0 /* dpbuffer_dynamic.cpp */; };
 		79E744551B6CD650005BFDE0 /* dpbuffer_static.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E744521B6CD650005BFDE0 /* dpbuffer_static.cpp */; };
@@ -346,6 +347,8 @@
 		79B9315A1B6E72F20054295B /* model_loader_ms3d_state_make_verts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_verts.h; sourceTree = "<group>"; };
 		79B9315D1B6E76C70054295B /* model_loader_ms3d_state_cleanup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_cleanup.cpp; sourceTree = "<group>"; };
 		79B9315E1B6E76C70054295B /* model_loader_ms3d_state_cleanup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_cleanup.h; sourceTree = "<group>"; };
+		79B931601B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_triangles.cpp; sourceTree = "<group>"; };
+		79B931611B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_triangles.h; sourceTree = "<group>"; };
 		79E7444C1B6CD5F3005BFDE0 /* dpbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpbuffer.cpp; sourceTree = "<group>"; };
 		79E7444D1B6CD5F3005BFDE0 /* dpbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpbuffer.h; sourceTree = "<group>"; };
 		79E7444E1B6CD5F3005BFDE0 /* dpbuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpbuffers.h; sourceTree = "<group>"; };
@@ -722,9 +725,18 @@
 		7970E9211B64F26E008E8328 /* model */ = {
 			isa = PBXGroup;
 			children = (
-				79E744561B6CE52A005BFDE0 /* model_loader */,
 				7970E9221B64F26E008E8328 /* model.cpp */,
 				7970E9231B64F26E008E8328 /* model.h */,
+				7970E9311B64F26E008E8328 /* model_readlock.cpp */,
+				7970E9321B64F26E008E8328 /* model_readlock.h */,
+				7970E9331B64F26E008E8328 /* model_ref.cpp */,
+				7970E9341B64F26E008E8328 /* model_ref.h */,
+				7970E9351B64F26E008E8328 /* model_task.cpp */,
+				7970E9361B64F26E008E8328 /* model_task.h */,
+				7970E9431B64F26E008E8328 /* model_writelock.cpp */,
+				7970E9441B64F26E008E8328 /* model_writelock.h */,
+				7970E9451B64F26E008E8328 /* models.h */,
+				79E744561B6CE52A005BFDE0 /* model_loader */,
 				79291ACC1B69A8BB00E85E62 /* model_vertex_joint */,
 				790A78871B68E3EA0046C55C /* model_frame_joint */,
 				790A78821B68DBA40046C55C /* model_animation_frame */,
@@ -735,18 +747,9 @@
 				7970E9241B64F26E008E8328 /* model_component */,
 				7970E9291B64F26E008E8328 /* model_group */,
 				7970E92D1B64F26E008E8328 /* model_group_triangle */,
-				7970E9311B64F26E008E8328 /* model_readlock.cpp */,
-				7970E9321B64F26E008E8328 /* model_readlock.h */,
-				7970E9331B64F26E008E8328 /* model_ref.cpp */,
-				7970E9341B64F26E008E8328 /* model_ref.h */,
-				7970E9351B64F26E008E8328 /* model_task.cpp */,
-				7970E9361B64F26E008E8328 /* model_task.h */,
 				7970E9371B64F26E008E8328 /* model_triangle */,
 				7970E93B1B64F26E008E8328 /* model_triangle_vertex */,
 				7970E93F1B64F26E008E8328 /* model_vertex */,
-				7970E9431B64F26E008E8328 /* model_writelock.cpp */,
-				7970E9441B64F26E008E8328 /* model_writelock.h */,
-				7970E9451B64F26E008E8328 /* models.h */,
 			);
 			path = model;
 			sourceTree = "<group>";
@@ -922,6 +925,8 @@
 				79B931581B6E72F20054295B /* model_loader_ms3d_state_make_model.h */,
 				79B931591B6E72F20054295B /* model_loader_ms3d_state_make_verts.cpp */,
 				79B9315A1B6E72F20054295B /* model_loader_ms3d_state_make_verts.h */,
+				79B931601B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp */,
+				79B931611B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.h */,
 				794610D71B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.cpp */,
 				794610D81B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.h */,
 				794610D91B6D42CE00311E86 /* model_loader_ms3d_state_parse_comments.cpp */,
@@ -1026,6 +1031,7 @@
 				79F5632C1B6B746D006E5C78 /* model_component_tree_bytype.cpp in Sources */,
 				7970E9731B64F26E008E8328 /* dpthread_interface.cpp in Sources */,
 				79E7447C1B6D02D9005BFDE0 /* model_loader_state.cpp in Sources */,
+				79B931621B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp in Sources */,
 				794610F01B6D42CE00311E86 /* model_loader_ms3d_state_parse_comments.cpp in Sources */,
 				7970E9841B64F26E008E8328 /* dpvertexindex_buffer.cpp in Sources */,
 				7970E9751B64F26E008E8328 /* shared_obj.cpp in Sources */,

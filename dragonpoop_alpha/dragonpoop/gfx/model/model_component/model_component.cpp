@@ -9,48 +9,76 @@ namespace dragonpoop
     {
         this->id = id;
         this->mtype = mtype;
+        this->sname = 0;
+        this->scmmt = 0;
     }
 
     //dtor
     model_component::~model_component( void )
     {
-
+        std::string *s;
+        s = this->sname;
+        delete s;
+        s = this->scmmt;
+        delete s;
     }
 
     //set name
     void model_component::setName( std::string *sname )
     {
-        this->sname.assign( *sname );
+        std::string *s;
+        s = this->sname;
+        if( !s )
+            this->sname = s = new std::string();
+        s->assign( *sname );
     }
 
     //get name
     void model_component::getName( std::string *sname )
     {
-        sname->assign( this->sname );
+        std::string *s;
+        s = this->sname;
+        if( s )
+            sname->assign( *s );
     }
 
     //set comment
-    void model_component::setComment( std::string *s )
+    void model_component::setComment( std::string *ss )
     {
-        this->scmmt.assign( *s );
+        std::string *s;
+        s = this->scmmt;
+        if( !s )
+            this->scmmt = s = new std::string();
+        s->assign( *ss );
     }
 
     //get comment
-    void model_component::getComment( std::string *s )
+    void model_component::getComment( std::string *ss )
     {
-        s->assign( this->scmmt );
+        std::string *s;
+        s = this->scmmt;
+        if( s )
+            ss->assign( *s );
     }
 
     //append to comment
-    void model_component::appendComment( std::string *s )
+    void model_component::appendComment( std::string *ss )
     {
-        this->scmmt.append( *s );
+        std::string *s;
+        s = this->scmmt;
+        if( !s )
+            this->scmmt = s = new std::string();
+        s->append( *ss );
     }
 
     //compare name
     bool model_component::compareName( std::string *sname )
     {
-        return this->sname.compare( *sname ) == 0;
+        std::string *s;
+        s = this->sname;
+        if( s )
+            return s->compare( *sname ) == 0;
+        return 0;
     }
 
     //set id
@@ -77,4 +105,10 @@ namespace dragonpoop
         return this->mtype;
     }
 
+    //returns true if has parent
+    bool model_component::hasParent( dpid id )
+    {
+        return 0;
+    }
+    
 };

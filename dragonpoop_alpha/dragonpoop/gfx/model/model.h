@@ -16,6 +16,8 @@ namespace dragonpoop
     class dpthread_lock;
     class core;
     class model_writelock;
+    class model_vertex;
+    class model_triangle;
 
     class model : public shared_obj
     {
@@ -30,9 +32,9 @@ namespace dragonpoop
         struct
         {
             std::list<model_component *> lst;
-            model_component_tree_bytype bytype;
-            model_component_tree_bytypeid bytypeid;
-            model_component_tree_bytypeid bytypeowner;
+           // model_component_tree_bytype bytype;
+            //model_component_tree_bytypeid bytypeid;
+            //model_component_tree_bytypeid bytypeowner;
         } comps;
         
         //delete all components
@@ -84,7 +86,19 @@ namespace dragonpoop
         void getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l );
         //remove component
         void removeComponent( model_component *c );
-
+        //add vertex
+        model_vertex *makeVertex( dpid id );
+        //find vertex
+        model_vertex *findVertex( dpid id );
+        //get vertexes
+        void getVertexes( std::list<model_vertex *> *l );
+        //add triangle
+        model_triangle *makeTriangle( dpid id );
+        //find triangle
+        model_triangle *findTriangle( dpid id );
+        //get triangles
+        void getTriangles( std::list<model_triangle *> *l );
+        
     public:
 
         //ctor

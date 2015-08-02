@@ -8,6 +8,7 @@
 #include "../shared_obj/shared_obj_guard.h"
 #include <stdlib.h>
 #include <string.h>
+#include <thread>
 
 namespace dragonpoop
 {
@@ -18,6 +19,12 @@ namespace dragonpoop
         this->mm = mm;
         memset( &this->tasks, 0, sizeof( this->tasks ) );
         memset( &this->threads, 0, sizeof( this->threads ) );
+        
+        if( !thread_cnt )
+            thread_cnt = std::thread::hardware_concurrency();
+        if( thread_cnt < 2 )
+            thread_cnt = 2;
+        
         this->setThreadCount( thread_cnt );
     }
 

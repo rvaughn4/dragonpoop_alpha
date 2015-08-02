@@ -9,6 +9,8 @@
 #include "../../core/dptask/dptask.h"
 #include "../../core/dptask/dptask_writelock.h"
 #include "../../core/dptaskpool/dptaskpool_writelock.h"
+#include "model_vertex/model_vertex.h"
+#include "model_triangle/model_triangle.h"
 
 namespace dragonpoop
 {
@@ -134,64 +136,104 @@ namespace dragonpoop
     void model::addComponent( model_component *c )
     {
         this->comps.lst.push_back( c );
-        this->comps.bytype.addLeaf( c->getType(), c );
-        this->comps.bytypeid.addLeaf( c->getType(), c->getId(), c );
+       // this->comps.bytype.addLeaf( c->getType(), c );
+        //this->comps.bytypeid.addLeaf( c->getType(), c->getId(), c );
     }
     
     //add component, 1 parent
     void model::addComponent( model_component *c, dpid p1 )
     {
         this->addComponent( c );
-        this->comps.bytypeowner.addLeaf( c->getType(), p1, c );
+        //this->comps.bytypeowner.addLeaf( c->getType(), p1, c );
     }
     
     //add component, 2 parents
     void model::addComponent( model_component *c, dpid p1, dpid p2 )
     {
         this->addComponent( c, p1 );
-        this->comps.bytypeowner.addLeaf( c->getType(), p2, c );
+        //this->comps.bytypeowner.addLeaf( c->getType(), p2, c );
     }
     
     //find component by type and id
     model_component *model::findComponent( uint16_t mtype, dpid id )
     {
-        return this->comps.bytypeid.findLeaf( mtype, id );
+        std::list<model_component *> *l;
+        std::list<model_component *>::iterator i;
+        model_component *c;
+        
+        //return this->comps.bytypeid.findLeaf( mtype, id );
+        
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            if( c->getType() != mtype )
+                continue;
+            if( !c->compareId( id ) )
+                continue;
+            return c;
+        }
+        
+        return 0;
     }
     
     //find components by type
-    void model::getComponents( uint16_t mtype, std::list<model_component *> *l )
+    void model::getComponents( uint16_t mtype, std::list<model_component *> *ll )
     {
-        this->comps.bytype.findLeaves( mtype, l );
+        std::list<model_component *> *l;
+        std::list<model_component *>::iterator i;
+        model_component *c;
+
+        //this->comps.bytype.findLeaves( mtype, ll );
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            if( c->getType() != mtype )
+                continue;
+            ll->push_back( c );
+        }
     }
     
     //find components by type and 1 parent
-    void model::getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *l )
+    void model::getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *ll )
     {
-        this->comps.bytypeowner.findLeaves( mtype, p1, l );
+        std::list<model_component *> *l;
+        std::list<model_component *>::iterator i;
+        model_component *c;
+        
+        //this->comps.bytypeowner.findLeaves( mtype, p1, l );
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            if( c->getType() != mtype )
+                continue;
+            if( !c->hasParent( p1 ) )
+                continue;
+            ll->push_back( c );
+        }
     }
     
     //find components by type and 2 parents
-    void model::getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l )
+    void model::getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *ll )
     {
-        std::list<model_component *> l1, l2;
-        std::list<model_component *>::iterator i1, i2;
-        model_component *c1, *c2;
+        std::list<model_component *> *l;
+        std::list<model_component *>::iterator i;
+        model_component *c;
         
-        this->getComponentsByParent( mtype, p1, &l1 );
-        this->getComponentsByParent( mtype, p2, &l2 );
-        
-        for( i1 = l1.begin(); i1 != l1.end(); ++i1 )
+        //this->comps.bytypeowner.findLeaves( mtype, p1, l );
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
         {
-            c1 = *i1;
-            c2 = 0;
-            
-            for( i2 = l2.begin(); i2 != l2.end() && c2 != c1; ++i2 )
-            {
-                c2 = *i2;
-                
-                if( c2 == c1 )
-                    l->push_back( c2 );
-            }
+            c = *i;
+            if( c->getType() != mtype )
+                continue;
+            if( !c->hasParent( p1 ) )
+                continue;
+            if( !c->hasParent( p2 ) )
+                continue;
+            ll->push_back( c );
         }
     }
     
@@ -199,9 +241,48 @@ namespace dragonpoop
     void model::removeComponent( model_component *c )
     {
         this->comps.lst.remove( c );
-        this->comps.bytype.removeLeaf( c );
-        this->comps.bytypeid.removeLeaf( c );
-        this->comps.bytypeowner.removeLeaf( c );
+    }
+    
+    //add vertex
+    model_vertex *model::makeVertex( dpid id )
+    {
+        model_vertex *c;
+        c = new model_vertex( id );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find vertex
+    model_vertex *model::findVertex( dpid id )
+    {
+        return (model_vertex *)this->findComponent( model_component_type_vertex, id );
+    }
+    
+    //get vertexes
+    void model::getVertexes( std::list<model_vertex *> *l )
+    {
+        this->getComponents( model_component_type_vertex, (std::list<model_component *> *)l );
+    }
+
+    //add triangle
+    model_triangle *model::makeTriangle( dpid id )
+    {
+        model_triangle *c;
+        c = new model_triangle( id );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find triangle
+    model_triangle *model::findTriangle( dpid id )
+    {
+        return (model_triangle *)this->findComponent( model_component_type_triangle, id );
+    }
+    
+    //get triangles
+    void model::getTriangles( std::list<model_triangle *> *l )
+    {
+        this->getComponents( model_component_type_triangle, (std::list<model_component *> *)l );
     }
     
 };

@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_parse_triangles.h"
-#include "model_loader_ms3d_state_parse_groups.h"
+#include "model_loader_ms3d_state_make_triangles.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_triangle.h"
 #include "model_loader_ms3d_state_cleanup.h"
@@ -54,7 +54,7 @@ namespace dragonpoop
             v->push_back( h );
         }
         
-        return new model_loader_ms3d_state_parse_groups( this->b, this->m );
+        return new model_loader_ms3d_state_make_triangles( this->b, this->m );
     }
     
 };

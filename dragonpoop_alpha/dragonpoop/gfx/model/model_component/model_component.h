@@ -15,7 +15,7 @@ namespace dragonpoop
 
         uint16_t mtype;
         dpid id;
-        std::string sname, scmmt;
+        std::atomic<std::string *> sname, scmmt;
 
     protected:
 
@@ -46,6 +46,8 @@ namespace dragonpoop
         bool compareId( dpid id );
         //get type
         uint16_t getType( void );
+        //returns true if has parent
+        virtual bool hasParent( dpid id );
 
     };
     
