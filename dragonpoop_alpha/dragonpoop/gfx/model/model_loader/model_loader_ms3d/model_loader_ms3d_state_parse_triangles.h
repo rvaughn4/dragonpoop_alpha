@@ -8,6 +8,7 @@ namespace dragonpoop
 {
     
     class dpbuffer;
+    class model_ref;
     
     class model_loader_ms3d_state_parse_triangles : public model_loader_state
     {
@@ -15,13 +16,14 @@ namespace dragonpoop
     private:
         
         dpbuffer *b;
+        model_ref *m;
         
     protected:
         
     public:
         
         //ctor
-        model_loader_ms3d_state_parse_triangles( dpbuffer *b );
+        model_loader_ms3d_state_parse_triangles( dpbuffer *b, model_ref *m );
         //dtor
         virtual ~model_loader_ms3d_state_parse_triangles( void );
         //run state, returns next state

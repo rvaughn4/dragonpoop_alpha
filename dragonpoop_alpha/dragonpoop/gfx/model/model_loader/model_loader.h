@@ -46,6 +46,8 @@ namespace dragonpoop
         virtual model_loader_state *genState( dpbuffer *b );
         //returns true if sucessful
         bool wasSucessful( void );
+        //returns model
+        model_ref *getModel( void );
         
     public:
         

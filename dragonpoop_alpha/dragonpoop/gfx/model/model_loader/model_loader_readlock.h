@@ -7,6 +7,7 @@
 namespace dragonpoop
 {
     class model_loader;
+    class model_ref;
     
     class model_loader_readlock : public shared_obj_readlock
     {
@@ -28,6 +29,8 @@ namespace dragonpoop
         bool isRunning( void );
         //returns true if sucessful
         bool wasSucessful( void );
+        //returns model
+        model_ref *getModel( void );
         
         friend class model_loader;
     };

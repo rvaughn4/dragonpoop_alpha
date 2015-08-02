@@ -40,5 +40,11 @@ namespace dragonpoop
     {
         return this->t;
     }
-    
+
+    //returns model
+    model_ref *model_loader_writelock::getModel( void )
+    {
+        return this->t->getModel();
+    }
+  
 };

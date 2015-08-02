@@ -29,4 +29,9 @@ namespace dragonpoop
         return this->t->wasSucessful();
     }
     
+    //returns model
+    model_ref *model_loader_readlock::getModel( void )
+    {
+        return this->t->getModel();
+    }
 };

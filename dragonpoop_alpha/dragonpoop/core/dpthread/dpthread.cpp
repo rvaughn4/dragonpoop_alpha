@@ -397,7 +397,9 @@ namespace dragonpoop
                 delete tl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay ) );
                 if( lowest_delay < 1000 )
-                    lowest_delay += 3 + lowest_delay / 2;
+                    lowest_delay += 3 + lowest_delay;
+                if( lowest_delay > 1000 )
+                    lowest_delay = 1000;
                 t->getTaskFromPool();
                 continue;
             }

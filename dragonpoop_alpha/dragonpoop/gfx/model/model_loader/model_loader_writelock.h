@@ -9,6 +9,7 @@ namespace dragonpoop
     class model_loader;
     class dpmutex_readlock;
     class dpthread_lock;
+    class model_ref;
     
     class model_loader_writelock : public shared_obj_writelock
     {
@@ -34,6 +35,8 @@ namespace dragonpoop
         void run( dpthread_lock *thd );
         //get model loader
         model_loader *getLoader( void );
+        //returns model
+        model_ref *getModel( void );
         
         friend class model_loader;
         friend class model_loader_state_close;

@@ -30,7 +30,7 @@ namespace dragonpoop
         this->c = c;
         this->r = 0;
         this->gtsk = new gfx_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 30, 0 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 500, 1 );
         tp->addTask( this->tsk );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 

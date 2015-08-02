@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_parse_header.h"
-#include "model_loader_ms3d_state_parse_verts.h"
+#include "model_loader_ms3d_state_make_model.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_header.h"
 #include "../model_loader_state_fail.h"
@@ -37,7 +37,7 @@ namespace dragonpoop
         if( s.compare( ms3d_magic_number ) != 0 )
             return new model_loader_state_fail( this->b );
         
-        return new model_loader_ms3d_state_parse_verts( this->b );
+        return new model_loader_ms3d_state_make_model( this->b );
     }
 
 };

@@ -16,18 +16,6 @@ namespace dragonpoop
     //dtor
     model_loader_ms3d::~model_loader_ms3d( void )
     {
-        std::vector<ms3d_model_vertex_m> *v;
-        std::vector<ms3d_model_triangle_m> *t;
-        std::vector<ms3d_model_group_m> *g;
-        
-        v = this->verts;
-        delete v;
-        
-        t = this->tris;
-        delete t;
-
-        g = this->groups;
-        delete g;
     }
     
     //generate second state

@@ -37,7 +37,7 @@ namespace dragonpoop
         this->m = (model_ref *)ml->getRef();
         
         this->gtsk = new model_loader_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 100, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 10, 1 );
         tp->addTask( this->tsk );
     }
     
@@ -126,6 +126,18 @@ namespace dragonpoop
     bool model_loader::isRunning( void )
     {
         return this->bIsRun;
+    }
+
+    //returns model
+    model_ref *model_loader::getModel( void )
+    {
+        model_writelock *l;
+        shared_obj_guard o;
+        
+        l = (model_writelock *)o.writeLock( this->m );
+        if( !l )
+            return 0;
+        return (model_ref *)l->getRef();
     }
     
 };

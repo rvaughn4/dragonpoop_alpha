@@ -1,9 +1,9 @@
 
 #include "model_loader_ms3d_state_parse_verts.h"
-#include "model_loader_ms3d_state_parse_triangles.h"
+#include "model_loader_ms3d_state_make_verts.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_vertex.h"
-#include "../model_loader_state_fail.h"
+#include "model_loader_ms3d_state_cleanup.h"
 #include "model_loader_ms3d.h"
 #include "../model_loader_writelock.h"
 
@@ -11,9 +11,10 @@ namespace dragonpoop
 {
     
     //ctor
-    model_loader_ms3d_state_parse_verts::model_loader_ms3d_state_parse_verts( dpbuffer *b )
+    model_loader_ms3d_state_parse_verts::model_loader_ms3d_state_parse_verts( dpbuffer *b, model_ref *m )
     {
         this->b = b;
+        this->m = m;
     }
     
     //dtor
@@ -41,7 +42,7 @@ namespace dragonpoop
         m->verts = v;
 
         if( this->b->readBytes( (uint8_t *)&sh, sizeof( sh ) ) < sizeof( sh ) )
-            return new model_loader_state_fail( this->b );
+            return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
         
         memset( &h, 0, sizeof( h ) );
         v->clear();
@@ -49,11 +50,11 @@ namespace dragonpoop
         for( i = 0; i < sh.cnt; i++ )
         {
             if( this->b->readBytes( (uint8_t *)&h.f, sizeof( h.f ) ) < sizeof( h.f ) )
-                return new model_loader_state_fail( this->b );
+                return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
             v->push_back( h );
         }
         
-        return new model_loader_ms3d_state_parse_triangles( this->b );
+        return new model_loader_ms3d_state_make_verts( this->b, this->m );
     }
     
 };

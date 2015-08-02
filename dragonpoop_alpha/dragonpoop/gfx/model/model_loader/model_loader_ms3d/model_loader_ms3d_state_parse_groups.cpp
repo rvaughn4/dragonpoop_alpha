@@ -2,8 +2,7 @@
 #include "model_loader_ms3d_state_parse_groups.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_group.h"
-#include "../model_loader_state_fail.h"
-#include "../model_loader_state_sucess.h"
+#include "model_loader_ms3d_state_cleanup.h"
 #include "model_loader_ms3d.h"
 #include "../model_loader_writelock.h"
 
@@ -11,9 +10,10 @@ namespace dragonpoop
 {
     
     //ctor
-    model_loader_ms3d_state_parse_groups::model_loader_ms3d_state_parse_groups( dpbuffer *b )
+    model_loader_ms3d_state_parse_groups::model_loader_ms3d_state_parse_groups( dpbuffer *b, model_ref *m )
     {
         this->b = b;
+        this->m = m;
     }
     
     //dtor
@@ -42,7 +42,7 @@ namespace dragonpoop
         m->groups = v;
         
         if( this->b->readBytes( (uint8_t *)&sh, sizeof( sh ) ) < sizeof( sh ) )
-            return new model_loader_state_fail( this->b );
+            return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
         
         memset( &h.f, 0, sizeof( h.f ) );
         h.e.index = 0;
@@ -51,23 +51,23 @@ namespace dragonpoop
         for( i = 0; i < sh.cnt; i++ )
         {
             if( this->b->readBytes( (uint8_t *)&h.f, sizeof( h.f ) ) < sizeof( h.f ) )
-                return new model_loader_state_fail( this->b );
+                return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
             
             h.triangles.clear();
             for( j = 0; j < h.f.cntTriangles; j++ )
             {
                 if( this->b->readBytes( (uint8_t *)&ht, sizeof( ht ) ) < sizeof( ht ) )
-                    return new model_loader_state_fail( this->b );
+                    return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
                 h.triangles.push_back( ht );
             }
             
             if( this->b->readBytes( (uint8_t *)&h.e, sizeof( h.e ) ) < sizeof( h.e ) )
-                return new model_loader_state_fail( this->b );
+                return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
             
             v->push_back( h );
         }
         
-        return new model_loader_state_sucess( this->b );
+        return new model_loader_ms3d_state_cleanup( this->b, this->m, 1 );
     }
     
 };
