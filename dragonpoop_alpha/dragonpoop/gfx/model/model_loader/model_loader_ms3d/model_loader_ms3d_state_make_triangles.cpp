@@ -10,6 +10,7 @@
 #include "model_loader_ms3d_state_cleanup.h"
 #include "../../model_triangle/model_triangle.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
+#include "../../model_triangle_vertex/model_triangle_vertex.h"
 
 #include <iostream>
 
@@ -34,7 +35,6 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         model_writelock *m;
-        model_triangle *mv;
         unsigned int i, e;
         model_loader_ms3d *t;
         ms3d_model_triangle_m *v;
@@ -51,16 +51,32 @@ namespace dragonpoop
         for( i = 0; i < e; i++ )
         {
             v = &( ( *l )[ i ] );
-            
-            mv = m->makeTriangle( thd->genId() );
-            if( !mv )
-                continue;
-            
-            v->id = mv->getId();
+            this->makeTriangle( thd, v, m );
         }
         o.unlock();
         
         return new model_loader_ms3d_state_parse_groups( this->b, this->m );
+    }
+    
+    //make triangle
+    void model_loader_ms3d_state_make_triangles::makeTriangle( dpthread_lock *thd, ms3d_model_triangle_m *t, model_writelock *m )
+    {
+        model_triangle *mv;
+        
+        mv = m->makeTriangle( thd->genId() );
+        if( !mv )
+            return;
+        t->id = mv->getId();
+        
+        this->makeTriangleVertex( thd, t, m, mv, 0 );
+        this->makeTriangleVertex( thd, t, m, mv, 1 );
+        this->makeTriangleVertex( thd, t, m, mv, 2 );
+    }
+    
+    //make triangle vertex
+    void model_loader_ms3d_state_make_triangles::makeTriangleVertex( dpthread_lock *thd, ms3d_model_triangle_m *t, model_writelock *m, model_triangle *tr, int vid )
+    {
+        
     }
     
 };

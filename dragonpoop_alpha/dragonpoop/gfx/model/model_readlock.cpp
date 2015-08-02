@@ -113,4 +113,28 @@ namespace dragonpoop
         this->t->getGroups( l );
     }
     
+    //find triangle vertex
+    model_triangle_vertex *model_readlock::findTriangleVertex( dpid id )
+    {
+        return this->t->findTriangleVertex( id );
+    }
+    
+    //find triangle vertex
+    model_triangle_vertex *model_readlock::findTriangleVertex( dpid triangle_id, dpid vertex_id )
+    {
+        return this->t->findTriangleVertex( triangle_id, vertex_id );
+    }
+    
+    //get triangle vertexes
+    void model_readlock::getTriangleVertexes( std::list<model_triangle_vertex *> *l )
+    {
+        this->t->getTriangleVertexes( l );
+    }
+    
+    //get triangle vertexes by triangle or vertex id
+    void model_readlock::getTriangleVertexes( std::list<model_triangle_vertex *> *l, dpid pid )
+    {
+        this->t->getTriangleVertexes( l, pid );
+    }
+    
 };

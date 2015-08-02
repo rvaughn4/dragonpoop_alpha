@@ -64,5 +64,15 @@ namespace dragonpoop
     {
         *x = this->texcoords1;
     }
+    
+    //returns true if has parent
+    bool model_triangle_vertex::hasParent( dpid id )
+    {
+        if( dpid_compare( &id, &this->t_id ) )
+            return 1;
+        if( dpid_compare( &id, &this->v_id ) )
+            return 1;
+        return 0;
+    }
 
 };

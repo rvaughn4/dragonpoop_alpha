@@ -12,6 +12,7 @@
 #include "model_vertex/model_vertex.h"
 #include "model_triangle/model_triangle.h"
 #include "model_group/model_group.h"
+#include "model_triangle_vertex/model_triangle_vertex.h"
 
 namespace dragonpoop
 {
@@ -305,6 +306,45 @@ namespace dragonpoop
     void model::getGroups( std::list<model_group *> *l )
     {
         this->getComponents( model_component_type_group, (std::list<model_component *> *)l );
+    }
+  
+    //add triangle vertex
+    model_triangle_vertex *model::makeTriangleVertex( dpid id, dpid triangle_id, dpid vertex_id )
+    {
+        model_triangle_vertex *c;
+        c = new model_triangle_vertex( id, triangle_id, vertex_id );
+        this->addComponent( c, triangle_id, vertex_id );
+        return c;
+    }
+    
+    //find triangle vertex
+    model_triangle_vertex *model::findTriangleVertex( dpid id )
+    {
+        return (model_triangle_vertex *)this->findComponent( model_component_type_triangle_vertex, id );
+    }
+    
+    //find triangle vertex
+    model_triangle_vertex *model::findTriangleVertex( dpid triangle_id, dpid vertex_id )
+    {
+        std::list<model_triangle_vertex *> l;
+        
+        this->getComponentsByParents( model_component_type_triangle_vertex, triangle_id, vertex_id, (std::list<model_component *> *)&l );
+
+        if( l.size() < 1 )
+            return 0;
+        return l.front();
+    }
+    
+    //get triangle vertexes
+    void model::getTriangleVertexes( std::list<model_triangle_vertex *> *l )
+    {
+        this->getComponents( model_component_type_triangle_vertex, (std::list<model_component *> *)l );
+    }
+    
+    //get triangle vertexes by triangle or vertex id
+    void model::getTriangleVertexes( std::list<model_triangle_vertex *> *l, dpid pid )
+    {
+        this->getComponentsByParent( model_component_type_triangle_vertex, pid, (std::list<model_component *> *)l );
     }
     
 };

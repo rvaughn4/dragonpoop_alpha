@@ -42,6 +42,8 @@ namespace dragonpoop
         void setTexCoord1( dpst *x );
         //get texcoord1
         void getTexCoord1( dpst *x );
+        //returns true if has parent
+        virtual bool hasParent( dpid id );
 
     };
     
