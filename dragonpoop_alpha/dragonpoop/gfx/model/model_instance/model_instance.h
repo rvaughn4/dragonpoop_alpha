@@ -2,8 +2,8 @@
 #ifndef dragonpoop_model_instance_h
 #define dragonpoop_model_instance_h
 
-#include "../../core/shared_obj/shared_obj.h"
-#include "../../core/dpid/dpid.h"
+#include "../../../core/shared_obj/shared_obj.h"
+#include "../../../core/dpid/dpid.h"
 #include <string>
 #include "../model_component/model_components.h"
 

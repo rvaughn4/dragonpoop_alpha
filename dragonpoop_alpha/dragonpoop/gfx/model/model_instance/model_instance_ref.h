@@ -2,12 +2,12 @@
 #ifndef dragonpoop_model_instance_ref_h
 #define dragonpoop_model_instance_ref_h
 
-#include "../../core/shared_obj/shared_obj_ref.h"
+#include "../../../core/shared_obj/shared_obj_ref.h"
 
 namespace dragonpoop
 {
     
-    class model;
+    class model_instance;
     
     class model_instance_ref : public shared_obj_ref
     {

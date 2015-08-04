@@ -2,9 +2,8 @@
 #ifndef dragonpoop_model_instance_writelock_h
 #define dragonpoop_model_instance_writelock_h
 
-#include "../../core/shared_obj/shared_obj_writelock.h"
-#include "../../core/dpid/dpid.h"
-#include <string>
+#include "../../../core/shared_obj/shared_obj_writelock.h"
+#include "../../../core/dpid/dpid.h"
 #include <list>
 
 namespace dragonpoop
