@@ -5,9 +5,9 @@ namespace dragonpoop
 {
     
     //ctor
-    model_instance_vertex::model_instance_vertex( dpid id ) : model_component( id, model_component_type_vertex )
+    model_instance_vertex::model_instance_vertex( model_vertex *v ) : model_component( v->getId(), model_component_type_vertex )
     {
-        
+        v->getPosition( &this->x );
     }
     
     //dtor

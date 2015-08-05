@@ -3,6 +3,7 @@
 #define dragonpoop_model_instance_group_h
 
 #include "../../model_component/model_components.h"
+#include "../../model_group/model_group.h"
 
 namespace dragonpoop
 {
@@ -19,7 +20,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        model_instance_group( dpid id );
+        model_instance_group( model_group *g );
         //dtor
         virtual ~model_instance_group( void );
         //set material id

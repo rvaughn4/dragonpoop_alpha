@@ -19,6 +19,11 @@ namespace dragonpoop
     class model_instance_vertex;
     class model_instance_group;
     class model_instance_triangle_vertex;
+    class model_writelock;
+    class model_ref;
+    class model_vertex;
+    class model_group;
+    class model_triangle_vertex;
     
     class model_instance : public shared_obj
     {
@@ -27,6 +32,7 @@ namespace dragonpoop
         
         core *c;
         dpid id;
+        model_ref *m;
         struct
         {
             std::list<model_component *> lst;
@@ -64,19 +70,19 @@ namespace dragonpoop
         //remove component
         void removeComponent( model_component *c );
         //add vertex
-        model_instance_vertex *makeVertex( dpid id );
+        model_instance_vertex *makeVertex( model_vertex *v );
         //find vertex
         model_instance_vertex *findVertex( dpid id );
         //get vertexes
         void getVertexes( std::list<model_instance_vertex *> *l );
         //add group
-        model_instance_group *makeGroup( dpid id );
+        model_instance_group *makeGroup( model_group *g );
         //find group
         model_instance_group *findGroup( dpid id );
         //get groups
         void getGroups( std::list<model_instance_group *> *l );
         //add triangle vertex
-        model_instance_triangle_vertex *makeTriangleVertex( dpid id, dpid triangle_id, dpid vertex_id );
+        model_instance_triangle_vertex *makeTriangleVertex( model_triangle_vertex *v );
         //find triangle vertex
         model_instance_triangle_vertex *findTriangleVertex( dpid id );
         //find triangle vertex
@@ -86,10 +92,18 @@ namespace dragonpoop
         //get triangle vertexes by triangle or vertex id
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid );
         
+        //make verts
+        void makeVertexes( model_writelock *ml );
+        //make triangle verts
+        void makeTriangleVertexes( model_writelock *ml );
+        //make groups
+        void makeGroups( model_writelock *ml );
+        
+        
     public:
         
         //ctor
-        model_instance( core *c, dpid id );
+        model_instance( model_writelock *ml );
         //dtor
         virtual ~model_instance( void );
         //return core

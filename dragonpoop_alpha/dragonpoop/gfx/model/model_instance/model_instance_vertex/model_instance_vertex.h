@@ -4,6 +4,7 @@
 
 #include "../../model_component/model_components.h"
 #include "../../../dpvertex/dpxyzw.h"
+#include "../../model_vertex/model_vertex.h"
 
 namespace dragonpoop
 {
@@ -20,7 +21,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        model_instance_vertex( dpid id );
+        model_instance_vertex( model_vertex *v );
         //dtor
         virtual ~model_instance_vertex( void );
         //set position

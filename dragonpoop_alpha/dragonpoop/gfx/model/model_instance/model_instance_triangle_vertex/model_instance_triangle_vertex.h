@@ -5,6 +5,7 @@
 #include "../../model_component/model_components.h"
 #include "../../../dpvertex/dpxyzw.h"
 #include "../../../dpvertex/dpst.h"
+#include "../../model_triangle_vertex/model_triangle_vertex.h"
 
 namespace dragonpoop
 {
@@ -23,7 +24,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        model_instance_triangle_vertex( dpid id, dpid triangle_id, dpid vertex_id );
+        model_instance_triangle_vertex( model_triangle_vertex *v );
         //dtor
         virtual ~model_instance_triangle_vertex( void );
         //get triangle id

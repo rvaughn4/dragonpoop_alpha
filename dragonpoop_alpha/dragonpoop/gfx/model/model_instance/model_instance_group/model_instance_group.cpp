@@ -5,9 +5,9 @@ namespace dragonpoop
 {
     
     //ctor
-    model_instance_group::model_instance_group( dpid id ) : model_component( id, model_component_type_group )
+    model_instance_group::model_instance_group( model_group *g ) : model_component( g->getId(), model_component_type_group )
     {
-        dpid_zero( &this->m_id );
+        this->m_id = g->getMaterialId();
     }
     
     //dtor

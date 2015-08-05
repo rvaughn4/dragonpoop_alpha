@@ -33,6 +33,7 @@ namespace dragonpoop
     {
         this->kill();
         delete this->gtsk;
+        this->deleteComponents();
     }
 
     //return core
@@ -155,6 +156,29 @@ namespace dragonpoop
     {
         this->addComponent( c, p1 );
         //this->comps.bytypeowner.addLeaf( c->getType(), p2, c );
+    }
+    
+    //delete all components
+    void model::deleteComponents( void )
+    {
+        std::list<model_component *> *l, d;
+        std::list<model_component *>::iterator i;
+        model_component *c;
+        
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            d.push_back( c );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            delete c;
+        }
     }
     
     //find component by type and id

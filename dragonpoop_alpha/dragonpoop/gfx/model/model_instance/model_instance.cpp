@@ -8,21 +8,28 @@
 #include "model_instance_group/model_instance_group.h"
 #include "model_instance_triangle_vertex/model_instance_triangle_vertex.h"
 #include "model_instance_vertex/model_instance_vertex.h"
+#include "../model_writelock.h"
+#include "../model_ref.h"
 
 namespace dragonpoop
 {
     
     //ctor
-    model_instance::model_instance( core *c, dpid id ) : shared_obj( c->getMutexMaster() )
+    model_instance::model_instance( model_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
     {
-        this->id = id;
-        this->c = c;
+        this->id = ml->getId();
+        this->c = ml->getCore();
+        this->m = (model_ref *)ml->getRef();
+        this->makeGroups( ml );
+        this->makeTriangleVertexes( ml );
+        this->makeVertexes( ml );
     }
     
     //dtor
     model_instance::~model_instance( void )
     {
         this->deleteComponents();
+        delete this->m;
     }
     
     //return core
@@ -34,9 +41,26 @@ namespace dragonpoop
     //delete all components
     void model_instance::deleteComponents( void )
     {
+        std::list<model_component *> *l, d;
+        std::list<model_component *>::iterator i;
+        model_component *c;
         
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            d.push_back( c );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            delete c;
+        }
     }
-    
+
     //generate read lock
     shared_obj_readlock *model_instance::genReadLock( shared_obj *p, dpmutex_readlock *l )
     {
@@ -179,10 +203,10 @@ namespace dragonpoop
     }
     
     //add vertex
-    model_instance_vertex *model_instance::makeVertex( dpid id )
+    model_instance_vertex *model_instance::makeVertex( model_vertex *v )
     {
         model_instance_vertex *c;
-        c = new model_instance_vertex( id );
+        c = new model_instance_vertex( v );
         this->addComponent( c );
         return c;
     }
@@ -200,10 +224,10 @@ namespace dragonpoop
     }
     
     //add group
-    model_instance_group *model_instance::makeGroup( dpid id )
+    model_instance_group *model_instance::makeGroup( model_group *g )
     {
         model_instance_group *c;
-        c = new model_instance_group( id );
+        c = new model_instance_group( g );
         this->addComponent( c );
         return c;
     }
@@ -221,11 +245,11 @@ namespace dragonpoop
     }
     
     //add triangle vertex
-    model_instance_triangle_vertex *model_instance::makeTriangleVertex( dpid id, dpid triangle_id, dpid vertex_id )
+    model_instance_triangle_vertex *model_instance::makeTriangleVertex( model_triangle_vertex *v )
     {
         model_instance_triangle_vertex *c;
-        c = new model_instance_triangle_vertex( id, triangle_id, vertex_id );
-        this->addComponent( c, triangle_id, vertex_id );
+        c = new model_instance_triangle_vertex( v );
+        this->addComponent( c );//, triangle_id, vertex_id );
         return c;
     }
     
@@ -257,6 +281,24 @@ namespace dragonpoop
     void model_instance::getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid )
     {
         this->getComponentsByParent( model_component_type_triangle_vertex, pid, (std::list<model_component *> *)l );
+    }
+    
+    //make verts
+    void model_instance::makeVertexes( model_writelock *ml )
+    {
+        
+    }
+    
+    //make triangle verts
+    void model_instance::makeTriangleVertexes( model_writelock *ml )
+    {
+        
+    }
+    
+    //make groups
+    void model_instance::makeGroups( model_writelock *ml )
+    {
+        
     }
     
 };
