@@ -91,14 +91,14 @@ namespace dragonpoop
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l );
         //get triangle vertexes by triangle or vertex id
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid );
-        
         //make verts
         void makeVertexes( model_writelock *ml );
         //make triangle verts
         void makeTriangleVertexes( model_writelock *ml );
         //make groups
         void makeGroups( model_writelock *ml );
-        
+        //sync
+        void sync( model_writelock *ml );
         
     public:
         

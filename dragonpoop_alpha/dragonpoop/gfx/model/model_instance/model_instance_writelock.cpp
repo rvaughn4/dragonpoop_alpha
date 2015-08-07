@@ -106,5 +106,11 @@ namespace dragonpoop
     {
         this->t->run( thd, this );
     }
+    
+    //sync
+    void model_instance_writelock::sync( model_writelock *ml )
+    {
+        this->t->sync( ml );
+    }
 
 };

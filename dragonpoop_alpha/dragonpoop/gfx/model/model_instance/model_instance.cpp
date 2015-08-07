@@ -10,6 +10,7 @@
 #include "model_instance_vertex/model_instance_vertex.h"
 #include "../model_writelock.h"
 #include "../model_ref.h"
+#include "../../../core/bytetree/dpid_bytetree.h"
 
 namespace dragonpoop
 {
@@ -20,9 +21,7 @@ namespace dragonpoop
         this->id = ml->getId();
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->makeGroups( ml );
-        this->makeTriangleVertexes( ml );
-        this->makeVertexes( ml );
+        this->sync( ml );
     }
     
     //dtor
@@ -289,12 +288,26 @@ namespace dragonpoop
         std::list<model_vertex *> l;
         std::list<model_vertex *>::iterator i;
         model_vertex *p;
+        std::list<model_instance_vertex *> li;
+        std::list<model_instance_vertex *>::iterator ii;
+        model_instance_vertex *pi;
+        dpid_bytetree t;
+        
+        this->getVertexes( &li );
+        
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
         
         ml->getVertexes( &l );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
+            if( t.findLeaf( p->getId() ) )
+                continue;
             this->makeVertex( p );
         }
     }
@@ -305,12 +318,26 @@ namespace dragonpoop
         std::list<model_triangle_vertex *> l;
         std::list<model_triangle_vertex *>::iterator i;
         model_triangle_vertex *p;
+        std::list<model_instance_triangle_vertex *> li;
+        std::list<model_instance_triangle_vertex *>::iterator ii;
+        model_instance_triangle_vertex *pi;
+        dpid_bytetree t;
+        
+        this->getTriangleVertexes( &li );
+        
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
         
         ml->getTriangleVertexes( &l );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
+            if( t.findLeaf( p->getId() ) )
+                continue;
             this->makeTriangleVertex( p );
         }
     }
@@ -321,14 +348,36 @@ namespace dragonpoop
         std::list<model_group *> l;
         std::list<model_group *>::iterator i;
         model_group *p;
+        std::list<model_instance_group *> li;
+        std::list<model_instance_group *>::iterator ii;
+        model_instance_group *pi;
+        dpid_bytetree t;
+        
+        this->getGroups( &li );
+        
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
         
         ml->getGroups( &l );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
+            if( t.findLeaf( p->getId() ) )
+                continue;
             this->makeGroup( p );
         }
     }
     
+    //sync
+    void model_instance::sync( model_writelock *ml )
+    {
+        this->makeVertexes( ml );
+        this->makeTriangleVertexes( ml );
+        this->makeGroups( ml );
+    }
+ 
 };

@@ -50,6 +50,8 @@ namespace dragonpoop
         void deleteInstances( void );
         //run instances
         void runInstances( dpthread_lock *thd, model_writelock *g );
+        //sync instances
+        void syncInstances( model_writelock *g );
         
     protected:
 
@@ -137,6 +139,8 @@ namespace dragonpoop
         void getGroupTriangles( std::list<model_group_triangle *> *l, dpid pid );
         //create instance
         model_instance_ref *makeInstance( model_writelock *ml );
+        //sync model instance with changes
+        void sync( model_writelock *ml );
         
     public:
 

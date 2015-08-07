@@ -252,4 +252,10 @@ namespace dragonpoop
         return this->t->makeInstance( this );
     }
     
+    //sync model instance with changes
+    void model_writelock::sync( void )
+    {
+        this->t->sync( this );
+    }
+    
 };

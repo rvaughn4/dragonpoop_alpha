@@ -467,6 +467,27 @@ namespace dragonpoop
             delete p;
         }
     }
+    
+    //sync instances
+    void model::syncInstances( model_writelock *g )
+    {
+        std::list<model_instance *> *l;
+        std::list<model_instance *>::iterator i;
+        model_instance *p;
+        model_instance_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->instances;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = ( model_instance_writelock *)o.tryWriteLock( p, 300 );
+            if( !pl )
+                continue;
+            pl->sync( g );
+        }
+    }
+    
     //create instance
     model_instance_ref *model::makeInstance( model_writelock *ml )
     {
@@ -482,6 +503,12 @@ namespace dragonpoop
         if( !pl )
             return 0;
         return (model_instance_ref *)pl->getRef();
+    }
+    
+    //sync model instance with changes
+    void model::sync( model_writelock *ml )
+    {
+        this->syncInstances( ml );
     }
     
 };
