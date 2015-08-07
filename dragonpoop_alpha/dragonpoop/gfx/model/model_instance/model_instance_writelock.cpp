@@ -100,5 +100,11 @@ namespace dragonpoop
     {
         this->t->getTriangleVertexes( l, pid );
     }
-    
+
+    //run model from task
+    void model_instance_writelock::run( dpthread_lock *thd )
+    {
+        this->t->run( thd, this );
+    }
+
 };

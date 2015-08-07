@@ -18,6 +18,7 @@ namespace dragonpoop
     class model_group;
     class model_triangle_vertex;
     class model_group_triangle;
+    class model_instance_ref;
 
     class model_writelock : public shared_obj_writelock
     {
@@ -111,6 +112,8 @@ namespace dragonpoop
         void getGroupTriangles( std::list<model_group_triangle *> *l );
         //get all group triangles belonging to a group or triangle id
         void getGroupTriangles( std::list<model_group_triangle *> *l, dpid pid );
+        //create instance
+        model_instance_ref *makeInstance( void );
 
         friend class model;
     };

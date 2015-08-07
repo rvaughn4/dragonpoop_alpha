@@ -351,4 +351,38 @@ namespace dragonpoop
         return 0;
     }
     
+    //get a model instance by name
+    model_instance_ref *gfx::makeModelInstance( const char *cname )
+    {
+        model_ref *m;
+        model_writelock *ml;
+        shared_obj_guard o;
+        
+        m = this->findModel( cname );
+        if( !m )
+            return 0;
+        ml = (model_writelock *)o.writeLock( m );
+        delete m;
+        if( !ml )
+            return 0;
+        return ml->makeInstance();
+    }
+    
+    //get a model instance by id
+    model_instance_ref *gfx::makeModelInstance( dpid id )
+    {
+        model_ref *m;
+        model_writelock *ml;
+        shared_obj_guard o;
+        
+        m = this->findModel( id );
+        if( !m )
+            return 0;
+        ml = (model_writelock *)o.writeLock( m );
+        delete m;
+        if( !ml )
+            return 0;
+        return ml->makeInstance();
+    }
+    
 };

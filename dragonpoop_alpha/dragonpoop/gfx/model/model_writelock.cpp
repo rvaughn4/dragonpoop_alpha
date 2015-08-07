@@ -246,4 +246,10 @@ namespace dragonpoop
         this->t->getGroupTriangles( l, pid );
     }
     
+    //create instance
+    model_instance_ref *model_writelock::makeInstance( void )
+    {
+        return this->t->makeInstance( this );
+    }
+    
 };

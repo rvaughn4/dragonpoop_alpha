@@ -5,6 +5,7 @@
 #include "../../core/shared_obj/shared_obj.h"
 #include "../../core/dpid/dpid.h"
 #include <string>
+#include <list>
 #include "model_component/model_components.h"
 
 namespace dragonpoop
@@ -21,6 +22,8 @@ namespace dragonpoop
     class model_group;
     class model_triangle_vertex;
     class model_group_triangle;
+    class model_instance;
+    class model_instance_ref;
 
     class model : public shared_obj
     {
@@ -39,9 +42,14 @@ namespace dragonpoop
             //model_component_tree_bytypeid bytypeid;
             //model_component_tree_bytypeid bytypeowner;
         } comps;
+        std::list<model_instance *> instances;
         
         //delete all components
         void deleteComponents( void );
+        //delete instances
+        void deleteInstances( void );
+        //run instances
+        void runInstances( dpthread_lock *thd, model_writelock *g );
         
     protected:
 
@@ -127,6 +135,8 @@ namespace dragonpoop
         void getGroupTriangles( std::list<model_group_triangle *> *l );
         //get all group triangles belonging to a group or triangle id
         void getGroupTriangles( std::list<model_group_triangle *> *l, dpid pid );
+        //create instance
+        model_instance_ref *makeInstance( model_writelock *ml );
         
     public:
 

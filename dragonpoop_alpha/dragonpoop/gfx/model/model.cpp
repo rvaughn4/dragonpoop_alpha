@@ -14,6 +14,9 @@
 #include "model_group/model_group.h"
 #include "model_triangle_vertex/model_triangle_vertex.h"
 #include "model_group_triangle/model_group_triangle.h"
+#include "model_instance/model_instance.h"
+#include "model_instance/model_instance_ref.h"
+#include "model_instance/model_instance_writelock.h"
 
 namespace dragonpoop
 {
@@ -33,6 +36,7 @@ namespace dragonpoop
     {
         this->kill();
         delete this->gtsk;
+        this->deleteInstances();
         this->deleteComponents();
     }
 
@@ -80,6 +84,7 @@ namespace dragonpoop
     //run model from task
     void model::run( dpthread_lock *thd, model_writelock *g )
     {
+        this->runInstances( thd, g );
     }
 
     //set name
@@ -409,6 +414,74 @@ namespace dragonpoop
     void model::getGroupTriangles( std::list<model_group_triangle *> *l, dpid pid )
     {
         this->getComponentsByParent( model_component_type_group_triangle, pid, (std::list<model_component *> *)l );
+    }
+  
+    //delete instances
+    void model::deleteInstances( void )
+    {
+        std::list<model_instance *> *l, d;
+        std::list<model_instance *>::iterator i;
+        model_instance *p;
+        
+        l = &this->instances;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    
+    //run instances
+    void model::runInstances( dpthread_lock *thd, model_writelock *g )
+    {
+        std::list<model_instance *> *l, d;
+        std::list<model_instance *>::iterator i;
+        model_instance *p;
+        model_instance_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->instances;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = ( model_instance_writelock *)o.tryWriteLock( p, 10 );
+            if( !pl )
+                continue;
+            pl->run( thd );
+            //
+            //d.push_back( p );
+        }
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    //create instance
+    model_instance_ref *model::makeInstance( model_writelock *ml )
+    {
+        model_instance *p;
+        model_instance_writelock *pl;
+        shared_obj_guard o;
+        
+        p = new model_instance( ml );
+        if( !p )
+            return 0;
+        this->instances.push_back( p );
+        pl = (model_instance_writelock *)o.writeLock( p );
+        if( !pl )
+            return 0;
+        return (model_instance_ref *)pl->getRef();
     }
     
 };

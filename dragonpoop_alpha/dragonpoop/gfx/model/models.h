@@ -8,7 +8,7 @@
 #include "model_writelock.h"
 #include "model_task.h"
 
-#include "model_component/model_compoents.h"
+#include "model_component/model_components.h"
 #include "model_vertex/model_vertexes.h"
 #include "model_triangle_vertex/model_triangle_vertexes.h"
 #include "model_triangle/model_triangles.h"
@@ -21,6 +21,7 @@
 #include "model_animation_frame/model_animation_frames.h"
 #include "model_frame_joint/model_frame_joints.h"
 #include "model_vertex_joint/model_vertex_joints.h"
+#include "model_instance/model_instances.h"
 
 #include "model_loader/model_loaders.h"
 

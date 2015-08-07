@@ -13,6 +13,7 @@ namespace dragonpoop
     class dpthread_lock;
     class model_ref;
     class model_loader;
+    class model_instance_ref;
 
     class gfx_writelock : public shared_obj_writelock
     {
@@ -46,6 +47,10 @@ namespace dragonpoop
         model_ref *findModel( const char *cname );
         //find model by id
         model_ref *findModel( dpid id );
+        //get a model instance by name
+        model_instance_ref *makeModelInstance( const char *cname );
+        //get a model instance by id
+        model_instance_ref *makeModelInstance( dpid id );
 
         friend class gfx;
     };

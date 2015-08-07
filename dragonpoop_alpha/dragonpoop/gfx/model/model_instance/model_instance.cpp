@@ -286,19 +286,49 @@ namespace dragonpoop
     //make verts
     void model_instance::makeVertexes( model_writelock *ml )
     {
+        std::list<model_vertex *> l;
+        std::list<model_vertex *>::iterator i;
+        model_vertex *p;
         
+        ml->getVertexes( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            this->makeVertex( p );
+        }
     }
     
     //make triangle verts
     void model_instance::makeTriangleVertexes( model_writelock *ml )
     {
+        std::list<model_triangle_vertex *> l;
+        std::list<model_triangle_vertex *>::iterator i;
+        model_triangle_vertex *p;
         
+        ml->getTriangleVertexes( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            this->makeTriangleVertex( p );
+        }
     }
     
     //make groups
     void model_instance::makeGroups( model_writelock *ml )
     {
+        std::list<model_group *> l;
+        std::list<model_group *>::iterator i;
+        model_group *p;
         
+        ml->getGroups( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            this->makeGroup( p );
+        }
     }
     
 };

@@ -14,6 +14,7 @@ namespace dragonpoop
     class model_instance_vertex;
     class model_instance_group;
     class model_instance_triangle_vertex;
+    class dpthread_lock;
     
     class model_instance_writelock : public shared_obj_writelock
     {
@@ -59,6 +60,8 @@ namespace dragonpoop
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l );
         //get triangle vertexes by triangle or vertex id
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid );
+        //run model from task
+        void run( dpthread_lock *thd );
         
         friend class model_instance;
     };

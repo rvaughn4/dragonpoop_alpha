@@ -8,4 +8,6 @@
 #include "gfx_writelock.h"
 #include "gfx_task.h"
 
+#include "model/models.h"
+
 #endif

@@ -65,4 +65,16 @@ namespace dragonpoop
         return this->t->findModel( id );
     }
     
+    //get a model instance by name
+    model_instance_ref *gfx_writelock::makeModelInstance( const char *cname )
+    {
+        return this->t->makeModelInstance( cname );
+    }
+    
+    //get a model instance by id
+    model_instance_ref *gfx_writelock::makeModelInstance( dpid id )
+    {
+        return this->t->makeModelInstance( id );
+    }
+    
 };
