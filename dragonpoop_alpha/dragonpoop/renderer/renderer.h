@@ -31,7 +31,8 @@ namespace dragonpoop
         gfx_ref *g;
         std::atomic<bool> bDoRun, bIsRun;
         std::list<renderer_model *> models;
-        uint64_t t_last_m_ran;
+        uint64_t t_last_m_ran, t_last_fps;
+        float fps, fthiss;
 
         //run models
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
@@ -76,6 +77,8 @@ namespace dragonpoop
         virtual void flipBuffer( void );
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
+        //returns fps
+        float getFps( void );
 
     public:
 

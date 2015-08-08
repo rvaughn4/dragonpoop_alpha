@@ -4,7 +4,9 @@
 #include "renderer_model_instance_readlock.h"
 #include "renderer_model_instance_writelock.h"
 #include "../../../gfx/model/model_instance/model_instance_writelock.h"
+#include "../../../gfx/model/model_instance/model_instance_ref.h"
 #include "../../../core/core.h"
+#include "../../../core/shared_obj/shared_obj_guard.h"
 
 #include <iostream>
 namespace dragonpoop
@@ -13,8 +15,10 @@ namespace dragonpoop
     //ctor
     renderer_model_instance::renderer_model_instance( model_instance_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
     {
+        this->m = (model_instance_ref *)ml->getRef();
         this->id = ml->getId();
         this->makeGroups( ml );
+        this->bIsSynced = 1;
         std::cout << "render model instance made\r\n";
         ml->setRenderer( this );
     }
@@ -23,6 +27,7 @@ namespace dragonpoop
     renderer_model_instance::~renderer_model_instance( void )
     {
         this->deleteComponents();
+        delete this->m;
         std::cout << "render model instance junked\r\n";
     }
     
@@ -192,9 +197,28 @@ namespace dragonpoop
         
     }
     
+    //run model from task
+    void renderer_model_instance::run( dpthread_lock *thd, renderer_model_instance_writelock *g )
+    {
+        model_instance_writelock *ml;
+        shared_obj_guard o;
+        
+        if( !this->bIsSynced )
+        {
+            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300 );
+            if( ml )
+            {
+                this->makeGroups( ml );
+                this->bIsSynced = 1;
+                std::cout << "render model instance synce done\r\n";
+            }
+        }
+    }
+    
     //sync
     void renderer_model_instance::sync( void )
     {
+        this->bIsSynced = 0;
         std::cout << "render model instance synce started\r\n";
     }
     

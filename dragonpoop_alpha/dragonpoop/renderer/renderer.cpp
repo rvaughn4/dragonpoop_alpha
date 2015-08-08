@@ -32,8 +32,9 @@ namespace dragonpoop
         this->bDoRun = 1;
         this->bIsRun = 0;
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 100, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 16, 1 );
         tp->addTask( this->tsk );
+        this->fps = this->fthiss = 0;
     }
 
     //dtor
@@ -138,6 +139,8 @@ namespace dragonpoop
     void renderer::render( dpthread_lock *thd, renderer_writelock *rl )
     {
         unsigned int w, h;
+        uint64_t t, td;
+        float f0;
         
         w = this->getWidth();
         h = this->getHeight();
@@ -164,6 +167,17 @@ namespace dragonpoop
         
         this->prepareGuiRender();
         this->flipBuffer();
+        
+        this->fthiss += 1.0f;
+        t = thd->getTicks();
+        td = t - this->t_last_fps;
+        if( td > 2000 )
+        {
+            f0 = (float)td / 1000.0f;
+            this->fps = this->fthiss / f0;
+            this->t_last_fps = t;
+            this->fthiss = 0;
+        }
     }
  
     //init graphics api
@@ -330,6 +344,12 @@ namespace dragonpoop
     renderer_model *renderer::genModel( model_writelock *ml )
     {
         return new renderer_model( ml );
+    }
+    
+    //returns fps
+    float renderer::getFps( void )
+    {
+        return this->fps;
     }
     
 };

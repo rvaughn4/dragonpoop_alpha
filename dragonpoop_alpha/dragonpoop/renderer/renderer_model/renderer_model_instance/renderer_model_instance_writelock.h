@@ -12,6 +12,7 @@ namespace dragonpoop
     class model_component;
     class model_instance_vertex;
     class renderer_model_instance_group;
+    class dpthread_lock;
     
     class renderer_model_instance_writelock : public shared_obj_writelock
     {
@@ -45,7 +46,9 @@ namespace dragonpoop
         void getGroups( std::list<renderer_model_instance_group *> *l );
         //sync
         void sync( void );
-        
+        //run model from task
+        void run( dpthread_lock *thd );
+
         friend class renderer_model_instance;
     };
     

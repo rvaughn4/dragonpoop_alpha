@@ -14,16 +14,12 @@ int main( int argc, const char * argv[] )
     gr = c->getGfx();
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
     
-    
     gl->loadModel( "test", "felhound_hi_milkshape.ms3d", 0, 0 );
     m = gl->makeModelInstance( "test" );
-    
     o.unlock();
-    
-    
 
     while( c->isRunning() )
-        std::this_thread::sleep_for( std::chrono::milliseconds( 5000 ) );
+        std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
     delete m;
     delete c;

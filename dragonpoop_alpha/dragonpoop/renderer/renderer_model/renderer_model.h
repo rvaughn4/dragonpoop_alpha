@@ -35,6 +35,7 @@ namespace dragonpoop
         std::list<renderer_model_instance *> instances;
         std::atomic<bool> bIsSynced;
         model_ref *m;
+        uint64_t t_last_i_ran;
         
         //delete all components
         void deleteComponents( void );
@@ -42,6 +43,8 @@ namespace dragonpoop
         void deleteInstances( void );
         //sync instances
         void syncInstances( model_writelock *g );
+        //run instances
+        void runInstances( dpthread_lock *thd );
         
     protected:
         

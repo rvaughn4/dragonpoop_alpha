@@ -19,6 +19,8 @@ namespace dragonpoop
         this->lm = ml;
         this->tp = 0;
         this->trun = 1;
+        this->b_lowpri = 0;
+        this->b_hipri = 0;
         this->l = this->lm->genMutex();
         memset( &this->tasks, 0, sizeof( this->tasks ) );
         this->thd = new std::thread( dpthread_threadproc, this );
@@ -371,6 +373,21 @@ namespace dragonpoop
         lowest_delay = 2000;
         while( t->trun )
         {
+            if( t->b_lowpri )
+            {
+                if( lowest_delay < 200 )
+                    lowest_delay = 200;
+            }
+            if( t->b_hipri )
+            {
+                if( lowest_delay > 20 )
+                    lowest_delay = 20;
+                if( lowest_delay < 17 )
+                    lowest_delay = 1;
+                else
+                    lowest_delay -= 16;
+            }
+  
             tl = t->lock();
             if( !tl )
             {
@@ -396,11 +413,17 @@ namespace dragonpoop
                 }
                 delete tl;
                 std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay ) );
+
+                tl = t->lock();
+                if( !tl )
+                    continue;
                 if( lowest_delay < 2000 )
-                    lowest_delay += 3 + lowest_delay;
+                    lowest_delay += 16 + lowest_delay;
                 if( lowest_delay > 2000 )
                     lowest_delay = 2000;
                 t->getTaskFromPool();
+                delete tl;
+                
                 continue;
             }
 
@@ -421,8 +444,8 @@ namespace dragonpoop
             }
 
             td = rl->getDelay();
-            if( td < 3 )
-                td = 3;
+            if( !t->b_hipri && td < 16 )
+                td = 16;
             if( lowest_delay > td )
                 lowest_delay = td;
             td = t->ticks - rl->getLastTime();

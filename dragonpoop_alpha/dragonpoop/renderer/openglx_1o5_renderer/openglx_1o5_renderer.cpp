@@ -5,6 +5,8 @@
 #include "openglx_1o5_renderer_ref.h"
 #include "../../core/core.h"
 
+#include <sstream>
+
 namespace dragonpoop
 {
 
@@ -12,6 +14,7 @@ namespace dragonpoop
     openglx_1o5_renderer::openglx_1o5_renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp ) : renderer( c, g, tp )
     {
         memset( &this->gl, 0, sizeof( this->gl ) );
+        this->fps = 0;
     }
 
     //dtor
@@ -179,6 +182,16 @@ namespace dragonpoop
     void openglx_1o5_renderer::runWindow( void )
     {
         XEvent event;
+        
+        if( this->fps != this->getFps() )
+        {
+            std::stringstream ss;
+            
+            this->fps = this->getFps();
+            ss << "Dragonpoop: its as smooth as silk! " << (int)this->fps << " fps";
+            
+            XSetStandardProperties( this->gl.dpy, this->gl.win, ss.str().c_str(), ss.str().c_str(), None, NULL, 0, NULL );
+        }
 
         if( XPending( this->gl.dpy ) < 1 )
             return;

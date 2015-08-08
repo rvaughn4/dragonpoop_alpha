@@ -7,10 +7,12 @@
 #include "../../gfx/model/model_ref.h"
 #include "../../core/core.h"
 #include "renderer_model_instance/renderer_model_instance.h"
+#include "renderer_model_instance/renderer_model_instance_writelock.h"
 #include "../../core/bytetree/dpid_bytetree.h"
 #include "../../gfx/model/model_instance/model_instance_writelock.h"
 #include "../../gfx/model/model_instance/model_instance_ref.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
+#include "../../core/dpthread/dpthread_lock.h"
 
 #include <iostream>
 
@@ -278,10 +280,35 @@ namespace dragonpoop
         
     }
     
+    //run instances
+    void renderer_model::runInstances( dpthread_lock *thd )
+    {
+        std::list<renderer_model_instance *> *l, d;
+        std::list<renderer_model_instance *>::iterator i;
+        renderer_model_instance *p;
+        renderer_model_instance_writelock *pl;
+        shared_obj_guard o;
+        
+        //build index
+        l = &this->instances;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_model_instance_writelock *)o.tryWriteLock( p, 100 );
+            if( !pl )
+                continue;
+            pl->run( thd );
+        }
+        
+    }
+    
     //run model from task
     void renderer_model::run( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml )
     {
-       
+        uint64_t t;
+        
+        t = thd->getTicks();
+        
         if( !this->bIsSynced )
         {
             this->syncInstances( ml );
@@ -289,6 +316,11 @@ namespace dragonpoop
             std::cout << "render model sync done\r\n";
         }
         
+        if( t - this->t_last_i_ran > 1000 )
+        {
+            this->t_last_i_ran = t;
+            this->runInstances( thd );
+        }
     }
     
 };

@@ -37,7 +37,7 @@ namespace dragonpoop
         } tasks;
         uint64_t ticks, epoch;
         std::thread *thd;
-        std::atomic<bool> trun;
+        std::atomic<bool> trun, b_lowpri, b_hipri;
         unsigned int id;
         uint32_t idctr;
 

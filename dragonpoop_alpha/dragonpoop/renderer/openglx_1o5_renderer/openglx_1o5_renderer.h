@@ -40,6 +40,7 @@ namespace dragonpoop
 
         openglx_1o5_stuffs gl;
         dpmatrix world_m, local_m;
+        float fps;
 
     protected:
 

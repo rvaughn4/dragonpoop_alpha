@@ -17,6 +17,8 @@ namespace dragonpoop
     class renderer_model_ref;
     class model_instance_group;
     class model_instance_writelock;
+    class model_instance_ref;
+    class dpthread_lock;
     
     class renderer_model_instance : public shared_obj
     {
@@ -28,6 +30,8 @@ namespace dragonpoop
         {
             std::list<model_component *> lst;
         } comps;
+        std::atomic<bool> bIsSynced;
+        model_instance_ref *m;
         
         //delete all components
         void deleteComponents( void );
@@ -62,6 +66,8 @@ namespace dragonpoop
         void makeGroups( model_instance_writelock *ml );
         //sync
         void sync( void );
+        //run model from task
+        void run( dpthread_lock *thd, renderer_model_instance_writelock *g );
         
     public:
         
