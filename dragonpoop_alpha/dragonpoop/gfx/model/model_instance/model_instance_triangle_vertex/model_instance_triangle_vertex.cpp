@@ -5,10 +5,15 @@ namespace dragonpoop
 {
     
     //ctor
-    model_instance_triangle_vertex::model_instance_triangle_vertex( model_triangle_vertex *v ) : model_component( v->getId(), model_component_type_triangle_vertex )
+    model_instance_triangle_vertex::model_instance_triangle_vertex( model_triangle_vertex *tv ) : model_component( tv->getId(), model_component_type_triangle_vertex )
     {
-        this->t_id = v->getTriangleId();
-        this->v_id = v->getVertexId();
+        this->t_id = tv->getTriangleId();
+        this->v_id = tv->getVertexId();
+        tv->getNormal( &this->norm );
+        tv->getTexCoord0( &this->texcoords0 );
+        tv->getTexCoord1( &this->texcoords1 );
+        this->start.norm = this->end.norm = this->norm;
+        this->start.t = this->end.t = 0;
     }
     
     //dtor

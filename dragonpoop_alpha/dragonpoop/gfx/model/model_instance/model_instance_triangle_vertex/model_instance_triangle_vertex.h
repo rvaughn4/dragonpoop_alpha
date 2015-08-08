@@ -6,6 +6,7 @@
 #include "../../../dpvertex/dpxyzw.h"
 #include "../../../dpvertex/dpst.h"
 #include "../../model_triangle_vertex/model_triangle_vertex.h"
+#include "../../model_vertex/model_vertex.h"
 
 namespace dragonpoop
 {
@@ -16,15 +17,21 @@ namespace dragonpoop
     private:
         
         dpid v_id, t_id;
-        dpxyzw norm;
+        dpxyzw norm, pos;
         dpst texcoords0, texcoords1;
+        
+        struct
+        {
+            dpxyzw norm;
+            uint64_t t;
+        } start, end;
         
     protected:
         
     public:
         
         //ctor
-        model_instance_triangle_vertex( model_triangle_vertex *v );
+        model_instance_triangle_vertex( model_triangle_vertex *tv );
         //dtor
         virtual ~model_instance_triangle_vertex( void );
         //get triangle id

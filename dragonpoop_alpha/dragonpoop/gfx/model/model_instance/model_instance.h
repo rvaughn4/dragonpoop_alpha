@@ -85,7 +85,7 @@ namespace dragonpoop
         //get groups
         void getGroups( std::list<model_instance_group *> *l );
         //add triangle vertex
-        model_instance_triangle_vertex *makeTriangleVertex( model_triangle_vertex *v );
+        model_instance_triangle_vertex *makeTriangleVertex( model_triangle_vertex *tv );
         //find triangle vertex
         model_instance_triangle_vertex *findTriangleVertex( dpid id );
         //find triangle vertex
