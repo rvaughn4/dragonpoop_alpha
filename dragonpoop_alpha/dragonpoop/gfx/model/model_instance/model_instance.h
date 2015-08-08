@@ -18,14 +18,18 @@ namespace dragonpoop
     class model_instance_writelock;
     class model_instance_vertex;
     class model_instance_group;
+    class model_instance_triangle;
     class model_instance_triangle_vertex;
     class model_writelock;
     class model_ref;
     class model_vertex;
     class model_group;
     class model_triangle_vertex;
+    class model_group_vertex;
     class renderer_model_instance;
     class renderer_model_instance_ref;
+    class model_group_triangle;
+    class dpvertexindex_buffer;
     
     class model_instance : public shared_obj
     {
@@ -94,8 +98,20 @@ namespace dragonpoop
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l );
         //get triangle vertexes by triangle or vertex id
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid );
+        //add triangle
+        model_instance_triangle *makeTriangle( model_group_triangle *gt );
+        //find triangle
+        model_instance_triangle *findTriangle( dpid id );
+        //find triangle
+        model_instance_triangle *findTriangle( dpid group_id, dpid triangle_id );
+        //get triangles
+        void getTriangles( std::list<model_instance_triangle *> *l );
+        //get triangles by triangle or group id
+        void getTriangles( std::list<model_instance_triangle *> *l, dpid pid );
         //make verts
         void makeVertexes( model_writelock *ml );
+        //make triangles
+        void makeTriangles( model_writelock *ml );
         //make triangle verts
         void makeTriangleVertexes( model_writelock *ml );
         //make groups
@@ -104,6 +120,8 @@ namespace dragonpoop
         void sync( model_writelock *ml );
         //set renderer model
         void setRenderer( renderer_model_instance *r );
+        //populate vertex buffer for rendering
+        void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
         
     public:
         

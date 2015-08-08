@@ -23,8 +23,7 @@ namespace dragonpoop
     renderer_model::renderer_model( model_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
     {
         this->m = (model_ref *)ml->getRef();
-        this->syncInstances( ml );
-        this->bIsSynced = 1;
+        this->bIsSynced = 0;
         this->id = ml->getId();
         ml->setRenderer( this );
         std::cout << "render model made\r\n";
@@ -163,7 +162,7 @@ namespace dragonpoop
     {
         renderer_model_instance *i;
         
-        i = new renderer_model_instance( ml );
+        i = this->genInstance( ml );
         
         this->instances.push_back( i );
     }
@@ -276,8 +275,7 @@ namespace dragonpoop
             pi = *ii;
             this->instances.remove( pi );
             delete pi;
-        }
-        
+        }        
     }
     
     //run instances
@@ -312,6 +310,7 @@ namespace dragonpoop
         if( !this->bIsSynced )
         {
             this->syncInstances( ml );
+            this->onSync( thd, g, ml );
             this->bIsSynced = 1;
             std::cout << "render model sync done\r\n";
         }
@@ -321,6 +320,18 @@ namespace dragonpoop
             this->t_last_i_ran = t;
             this->runInstances( thd );
         }
+    }
+    
+    //handle sync
+    void renderer_model::onSync( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml )
+    {
+        
+    }
+
+    //generate instance
+    renderer_model_instance *renderer_model::genInstance( model_instance_writelock *ml )
+    {
+        return new renderer_model_instance( ml );
     }
     
 };

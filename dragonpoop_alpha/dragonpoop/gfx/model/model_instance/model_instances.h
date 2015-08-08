@@ -9,6 +9,7 @@
 
 #include "model_instance_vertex/model_instance_vertexs.h"
 #include "model_instance_triangle_vertex/model_instance_triangle_vertexs.h"
+#include "model_instance_triangle/model_instance_triangles.h"
 #include "model_instance_group/model_instance_groups.h"
 #include "model_instance_joint/model_instance_joints.h"
 #include "model_instance_animation/model_instance_animations.h"

@@ -92,6 +92,7 @@
 		7970E99C1B64F26E008E8328 /* renderer_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7970E9581B64F26E008E8328 /* renderer_task.cpp */; };
 		7970E99D1B64F26E008E8328 /* renderer_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7970E95A1B64F26E008E8328 /* renderer_writelock.cpp */; };
 		7970E9A21B64F664008E8328 /* model_material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7970E99F1B64F664008E8328 /* model_material.cpp */; };
+		797599201B769A9100FA583F /* model_instance_triangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7975991D1B769A9100FA583F /* model_instance_triangle.cpp */; };
 		799FC16B1B756F6F00E1A212 /* renderer_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 799FC1541B756F6F00E1A212 /* renderer_model.cpp */; };
 		799FC16C1B756F6F00E1A212 /* renderer_model_group_instance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 799FC1581B756F6F00E1A212 /* renderer_model_group_instance.cpp */; };
 		799FC16D1B756F6F00E1A212 /* renderer_model_instance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 799FC15B1B756F6F00E1A212 /* renderer_model_instance.cpp */; };
@@ -360,6 +361,9 @@
 		7970E99F1B64F664008E8328 /* model_material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_material.cpp; sourceTree = "<group>"; };
 		7970E9A01B64F664008E8328 /* model_material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_material.h; sourceTree = "<group>"; };
 		7970E9A11B64F664008E8328 /* model_materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_materials.h; sourceTree = "<group>"; };
+		7975991D1B769A9100FA583F /* model_instance_triangle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_instance_triangle.cpp; sourceTree = "<group>"; };
+		7975991E1B769A9100FA583F /* model_instance_triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instance_triangle.h; sourceTree = "<group>"; };
+		7975991F1B769A9100FA583F /* model_instance_triangles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instance_triangles.h; sourceTree = "<group>"; };
 		799FC1541B756F6F00E1A212 /* renderer_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_model.cpp; sourceTree = "<group>"; };
 		799FC1551B756F6F00E1A212 /* renderer_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_model.h; sourceTree = "<group>"; };
 		799FC1581B756F6F00E1A212 /* renderer_model_group_instance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_model_group_instance.cpp; sourceTree = "<group>"; };
@@ -932,6 +936,16 @@
 			path = model_material;
 			sourceTree = "<group>";
 		};
+		7975991C1B769A9100FA583F /* model_instance_triangle */ = {
+			isa = PBXGroup;
+			children = (
+				7975991D1B769A9100FA583F /* model_instance_triangle.cpp */,
+				7975991E1B769A9100FA583F /* model_instance_triangle.h */,
+				7975991F1B769A9100FA583F /* model_instance_triangles.h */,
+			);
+			path = model_instance_triangle;
+			sourceTree = "<group>";
+		};
 		799FC1531B756F6F00E1A212 /* renderer_model */ = {
 			isa = PBXGroup;
 			children = (
@@ -1083,6 +1097,7 @@
 				79F1071D1B6ED076000723E4 /* model_instance_writelock.h */,
 				79F107021B6ED076000723E4 /* model_instance.cpp */,
 				79F107031B6ED076000723E4 /* model_instance.h */,
+				7975991C1B769A9100FA583F /* model_instance_triangle */,
 				79F107041B6ED076000723E4 /* model_instance_animation */,
 				79F107081B6ED076000723E4 /* model_instance_group */,
 				79F1070C1B6ED076000723E4 /* model_instance_joint */,
@@ -1262,6 +1277,7 @@
 				79F107241B6ED076000723E4 /* model_instance_ref.cpp in Sources */,
 				79F107251B6ED076000723E4 /* model_instance_triangle_vertex.cpp in Sources */,
 				7970E9941B64F26E008E8328 /* model_writelock.cpp in Sources */,
+				797599201B769A9100FA583F /* model_instance_triangle.cpp in Sources */,
 				7970E97D1B64F26E008E8328 /* dpbitmap.cpp in Sources */,
 				794610F81B6D42CE00311E86 /* model_loader_ms3d_state_parse_triangles.cpp in Sources */,
 				7970E9621B64F26E008E8328 /* dpid.cpp in Sources */,

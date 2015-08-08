@@ -8,12 +8,15 @@
 namespace dragonpoop
 {
     
+    class dpvertexindex_buffer;
+    
     class model_instance_group : public model_component
     {
         
     private:
         
         dpid m_id;
+        
         
     protected:
         

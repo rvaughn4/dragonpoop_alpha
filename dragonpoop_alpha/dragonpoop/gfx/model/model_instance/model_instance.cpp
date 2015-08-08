@@ -8,6 +8,7 @@
 #include "model_instance_group/model_instance_group.h"
 #include "model_instance_triangle_vertex/model_instance_triangle_vertex.h"
 #include "model_instance_vertex/model_instance_vertex.h"
+#include "model_instance_triangle/model_instance_triangle.h"
 #include "../model_writelock.h"
 #include "../model_ref.h"
 #include "../../../core/bytetree/dpid_bytetree.h"
@@ -16,6 +17,7 @@
 #include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance_readlock.h"
 #include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance_writelock.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
+#include "../../dpvertex/dpvertex.h"
 
 namespace dragonpoop
 {
@@ -387,6 +389,7 @@ namespace dragonpoop
 
         this->makeVertexes( ml );
         this->makeTriangleVertexes( ml );
+        this->makeTriangles( ml );
         this->makeGroups( ml );
         
         if( !this->r )
@@ -411,6 +414,181 @@ namespace dragonpoop
         if( !rl )
             return;
         this->r = (renderer_model_instance_ref *)rl->getRef();
+    }
+    
+    //add triangle
+    model_instance_triangle *model_instance::makeTriangle( model_group_triangle *gt )
+    {
+        model_instance_triangle *c;
+        c = new model_instance_triangle( gt );
+        this->addComponent( c );//, triangle_id, vertex_id );
+        return c;
+    }
+    
+    //find triangle
+    model_instance_triangle *model_instance::findTriangle( dpid id )
+    {
+        return (model_instance_triangle *)this->findComponent( model_component_type_triangle, id );
+    }
+    
+    //find triangle
+    model_instance_triangle *model_instance::findTriangle( dpid group_id, dpid triangle_id )
+    {
+        std::list<model_instance_triangle *> l;
+        
+        this->getComponentsByParents( model_component_type_triangle, group_id, triangle_id, (std::list<model_component *> *)&l );
+        
+        if( l.size() < 1 )
+            return 0;
+        return l.front();
+    }
+    
+    //get triangles
+    void model_instance::getTriangles( std::list<model_instance_triangle *> *l )
+    {
+        this->getComponents( model_component_type_triangle, (std::list<model_component *> *)l );
+    }
+    
+    //get triangles by triangle or group id
+    void model_instance::getTriangles( std::list<model_instance_triangle *> *l, dpid pid )
+    {
+        this->getComponentsByParent( model_component_type_triangle, pid, (std::list<model_component *> *)l );
+    }
+
+    //make triangles
+    void model_instance::makeTriangles( model_writelock *ml )
+    {
+        std::list<model_group_triangle *> l;
+        std::list<model_group_triangle *>::iterator i;
+        model_group_triangle *p;
+        std::list<model_instance_triangle *> li;
+        std::list<model_instance_triangle *>::iterator ii;
+        model_instance_triangle *pi;
+        dpid_bytetree t;
+        
+        this->getTriangles( &li );
+        
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
+        
+        ml->getGroupTriangles( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            if( t.findLeaf( p->getId() ) )
+                continue;
+            this->makeTriangle( p );
+        }
+    }
+    
+    void model_instance__fillVertexBuffer_0( std::list<model_instance_triangle *> *lt, std::list<model_instance_triangle_vertex *> *ltv, dpid_bytetree *vt, dpvertexindex_buffer *vb );
+    
+    //populate vertex buffer for rendering
+    void model_instance::fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb )
+    {
+        dpid_bytetree t;
+        std::list<model_component *> *l;
+        std::list<model_component *>::iterator i;
+        model_component *p;
+        model_instance_group *g;
+        std::list<model_instance_triangle *> lt;
+        std::list<model_instance_triangle_vertex *> ltv;
+        dpid id;
+        
+        l = &this->comps.lst;
+        g = 0;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            switch( p->getType() )
+            {
+                case model_component_type_group:
+                    id = p->getId();
+                    if( dpid_compare( &group_id, &id ) )
+                        g = (model_instance_group *)p;
+                    break;
+                case model_component_type_triangle:
+                    id = ((model_instance_triangle *)p )->getGroupId();
+                    if( dpid_compare( &id, &group_id ) )
+                        lt.push_back( (model_instance_triangle *)p );
+                    break;
+                case model_component_type_triangle_vertex:
+                    ltv.push_back( (model_instance_triangle_vertex *)p );
+                    break;
+                case model_component_type_vertex:
+                    t.addLeaf( p->getId(), p );
+                    break;
+            }
+        }
+        
+        if( !g )
+            return;
+        
+        model_instance__fillVertexBuffer_0( &lt, &ltv, &t, vb );
+    }
+    
+    void model_instance__fillVertexBuffer_1( model_instance_triangle *t, std::list<model_instance_triangle_vertex *> *ltv, dpid_bytetree *tv, dpvertexindex_buffer *vb );
+    
+    void model_instance__fillVertexBuffer_0( std::list<model_instance_triangle *> *lt, std::list<model_instance_triangle_vertex *> *ltv, dpid_bytetree *tv, dpvertexindex_buffer *vb )
+    {
+        std::list<model_instance_triangle *>::iterator it;
+        model_instance_triangle *p;
+        
+        for( it = lt->begin(); it != lt->end(); ++it )
+        {
+            p = *it;
+            model_instance__fillVertexBuffer_1( p, ltv, tv, vb );
+        }
+    }
+
+    void model_instance__fillVertexBuffer_2( model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *v, dpvertexindex_buffer *vb );
+    
+    void model_instance__fillVertexBuffer_1( model_instance_triangle *t, std::list<model_instance_triangle_vertex *> *ltv, dpid_bytetree *tv, dpvertexindex_buffer *vb )
+    {
+        std::list<model_instance_triangle_vertex *>::iterator it;
+        model_instance_triangle_vertex *p;
+        dpid id, tid;
+        model_instance_triangle_vertex *tvl[ 3 ];
+        int tvli;
+        
+        tid = t->getTriangleId();
+        tvli = 0;
+        for( it = ltv->begin(); it != ltv->end() && tvli < 3; ++it )
+        {
+            p = *it;
+            id = p->getTriangleId();
+            if( dpid_compare( &id, &tid ) && tvli < 3 )
+            {
+                tvl[ tvli ] = p;
+                tvli++;
+            }
+        }
+
+        if( tvli < 3 )
+            return;
+        for( tvli = 0; tvli < 3; tvli++ )
+            model_instance__fillVertexBuffer_2( t, tvl[ tvli ], tv, vb );
+    }
+
+    void model_instance__fillVertexBuffer_2( model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *v, dpvertexindex_buffer *vb )
+    {
+        model_instance_vertex *p;
+        dpvertex vt;
+        
+        p = (model_instance_vertex *)v->findLeaf( tv->getVertexId() );
+        if( !p )
+            return;
+        
+        p->getPosition( &vt.start.pos );
+        tv->getNormal( &vt.start.normal );
+        tv->getTexCoord0( &vt.start.texcoords[ 0 ] );
+        tv->getTexCoord1( &vt.start.texcoords[ 1 ] );
+
+        vt.end = vt.start;
     }
     
 };

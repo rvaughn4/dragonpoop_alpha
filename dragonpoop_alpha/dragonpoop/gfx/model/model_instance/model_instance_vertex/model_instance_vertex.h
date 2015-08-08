@@ -14,7 +14,13 @@ namespace dragonpoop
         
     private:
         
-        dpxyzw x;
+        dpxyzw pos;
+        
+        struct
+        {
+            dpxyzw pos;
+            uint64_t t;
+        } start, end;
         
     protected:
         

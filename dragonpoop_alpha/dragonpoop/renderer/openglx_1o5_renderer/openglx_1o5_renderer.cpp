@@ -122,7 +122,7 @@ namespace dragonpoop
         this->gl.attr.border_pixel = 0;
 
         //create window
-        this->gl.attr.event_mask = ExposureMask | KeyPressMask | ButtonPressMask | StructureNotifyMask;
+        this->gl.attr.event_mask = ExposureMask | KeyPressMask | ButtonPressMask | StructureNotifyMask | VisibilityChangeMask | FocusChangeMask;
         this->gl.win = XCreateWindow( this->gl.dpy, RootWindow( this->gl.dpy, vi->screen ), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &this->gl.attr );
         if( !this->gl.win )
         {
@@ -199,9 +199,14 @@ namespace dragonpoop
         XNextEvent( this->gl.dpy, &event );
         switch (event.type)
         {
-            case Expose:
-                if( event.xexpose.count != 0 )
-                    break;
+            case VisibilityNotify:
+                this->setActiveState( event.xvisibility.state == VisibilityUnobscured );
+                break;
+            case FocusIn:
+                this->setActiveState( 1 );
+                break;
+            case FocusOut:
+                this->setActiveState( 0 );
                 break;
             case ConfigureNotify:
                 if(

@@ -7,6 +7,8 @@
 #include "../../../gfx/model/model_instance/model_instance_ref.h"
 #include "../../../core/core.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
+#include "../../../core/bytetree/dpid_bytetree.h"
+#include "../../../gfx/model/model_instance/model_instance_group/model_instance_group.h"
 
 #include <iostream>
 namespace dragonpoop
@@ -194,7 +196,51 @@ namespace dragonpoop
     //make groups
     void renderer_model_instance::makeGroups( model_instance_writelock *ml )
     {
+        std::list<renderer_model_instance_group *> li, d;
+        std::list<renderer_model_instance_group *>::iterator ii;
+        std::list<model_instance_group *> l;
+        std::list<model_instance_group *>::iterator i;
+        renderer_model_instance_group *pi;
+        model_instance_group *p;
+        dpid_bytetree t;
         
+        //build index
+        this->getGroups( &li );
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            //t.addLeaf( pi->getId(), pi );
+        }
+        
+        //pair intances and sync them (or make them)
+        ml->getGroups( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pi = (renderer_model_instance_group *)t.findLeaf( p->getId() );
+            if( pi )
+            {
+                t.removeLeaf( pi );
+                continue;
+            }
+            this->makeGroup( p );
+        }
+        
+        //find leaves in index not paired with a model_instance
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+           // if( t.findLeaf( pi->getId() ) )
+             //   d.push_back( pi );
+        }
+        
+        //delete them
+        for( ii = d.begin(); ii != d.end(); ++ii )
+        {
+            pi = *ii;
+//            this->removeComponent( pi );
+            //delete pi;
+        }
     }
     
     //run model from task
@@ -210,6 +256,7 @@ namespace dragonpoop
             {
                 this->makeGroups( ml );
                 this->bIsSynced = 1;
+                this->onSync( thd, g, ml );
                 std::cout << "render model instance synce done\r\n";
             }
         }
@@ -220,6 +267,18 @@ namespace dragonpoop
     {
         this->bIsSynced = 0;
         std::cout << "render model instance synce started\r\n";
+    }
+    
+    //handle sync
+    void renderer_model_instance::onSync( dpthread_lock *thd, renderer_model_instance_writelock *g, model_instance_writelock *ml )
+    {
+        
+    }
+    
+    //genertae group
+    renderer_model_instance_group *renderer_model_instance::genGroup( model_instance_group *g )
+    {
+        return 0;
     }
     
 };

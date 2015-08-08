@@ -33,6 +33,7 @@ namespace dragonpoop
         std::list<renderer_model *> models;
         uint64_t t_last_m_ran, t_last_fps;
         float fps, fthiss;
+        bool bActive, bActiveOld;
 
         //run models
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
@@ -79,7 +80,9 @@ namespace dragonpoop
         virtual renderer_model *genModel( model_writelock *ml );
         //returns fps
         float getFps( void );
-
+        //set active state
+        void setActiveState( bool b );
+        
     public:
 
         //ctor

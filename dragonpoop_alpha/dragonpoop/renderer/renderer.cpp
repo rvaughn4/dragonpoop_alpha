@@ -31,8 +31,10 @@ namespace dragonpoop
         this->g = (gfx_ref *)g->getRef();
         this->bDoRun = 1;
         this->bIsRun = 0;
+        this->bActive = 0;
+        this->bActiveOld = 0;
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 16, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 15, 1 );
         tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
     }
@@ -133,6 +135,15 @@ namespace dragonpoop
             this->bIsRun = 1;
         else
             this->bDoRun = 0;
+        
+        if( this->bActive != this->bActiveOld )
+        {
+            this->bActiveOld = this->bActive;
+            if( this->bActive )
+                tskl->setDelay( 14 );
+            else
+                tskl->setDelay( 500 );
+        }
     }
 
     //render
@@ -350,6 +361,12 @@ namespace dragonpoop
     float renderer::getFps( void )
     {
         return this->fps;
+    }
+
+    //set active state
+    void renderer::setActiveState( bool b )
+    {
+        this->bActive = b;
     }
     
 };

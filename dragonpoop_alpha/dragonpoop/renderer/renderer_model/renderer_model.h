@@ -72,6 +72,10 @@ namespace dragonpoop
         void sync( void );
         //run model from task
         void run( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml );
+        //handle sync
+        virtual void onSync( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml );
+        //generate instance
+        virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
         
     public:
         
