@@ -247,9 +247,9 @@ namespace dragonpoop
     }
     
     //create instance
-    model_instance_ref *model_writelock::makeInstance( void )
+    model_instance_ref *model_writelock::makeInstance( dpid id )
     {
-        return this->t->makeInstance( this );
+        return this->t->makeInstance( id, this );
     }
     
     //get instances
@@ -262,6 +262,12 @@ namespace dragonpoop
     void model_writelock::sync( void )
     {
         this->t->sync( this );
+    }
+    
+    //set renderer model
+    void model_writelock::setRenderer( renderer_model *r )
+    {
+        this->t->setRenderer( r );
     }
     
 };

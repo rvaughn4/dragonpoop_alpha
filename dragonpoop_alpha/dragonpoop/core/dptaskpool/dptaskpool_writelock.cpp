@@ -34,5 +34,11 @@ namespace dragonpoop
     {
         this->p->addTask( t );
     }
+    
+    //generate id
+    dpid dptaskpool_writelock::genId( void )
+    {
+        return this->p->genId();
+    }
 
 };

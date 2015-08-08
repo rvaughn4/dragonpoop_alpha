@@ -8,6 +8,7 @@
 #include "gfx_ref.h"
 #include "../core/dpthread/dpthread_lock.h"
 #include "../core/dptaskpool/dptaskpool_writelock.h"
+#include "../core/dptaskpool/dptaskpool_readlock.h"
 #include "../core/dptaskpool/dptaskpool_ref.h"
 #include "../renderer/renderers.h"
 #include "../core/shared_obj/shared_obj_guard.h"
@@ -214,7 +215,7 @@ namespace dragonpoop
     }
     
     //create model using name (if not exists, reuses if does), returns ref in pointer arg
-    bool gfx::createModel( dpthread_lock *thd, const char *mname, model_ref **r )
+    bool gfx::createModel( const char *mname, model_ref **r )
     {
         model_ref *pr;
         model *p;
@@ -237,7 +238,7 @@ namespace dragonpoop
         if( !tp )
             return 0;
         
-        p = new model( this->c, tp, thd->genId() );
+        p = new model( this->c, tp, tp->genId() );
         this->models.push_back( p );
         
         pl = (model_writelock *)o.writeLock( p );
@@ -253,14 +254,14 @@ namespace dragonpoop
     }
     
     //create model and load model file into it
-    bool gfx::loadModel( dpthread_lock *thd, const char *mname, const char *file_name, model_ref **r, model_loader **mldr )
+    bool gfx::loadModel( const char *mname, const char *file_name, model_ref **r, model_loader **mldr )
     {
         model_ref *pr;
         model_loader *l;
         shared_obj_guard o, otp;
         dptaskpool_writelock *tp;
 
-        if( !this->createModel( thd, mname, &pr ) )
+        if( !this->createModel( mname, &pr ) )
             return 0;
         
         tp = (dptaskpool_writelock *)otp.tryWriteLock( this->tpr, 1000 );
@@ -356,7 +357,8 @@ namespace dragonpoop
     {
         model_ref *m;
         model_writelock *ml;
-        shared_obj_guard o;
+        shared_obj_guard o, ot;
+        dptaskpool_readlock *tpl;
         
         m = this->findModel( cname );
         if( !m )
@@ -365,7 +367,11 @@ namespace dragonpoop
         delete m;
         if( !ml )
             return 0;
-        return ml->makeInstance();
+        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100 );
+        if( !tpl )
+            return 0;
+
+        return ml->makeInstance( tpl->genId() );
     }
     
     //get a model instance by id
@@ -373,8 +379,9 @@ namespace dragonpoop
     {
         model_ref *m;
         model_writelock *ml;
-        shared_obj_guard o;
-        
+        shared_obj_guard o, ot;
+        dptaskpool_readlock *tpl;
+
         m = this->findModel( id );
         if( !m )
             return 0;
@@ -382,7 +389,34 @@ namespace dragonpoop
         delete m;
         if( !ml )
             return 0;
-        return ml->makeInstance();
+        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100 );
+        if( !tpl )
+            return 0;
+        
+        return ml->makeInstance( tpl->genId() );
+    }
+
+    //get models
+    void gfx::getModels( std::list<model_ref *> *ll )
+    {
+        std::list<model *> *l;
+        std::list<model *>::iterator i;
+        model *p;
+        model_ref *r;
+        model_writelock *pwl;
+        shared_obj_guard o;
+        
+        l = &this->models;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pwl = (model_writelock *)o.tryWriteLock( p, 1000 );
+            if( !pwl )
+                continue;
+            
+            r = (model_ref *)pwl->getRef();
+            ll->push_back( r );
+        }
     }
     
 };

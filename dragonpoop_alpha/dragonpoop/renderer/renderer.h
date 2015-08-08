@@ -17,6 +17,8 @@ namespace dragonpoop
     class renderer_writelock;
     class gfx_ref;
     class gfx_writelock;
+    class renderer_model;
+    class model_writelock;
 
     class renderer : public shared_obj
     {
@@ -28,7 +30,16 @@ namespace dragonpoop
         core *c;
         gfx_ref *g;
         std::atomic<bool> bDoRun, bIsRun;
+        std::list<renderer_model *> models;
+        uint64_t t_last_m_ran;
 
+        //run models
+        void runModels( dpthread_lock *thd, renderer_writelock *rl );
+        //delete models
+        void deleteModels( void );
+        //render
+        void render( dpthread_lock *thd, renderer_writelock *rl );
+        
     protected:
 
         //generate read lock
@@ -63,6 +74,8 @@ namespace dragonpoop
         virtual void prepareGuiRender( void );
         //flip backbuffer and present scene to screen
         virtual void flipBuffer( void );
+        //generate renderer model
+        virtual renderer_model *genModel( model_writelock *ml );
 
     public:
 

@@ -3,6 +3,7 @@
 #define dragonpoop_dptaskpool_readlock_h
 
 #include "../shared_obj/shared_obj_readlock.h"
+#include "../../core/dpid/dpid.h"
 
 namespace dragonpoop
 {
@@ -27,6 +28,8 @@ namespace dragonpoop
 
         //return thread count
         unsigned int getThreadCount( void );
+        //generate id
+        dpid genId( void );
 
         friend class dptaskpool;
     };

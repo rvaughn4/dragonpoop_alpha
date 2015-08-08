@@ -17,6 +17,10 @@
 #include "model_instance/model_instance.h"
 #include "model_instance/model_instance_ref.h"
 #include "model_instance/model_instance_writelock.h"
+#include "../../renderer/renderer_model/renderer_model.h"
+#include "../../renderer/renderer_model/renderer_model_ref.h"
+#include "../../renderer/renderer_model/renderer_model_readlock.h"
+#include "../../renderer/renderer_model/renderer_model_writelock.h"
 
 namespace dragonpoop
 {
@@ -26,6 +30,7 @@ namespace dragonpoop
     {
         this->c = c;
         this->id = id;
+        this->r = 0;
         this->gtsk = new model_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 1000, 1 );
         tp->addTask( this->tsk );
@@ -38,6 +43,7 @@ namespace dragonpoop
         delete this->gtsk;
         this->deleteInstances();
         this->deleteComponents();
+        delete this->r;
     }
 
     //return core
@@ -489,13 +495,13 @@ namespace dragonpoop
     }
     
     //create instance
-    model_instance_ref *model::makeInstance( model_writelock *ml )
+    model_instance_ref *model::makeInstance( dpid id, model_writelock *ml )
     {
         model_instance *p;
         model_instance_writelock *pl;
         shared_obj_guard o;
         
-        p = new model_instance( ml );
+        p = new model_instance( id, ml );
         if( !p )
             return 0;
         this->instances.push_back( p );
@@ -528,7 +534,33 @@ namespace dragonpoop
     //sync model instance with changes
     void model::sync( model_writelock *ml )
     {
+        shared_obj_guard o;
+        renderer_model_readlock *rl;
+
         this->syncInstances( ml );
+        
+        if( !this->r )
+            return;
+        rl = (renderer_model_readlock *)o.tryReadLock( this->r, 400 );
+        if( !rl )
+            return;
+        rl->sync();
+    }
+
+    //set renderer model
+    void model::setRenderer( renderer_model *r )
+    {
+        shared_obj_guard o;
+        renderer_model_writelock *rl;
+        
+        if( this->r )
+            delete this->r;
+        this->r = 0;
+        
+        rl = (renderer_model_writelock *)o.tryWriteLock( r, 1000 );
+        if( !rl )
+            return;
+        this->r = (renderer_model_ref *)rl->getRef();
     }
     
 };

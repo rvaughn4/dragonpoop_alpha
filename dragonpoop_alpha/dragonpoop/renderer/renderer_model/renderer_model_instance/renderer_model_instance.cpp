@@ -6,19 +6,24 @@
 #include "../../../gfx/model/model_instance/model_instance_writelock.h"
 #include "../../../core/core.h"
 
+#include <iostream>
 namespace dragonpoop
 {
     
     //ctor
     renderer_model_instance::renderer_model_instance( model_instance_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
     {
+        this->id = ml->getId();
         this->makeGroups( ml );
+        std::cout << "render model instance made\r\n";
+        ml->setRenderer( this );
     }
     
     //dtor
     renderer_model_instance::~renderer_model_instance( void )
     {
         this->deleteComponents();
+        std::cout << "render model instance junked\r\n";
     }
     
     //generate read lock
@@ -190,7 +195,7 @@ namespace dragonpoop
     //sync
     void renderer_model_instance::sync( void )
     {
-        
+        std::cout << "render model instance synce started\r\n";
     }
     
 };

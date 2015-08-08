@@ -16,6 +16,7 @@ namespace dragonpoop
     class model_instance_triangle_vertex;
     class dpthread_lock;
     class model_writelock;
+    class renderer_model_instance;
     
     class model_instance_writelock : public shared_obj_writelock
     {
@@ -65,6 +66,8 @@ namespace dragonpoop
         void run( dpthread_lock *thd );
         //sync
         void sync( model_writelock *ml );
+        //set renderer model
+        void setRenderer( renderer_model_instance *r );
         
         friend class model_instance;
     };

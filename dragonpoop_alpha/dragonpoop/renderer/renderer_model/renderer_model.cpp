@@ -12,6 +12,7 @@
 #include "../../gfx/model/model_instance/model_instance_ref.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 
+#include <iostream>
 
 namespace dragonpoop
 {
@@ -22,6 +23,9 @@ namespace dragonpoop
         this->m = (model_ref *)ml->getRef();
         this->syncInstances( ml );
         this->bIsSynced = 1;
+        this->id = ml->getId();
+        ml->setRenderer( this );
+        std::cout << "render model made\r\n";
     }
     
     //dtor
@@ -30,6 +34,7 @@ namespace dragonpoop
         this->deleteInstances();
         this->deleteComponents();
         delete this->m;
+        std::cout << "render model junked\r\n";
     }
     
     //generate read lock
@@ -165,6 +170,7 @@ namespace dragonpoop
     void renderer_model::sync( void )
     {
         this->bIsSynced = 0;
+        std::cout << "render model sync started\r\n";
     }
     
     //delete all components
@@ -240,6 +246,7 @@ namespace dragonpoop
         {
             p = *i;
             pl = (model_instance_writelock *)o.tryWriteLock( p, 100 );
+            delete p;
             if( !pl )
                 continue;
             pi = (renderer_model_instance *)t.findLeaf( pl->getId() );
@@ -251,13 +258,12 @@ namespace dragonpoop
             this->makeInstance( pl );
         }
         
-
         //find leaves in index not paired with a model_instance
         li = &this->instances;
         for( ii = li->begin(); ii != li->end(); ++ii )
         {
             pi = *ii;
-            if( !t.findLeaf( pi->getId() ) )
+            if( t.findLeaf( pi->getId() ) )
                 d.push_back( pi );
         }
         
@@ -273,19 +279,14 @@ namespace dragonpoop
     }
     
     //run model from task
-    void renderer_model::run( dpthread_lock *thd, renderer_model_writelock *g )
+    void renderer_model::run( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml )
     {
-        model_writelock *ml;
-        shared_obj_guard o;
-        
+       
         if( !this->bIsSynced )
         {
-            ml = (model_writelock *)o.tryWriteLock( this->m, 10 );
-            if( ml )
-            {
-                this->syncInstances( ml );
-                this->bIsSynced = 1;
-            }
+            this->syncInstances( ml );
+            this->bIsSynced = 1;
+            std::cout << "render model sync done\r\n";
         }
         
     }

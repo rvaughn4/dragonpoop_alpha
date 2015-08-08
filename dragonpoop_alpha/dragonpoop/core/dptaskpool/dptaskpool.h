@@ -3,6 +3,7 @@
 #define dragonpoop_dptaskpool_h
 
 #include "../shared_obj/shared_obj.h"
+#include "../../core/dpid/dpid.h"
 
 namespace dragonpoop
 {
@@ -10,6 +11,7 @@ namespace dragonpoop
     class dptask_ref;
     class dpthread;
     class dptask;
+    class dptaskpool_writelock;
 
     class dptaskpool : public shared_obj
     {
@@ -55,6 +57,8 @@ namespace dragonpoop
         void pushThread( dpthread *t );
         //pop thread from pool
         dpthread *popThread( void );
+        //generate id
+        dpid genId( void );
 
     public:
 

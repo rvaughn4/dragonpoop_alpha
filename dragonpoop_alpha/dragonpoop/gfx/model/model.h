@@ -24,6 +24,8 @@ namespace dragonpoop
     class model_group_triangle;
     class model_instance;
     class model_instance_ref;
+    class renderer_model_ref;
+    class renderer_model;
 
     class model : public shared_obj
     {
@@ -43,6 +45,7 @@ namespace dragonpoop
             //model_component_tree_bytypeid bytypeowner;
         } comps;
         std::list<model_instance *> instances;
+        renderer_model_ref *r;
         
         //delete all components
         void deleteComponents( void );
@@ -138,11 +141,13 @@ namespace dragonpoop
         //get all group triangles belonging to a group or triangle id
         void getGroupTriangles( std::list<model_group_triangle *> *l, dpid pid );
         //create instance
-        model_instance_ref *makeInstance( model_writelock *ml );
+        model_instance_ref *makeInstance( dpid id, model_writelock *ml );
         //get instances
         void getInstances( std::list<model_instance_ref *> *l );
         //sync model instance with changes
         void sync( model_writelock *ml );
+        //set renderer model
+        void setRenderer( renderer_model *r );
         
     public:
 

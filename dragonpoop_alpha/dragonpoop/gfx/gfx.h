@@ -57,9 +57,9 @@ namespace dragonpoop
         //run gfx from task
         void run( dpthread_lock *thd, gfx_writelock *g );
         //create model using name (if not exists, reuses if does), returns ref in pointer arg
-        bool createModel( dpthread_lock *thd, const char *mname, model_ref **r );
+        bool createModel( const char *mname, model_ref **r );
         //create model and load model file into it
-        bool loadModel( dpthread_lock *thd, const char *mname, const char *file_name, model_ref **r, model_loader **mldr );
+        bool loadModel( const char *mname, const char *file_name, model_ref **r, model_loader **mldr );
         //find model by name
         model_ref *findModel( const char *cname );
         //find model by id
@@ -68,6 +68,8 @@ namespace dragonpoop
         model_instance_ref *makeModelInstance( const char *cname );
         //get a model instance by id
         model_instance_ref *makeModelInstance( dpid id );
+        //get models
+        void getModels( std::list<model_ref *> *l );
 
     public:
 

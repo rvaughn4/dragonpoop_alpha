@@ -113,4 +113,10 @@ namespace dragonpoop
         this->t->sync( ml );
     }
 
+    //set renderer model
+    void model_instance_writelock::setRenderer( renderer_model_instance *r )
+    {
+        this->t->setRenderer( r );
+    }
+
 };

@@ -11,14 +11,20 @@
 #include "../model_writelock.h"
 #include "../model_ref.h"
 #include "../../../core/bytetree/dpid_bytetree.h"
+#include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance.h"
+#include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance_ref.h"
+#include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance_readlock.h"
+#include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance_writelock.h"
+#include "../../../core/shared_obj/shared_obj_guard.h"
 
 namespace dragonpoop
 {
     
     //ctor
-    model_instance::model_instance( model_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
+    model_instance::model_instance( dpid id, model_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
     {
-        this->id = ml->getId();
+        this->r = 0;
+        this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
         this->sync( ml );
@@ -29,6 +35,7 @@ namespace dragonpoop
     {
         this->deleteComponents();
         delete this->m;
+        delete this->r;
     }
     
     //return core
@@ -375,9 +382,35 @@ namespace dragonpoop
     //sync
     void model_instance::sync( model_writelock *ml )
     {
+        shared_obj_guard o;
+        renderer_model_instance_readlock *rl;
+
         this->makeVertexes( ml );
         this->makeTriangleVertexes( ml );
         this->makeGroups( ml );
+        
+        if( !this->r )
+            return;
+        rl = (renderer_model_instance_readlock *)o.tryReadLock( this->r, 400 );
+        if( !rl )
+            return;
+        rl->sync();
     }
  
+    //set renderer model
+    void model_instance::setRenderer( renderer_model_instance *r )
+    {
+        shared_obj_guard o;
+        renderer_model_instance_writelock *rl;
+        
+        if( this->r )
+            delete this->r;
+        this->r = 0;
+        
+        rl = (renderer_model_instance_writelock *)o.tryWriteLock( r, 1000 );
+        if( !rl )
+            return;
+        this->r = (renderer_model_instance_ref *)rl->getRef();
+    }
+    
 };

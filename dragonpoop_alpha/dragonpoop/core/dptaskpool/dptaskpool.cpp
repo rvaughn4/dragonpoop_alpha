@@ -261,4 +261,23 @@ namespace dragonpoop
         return 0;
     }
 
+    //generate id
+    dpid dptaskpool::genId( void )
+    {
+        dpthread_lock *thd;
+        dpthread *t;
+        dpid r;
+        
+        if( this->threads.cnt < 1 )
+            return r;
+        t = this->threads.buffer[ 0 ];
+        thd = t->lock();
+        if( !thd )
+            return r;
+        r = thd->genId();
+        
+        delete thd;
+        return r;
+    }
+    
 };

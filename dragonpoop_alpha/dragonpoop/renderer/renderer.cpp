@@ -15,6 +15,11 @@
 #include "../gfx/gfx.h"
 #include <thread>
 #include <random>
+#include "renderer_model/renderer_model.h"
+#include "renderer_model/renderer_model_writelock.h"
+#include "../core/bytetree/dpid_bytetree.h"
+#include "../gfx/model/model_ref.h"
+#include "../gfx/model/model_writelock.h"
 
 namespace dragonpoop
 {
@@ -37,6 +42,7 @@ namespace dragonpoop
         this->_kill();
         delete this->tsk;
         delete this->gtsk;
+        this->deleteModels();
         delete this->g;
     }
 
@@ -95,7 +101,6 @@ namespace dragonpoop
     //run renderer from task
     void renderer::run( dptask_writelock *tskl, dpthread_lock *thd, renderer_writelock *r )
     {
-        unsigned int w, h;
 
         if( this->bIsRun )
         {
@@ -111,31 +116,8 @@ namespace dragonpoop
                 this->bDoRun = 0;
             else
             {
-                w = this->getWidth();
-                h = this->getHeight();
-                
-                static float scf, scfd;
-                
-                if( scfd != 1 && scfd != -1 )
-                    scfd = 1;
-                if( scf > 1 )
-                {
-                    scf = 1;
-                    scfd = -1;
-                }
-                if( scf < 0 )
-                {
-                    scf = 0;
-                    scfd = 1;
-                }
-                scf += scfd * 0.01f;
-
-                this->setViewport( w, h );
-                this->clearScreen( 0.75f * scf, 0.5f, 1.0f * (1.0f - scf ) );
-                this->prepareWorldRender( w, h );
-
-                this->prepareGuiRender();
-                this->flipBuffer();
+                this->runModels( thd, r );
+                this->render( thd, r );
             }
             return;
         }
@@ -152,6 +134,38 @@ namespace dragonpoop
             this->bDoRun = 0;
     }
 
+    //render
+    void renderer::render( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        unsigned int w, h;
+        
+        w = this->getWidth();
+        h = this->getHeight();
+        
+        static float scf, scfd;
+        
+        if( scfd != 1 && scfd != -1 )
+            scfd = 1;
+        if( scf > 1 )
+        {
+            scf = 1;
+            scfd = -1;
+        }
+        if( scf < 0 )
+        {
+            scf = 0;
+            scfd = 1;
+        }
+        scf += scfd * 0.01f;
+        
+        this->setViewport( w, h );
+        this->clearScreen( 0.75f * scf, 0.5f, 1.0f * (1.0f - scf ) );
+        this->prepareWorldRender( w, h );
+        
+        this->prepareGuiRender();
+        this->flipBuffer();
+    }
+ 
     //init graphics api
     bool renderer::initApi( void )
     {
@@ -211,4 +225,111 @@ namespace dragonpoop
 
     }
 
+    //run models
+    void renderer::runModels( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        std::list<renderer_model *> *l, d;
+        std::list<renderer_model *>::iterator i;
+        renderer_model *p;
+        dpid_bytetree t;
+        std::list<model_ref *> li;
+        std::list<model_ref *>::iterator ii;
+        model_ref *pi;
+        model_writelock *pl;
+        renderer_model_writelock *ppl;
+        shared_obj_guard o, og;
+        gfx_readlock *gl;
+        uint64_t tr;
+        
+        tr = thd->getTicks();
+        if( tr - this->t_last_m_ran < 1000 )
+            return;
+        this->t_last_m_ran = tr;
+        
+        gl = (gfx_readlock *)og.tryReadLock( this->g, 100 );
+        if( !gl )
+            return;
+        
+        //build id index
+        l = &this->models;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            t.addLeaf( p->getId(), p );
+        }
+        
+        //sync models and create if not exist
+        gl->getModels( &li );
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            pl = (model_writelock *)o.tryWriteLock( pi, 100 );
+            delete pi;
+            if( !pl )
+                continue;
+            p = (renderer_model *)t.findLeaf( pl->getId() );
+            if( !p )
+            {
+                p = this->genModel( pl );
+                if( p )
+                    this->models.push_back( p );
+            }
+            t.removeLeaf( p );
+            if( !p )
+                continue;
+            ppl = (renderer_model_writelock *)og.tryWriteLock( p, 100 );
+            if( !ppl )
+                continue;
+            ppl->run( thd, pl );
+        }
+        o.unlock();
+        og.unlock();
+        
+        l = &this->models;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( t.findLeaf( p->getId() ) )
+                d.push_back( p );
+        }
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->models.remove( p );
+            delete p;
+        }
+        
+    }
+    
+    //delete models
+    void renderer::deleteModels( void )
+    {
+        std::list<renderer_model *> *l, d;
+        std::list<renderer_model *>::iterator i;
+        renderer_model *p;
+        
+        l = &this->models;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+
+    //generate renderer model
+    renderer_model *renderer::genModel( model_writelock *ml )
+    {
+        return new renderer_model( ml );
+    }
+    
 };

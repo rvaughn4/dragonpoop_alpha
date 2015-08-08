@@ -3,6 +3,7 @@
 #define dragonpoop_dptaskpool_writelock_h
 
 #include "../shared_obj/shared_obj_writelock.h"
+#include "../../core/dpid/dpid.h"
 
 namespace dragonpoop
 {
@@ -33,6 +34,8 @@ namespace dragonpoop
         void addTask( dptask *t );
         //add task, will create ref so caller retains original
         void addTask( dptask_ref *t );
+        //generate id
+        dpid genId( void );
 
         friend class dptaskpool;
         friend class dpthread;

@@ -23,4 +23,10 @@ namespace dragonpoop
         return this->p->getThreadCount();
     }
 
+    //generate id
+    dpid dptaskpool_readlock::genId( void )
+    {
+        return this->p->genId();
+    }
+    
 };

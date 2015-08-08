@@ -71,4 +71,10 @@ namespace dragonpoop
         this->t->sync();
     }
 
+    //run model from task
+    void renderer_model_writelock::run( dpthread_lock *thd, model_writelock *ml )
+    {
+        this->t->run( thd, this, ml );
+    }
+    
 };

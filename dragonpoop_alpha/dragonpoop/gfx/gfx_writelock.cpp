@@ -42,15 +42,15 @@ namespace dragonpoop
     }
     
     //create model using name (if not exists, reuses if does), returns ref in pointer arg
-    bool gfx_writelock::createModel( dpthread_lock *thd, const char *mname, model_ref **r )
+    bool gfx_writelock::createModel( const char *mname, model_ref **r )
     {
-        return this->t->createModel( thd, mname, r );
+        return this->t->createModel( mname, r );
     }
     
     //create model and load model file into it
-    bool gfx_writelock::loadModel( dpthread_lock *thd, const char *mname, const char *file_name, model_ref **r, model_loader **mldr )
+    bool gfx_writelock::loadModel( const char *mname, const char *file_name, model_ref **r, model_loader **mldr )
     {
-        return this->t->loadModel( thd, mname, file_name, r, mldr );
+        return this->t->loadModel( mname, file_name, r, mldr );
     }
     
     //find model by name
@@ -75,6 +75,12 @@ namespace dragonpoop
     model_instance_ref *gfx_writelock::makeModelInstance( dpid id )
     {
         return this->t->makeModelInstance( id );
+    }
+    
+    //get models
+    void gfx_writelock::getModels( std::list<model_ref *> *l )
+    {
+        this->t->getModels( l );
     }
     
 };

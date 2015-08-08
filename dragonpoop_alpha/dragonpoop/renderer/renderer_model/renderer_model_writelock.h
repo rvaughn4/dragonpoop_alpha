@@ -14,6 +14,8 @@ namespace dragonpoop
     class renderer_model_group;
     class model_instance_writelock;
     class renderer_model_instance_ref;
+    class dpthread_lock;
+    class model_writelock;
     
     class renderer_model_writelock : public shared_obj_writelock
     {
@@ -49,6 +51,8 @@ namespace dragonpoop
         void makeInstance( model_instance_writelock *ml );
         //sync model instance with changes
         void sync( void );
+        //run model from task
+        void run( dpthread_lock *thd, model_writelock *ml );
         
         friend class renderer_model;
     };

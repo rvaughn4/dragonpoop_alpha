@@ -24,6 +24,8 @@ namespace dragonpoop
     class model_vertex;
     class model_group;
     class model_triangle_vertex;
+    class renderer_model_instance;
+    class renderer_model_instance_ref;
     
     class model_instance : public shared_obj
     {
@@ -37,6 +39,7 @@ namespace dragonpoop
         {
             std::list<model_component *> lst;
         } comps;
+        renderer_model_instance_ref *r;
         
         //delete all components
         void deleteComponents( void );
@@ -99,11 +102,13 @@ namespace dragonpoop
         void makeGroups( model_writelock *ml );
         //sync
         void sync( model_writelock *ml );
+        //set renderer model
+        void setRenderer( renderer_model_instance *r );
         
     public:
         
         //ctor
-        model_instance( model_writelock *ml );
+        model_instance( dpid id, model_writelock *ml );
         //dtor
         virtual ~model_instance( void );
         //return core

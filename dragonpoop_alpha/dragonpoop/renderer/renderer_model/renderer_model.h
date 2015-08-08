@@ -51,8 +51,6 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
-        //get id
-        dpid getId( void );
         //add component to list and trees
         void addComponent( model_component *c );
         //find component by type and id
@@ -70,7 +68,7 @@ namespace dragonpoop
         //sync model instance with changes
         void sync( void );
         //run model from task
-        void run( dpthread_lock *thd, renderer_model_writelock *g );
+        void run( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml );
         
     public:
         
@@ -78,6 +76,8 @@ namespace dragonpoop
         renderer_model( model_writelock *ml );
         //dtor
         virtual ~renderer_model( void );
+        //get id
+        dpid getId( void );
         
         friend class renderer_model_readlock;
         friend class renderer_model_writelock;

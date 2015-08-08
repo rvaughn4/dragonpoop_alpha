@@ -36,6 +36,8 @@ namespace dragonpoop
         model_ref *findModel( const char *cname );
         //find model by id
         model_ref *findModel( dpid id );
+        //get models
+        void getModels( std::list<model_ref *> *l );
         
         friend class gfx;
     };
