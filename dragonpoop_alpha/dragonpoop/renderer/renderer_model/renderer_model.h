@@ -20,26 +20,28 @@ namespace dragonpoop
     class renderer_model_instance_ref;
     class model_instance_writelock;
     class model_writelock;
+    class model_ref;
     
     class renderer_model : public shared_obj
     {
         
     private:
         
-        core *c;
         dpid id;
         struct
         {
             std::list<model_component *> lst;
         } comps;
         std::list<renderer_model_instance *> instances;
+        std::atomic<bool> bIsSynced;
+        model_ref *m;
         
         //delete all components
         void deleteComponents( void );
         //delete instances
         void deleteInstances( void );
         //sync instances
-        void syncInstances( renderer_model_writelock *g );
+        void syncInstances( model_writelock *g );
         
     protected:
         
@@ -64,9 +66,11 @@ namespace dragonpoop
         //remove component
         void removeComponent( model_component *c );
         //create instance
-        renderer_model_instance_ref *makeInstance( model_instance_writelock *ml, renderer_model_writelock *rl );
+        void makeInstance( model_instance_writelock *ml );
         //sync model instance with changes
         void sync( void );
+        //run model from task
+        void run( dpthread_lock *thd, renderer_model_writelock *g );
         
     public:
         

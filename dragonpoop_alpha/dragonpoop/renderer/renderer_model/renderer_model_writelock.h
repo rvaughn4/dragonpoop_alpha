@@ -46,7 +46,7 @@ namespace dragonpoop
         //remove component
         void removeComponent( model_component *c );
         //create instance
-        renderer_model_instance_ref *makeInstance( model_instance_writelock *ml );
+        void makeInstance( model_instance_writelock *ml );
         //sync model instance with changes
         void sync( void );
         

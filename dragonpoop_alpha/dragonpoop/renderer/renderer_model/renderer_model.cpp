@@ -4,7 +4,14 @@
 #include "renderer_model_readlock.h"
 #include "renderer_model_writelock.h"
 #include "../../gfx/model/model_writelock.h"
+#include "../../gfx/model/model_ref.h"
 #include "../../core/core.h"
+#include "renderer_model_instance/renderer_model_instance.h"
+#include "../../core/bytetree/dpid_bytetree.h"
+#include "../../gfx/model/model_instance/model_instance_writelock.h"
+#include "../../gfx/model/model_instance/model_instance_ref.h"
+#include "../../core/shared_obj/shared_obj_guard.h"
+
 
 namespace dragonpoop
 {
@@ -12,13 +19,17 @@ namespace dragonpoop
     //ctor
     renderer_model::renderer_model( model_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
     {
-        
+        this->m = (model_ref *)ml->getRef();
+        this->syncInstances( ml );
+        this->bIsSynced = 1;
     }
     
     //dtor
     renderer_model::~renderer_model( void )
     {
-        
+        this->deleteInstances();
+        this->deleteComponents();
+        delete this->m;
     }
     
     //generate read lock
@@ -141,15 +152,19 @@ namespace dragonpoop
     }
     
     //create instance
-    renderer_model_instance_ref *renderer_model::makeInstance( model_instance_writelock *ml, renderer_model_writelock *rl )
+    void renderer_model::makeInstance( model_instance_writelock *ml )
     {
-        return 0;
+        renderer_model_instance *i;
+        
+        i = new renderer_model_instance( ml );
+        
+        this->instances.push_back( i );
     }
     
     //sync model instance with changes
     void renderer_model::sync( void )
     {
-        
+        this->bIsSynced = 0;
     }
     
     //delete all components
@@ -178,12 +193,100 @@ namespace dragonpoop
     //delete instances
     void renderer_model::deleteInstances( void )
     {
+        std::list<renderer_model_instance *> *l, d;
+        std::list<renderer_model_instance *>::iterator i;
+        renderer_model_instance *p;
         
+        l = &this->instances;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
     }
     
     //sync instances
-    void renderer_model::syncInstances( renderer_model_writelock *g )
+    void renderer_model::syncInstances( model_writelock *g )
     {
+        std::list<renderer_model_instance *> *li, d;
+        std::list<renderer_model_instance *>::iterator ii;
+        std::list<model_instance_ref *> l;
+        std::list<model_instance_ref *>::iterator i;
+        renderer_model_instance *pi;
+        model_instance_ref *p;
+        dpid_bytetree t;
+        shared_obj_guard o;
+        model_instance_writelock *pl;
+        
+        //build index
+        li = &this->instances;
+        for( ii = li->begin(); ii != li->end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
+        
+        //pair intances and sync them (or make them)
+        g->getInstances( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pl = (model_instance_writelock *)o.tryWriteLock( p, 100 );
+            if( !pl )
+                continue;
+            pi = (renderer_model_instance *)t.findLeaf( pl->getId() );
+            if( pi )
+            {
+                t.removeLeaf( pi );
+                continue;
+            }
+            this->makeInstance( pl );
+        }
+        
+
+        //find leaves in index not paired with a model_instance
+        li = &this->instances;
+        for( ii = li->begin(); ii != li->end(); ++ii )
+        {
+            pi = *ii;
+            if( !t.findLeaf( pi->getId() ) )
+                d.push_back( pi );
+        }
+        
+        //delete them
+        li = &d;
+        for( ii = li->begin(); ii != li->end(); ++ii )
+        {
+            pi = *ii;
+            this->instances.remove( pi );
+            delete pi;
+        }
+        
+    }
+    
+    //run model from task
+    void renderer_model::run( dpthread_lock *thd, renderer_model_writelock *g )
+    {
+        model_writelock *ml;
+        shared_obj_guard o;
+        
+        if( !this->bIsSynced )
+        {
+            ml = (model_writelock *)o.tryWriteLock( this->m, 10 );
+            if( ml )
+            {
+                this->syncInstances( ml );
+                this->bIsSynced = 1;
+            }
+        }
         
     }
     

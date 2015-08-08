@@ -60,9 +60,9 @@ namespace dragonpoop
     }
     
     //create instance
-    renderer_model_instance_ref *renderer_model_writelock::makeInstance( model_instance_writelock *ml )
+    void renderer_model_writelock::makeInstance( model_instance_writelock *ml )
     {
-        return this->t->makeInstance( ml, this );
+        this->t->makeInstance( ml );
     }
     
     //sync model instance with changes

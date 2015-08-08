@@ -252,6 +252,12 @@ namespace dragonpoop
         return this->t->makeInstance( this );
     }
     
+    //get instances
+    void model_writelock::getInstances( std::list<model_instance_ref *> *l )
+    {
+        this->t->getInstances( l );
+    }
+
     //sync model instance with changes
     void model_writelock::sync( void )
     {

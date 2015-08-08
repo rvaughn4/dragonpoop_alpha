@@ -505,6 +505,26 @@ namespace dragonpoop
         return (model_instance_ref *)pl->getRef();
     }
     
+    //get instances
+    void model::getInstances( std::list<model_instance_ref *> *ll )
+    {
+        std::list<model_instance *> *l;
+        std::list<model_instance *>::iterator i;
+        model_instance *p;
+        model_instance_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->instances;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (model_instance_writelock *)o.tryWriteLock( p, 100 );
+            if( !pl )
+                continue;
+            ll->push_back( (model_instance_ref *)pl->getRef() );
+        }
+    }
+    
     //sync model instance with changes
     void model::sync( model_writelock *ml )
     {
