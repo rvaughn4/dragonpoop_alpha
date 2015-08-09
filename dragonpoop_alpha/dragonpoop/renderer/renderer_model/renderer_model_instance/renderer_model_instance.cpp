@@ -9,6 +9,7 @@
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../gfx/model/model_instance/model_instance_group/model_instance_group.h"
+#include "renderer_model_group_instance/renderer_model_group_instance.h"
 
 #include <iostream>
 namespace dragonpoop
@@ -19,8 +20,7 @@ namespace dragonpoop
     {
         this->m = (model_instance_ref *)ml->getRef();
         this->id = ml->getId();
-        this->makeGroups( ml );
-        this->bIsSynced = 1;
+        this->bIsSynced = 0;
         std::cout << "render model instance made\r\n";
         ml->setRenderer( this );
     }
@@ -178,7 +178,12 @@ namespace dragonpoop
     //add group
     renderer_model_instance_group *renderer_model_instance::makeGroup( model_instance_group *g )
     {
-        return 0;
+        renderer_model_instance_group *c;
+        
+        c = this->genGroup( g );
+        this->addComponent( c );
+        
+        return c;
     }
     
     //find group
@@ -209,7 +214,7 @@ namespace dragonpoop
         for( ii = li.begin(); ii != li.end(); ++ii )
         {
             pi = *ii;
-            //t.addLeaf( pi->getId(), pi );
+            t.addLeaf( pi->getId(), pi );
         }
         
         //pair intances and sync them (or make them)
@@ -230,16 +235,16 @@ namespace dragonpoop
         for( ii = li.begin(); ii != li.end(); ++ii )
         {
             pi = *ii;
-           // if( t.findLeaf( pi->getId() ) )
-             //   d.push_back( pi );
+            if( t.findLeaf( pi->getId() ) )
+                d.push_back( pi );
         }
         
         //delete them
         for( ii = d.begin(); ii != d.end(); ++ii )
         {
             pi = *ii;
-//            this->removeComponent( pi );
-            //delete pi;
+            this->removeComponent( pi );
+            delete pi;
         }
     }
     
@@ -278,7 +283,7 @@ namespace dragonpoop
     //genertae group
     renderer_model_instance_group *renderer_model_instance::genGroup( model_instance_group *g )
     {
-        return 0;
+        return new renderer_model_instance_group( g );
     }
     
 };

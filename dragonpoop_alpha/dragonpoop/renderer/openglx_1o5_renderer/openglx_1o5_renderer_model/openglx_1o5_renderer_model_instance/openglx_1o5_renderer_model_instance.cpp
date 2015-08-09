@@ -47,7 +47,7 @@ namespace dragonpoop
     //genertae group
     renderer_model_instance_group *openglx_1o5_renderer_model_instance::genGroup( model_instance_group *g )
     {
-        return 0;
+        return this->renderer_model_instance::genGroup( g );
     }
     
 };
