@@ -11,7 +11,6 @@
 #include "../../../gfx/model/model_instance/model_instance_group/model_instance_group.h"
 #include "renderer_model_group_instance/renderer_model_group_instance.h"
 
-#include <iostream>
 namespace dragonpoop
 {
     
@@ -21,7 +20,6 @@ namespace dragonpoop
         this->m = (model_instance_ref *)ml->getRef();
         this->id = ml->getId();
         this->bIsSynced = 0;
-        std::cout << "render model instance made\r\n";
         ml->setRenderer( this );
     }
     
@@ -30,7 +28,6 @@ namespace dragonpoop
     {
         this->deleteComponents();
         delete this->m;
-        std::cout << "render model instance junked\r\n";
     }
     
     //generate read lock
@@ -264,7 +261,6 @@ namespace dragonpoop
                 this->makeGroups( ml );
                 this->bIsSynced = 1;
                 this->onSync( thd, g, ml );
-                std::cout << "render model instance synce done\r\n";
             }
         }
     }
@@ -273,7 +269,6 @@ namespace dragonpoop
     void renderer_model_instance::sync( void )
     {
         this->bIsSynced = 0;
-        std::cout << "render model instance synce started\r\n";
     }
     
     //handle sync

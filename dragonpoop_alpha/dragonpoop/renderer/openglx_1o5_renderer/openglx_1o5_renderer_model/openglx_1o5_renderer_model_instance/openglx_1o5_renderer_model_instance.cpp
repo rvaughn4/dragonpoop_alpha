@@ -5,7 +5,6 @@
 #include "openglx_1o5_renderer_model_instance_writelock.h"
 #include "openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
 
-#include <iostream>
 namespace dragonpoop
 {
     
@@ -42,7 +41,6 @@ namespace dragonpoop
     //handle sync
     void openglx_1o5_renderer_model_instance::onSync( dpthread_lock *thd, renderer_model_instance_writelock *g, model_instance_writelock *ml )
     {
-        std::cout << "gl model instance\r\n";
     }
     
     //genertae group

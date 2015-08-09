@@ -14,8 +14,6 @@
 #include "../../core/shared_obj/shared_obj_guard.h"
 #include "../../core/dpthread/dpthread_lock.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
     
@@ -26,7 +24,6 @@ namespace dragonpoop
         this->bIsSynced = 0;
         this->id = ml->getId();
         ml->setRenderer( this );
-        std::cout << "render model made\r\n";
     }
     
     //dtor
@@ -35,7 +32,6 @@ namespace dragonpoop
         this->deleteInstances();
         this->deleteComponents();
         delete this->m;
-        std::cout << "render model junked\r\n";
     }
     
     //generate read lock
@@ -171,7 +167,6 @@ namespace dragonpoop
     void renderer_model::sync( void )
     {
         this->bIsSynced = 0;
-        std::cout << "render model sync started\r\n";
     }
     
     //delete all components
@@ -312,7 +307,6 @@ namespace dragonpoop
             this->syncInstances( ml );
             this->onSync( thd, g, ml );
             this->bIsSynced = 1;
-            std::cout << "render model sync done\r\n";
         }
         
         if( t - this->t_last_i_ran > 1000 )
