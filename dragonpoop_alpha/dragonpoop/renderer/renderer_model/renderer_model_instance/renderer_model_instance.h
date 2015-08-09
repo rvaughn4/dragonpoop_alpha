@@ -57,7 +57,7 @@ namespace dragonpoop
         //remove component
         void removeComponent( model_component *c );
         //add group
-        renderer_model_instance_group *makeGroup( model_instance_group *g );
+        renderer_model_instance_group *makeGroup( model_instance_writelock *ml, model_instance_group *g );
         //find group
         renderer_model_instance_group *findGroup( dpid id );
         //get groups
@@ -71,7 +71,7 @@ namespace dragonpoop
         //handle sync
         virtual void onSync( dpthread_lock *thd, renderer_model_instance_writelock *g, model_instance_writelock *ml );
         //genertae group
-        virtual renderer_model_instance_group *genGroup( model_instance_group *g );
+        virtual renderer_model_instance_group *genGroup( model_instance_writelock *ml, model_instance_group *g );
         
     public:
         

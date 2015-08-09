@@ -351,7 +351,7 @@ namespace dragonpoop
         };
 
         p = (void *)this;
-        r.addr = (uint32_t)pi;
+        r.addr = (uint16_t)pi;
         this->idctr++;
         r.counter = this->idctr;
         r.epoch = (uint32_t)this->epoch;

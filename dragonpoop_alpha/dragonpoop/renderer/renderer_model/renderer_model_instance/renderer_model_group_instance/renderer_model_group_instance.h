@@ -8,6 +8,7 @@ namespace dragonpoop
 {
  
     class model_instance_group;
+    class model_instance_writelock;
     
     class renderer_model_instance_group : public model_component
     {
@@ -21,13 +22,15 @@ namespace dragonpoop
     public:
         
         //ctor
-        renderer_model_instance_group( model_instance_group *g );
+        renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g );
         //dtor
         virtual ~renderer_model_instance_group( void );
         //set material id
         void setMaterialId( dpid id );
         //get material id
         dpid getMaterialId( void );
+        //sync with group
+        virtual void sync( model_instance_writelock *ml, model_instance_group *g );
         
     };
     

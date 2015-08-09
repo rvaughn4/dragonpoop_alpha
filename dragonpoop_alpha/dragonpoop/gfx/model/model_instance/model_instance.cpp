@@ -18,6 +18,7 @@
 #include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance_writelock.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../../dpvertex/dpvertex.h"
+#include "../../dpvertex/dpvertexindex_buffer.h"
 
 namespace dragonpoop
 {
@@ -589,6 +590,8 @@ namespace dragonpoop
         tv->getTexCoord1( &vt.start.texcoords[ 1 ] );
 
         vt.end = vt.start;
+        
+        vb->addVertex( &vt, p->getId() );
     }
     
 };

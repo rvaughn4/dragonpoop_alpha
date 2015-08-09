@@ -176,12 +176,13 @@ namespace dragonpoop
     }
     
     //add group
-    renderer_model_instance_group *renderer_model_instance::makeGroup( model_instance_group *g )
+    renderer_model_instance_group *renderer_model_instance::makeGroup( model_instance_writelock *ml, model_instance_group *g )
     {
         renderer_model_instance_group *c;
         
-        c = this->genGroup( g );
+        c = this->genGroup( ml, g );
         this->addComponent( c );
+        c->sync( ml, g );
         
         return c;
     }
@@ -225,10 +226,11 @@ namespace dragonpoop
             pi = (renderer_model_instance_group *)t.findLeaf( p->getId() );
             if( pi )
             {
+                pi->sync( ml, p );
                 t.removeLeaf( pi );
                 continue;
             }
-            this->makeGroup( p );
+            this->makeGroup( ml, p );
         }
         
         //find leaves in index not paired with a model_instance
@@ -281,9 +283,9 @@ namespace dragonpoop
     }
     
     //genertae group
-    renderer_model_instance_group *renderer_model_instance::genGroup( model_instance_group *g )
+    renderer_model_instance_group *renderer_model_instance::genGroup( model_instance_writelock *ml, model_instance_group *g )
     {
-        return new renderer_model_instance_group( g );
+        return new renderer_model_instance_group( ml, g );
     }
     
 };

@@ -6,7 +6,7 @@ namespace dragonpoop
 {
     
     //ctor
-    renderer_model_instance_group::renderer_model_instance_group( model_instance_group *g ) : model_component( g->getId(), model_component_type_group )
+    renderer_model_instance_group::renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g ) : model_component( g->getId(), model_component_type_group )
     {
         this->m_id = g->getMaterialId();
     }
@@ -29,4 +29,10 @@ namespace dragonpoop
         return this->m_id;
     }
 
+    //sync with group
+    void renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g )
+    {
+        
+    }
+    
 };

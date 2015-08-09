@@ -12,9 +12,9 @@ namespace dragonpoop
     {
         uint32_t ticks;
         uint32_t epoch;
-        uint32_t counter;
-        uint32_t addr;
-        uint32_t randno;
+        uint16_t counter;
+        uint16_t addr;
+        uint16_t randno;
     };
 #pragma pack()
 

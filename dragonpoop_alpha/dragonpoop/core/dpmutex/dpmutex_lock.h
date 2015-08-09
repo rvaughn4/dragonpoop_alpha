@@ -2,6 +2,7 @@
 #ifndef dragonpoop_dpmutex_lock_h
 #define dragonpoop_dpmutex_lock_h
 
+#include <atomic>
 namespace dragonpoop
 {
 
@@ -9,6 +10,7 @@ namespace dragonpoop
     class dpmutex_readlock;
     class dpmutex_writelock;
 
+    static std::atomic<int> sorctr;
     class dpmutex_lock
     {
 

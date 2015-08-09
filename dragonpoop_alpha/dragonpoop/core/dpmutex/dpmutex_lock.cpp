@@ -2,6 +2,7 @@
 #include "dpmutex_lock.h"
 #include "dpmutex.h"
 #include "dpmutex_master.h"
+#include <iostream>
 
 namespace dragonpoop
 {
@@ -10,11 +11,15 @@ namespace dragonpoop
     dpmutex_lock::dpmutex_lock( dpmutex *m )
     {
         this->m = m;
+        sorctr++;
+        std::cout << sorctr << "+\r\n";
     }
 
     //dtor
     dpmutex_lock::~dpmutex_lock( void )
     {
+        std::cout << sorctr << "-\r\n";
+        sorctr--;
 
     }
 

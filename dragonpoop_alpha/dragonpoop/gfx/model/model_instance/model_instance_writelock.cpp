@@ -118,5 +118,11 @@ namespace dragonpoop
     {
         this->t->setRenderer( r );
     }
+    
+    //populate vertex buffer for rendering
+    void model_instance_writelock::fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb )
+    {
+        this->t->fillVertexBuffer( group_id, vb );
+    }
 
 };

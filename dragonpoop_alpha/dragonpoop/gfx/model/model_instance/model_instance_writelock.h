@@ -17,6 +17,7 @@ namespace dragonpoop
     class dpthread_lock;
     class model_writelock;
     class renderer_model_instance;
+    class dpvertexindex_buffer;
     
     class model_instance_writelock : public shared_obj_writelock
     {
@@ -68,7 +69,9 @@ namespace dragonpoop
         void sync( model_writelock *ml );
         //set renderer model
         void setRenderer( renderer_model_instance *r );
-        
+        //populate vertex buffer for rendering
+        void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
+
         friend class model_instance;
     };
     

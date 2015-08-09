@@ -3,7 +3,7 @@
 
 namespace dragonpoop
 {
-
+    
     //ctor
     shared_obj_ref::shared_obj_ref( shared_obj_interface *p, std::shared_ptr<shared_obj_refkernal> *k )
     {

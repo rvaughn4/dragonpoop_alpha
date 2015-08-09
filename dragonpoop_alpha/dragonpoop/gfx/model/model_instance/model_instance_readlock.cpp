@@ -100,5 +100,11 @@ namespace dragonpoop
     {
         this->t->getTriangleVertexes( l, pid );
     }
+
+    //populate vertex buffer for rendering
+    void model_instance_readlock::fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb )
+    {
+        this->t->fillVertexBuffer( group_id, vb );
+    }
     
 };

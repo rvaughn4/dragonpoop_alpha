@@ -3,6 +3,7 @@
 #include "openglx_1o5_renderer_model_instance_ref.h"
 #include "openglx_1o5_renderer_model_instance_readlock.h"
 #include "openglx_1o5_renderer_model_instance_writelock.h"
+#include "openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
 
 #include <iostream>
 namespace dragonpoop
@@ -45,9 +46,9 @@ namespace dragonpoop
     }
     
     //genertae group
-    renderer_model_instance_group *openglx_1o5_renderer_model_instance::genGroup( model_instance_group *g )
+    renderer_model_instance_group *openglx_1o5_renderer_model_instance::genGroup( model_instance_writelock *ml, model_instance_group *g )
     {
-        return this->renderer_model_instance::genGroup( g );
+        return new openglx_1o5_renderer_model_instance_group( ml, g );
     }
     
 };

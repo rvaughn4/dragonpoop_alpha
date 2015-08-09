@@ -6,7 +6,9 @@
 #include "../gfx/gfx_writelock.h"
 #include "../gfx/gfx_ref.h"
 #include "../core/shared_obj/shared_obj_guard.h"
+#include "../core/dpmutex/dpmutex_lock.h"
 
+#include <iostream>
 namespace dragonpoop
 {
 
@@ -15,6 +17,7 @@ namespace dragonpoop
     {
         dptaskpool_writelock *tpl;
         shared_obj_guard g;
+        sorctr = 0;
 
         this->bIsRun = 1;
         this->mm = new dpmutex_master();
@@ -30,6 +33,7 @@ namespace dragonpoop
         delete g;
         delete this->tp;
         delete this->mm;
+        std::cout << sorctr << " dude!\r\n";
     }
 
     //returns true if running
