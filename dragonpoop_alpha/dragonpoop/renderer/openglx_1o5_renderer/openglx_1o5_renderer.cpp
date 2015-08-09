@@ -4,6 +4,7 @@
 #include "openglx_1o5_renderer_writelock.h"
 #include "openglx_1o5_renderer_ref.h"
 #include "../../core/core.h"
+#include "openglx_1o5_renderer_model/openglx_1o5_renderer_model.h"
 
 #include <sstream>
 
@@ -294,6 +295,12 @@ namespace dragonpoop
     void openglx_1o5_renderer::flipBuffer( void )
     {
         glXSwapBuffers( this->gl.dpy, this->gl.win );
+    }
+
+    //generate renderer model
+    renderer_model *openglx_1o5_renderer::genModel( model_writelock *ml )
+    {
+        return new openglx_1o5_renderer_model( ml );
     }
 
 };

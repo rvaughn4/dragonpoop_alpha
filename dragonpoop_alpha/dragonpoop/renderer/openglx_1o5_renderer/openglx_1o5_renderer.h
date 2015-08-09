@@ -76,6 +76,8 @@ namespace dragonpoop
         virtual void prepareGuiRender( void );
         //flip backbuffer and present scene to screen
         virtual void flipBuffer( void );
+        //generate renderer model
+        virtual renderer_model *genModel( model_writelock *ml );
 
     public:
 
