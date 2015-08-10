@@ -6,6 +6,7 @@
 #include "model_loader_ms3d_vertex.h"
 #include "model_loader_ms3d_triangle.h"
 #include "model_loader_ms3d_group.h"
+#include "model_loader_ms3d_material.h"
 #include <vector>
 
 namespace dragonpoop
@@ -19,6 +20,7 @@ namespace dragonpoop
         std::atomic<std::vector<ms3d_model_vertex_m> *> verts;
         std::atomic<std::vector<ms3d_model_triangle_m> *> tris;
         std::atomic<std::vector<ms3d_model_group_m> *> groups;
+        std::atomic<std::vector<ms3d_model_material_m> *> materials;
         
     protected:
         
@@ -39,6 +41,8 @@ namespace dragonpoop
         friend class model_loader_ms3d_state_make_triangles;
         friend class model_loader_ms3d_state_parse_groups;
         friend class model_loader_ms3d_state_make_groups;
+        friend class model_loader_ms3d_state_parse_materials;
+        friend class model_loader_ms3d_state_make_materials;
         
         friend class model_loader_ms3d_state_cleanup;
     };

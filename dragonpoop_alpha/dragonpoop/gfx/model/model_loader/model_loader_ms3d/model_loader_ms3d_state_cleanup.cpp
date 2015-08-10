@@ -30,6 +30,7 @@ namespace dragonpoop
         std::vector<ms3d_model_vertex_m> *v;
         std::vector<ms3d_model_triangle_m> *t;
         std::vector<ms3d_model_group_m> *g;
+        std::vector<ms3d_model_material_m> *mt;
         model_loader_ms3d *mld;
         
         
@@ -43,6 +44,9 @@ namespace dragonpoop
         
         g = mld->groups;
         delete g;
+
+        mt = mld->materials;
+        delete mt;
         
         delete this->m;
         

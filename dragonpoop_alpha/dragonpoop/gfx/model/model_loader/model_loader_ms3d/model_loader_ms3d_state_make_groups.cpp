@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_make_groups.h"
-#include "model_loader_ms3d_state_parse_animation.h"
+#include "model_loader_ms3d_state_parse_materials.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "../model_loader_writelock.h"
 #include "model_loader_ms3d.h"

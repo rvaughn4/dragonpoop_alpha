@@ -14,6 +14,7 @@
 #include "model_group/model_group.h"
 #include "model_triangle_vertex/model_triangle_vertex.h"
 #include "model_group_triangle/model_group_triangle.h"
+#include "model_material/model_material.h"
 #include "model_instance/model_instance.h"
 #include "model_instance/model_instance_ref.h"
 #include "model_instance/model_instance_writelock.h"
@@ -562,5 +563,26 @@ namespace dragonpoop
             return;
         this->r = (renderer_model_ref *)rl->getRef();
     }
+  
+    //add material
+    model_material *model::makeMaterial( dpid id )
+    {
+        model_material *c;
+        c = new model_material( id );
+        this->addComponent( c );
+        return c;
+    }
     
+    //find material
+    model_material *model::findMaterial( dpid id )
+    {
+        return (model_material *)this->findComponent( model_component_type_material, id );
+    }
+    
+    //get materials
+    void model::getMaterials( std::list<model_material *> *l )
+    {
+        this->getComponents( model_component_type_material, (std::list<model_component *> *)l );
+    }
+
 };

@@ -2,7 +2,7 @@
 #define dragonpoop_ms3d_model_material_h
 
 #include <stdint.h>
-#include "../../../core/dpid/dpid.h"
+#include "../../../../core/dpid/dpid.h"
 #include <string>
 
 namespace dragonpoop

@@ -83,9 +83,23 @@ namespace dragonpoop
     void dpindex_buffer::addIndex( dpvertex_buffer *vb, dpvertex *v, dpid id )
     {
         dpindex i;
+        union
+        {
+            uint16_t ii;
+            void *ip;
+        };
 
         i.id = id;
-        i.i = vb->addVertex( v );
+        ip = idt.findLeaf( id );
+        if( !ip )
+        {
+            ip = 0;
+            i.i = vb->addVertex( v );
+            ii = i.i + 1;
+            idt.addLeaf( id, ip );
+        }
+        else
+            i.i = ii - 1;
 
         this->addIndex( &i );
     }
@@ -98,6 +112,13 @@ namespace dragonpoop
         this->buffer.cnt = 0;
         this->buffer.max = 0;
         this->buffer.ptr = 0;
+        this->clearCache();
     }
 
+    //clear redudant vertex lookup cache
+    void dpindex_buffer::clearCache( void )
+    {
+        this->idt.clear();
+    }
+    
 };

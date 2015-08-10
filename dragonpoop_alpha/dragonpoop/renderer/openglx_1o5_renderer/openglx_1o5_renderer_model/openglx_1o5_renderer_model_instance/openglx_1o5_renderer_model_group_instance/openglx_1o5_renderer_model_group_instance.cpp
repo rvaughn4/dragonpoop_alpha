@@ -23,6 +23,7 @@ namespace dragonpoop
     {
         this->vb->clear();
         ml->fillVertexBuffer( g->getId(), this->vb );
+        this->vb->clearCache();
     }
 
     //returns vertex buffer

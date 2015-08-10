@@ -269,5 +269,23 @@ namespace dragonpoop
     {
         this->t->setRenderer( r );
     }
+
+    //add material
+    model_material *model_writelock::makeMaterial( dpid id )
+    {
+        return this->t->makeMaterial( id );
+    }
+    
+    //find material
+    model_material *model_writelock::findMaterial( dpid id )
+    {
+        return this->t->findMaterial( id );
+    }
+    
+    //get materials
+    void model_writelock::getMaterials( std::list<model_material *> *l )
+    {
+        this->t->getMaterials( l );
+    }
     
 };

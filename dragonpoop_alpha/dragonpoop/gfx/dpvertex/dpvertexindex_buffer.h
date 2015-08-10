@@ -34,6 +34,8 @@ namespace dragonpoop
         dpvertex *getVertexBuffer( unsigned int *p_size );
         //get index buffer
         dpindex *getIndexBuffer( unsigned int *p_size );
+        //clear redudant vertex lookup cache
+        void clearCache( void );
 
     };
     

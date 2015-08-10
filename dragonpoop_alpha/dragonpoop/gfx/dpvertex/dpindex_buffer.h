@@ -5,6 +5,7 @@
 #include "dpindex.h"
 #include "../../core/dpid/dpid.h"
 #include "dpvertex.h"
+#include "../../core/bytetree/dpid_bytetree.h"
 
 namespace dragonpoop
 {
@@ -21,6 +22,7 @@ namespace dragonpoop
             dpindex *ptr;
             unsigned int cnt, max;
         } buffer;
+        dpid_bytetree idt;
 
     protected:
 
@@ -42,6 +44,8 @@ namespace dragonpoop
         void addIndex( dpvertex_buffer *vb, dpvertex *v, dpid id );
         //clear
         void clear( void );
+        //clear redudant vertex lookup cache
+        void clearCache( void );
 
     };
 

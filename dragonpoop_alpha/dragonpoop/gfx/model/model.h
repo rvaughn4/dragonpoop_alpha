@@ -26,6 +26,7 @@ namespace dragonpoop
     class model_instance_ref;
     class renderer_model_ref;
     class renderer_model;
+    class model_material;
 
     class model : public shared_obj
     {
@@ -148,6 +149,12 @@ namespace dragonpoop
         void sync( model_writelock *ml );
         //set renderer model
         void setRenderer( renderer_model *r );
+        //add material
+        model_material *makeMaterial( dpid id );
+        //find material
+        model_material *findMaterial( dpid id );
+        //get materials
+        void getMaterials( std::list<model_material *> *l );
         
     public:
 

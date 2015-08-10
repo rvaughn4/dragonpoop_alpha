@@ -52,4 +52,10 @@ namespace dragonpoop
         return this->ib.getBuffer();
     }
 
+    //clear redudant vertex lookup cache
+    void dpvertexindex_buffer::clearCache( void )
+    {
+        this->ib.clearCache();
+    }
+    
 };

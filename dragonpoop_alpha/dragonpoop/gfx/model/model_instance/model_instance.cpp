@@ -495,6 +495,7 @@ namespace dragonpoop
             return;
         vb->clear();
         vb->copy( g->getVertexBuffer() );
+        vb->clearCache();
     }
     
     void model_instance__computeMeshes_0( dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb );
@@ -539,7 +540,9 @@ namespace dragonpoop
             vb = g->getVertexBuffer();
             vb->clear();
             model_instance__computeMeshes_0( g->getId(), &t_t, &t_tv, &t_v, vb );
+            vb->clearCache();
         }
+        
     }
     
     void model_instance__computeMeshes_1( model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb );
@@ -595,7 +598,7 @@ namespace dragonpoop
 
         vt.end = vt.start;
         
-        vb->addVertex( &vt, p->getId() );
+        vb->addVertex( &vt, tv->getId() );
     }
     
 };

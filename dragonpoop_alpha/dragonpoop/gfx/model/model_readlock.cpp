@@ -161,4 +161,16 @@ namespace dragonpoop
         this->t->getGroupTriangles( l, pid );
     }
     
+    //find material
+    model_material *model_readlock::findMaterial( dpid id )
+    {
+        return this->t->findMaterial( id );
+    }
+    
+    //get materials
+    void model_readlock::getMaterials( std::list<model_material *> *l )
+    {
+        this->t->getMaterials( l );
+    }
+    
 };

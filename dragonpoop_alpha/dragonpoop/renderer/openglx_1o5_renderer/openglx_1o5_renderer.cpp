@@ -8,6 +8,7 @@
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_instance/openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
 
 #include <sstream>
+#include <vector>
 
 namespace dragonpoop
 {
@@ -182,6 +183,9 @@ namespace dragonpoop
         glLightfv(GL_LIGHT2, GL_POSITION,LightPosition2);
         glEnable(GL_LIGHT2);
 
+        glEnableClientState( GL_NORMAL_ARRAY );
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
         return 1;
     }
 
@@ -332,6 +336,8 @@ namespace dragonpoop
         unsigned int ii, is, vi, vs;
         openglx_1o5_renderer_model_instance_group *og;
         
+        std::vector<uint16_t> indicies;
+        
         og = (openglx_1o5_renderer_model_instance_group *)g;
         vb = og->getVertexBuffer();
         
@@ -351,7 +357,8 @@ namespace dragonpoop
         glTranslatef( 0, 0, -4 );
         glRotatef( rr * 0.2f, 0, 1, 0 );
         
-        glBegin( GL_TRIANGLES );
+       
+       // glBegin( GL_TRIANGLES );
         
         for( ii = 0; ii < is; ii++ )
         {
@@ -360,13 +367,19 @@ namespace dragonpoop
             if( vi >= vs )
                 continue;
             v = &vp[ vi ];
+            indicies.push_back( ix->i );
             
-            glTexCoord2f( v->start.texcoords[ 0 ].s, v->start.texcoords[ 0 ].t );
-            glNormal3f( v->start.normal.x, v->start.normal.y, v->start.normal.z );
-            glVertex3f( v->start.pos.x, v->start.pos.y, v->start.pos.z );
+//            glTexCoord2f( v->start.texcoords[ 0 ].s, v->start.texcoords[ 0 ].t );
+  //          glNormal3f( v->start.normal.x, v->start.normal.y, v->start.normal.z );
+    //        glVertex3f( v->start.pos.x, v->start.pos.y, v->start.pos.z );
         }
-        
-        glEnd();
+        glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->start.texcoords[ 0 ] );
+        glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->start.normal );
+        glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->start.pos );
+        //glDrawArrays( GL_TRIANGLES, 0, vs );
+        glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
+       
+      // glEnd();
     }
     
 };

@@ -20,6 +20,7 @@ namespace dragonpoop
     class model_group_triangle;
     class model_instance_ref;
     class renderer_model;
+    class model_material;
 
     class model_writelock : public shared_obj_writelock
     {
@@ -121,6 +122,12 @@ namespace dragonpoop
         void sync( void );
         //set renderer model
         void setRenderer( renderer_model *r );
+        //add material
+        model_material *makeMaterial( dpid id );
+        //find material
+        model_material *findMaterial( dpid id );
+        //get materials
+        void getMaterials( std::list<model_material *> *l );
 
         friend class model;
     };
