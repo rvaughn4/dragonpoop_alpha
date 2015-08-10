@@ -10,6 +10,7 @@
 #include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../gfx/model/model_instance/model_instance_group/model_instance_group.h"
 #include "renderer_model_group_instance/renderer_model_group_instance.h"
+#include "../../renderer_writelock.h"
 
 namespace dragonpoop
 {
@@ -281,6 +282,22 @@ namespace dragonpoop
     renderer_model_instance_group *renderer_model_instance::genGroup( model_instance_writelock *ml, model_instance_group *g )
     {
         return new renderer_model_instance_group( ml, g );
+    }
+
+    //render model
+    void renderer_model_instance::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi )
+    {
+        std::list<renderer_model_instance_group *> l;
+        std::list<renderer_model_instance_group *>::iterator i;
+        renderer_model_instance_group *g;
+        
+        this->getGroups( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            g = *i;
+            r->renderGroup( thd, m, mi, g );
+        }
     }
     
 };

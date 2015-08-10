@@ -13,9 +13,29 @@ int main( int argc, const char * argv[] )
     
     gr = c->getGfx();
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
-    
+
+    int i = 0;
+    while( c->isRunning() && i < 3 )
+    {
+        std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
+        i++;
+    }
+ 
     gl->loadModel( "test", "felhound_hi_milkshape.ms3d", 0, 0 );
     m = gl->makeModelInstance( "test" );
+
+    delete m;
+    gl->loadModel( "test1", "felhound_hi_milkshape.ms3d", 0, 0 );
+    m = gl->makeModelInstance( "test1" );
+
+    delete m;
+    gl->loadModel( "test2", "felhound_hi_milkshape.ms3d", 0, 0 );
+    m = gl->makeModelInstance( "test2" );
+
+    delete m;
+    gl->loadModel( "test3", "felhound_hi_milkshape.ms3d", 0, 0 );
+    m = gl->makeModelInstance( "test3" );
+    
     o.unlock();
 
     while( c->isRunning() )

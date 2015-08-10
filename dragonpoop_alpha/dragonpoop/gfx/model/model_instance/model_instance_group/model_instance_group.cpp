@@ -28,4 +28,10 @@ namespace dragonpoop
         return this->m_id;
     }
     
+    //get vertex buffer
+    dpvertexindex_buffer *model_instance_group::getVertexBuffer()
+    {
+        return &this->vb;
+    }
+    
 };

@@ -47,7 +47,9 @@ namespace dragonpoop
         
         //delete all components
         void deleteComponents( void );
-        
+        //populate vertex buffer for rendering
+        void computeMeshes( void );
+
     protected:
         
         //generate read lock

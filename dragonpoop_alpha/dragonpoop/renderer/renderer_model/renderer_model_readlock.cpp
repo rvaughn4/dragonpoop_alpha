@@ -53,4 +53,10 @@ namespace dragonpoop
         this->t->sync();
     }
     
+    //render model
+    void renderer_model_readlock::render( dpthread_lock *thd, renderer_writelock *r )
+    {
+        this->t->render( thd, r, this );
+    }
+    
 };

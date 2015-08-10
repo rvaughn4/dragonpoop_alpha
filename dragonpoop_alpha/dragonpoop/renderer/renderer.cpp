@@ -17,6 +17,7 @@
 #include <random>
 #include "renderer_model/renderer_model.h"
 #include "renderer_model/renderer_model_writelock.h"
+#include "renderer_model/renderer_model_readlock.h"
 #include "../core/bytetree/dpid_bytetree.h"
 #include "../gfx/model/model_ref.h"
 #include "../gfx/model/model_writelock.h"
@@ -175,6 +176,7 @@ namespace dragonpoop
         this->setViewport( w, h );
         this->clearScreen( 0.75f * scf, 0.5f, 1.0f * (1.0f - scf ) );
         this->prepareWorldRender( w, h );
+        this->renderModels( thd, rl );
         
         this->prepareGuiRender();
         this->flipBuffer();
@@ -328,6 +330,27 @@ namespace dragonpoop
         
     }
     
+    //render models
+    void renderer::renderModels( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        std::list<renderer_model *> *l;
+        std::list<renderer_model *>::iterator i;
+        renderer_model *p;
+        renderer_model_readlock *pl;
+        shared_obj_guard o;
+        
+        //render models
+        l = &this->models;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_model_readlock *)o.tryReadLock( p, 3 );
+            if( !pl )
+                continue;
+            pl->render( thd, rl );
+        }
+    }
+    
     //delete models
     void renderer::deleteModels( void )
     {
@@ -367,6 +390,12 @@ namespace dragonpoop
     void renderer::setActiveState( bool b )
     {
         this->bActive = b;
+    }
+    
+    //render model instance group
+    void renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g )
+    {
+        
     }
     
 };

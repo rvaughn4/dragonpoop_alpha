@@ -12,6 +12,7 @@
 #include "../model_writelock.h"
 #include "../model_ref.h"
 #include "../../../core/bytetree/dpid_bytetree.h"
+#include "../../../core/bytetree/dpid_multibytetree.h"
 #include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance.h"
 #include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance_ref.h"
 #include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance_readlock.h"
@@ -376,9 +377,8 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            if( t.findLeaf( p->getId() ) )
-                continue;
-            this->makeGroup( p );
+            if( !t.findLeaf( p->getId() ) )
+                this->makeGroup( p );
         }
     }
     
@@ -392,6 +392,7 @@ namespace dragonpoop
         this->makeTriangleVertexes( ml );
         this->makeTriangles( ml );
         this->makeGroups( ml );
+        this->computeMeshes();
         
         if( !this->r )
             return;
@@ -486,96 +487,99 @@ namespace dragonpoop
         }
     }
     
-    void model_instance__fillVertexBuffer_0( std::list<model_instance_triangle *> *lt, std::list<model_instance_triangle_vertex *> *ltv, dpid_bytetree *vt, dpvertexindex_buffer *vb );
-    
     //populate vertex buffer for rendering
     void model_instance::fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb )
     {
-        dpid_bytetree t;
+        model_instance_group *g = this->findGroup( group_id );
+        if( !g )
+            return;
+        vb->clear();
+        vb->copy( g->getVertexBuffer() );
+    }
+    
+    void model_instance__computeMeshes_0( dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb );
+    
+    //populate vertex buffer for rendering
+    void model_instance::computeMeshes( void )
+    {
+        dpid_bytetree t_v;
+        dpid_multibytetree t_tv, t_t;
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;
         model_component *p;
         model_instance_group *g;
-        std::list<model_instance_triangle *> lt;
-        std::list<model_instance_triangle_vertex *> ltv;
-        dpid id;
+        std::list<model_instance_group *> lg;
+        std::list<model_instance_group *>::iterator it;
+        dpvertexindex_buffer *vb;
         
         l = &this->comps.lst;
-        g = 0;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
             switch( p->getType() )
             {
                 case model_component_type_group:
-                    id = p->getId();
-                    if( dpid_compare( &group_id, &id ) )
-                        g = (model_instance_group *)p;
+                    lg.push_back( (model_instance_group *)p );
                     break;
                 case model_component_type_triangle:
-                    id = ((model_instance_triangle *)p )->getGroupId();
-                    if( dpid_compare( &id, &group_id ) )
-                        lt.push_back( (model_instance_triangle *)p );
+                    t_t.addLeaf( ( (model_instance_triangle *)p )->getGroupId(), p );
                     break;
                 case model_component_type_triangle_vertex:
-                    ltv.push_back( (model_instance_triangle_vertex *)p );
+                    t_tv.addLeaf( ( (model_instance_triangle_vertex *)p )->getTriangleId(), p );
                     break;
                 case model_component_type_vertex:
-                    t.addLeaf( p->getId(), p );
+                    t_v.addLeaf( p->getId(), p );
                     break;
             }
         }
         
-        if( !g )
-            return;
-        
-        model_instance__fillVertexBuffer_0( &lt, &ltv, &t, vb );
+        for( it = lg.begin(); it != lg.end(); ++it )
+        {
+            g = *it;
+            vb = g->getVertexBuffer();
+            vb->clear();
+            model_instance__computeMeshes_0( g->getId(), &t_t, &t_tv, &t_v, vb );
+        }
     }
     
-    void model_instance__fillVertexBuffer_1( model_instance_triangle *t, std::list<model_instance_triangle_vertex *> *ltv, dpid_bytetree *tv, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_1( model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb );
     
-    void model_instance__fillVertexBuffer_0( std::list<model_instance_triangle *> *lt, std::list<model_instance_triangle_vertex *> *ltv, dpid_bytetree *tv, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_0( dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb )
     {
+        std::list<model_instance_triangle *> lt;
         std::list<model_instance_triangle *>::iterator it;
         model_instance_triangle *p;
         
-        for( it = lt->begin(); it != lt->end(); ++it )
+        t_t->findLeaves( group_id, (std::list<void *> *)&lt );
+        
+        for( it = lt.begin(); it != lt.end(); ++it )
         {
             p = *it;
-            model_instance__fillVertexBuffer_1( p, ltv, tv, vb );
+            model_instance__computeMeshes_1( p, t_tv, t_v, vb );
         }
     }
 
-    void model_instance__fillVertexBuffer_2( model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *v, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_2( model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *v, dpvertexindex_buffer *vb );
     
-    void model_instance__fillVertexBuffer_1( model_instance_triangle *t, std::list<model_instance_triangle_vertex *> *ltv, dpid_bytetree *tv, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_1( model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb )
     {
+        std::list<model_instance_triangle_vertex *> ltv;
         std::list<model_instance_triangle_vertex *>::iterator it;
         model_instance_triangle_vertex *p;
-        dpid id, tid;
-        model_instance_triangle_vertex *tvl[ 3 ];
-        int tvli;
+
+        t_tv->findLeaves( t->getTriangleId(), (std::list<void *> *)&ltv );
         
-        tid = t->getTriangleId();
-        tvli = 0;
-        for( it = ltv->begin(); it != ltv->end() && tvli < 3; ++it )
+        if( ltv.size() != 3 )
+            return;
+        
+        for( it = ltv.begin(); it != ltv.end(); ++it )
         {
             p = *it;
-            id = p->getTriangleId();
-            if( dpid_compare( &id, &tid ) && tvli < 3 )
-            {
-                tvl[ tvli ] = p;
-                tvli++;
-            }
+            model_instance__computeMeshes_2( t, p, t_v, vb );
         }
-
-        if( tvli < 3 )
-            return;
-        for( tvli = 0; tvli < 3; tvli++ )
-            model_instance__fillVertexBuffer_2( t, tvl[ tvli ], tv, vb );
     }
 
-    void model_instance__fillVertexBuffer_2( model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *v, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_2( model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *v, dpvertexindex_buffer *vb )
     {
         model_instance_vertex *p;
         dpvertex vt;

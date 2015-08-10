@@ -11,6 +11,10 @@ namespace dragonpoop
     class renderer_model_instance;
     class model_component;
     class renderer_model_instance_group;
+    class renderer_writelock;
+    class renderer_model_readlock;
+    class renderer_model_instance_readlock;
+    class dpthread_lock;
     
     class renderer_model_instance_readlock : public shared_obj_readlock
     {
@@ -44,6 +48,8 @@ namespace dragonpoop
         void getGroups( std::list<renderer_model_instance_group *> *l );
         //sync
         void sync( void );
+        //render model
+        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi );
         
         friend class renderer_model_instance;
     };

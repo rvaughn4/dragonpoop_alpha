@@ -13,6 +13,8 @@ namespace dragonpoop
     class core;
     class model_component;
     class renderer_model_group;
+    class renderer_writelock;
+    class dpthread_lock;
     
     class renderer_model_readlock : public shared_obj_readlock
     {
@@ -42,6 +44,8 @@ namespace dragonpoop
         void getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l );
         //sync model instance with changes
         void sync( void );
+        //render model
+        void render( dpthread_lock *thd, renderer_writelock *r );
         
         friend class renderer_model;
     };

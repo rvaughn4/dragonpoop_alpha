@@ -4,6 +4,7 @@
 
 #include "../../model_component/model_components.h"
 #include "../../model_group/model_group.h"
+#include "../../../dpvertex/dpvertexindex_buffer.h"
 
 namespace dragonpoop
 {
@@ -16,6 +17,7 @@ namespace dragonpoop
     private:
         
         dpid m_id;
+        dpvertexindex_buffer vb;
         
         
     protected:
@@ -30,7 +32,9 @@ namespace dragonpoop
         void setMaterialId( dpid id );
         //get material id
         dpid getMaterialId( void );
-        
+        //get vertex buffer
+        dpvertexindex_buffer *getVertexBuffer();
+
     };
     
 };

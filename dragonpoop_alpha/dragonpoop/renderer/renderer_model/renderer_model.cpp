@@ -8,6 +8,7 @@
 #include "../../core/core.h"
 #include "renderer_model_instance/renderer_model_instance.h"
 #include "renderer_model_instance/renderer_model_instance_writelock.h"
+#include "renderer_model_instance/renderer_model_instance_readlock.h"
 #include "../../core/bytetree/dpid_bytetree.h"
 #include "../../gfx/model/model_instance/model_instance_writelock.h"
 #include "../../gfx/model/model_instance/model_instance_ref.h"
@@ -313,6 +314,26 @@ namespace dragonpoop
         {
             this->t_last_i_ran = t;
             this->runInstances( thd );
+        }
+    }
+    
+    //render model
+    void renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m )
+    {
+        std::list<renderer_model_instance *> *l;
+        std::list<renderer_model_instance *>::iterator i;
+        renderer_model_instance *p;
+        renderer_model_instance_readlock *pl;
+        shared_obj_guard o;
+        
+        l = &this->instances;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_model_instance_readlock *)o.tryReadLock( p, 3 );
+            if( !pl )
+                continue;
+            
         }
     }
     

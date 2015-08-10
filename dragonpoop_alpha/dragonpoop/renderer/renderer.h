@@ -19,6 +19,9 @@ namespace dragonpoop
     class gfx_writelock;
     class renderer_model;
     class model_writelock;
+    class renderer_model_instance_group;
+    class renderer_model_instance_readlock;
+    class renderer_model_readlock;
 
     class renderer : public shared_obj
     {
@@ -41,6 +44,8 @@ namespace dragonpoop
         void deleteModels( void );
         //render
         void render( dpthread_lock *thd, renderer_writelock *rl );
+        //render models
+        void renderModels( dpthread_lock *thd, renderer_writelock *rl );
         
     protected:
 
@@ -82,6 +87,8 @@ namespace dragonpoop
         float getFps( void );
         //set active state
         void setActiveState( bool b );
+        //render model instance group
+        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g );
         
     public:
 
