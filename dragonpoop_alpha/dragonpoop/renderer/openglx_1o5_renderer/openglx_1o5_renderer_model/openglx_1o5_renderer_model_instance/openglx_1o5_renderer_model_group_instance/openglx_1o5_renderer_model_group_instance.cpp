@@ -25,4 +25,10 @@ namespace dragonpoop
         ml->fillVertexBuffer( g->getId(), this->vb );
     }
 
+    //returns vertex buffer
+    dpvertexindex_buffer *openglx_1o5_renderer_model_instance_group::getVertexBuffer( void )
+    {
+        return this->vb;
+    }
+    
 };

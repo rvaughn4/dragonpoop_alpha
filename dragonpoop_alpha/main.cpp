@@ -24,18 +24,6 @@ int main( int argc, const char * argv[] )
     gl->loadModel( "test", "felhound_hi_milkshape.ms3d", 0, 0 );
     m = gl->makeModelInstance( "test" );
 
-    delete m;
-    gl->loadModel( "test1", "felhound_hi_milkshape.ms3d", 0, 0 );
-    m = gl->makeModelInstance( "test1" );
-
-    delete m;
-    gl->loadModel( "test2", "felhound_hi_milkshape.ms3d", 0, 0 );
-    m = gl->makeModelInstance( "test2" );
-
-    delete m;
-    gl->loadModel( "test3", "felhound_hi_milkshape.ms3d", 0, 0 );
-    m = gl->makeModelInstance( "test3" );
-    
     o.unlock();
 
     while( c->isRunning() )

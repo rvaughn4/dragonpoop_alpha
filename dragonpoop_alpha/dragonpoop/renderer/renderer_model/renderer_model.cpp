@@ -333,7 +333,7 @@ namespace dragonpoop
             pl = (renderer_model_instance_readlock *)o.tryReadLock( p, 3 );
             if( !pl )
                 continue;
-            
+            pl->render( thd, r, m );
         }
     }
     

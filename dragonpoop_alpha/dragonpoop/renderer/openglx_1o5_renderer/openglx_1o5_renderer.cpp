@@ -5,6 +5,7 @@
 #include "openglx_1o5_renderer_ref.h"
 #include "../../core/core.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model.h"
+#include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_instance/openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
 
 #include <sstream>
 
@@ -162,6 +163,25 @@ namespace dragonpoop
         glLoadIdentity();
         glEnable( GL_TEXTURE_2D );
 
+        glEnable(GL_LIGHTING);
+        GLfloat LightAmbient[]= { 0.5f, 0.5f, 0.5f, 1.0f };
+        GLfloat LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };
+        GLfloat LightPosition[]= { 0.0f, 0.0f, 20.0f, -10.0f };
+        
+        glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);             // Setup The Ambient Light
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);             // Setup The Diffuse Light
+        glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
+        glEnable(GL_LIGHT1);
+
+        GLfloat LightAmbient2[]= { 0.5f, 0.5f, 0.5f, 1.0f };
+        GLfloat LightDiffuse2[]= { 1.0f, 0.8f, 0.3f, 1.0f };
+        GLfloat LightPosition2[]= { 0.0f, 0.0f, 10.0f, -5.0f };
+        
+        glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient2);             // Setup The Ambient Light
+        glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse2);             // Setup The Diffuse Light
+        glLightfv(GL_LIGHT2, GL_POSITION,LightPosition2);
+        glEnable(GL_LIGHT2);
+
         return 1;
     }
 
@@ -303,4 +323,50 @@ namespace dragonpoop
         return new openglx_1o5_renderer_model( ml );
     }
 
+    //render model instance group
+    void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g )
+    {
+        dpvertexindex_buffer *vb;
+        dpindex *ix, *ip;
+        dpvertex *v, *vp;
+        unsigned int ii, is, vi, vs;
+        openglx_1o5_renderer_model_instance_group *og;
+        
+        og = (openglx_1o5_renderer_model_instance_group *)g;
+        vb = og->getVertexBuffer();
+        
+        ip = vb->getIndexBuffer( &is );
+        vp = vb->getVertexBuffer( &vs );
+        
+        static float rr;
+        
+        glLoadMatrixf( this->world_m.getRaw4by4() );
+        rr += 2.0f;
+        
+        glRotatef( rr, 0, 1, 0 );
+        GLfloat LightPosition[]= { 0.0f, 0.0f, 8.0f, 0.0f };
+        glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
+
+        glLoadMatrixf( this->world_m.getRaw4by4() );
+        glTranslatef( 0, 0, -4 );
+        glRotatef( rr * 0.2f, 0, 1, 0 );
+        
+        glBegin( GL_TRIANGLES );
+        
+        for( ii = 0; ii < is; ii++ )
+        {
+            ix = &ip[ ii ];
+            vi = ix->i;
+            if( vi >= vs )
+                continue;
+            v = &vp[ vi ];
+            
+            glTexCoord2f( v->start.texcoords[ 0 ].s, v->start.texcoords[ 0 ].t );
+            glNormal3f( v->start.normal.x, v->start.normal.y, v->start.normal.z );
+            glVertex3f( v->start.pos.x, v->start.pos.y, v->start.pos.z );
+        }
+        
+        glEnd();
+    }
+    
 };

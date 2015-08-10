@@ -27,6 +27,8 @@ namespace dragonpoop
         virtual ~openglx_1o5_renderer_model_instance_group( void );
         //sync with group
         virtual void sync( model_instance_writelock *ml, model_instance_group *g );
+        //returns vertex buffer
+        dpvertexindex_buffer *getVertexBuffer( void );
         
     };
     

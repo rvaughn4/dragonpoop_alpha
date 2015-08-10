@@ -66,7 +66,7 @@ namespace dragonpoop
     }
     
     //render model
-    void renderer_model_instance_readlock::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi )
+    void renderer_model_instance_readlock::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m )
     {
         this->t->render( thd, r, m, this );
     }

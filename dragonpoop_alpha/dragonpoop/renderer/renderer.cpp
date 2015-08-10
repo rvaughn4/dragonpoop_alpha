@@ -157,24 +157,8 @@ namespace dragonpoop
         w = this->getWidth();
         h = this->getHeight();
         
-        static float scf, scfd;
-        
-        if( scfd != 1 && scfd != -1 )
-            scfd = 1;
-        if( scf > 1 )
-        {
-            scf = 1;
-            scfd = -1;
-        }
-        if( scf < 0 )
-        {
-            scf = 0;
-            scfd = 1;
-        }
-        scf += scfd * 0.01f;
-        
         this->setViewport( w, h );
-        this->clearScreen( 0.75f * scf, 0.5f, 1.0f * (1.0f - scf ) );
+        this->clearScreen( 0.5f, 0.5f, 1.0f );
         this->prepareWorldRender( w, h );
         this->renderModels( thd, rl );
         

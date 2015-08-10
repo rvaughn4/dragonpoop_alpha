@@ -49,7 +49,7 @@ namespace dragonpoop
         //sync
         void sync( void );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi );
+        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m );
         
         friend class renderer_model_instance;
     };
