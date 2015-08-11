@@ -4,6 +4,7 @@
 #include "openglx_1o5_renderer_model_readlock.h"
 #include "openglx_1o5_renderer_model_writelock.h"
 #include "openglx_1o5_renderer_model_instance/openglx_1o5_renderer_model_instance.h"
+#include "openglx_1o5_renderer_model_material/openglx_1o5_renderer_model_material.h"
 
 namespace dragonpoop
 {
@@ -47,6 +48,12 @@ namespace dragonpoop
     renderer_model_instance *openglx_1o5_renderer_model::genInstance( model_instance_writelock *ml )
     {
         return new openglx_1o5_renderer_model_instance( ml );
+    }
+
+    //generate material
+    renderer_model_material *openglx_1o5_renderer_model::genMaterial( model_writelock *ml, model_material *m )
+    {
+        return new openglx_1o5_renderer_model_material( ml, m );
     }
     
 };

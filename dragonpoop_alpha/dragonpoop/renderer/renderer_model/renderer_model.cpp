@@ -14,6 +14,8 @@
 #include "../../gfx/model/model_instance/model_instance_ref.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 #include "../../core/dpthread/dpthread_lock.h"
+#include "renderer_model_material/renderer_model_material.h"
+#include "../../gfx/model/model_material/model_material.h"
 
 namespace dragonpoop
 {
@@ -305,6 +307,7 @@ namespace dragonpoop
         
         if( !this->bIsSynced )
         {
+            this->syncMaterials( ml );
             this->syncInstances( ml );
             this->onSync( thd, g, ml );
             this->bIsSynced = 1;
@@ -347,6 +350,86 @@ namespace dragonpoop
     renderer_model_instance *renderer_model::genInstance( model_instance_writelock *ml )
     {
         return new renderer_model_instance( ml );
+    }
+    
+    //sync materials
+    void renderer_model::syncMaterials( model_writelock *ml )
+    {
+        std::list<renderer_model_material *> li, d;
+        std::list<renderer_model_material *>::iterator ii;
+        std::list<model_material *> l;
+        std::list<model_material *>::iterator i;
+        renderer_model_material *pi;
+        model_material *p;
+        dpid_bytetree t;
+        
+        //build index
+        this->getMaterials( &li );
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
+        
+        //pair intances and sync them (or make them)
+        ml->getMaterials( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pi = (renderer_model_material *)t.findLeaf( p->getId() );
+            if( pi )
+            {
+                pi->sync( ml, p );
+                t.removeLeaf( pi );
+                continue;
+            }
+            this->makeMaterial( ml, p );
+        }
+        
+        //find leaves in index not paired with a model_instance
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            if( t.findLeaf( pi->getId() ) )
+                d.push_back( pi );
+        }
+        
+        //delete them
+        for( ii = d.begin(); ii != d.end(); ++ii )
+        {
+            pi = *ii;
+            this->removeComponent( pi );
+            delete pi;
+        }
+    }
+    
+    //generate material
+    renderer_model_material *renderer_model::genMaterial( model_writelock *ml, model_material *m )
+    {
+        return new renderer_model_material( ml, m );
+    }
+
+    //add material
+    renderer_model_material *renderer_model::makeMaterial( model_writelock *ml, model_material *m )
+    {
+        renderer_model_material *c;
+        c = this->genMaterial( ml, m );
+        if( !c )
+            return 0;
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find material
+    renderer_model_material *renderer_model::findMaterial( dpid id )
+    {
+        return (renderer_model_material *)this->findComponent( model_component_type_material, id );
+    }
+    
+    //get materials
+    void renderer_model::getMaterials( std::list<renderer_model_material *> *l )
+    {
+        this->getComponents( model_component_type_material, (std::list<model_component *> *)l );
     }
     
 };

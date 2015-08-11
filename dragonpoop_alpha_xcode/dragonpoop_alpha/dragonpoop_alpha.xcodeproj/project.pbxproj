@@ -140,6 +140,8 @@
 		79F107261B6ED076000723E4 /* model_instance_vertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F107191B6ED076000723E4 /* model_instance_vertex.cpp */; };
 		79F107271B6ED076000723E4 /* model_instance_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F1071C1B6ED076000723E4 /* model_instance_writelock.cpp */; };
 		79F49A791B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F49A771B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp */; };
+		79F49A7E1B79704000CDF8A7 /* renderer_model_material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F49A7B1B79704000CDF8A7 /* renderer_model_material.cpp */; };
+		79F49A831B79785400CDF8A7 /* openglx_1o5_renderer_model_material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F49A801B79785400CDF8A7 /* openglx_1o5_renderer_model_material.cpp */; };
 		79F5632C1B6B746D006E5C78 /* model_component_tree_bytype.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F563261B6B746D006E5C78 /* model_component_tree_bytype.cpp */; };
 		79F5632D1B6B746D006E5C78 /* model_component_tree_bytypeid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F563281B6B746D006E5C78 /* model_component_tree_bytypeid.cpp */; };
 /* End PBXBuildFile section */
@@ -491,6 +493,12 @@
 		79F1071E1B6ED076000723E4 /* model_instances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instances.h; sourceTree = "<group>"; };
 		79F49A771B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_materials.cpp; sourceTree = "<group>"; };
 		79F49A781B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_materials.h; sourceTree = "<group>"; };
+		79F49A7B1B79704000CDF8A7 /* renderer_model_material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_model_material.cpp; sourceTree = "<group>"; };
+		79F49A7C1B79704000CDF8A7 /* renderer_model_material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_model_material.h; sourceTree = "<group>"; };
+		79F49A7D1B79704000CDF8A7 /* renderer_model_materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_model_materials.h; sourceTree = "<group>"; };
+		79F49A801B79785400CDF8A7 /* openglx_1o5_renderer_model_material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = openglx_1o5_renderer_model_material.cpp; sourceTree = "<group>"; };
+		79F49A811B79785400CDF8A7 /* openglx_1o5_renderer_model_material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = openglx_1o5_renderer_model_material.h; sourceTree = "<group>"; };
+		79F49A821B79785400CDF8A7 /* openglx_1o5_renderer_model_materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = openglx_1o5_renderer_model_materials.h; sourceTree = "<group>"; };
 		79F563261B6B746D006E5C78 /* model_component_tree_bytype.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_component_tree_bytype.cpp; sourceTree = "<group>"; };
 		79F563271B6B746D006E5C78 /* model_component_tree_bytype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_component_tree_bytype.h; sourceTree = "<group>"; };
 		79F563281B6B746D006E5C78 /* model_component_tree_bytypeid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_component_tree_bytypeid.cpp; sourceTree = "<group>"; };
@@ -983,6 +991,7 @@
 		799F078C1B76CFA80084E9CC /* openglx_1o5_renderer_model */ = {
 			isa = PBXGroup;
 			children = (
+				79F49A7F1B79785400CDF8A7 /* openglx_1o5_renderer_model_material */,
 				799F078F1B76CFA80084E9CC /* openglx_1o5_renderer_model_instance */,
 				799F078D1B76CFA80084E9CC /* openglx_1o5_renderer_model.cpp */,
 				799F078E1B76CFA80084E9CC /* openglx_1o5_renderer_model.h */,
@@ -1027,6 +1036,7 @@
 		799FC1531B756F6F00E1A212 /* renderer_model */ = {
 			isa = PBXGroup;
 			children = (
+				79F49A7A1B79704000CDF8A7 /* renderer_model_material */,
 				799FC1561B756F6F00E1A212 /* renderer_model_instance */,
 				799FC1541B756F6F00E1A212 /* renderer_model.cpp */,
 				799FC1551B756F6F00E1A212 /* renderer_model.h */,
@@ -1237,6 +1247,26 @@
 			path = model_instance_vertex;
 			sourceTree = "<group>";
 		};
+		79F49A7A1B79704000CDF8A7 /* renderer_model_material */ = {
+			isa = PBXGroup;
+			children = (
+				79F49A7B1B79704000CDF8A7 /* renderer_model_material.cpp */,
+				79F49A7C1B79704000CDF8A7 /* renderer_model_material.h */,
+				79F49A7D1B79704000CDF8A7 /* renderer_model_materials.h */,
+			);
+			path = renderer_model_material;
+			sourceTree = "<group>";
+		};
+		79F49A7F1B79785400CDF8A7 /* openglx_1o5_renderer_model_material */ = {
+			isa = PBXGroup;
+			children = (
+				79F49A801B79785400CDF8A7 /* openglx_1o5_renderer_model_material.cpp */,
+				79F49A811B79785400CDF8A7 /* openglx_1o5_renderer_model_material.h */,
+				79F49A821B79785400CDF8A7 /* openglx_1o5_renderer_model_materials.h */,
+			);
+			path = openglx_1o5_renderer_model_material;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1350,6 +1380,7 @@
 				7970E9811B64F26E008E8328 /* dpvertex.cpp in Sources */,
 				79F49A791B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp in Sources */,
 				7970E95D1B64F26E008E8328 /* bytetree.cpp in Sources */,
+				79F49A831B79785400CDF8A7 /* openglx_1o5_renderer_model_material.cpp in Sources */,
 				79E744671B6CE52A005BFDE0 /* model_loader_ms3d.cpp in Sources */,
 				79F1071F1B6ED076000723E4 /* model_instance.cpp in Sources */,
 				7970E9951B64F26E008E8328 /* openglx_1o5_renderer.cpp in Sources */,
@@ -1358,6 +1389,7 @@
 				794610F61B6D42CE00311E86 /* model_loader_ms3d_state_parse_materials.cpp in Sources */,
 				7970E9961B64F26E008E8328 /* openglx_1o5_renderer_readlock.cpp in Sources */,
 				799FC16D1B756F6F00E1A212 /* renderer_model_instance.cpp in Sources */,
+				79F49A7E1B79704000CDF8A7 /* renderer_model_material.cpp in Sources */,
 				7970E9651B64F26E008E8328 /* dpmutex_master.cpp in Sources */,
 				7970E97A1B64F26E008E8328 /* shared_obj_ref.cpp in Sources */,
 				79F107241B6ED076000723E4 /* model_instance_ref.cpp in Sources */,

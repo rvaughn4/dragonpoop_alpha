@@ -65,7 +65,10 @@ namespace dragonpoop
     {
         model_group *mv;
         std::string s;
-        unsigned int i, e;
+        unsigned int i, e, mi, ms;
+        model_loader_ms3d *mld;
+        std::vector<ms3d_model_material_m> *l;
+
         
         mv = m->makeGroup( thd->genId() );
         if( !mv )
@@ -73,6 +76,16 @@ namespace dragonpoop
         t->id = mv->getId();
         s.assign( (char *)t->f.name, sizeof( t->f.name ) );
         mv->setName( &s );
+        
+        if( t->e.index >= 0 )
+        {
+            mld = (model_loader_ms3d *)ml->getLoader();
+            l = mld->materials;
+            ms = (unsigned int)l->size();
+            mi = t->e.index;
+            if( mi < ms )
+                mv->setMaterialId( ( *l )[ mi ].id );
+        }
         
         e = t->f.cntTriangles;
         for( i = 0; i < e; i++ )

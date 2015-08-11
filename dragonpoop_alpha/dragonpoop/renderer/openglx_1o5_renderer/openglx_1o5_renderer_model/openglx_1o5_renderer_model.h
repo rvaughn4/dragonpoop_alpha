@@ -25,6 +25,8 @@ namespace dragonpoop
         virtual void onSync( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml );
         //generate instance
         virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
+        //generate material
+        virtual renderer_model_material *genMaterial( model_writelock *ml, model_material *m );
         
     public:
         

@@ -15,7 +15,7 @@ namespace dragonpoop
     class dpthread_lock;
     class core;
     class renderer_model_writelock;
-    class renderer_model_group;
+    class renderer_model_material;
     class renderer_model_instance;
     class renderer_model_instance_ref;
     class model_instance_writelock;
@@ -23,6 +23,7 @@ namespace dragonpoop
     class model_ref;
     class renderer_writelock;
     class renderer_model_readlock;
+    class model_material;
     
     class renderer_model : public shared_obj
     {
@@ -47,6 +48,8 @@ namespace dragonpoop
         void syncInstances( model_writelock *g );
         //run instances
         void runInstances( dpthread_lock *thd );
+        //sync materials
+        void syncMaterials( model_writelock *g );
         
     protected:
         
@@ -80,6 +83,14 @@ namespace dragonpoop
         virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m );
+        //add material
+        renderer_model_material *makeMaterial( model_writelock *ml, model_material *m );
+        //find material
+        renderer_model_material *findMaterial( dpid id );
+        //get materials
+        void getMaterials( std::list<renderer_model_material *> *l );
+        //generate material
+        virtual renderer_model_material *genMaterial( model_writelock *ml, model_material *m );
         
     public:
         

@@ -1,0 +1,7 @@
+
+#ifndef dragonpoop_openglx_1o5_renderer_model_materials_h
+#define dragonpoop_openglx_1o5_renderer_model_materials_h
+
+#include "openglx_1o5_model_material.h"
+
+#endif
