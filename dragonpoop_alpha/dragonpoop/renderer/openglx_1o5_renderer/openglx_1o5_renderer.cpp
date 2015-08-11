@@ -6,6 +6,8 @@
 #include "../../core/core.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_instance/openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
+#include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_material/openglx_1o5_renderer_model_material.h"
+#include "../renderer_model/renderer_model_material/renderer_model_material.h"
 
 #include <sstream>
 #include <vector>
@@ -328,17 +330,19 @@ namespace dragonpoop
     }
 
     //render model instance group
-    void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g )
+    void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
     {
         dpvertexindex_buffer *vb;
         dpindex *ix, *ip;
         dpvertex *v, *vp;
         unsigned int ii, is, vi, vs;
         openglx_1o5_renderer_model_instance_group *og;
+        openglx_1o5_renderer_model_material *gmat;
         
         std::vector<uint16_t> indicies;
         
         og = (openglx_1o5_renderer_model_instance_group *)g;
+        gmat = (openglx_1o5_renderer_model_material *)mat;
         vb = og->getVertexBuffer();
         
         ip = vb->getIndexBuffer( &is );
@@ -357,6 +361,7 @@ namespace dragonpoop
         glTranslatef( 0, 0, -4 );
         glRotatef( rr * 0.2f, 0, 1, 0 );
         
+        glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
        
        // glBegin( GL_TRIANGLES );
         

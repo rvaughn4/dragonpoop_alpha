@@ -16,6 +16,7 @@ namespace dragonpoop
     class renderer_model_instance_ref;
     class dpthread_lock;
     class model_writelock;
+    class renderer_model_material;
     
     class renderer_model_writelock : public shared_obj_writelock
     {
@@ -53,6 +54,10 @@ namespace dragonpoop
         void sync( void );
         //run model from task
         void run( dpthread_lock *thd, model_writelock *ml );
+        //find material
+        renderer_model_material *findMaterial( dpid id );
+        //get materials
+        void getMaterials( std::list<renderer_model_material *> *l );
         
         friend class renderer_model;
     };

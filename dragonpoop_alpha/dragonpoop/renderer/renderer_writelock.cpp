@@ -42,9 +42,9 @@ namespace dragonpoop
     }
 
     //render model instance group
-    void renderer_writelock::renderGroup( dpthread_lock *thd, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g )
+    void renderer_writelock::renderGroup( dpthread_lock *thd, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
     {
-        this->t->renderGroup( thd, this, m, mi, g );
+        this->t->renderGroup( thd, this, m, mi, g, mat );
     }
     
 };

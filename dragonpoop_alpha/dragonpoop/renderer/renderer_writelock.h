@@ -15,6 +15,7 @@ namespace dragonpoop
     class renderer_model_readlock;
     class renderer_model_instance_readlock;
     class renderer_model_instance_group;
+    class renderer_model_material;
 
     class renderer_writelock : public shared_obj_writelock
     {
@@ -41,7 +42,7 @@ namespace dragonpoop
         //run renderer from task
         void run( dptask_writelock *tskl, dpthread_lock *thd );
         //render model instance group
-        virtual void renderGroup( dpthread_lock *thd, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g );
+        virtual void renderGroup( dpthread_lock *thd, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat );
 
         friend class renderer;
     };

@@ -17,6 +17,7 @@ namespace dragonpoop
     class openglx_1o5_renderer_readlock;
     class openglx_1o5_renderer_writelock;
     class openglx_1o5_renderer_ref;
+    class renderer_model_material;
 
     struct openglx_1o5_stuffs
     {
@@ -79,7 +80,7 @@ namespace dragonpoop
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
         //render model instance group
-        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g );
+        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat );
 
     public:
 

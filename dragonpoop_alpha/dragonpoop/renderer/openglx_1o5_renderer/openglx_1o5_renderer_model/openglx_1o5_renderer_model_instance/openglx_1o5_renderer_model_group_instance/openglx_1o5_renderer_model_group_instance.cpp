@@ -21,6 +21,7 @@ namespace dragonpoop
     //sync with group
     void openglx_1o5_renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g )
     {
+        this->renderer_model_instance_group::sync( ml, g );
         this->vb->clear();
         ml->fillVertexBuffer( g->getId(), this->vb );
         this->vb->clearCache();

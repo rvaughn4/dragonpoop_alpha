@@ -15,6 +15,7 @@ namespace dragonpoop
     class renderer_model_group;
     class renderer_writelock;
     class dpthread_lock;
+    class renderer_model_material;
     
     class renderer_model_readlock : public shared_obj_readlock
     {
@@ -46,7 +47,11 @@ namespace dragonpoop
         void sync( void );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r );
-        
+        //find material
+        renderer_model_material *findMaterial( dpid id );
+        //get materials
+        void getMaterials( std::list<renderer_model_material *> *l );
+
         friend class renderer_model;
     };
     

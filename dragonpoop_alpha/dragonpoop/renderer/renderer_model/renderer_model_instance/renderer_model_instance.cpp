@@ -11,6 +11,8 @@
 #include "../../../gfx/model/model_instance/model_instance_group/model_instance_group.h"
 #include "renderer_model_group_instance/renderer_model_group_instance.h"
 #include "../../renderer_writelock.h"
+#include "../renderer_model_material/renderer_model_material.h"
+#include "../renderer_model_readlock.h"
 
 namespace dragonpoop
 {
@@ -290,13 +292,15 @@ namespace dragonpoop
         std::list<renderer_model_instance_group *> l;
         std::list<renderer_model_instance_group *>::iterator i;
         renderer_model_instance_group *g;
+        renderer_model_material *mat;
         
         this->getGroups( &l );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
             g = *i;
-            r->renderGroup( thd, m, mi, g );
+            mat = m->findMaterial( g->getMaterialId() );
+            r->renderGroup( thd, m, mi, g, mat );
         }
     }
     

@@ -22,6 +22,7 @@ namespace dragonpoop
     class renderer_model_instance_group;
     class renderer_model_instance_readlock;
     class renderer_model_readlock;
+    class renderer_model_material;
 
     class renderer : public shared_obj
     {
@@ -88,7 +89,7 @@ namespace dragonpoop
         //set active state
         void setActiveState( bool b );
         //render model instance group
-        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g );
+        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat );
         
     public:
 

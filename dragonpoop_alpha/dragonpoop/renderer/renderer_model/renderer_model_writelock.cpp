@@ -77,4 +77,16 @@ namespace dragonpoop
         this->t->run( thd, this, ml );
     }
     
+    //find material
+    renderer_model_material *renderer_model_writelock::findMaterial( dpid id )
+    {
+        return this->t->findMaterial( id );
+    }
+    
+    //get materials
+    void renderer_model_writelock::getMaterials( std::list<renderer_model_material *> *l )
+    {
+        this->t->getMaterials( l );
+    }
+    
 };
