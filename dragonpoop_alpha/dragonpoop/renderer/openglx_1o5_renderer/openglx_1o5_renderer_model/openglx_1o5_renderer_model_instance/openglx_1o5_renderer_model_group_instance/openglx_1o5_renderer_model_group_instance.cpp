@@ -24,7 +24,6 @@ namespace dragonpoop
         this->renderer_model_instance_group::sync( ml, g );
         this->vb->clear();
         ml->fillVertexBuffer( g->getId(), this->vb );
-        this->vb->clearCache();
     }
 
     //returns vertex buffer

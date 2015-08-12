@@ -22,7 +22,6 @@ namespace dragonpoop
             dpindex *ptr;
             unsigned int cnt, max;
         } buffer;
-        dpid_bytetree idt;
 
     protected:
 
@@ -41,11 +40,11 @@ namespace dragonpoop
         //add index
         void addIndex( dpindex *i );
         //add index by vertex
-        void addIndex( dpvertex_buffer *vb, dpvertex *v, dpid id );
+        void addIndex( dpvertex_buffer *vb, dpvertex *v );
+        //find index having identical vertex
+        bool findIndex( dpvertex_buffer *vb, dpvertex *v, dpindex *i );
         //clear
         void clear( void );
-        //clear redudant vertex lookup cache
-        void clearCache( void );
 
     };
 

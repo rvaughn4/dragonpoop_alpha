@@ -80,30 +80,101 @@ namespace dragonpoop
     }
 
     //add index by vertex id
-    void dpindex_buffer::addIndex( dpvertex_buffer *vb, dpvertex *v, dpid id )
+    void dpindex_buffer::addIndex( dpvertex_buffer *vb, dpvertex *v )
     {
         dpindex i;
-        union
-        {
-            uint16_t ii;
-            void *ip;
-        };
 
-        i.id = id;
-        ip = idt.findLeaf( id );
-        if( !ip )
-        {
-            ip = 0;
-            i.i = vb->addVertex( v );
-            ii = i.i + 1;
-            idt.addLeaf( id, ip );
-        }
-        else
-            i.i = ii - 1;
+        i.i = vb->addVertex( v );
 
         this->addIndex( &i );
     }
 
+    //find index having identical vertex
+    bool dpindex_buffer::findIndex( dpvertex_buffer *vb, dpvertex *v, dpindex *i )
+    {
+        dpvertex *vp, *vi;
+        unsigned int iv, sv;
+        
+        vp = vb->getBuffer();
+        sv = vb->getSize();
+        
+        for( iv = 0; iv < sv; iv++ )
+        {
+            vi = &vp[ iv ];
+            
+            if(
+                v->start.pos.x != vi->start.pos.x
+               ||
+               v->start.pos.y != vi->start.pos.y
+               ||
+               v->start.pos.z != vi->start.pos.z
+               ||
+               v->start.pos.w != vi->start.pos.w
+               )
+                continue;
+            
+            if(
+               v->end.pos.x != vi->end.pos.x
+               ||
+               v->end.pos.y != vi->end.pos.y
+               ||
+               v->end.pos.z != vi->end.pos.z
+               ||
+               v->end.pos.w != vi->end.pos.w
+               )
+                continue;
+            
+            if(
+               v->start.normal.x != vi->start.normal.x
+               ||
+               v->start.normal.y != vi->start.normal.y
+               ||
+               v->start.normal.z != vi->start.normal.z
+               ||
+               v->start.normal.w != vi->start.normal.w
+               )
+                continue;
+            
+            if(
+               v->end.normal.x != vi->end.normal.x
+               ||
+               v->end.normal.y != vi->end.normal.y
+               ||
+               v->end.normal.z != vi->end.normal.z
+               ||
+               v->end.normal.w != vi->end.normal.w
+               )
+                continue;
+            
+            if(
+               v->start.texcoords[ 0 ].s != vi->start.texcoords[ 0 ].s
+               ||
+               v->start.texcoords[ 0 ].t != vi->start.texcoords[ 0 ].t
+               ||
+               v->start.texcoords[ 1 ].s != vi->start.texcoords[ 1 ].s
+               ||
+               v->start.texcoords[ 1 ].t != vi->start.texcoords[ 1 ].t
+               )
+                continue;
+            
+            if(
+               v->end.texcoords[ 0 ].s != vi->end.texcoords[ 0 ].s
+               ||
+               v->end.texcoords[ 0 ].t != vi->end.texcoords[ 0 ].t
+               ||
+               v->end.texcoords[ 1 ].s != vi->end.texcoords[ 1 ].s
+               ||
+               v->end.texcoords[ 1 ].t != vi->end.texcoords[ 1 ].t
+               )
+                continue;
+            
+            i->i = iv;
+            return 1;
+        }
+
+        return 0;
+    }
+    
     //clear
     void dpindex_buffer::clear( void )
     {
@@ -112,13 +183,6 @@ namespace dragonpoop
         this->buffer.cnt = 0;
         this->buffer.max = 0;
         this->buffer.ptr = 0;
-        this->clearCache();
     }
 
-    //clear redudant vertex lookup cache
-    void dpindex_buffer::clearCache( void )
-    {
-        this->idt.clear();
-    }
-    
 };

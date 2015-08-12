@@ -31,11 +31,22 @@ namespace dragonpoop
     }
 
     //add vertex
-    void dpvertexindex_buffer::addVertex( dpvertex *v, dpid id )
+    void dpvertexindex_buffer::addVertex( dpvertex *v )
     {
-        this->ib.addIndex( &this->vb, v, id );
+        this->ib.addIndex( &this->vb, v );
     }
 
+    //add vertex
+    void dpvertexindex_buffer::addVertexUnique( dpvertex *v )
+    {
+        dpindex i;
+        
+        if( this->ib.findIndex( &this->vb, v, &i ) )
+            this->ib.addIndex( &i );
+        else
+            this->ib.addIndex( &this->vb, v );
+    }
+    
     //get vertex buffer
     dpvertex *dpvertexindex_buffer::getVertexBuffer( unsigned int *p_size )
     {
@@ -50,12 +61,6 @@ namespace dragonpoop
         if( p_size )
             *p_size = this->ib.getSize();
         return this->ib.getBuffer();
-    }
-
-    //clear redudant vertex lookup cache
-    void dpvertexindex_buffer::clearCache( void )
-    {
-        this->ib.clearCache();
     }
     
 };

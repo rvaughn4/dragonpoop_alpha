@@ -11,7 +11,6 @@ namespace dragonpoop
     struct dpindex
     {
         uint16_t i;
-        dpid id;
     };
 
 };

@@ -333,13 +333,17 @@ namespace dragonpoop
     void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
     {
         dpvertexindex_buffer *vb;
+        dpvertex_buffer nvb;
         dpindex *ix, *ip;
-        dpvertex *v, *vp;
+        dpvertex *v, *vp, b;
         unsigned int ii, is, vi, vs;
         openglx_1o5_renderer_model_instance_group *og;
         openglx_1o5_renderer_model_material *gmat;
-        
+        float r_start, r_end;
         std::vector<uint16_t> indicies;
+        
+        r_start = 1;
+        r_end = 0;
         
         og = (openglx_1o5_renderer_model_instance_group *)g;
         gmat = (openglx_1o5_renderer_model_material *)mat;
@@ -347,6 +351,32 @@ namespace dragonpoop
         
         ip = vb->getIndexBuffer( &is );
         vp = vb->getVertexBuffer( &vs );
+        
+        for( vi = 0 ; vi < vs; vi++ )
+        {
+            v = &vp[ vi ];
+            b = *v;
+            b.start.pos.x = v->start.pos.x * r_start + v->end.pos.x * r_end;
+            b.start.pos.y = v->start.pos.y * r_start + v->end.pos.y * r_end;
+            b.start.pos.z = v->start.pos.z * r_start + v->end.pos.z * r_end;
+            b.start.pos.w = v->start.pos.w * r_start + v->end.pos.w * r_end;
+            b.start.normal.x = v->start.normal.x * r_start + v->end.normal.x * r_end;
+            b.start.normal.y = v->start.normal.y * r_start + v->end.normal.y * r_end;
+            b.start.normal.z = v->start.normal.z * r_start + v->end.normal.z * r_end;
+            b.start.normal.w = v->start.normal.w * r_start + v->end.normal.w * r_end;
+            nvb.addVertex( &b );
+        }
+        vp = nvb.getBuffer();
+        vs = nvb.getSize();
+        
+        for( ii = 0; ii < is; ii++ )
+        {
+            ix = &ip[ ii ];
+            vi = ix->i;
+            if( vi >= vs )
+                continue;
+            indicies.push_back( ix->i );
+        }
         
         static float rr;
         
@@ -363,28 +393,11 @@ namespace dragonpoop
         
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
        
-       // glBegin( GL_TRIANGLES );
-        
-        for( ii = 0; ii < is; ii++ )
-        {
-            ix = &ip[ ii ];
-            vi = ix->i;
-            if( vi >= vs )
-                continue;
-            v = &vp[ vi ];
-            indicies.push_back( ix->i );
-            
-//            glTexCoord2f( v->start.texcoords[ 0 ].s, v->start.texcoords[ 0 ].t );
-  //          glNormal3f( v->start.normal.x, v->start.normal.y, v->start.normal.z );
-    //        glVertex3f( v->start.pos.x, v->start.pos.y, v->start.pos.z );
-        }
         glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->start.texcoords[ 0 ] );
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->start.normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->start.pos );
-        //glDrawArrays( GL_TRIANGLES, 0, vs );
         glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
        
-      // glEnd();
     }
     
 };

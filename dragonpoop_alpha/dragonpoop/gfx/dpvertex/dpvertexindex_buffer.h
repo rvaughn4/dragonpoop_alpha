@@ -29,13 +29,13 @@ namespace dragonpoop
         //clear
         void clear( void );
         //add vertex
-        void addVertex( dpvertex *v, dpid id );
+        void addVertex( dpvertex *v );
+        //add vertex checking for unqiueness
+        void addVertexUnique( dpvertex *v );
         //get vertex buffer
         dpvertex *getVertexBuffer( unsigned int *p_size );
         //get index buffer
         dpindex *getIndexBuffer( unsigned int *p_size );
-        //clear redudant vertex lookup cache
-        void clearCache( void );
 
     };
     
