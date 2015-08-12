@@ -50,7 +50,9 @@ namespace dragonpoop
         //return ms played
         uint64_t getPlayTime( dpthread_lock *thd );
         //return closest frame after time
-        model_frame *getFrameAtTime( model_readlock *ml, uint64_t t );
+        model_frame *getFrameAtTime( model_readlock *ml, uint64_t t, uint64_t *p_time );
+        //return closest frame before time
+        model_frame *getFrameBeforeTime( model_readlock *ml, uint64_t t, uint64_t *p_time );
         
     };
     

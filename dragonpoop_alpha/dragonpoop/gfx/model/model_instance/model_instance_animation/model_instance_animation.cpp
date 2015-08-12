@@ -119,7 +119,7 @@ namespace dragonpoop
     }
     
     //return closest frame after time
-    model_frame *model_instance_animation::getFrameAtTime( model_readlock *ml, uint64_t t )
+    model_frame *model_instance_animation::getFrameAtTime( model_readlock *ml, uint64_t t, uint64_t *p_time )
     {
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
@@ -147,6 +147,40 @@ namespace dragonpoop
         if( !f )
             return 0;
         
+        *p_time = f->getTime();
+        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
+    }
+
+    //return closest frame before time
+    model_frame *model_instance_animation::getFrameBeforeTime( model_readlock *ml, uint64_t t, uint64_t *p_time )
+    {
+        std::list<model_animation_frame *> l;
+        std::list<model_animation_frame *>::iterator i;
+        model_animation_frame *p, *f;
+        
+        ml->getComponentsByParent( model_component_type_animation_frame, this->getId(), (std::list<model_component *> *)&l );
+        
+        f = 0;
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            
+            if( p->getTime() > t )
+                continue;
+            if( !f )
+            {
+                f = p;
+                continue;
+            }
+            if( f->getTime() > p->getTime() )
+                continue;
+            f = p;
+        }
+        
+        if( !f )
+            return 0;
+        
+        *p_time = f->getTime();
         return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
     }
     
