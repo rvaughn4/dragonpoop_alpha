@@ -22,6 +22,7 @@
 #include "../../renderer/renderer_model/renderer_model_ref.h"
 #include "../../renderer/renderer_model/renderer_model_readlock.h"
 #include "../../renderer/renderer_model/renderer_model_writelock.h"
+#include "model_animation/model_animation.h"
 
 namespace dragonpoop
 {
@@ -585,4 +586,25 @@ namespace dragonpoop
         this->getComponents( model_component_type_material, (std::list<model_component *> *)l );
     }
 
+    //add animation
+    model_animation *model::makeAnimation( dpid id )
+    {
+        model_animation *c;
+        c = new model_animation( id );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find animation
+    model_animation *model::findAnimation( dpid id )
+    {
+        return (model_animation *)this->findComponent( model_component_type_animation, id );
+    }
+    
+    //get animations
+    void model::getAnimations( std::list<model_animation *> *l )
+    {
+        this->getComponents( model_component_type_animation, (std::list<model_component *> *)l );
+    }
+    
 };

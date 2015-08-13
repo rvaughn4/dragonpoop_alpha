@@ -27,6 +27,7 @@ namespace dragonpoop
     class renderer_model_ref;
     class renderer_model;
     class model_material;
+    class model_animation;
 
     class model : public shared_obj
     {
@@ -155,6 +156,12 @@ namespace dragonpoop
         model_material *findMaterial( dpid id );
         //get materials
         void getMaterials( std::list<model_material *> *l );
+        //add animation
+        model_animation *makeAnimation( dpid id );
+        //find animation
+        model_animation *findAnimation( dpid id );
+        //get animations
+        void getAnimations( std::list<model_animation *> *l );
         
     public:
 

@@ -20,6 +20,8 @@
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../../dpvertex/dpvertex.h"
 #include "../../dpvertex/dpvertexindex_buffer.h"
+#include "model_instance_animation/model_instance_animation.h"
+#include "../model_animation/model_animation.h"
 
 namespace dragonpoop
 {
@@ -388,6 +390,8 @@ namespace dragonpoop
         shared_obj_guard o;
         renderer_model_instance_readlock *rl;
 
+        this->makeAnimations( ml );
+        
         this->makeVertexes( ml );
         this->makeTriangleVertexes( ml );
         this->makeTriangles( ml );
@@ -597,6 +601,57 @@ namespace dragonpoop
         vt.end = vt.start;
         
         vb->addVertexUnique( &vt );
+    }
+
+    //add animation
+    model_instance_animation *model_instance::makeAnimation( model_animation *g )
+    {
+        model_instance_animation *c;
+        c = new model_instance_animation( g );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find animation
+    model_instance_animation *model_instance::findAnimation( dpid id )
+    {
+        return (model_instance_animation *)this->findComponent( model_component_type_animation, id );
+    }
+    
+    //get animations
+    void model_instance::getAnimations( std::list<model_instance_animation *> *l )
+    {
+        this->getComponents( model_component_type_animation, (std::list<model_component *> *)l );
+    }
+    
+    //make animations
+    void model_instance::makeAnimations( model_writelock *ml )
+    {
+        std::list<model_animation *> l;
+        std::list<model_animation *>::iterator i;
+        model_animation *p;
+        std::list<model_instance_animation *> li;
+        std::list<model_instance_animation *>::iterator ii;
+        model_instance_animation *pi;
+        dpid_bytetree t;
+        
+        this->getAnimations( &li );
+        
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
+        
+        ml->getAnimations( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            if( t.findLeaf( p->getId() ) )
+                continue;
+            this->makeAnimation( p );
+        }
     }
     
 };

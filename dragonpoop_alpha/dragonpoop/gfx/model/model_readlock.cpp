@@ -173,4 +173,16 @@ namespace dragonpoop
         this->t->getMaterials( l );
     }
     
+    //find animation
+    model_animation *model_readlock::findAnimation( dpid id )
+    {
+        return this->t->findAnimation( id );
+    }
+    
+    //get animations
+    void model_readlock::getAnimations( std::list<model_animation *> *l )
+    {
+        this->t->getAnimations( l );
+    }
+    
 };

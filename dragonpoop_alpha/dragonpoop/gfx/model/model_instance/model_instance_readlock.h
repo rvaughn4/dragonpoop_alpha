@@ -15,6 +15,7 @@ namespace dragonpoop
     class model_instance_group;
     class model_instance_triangle_vertex;
     class dpvertexindex_buffer;
+    class model_instance_animation;
     
     class model_instance_readlock : public shared_obj_readlock
     {
@@ -62,6 +63,10 @@ namespace dragonpoop
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid );
         //populate vertex buffer for rendering
         void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
+        //find animation
+        model_instance_animation *findAnimation( dpid id );
+        //get animations
+        void getAnimations( std::list<model_instance_animation *> *l );
         
         friend class model_instance;
     };

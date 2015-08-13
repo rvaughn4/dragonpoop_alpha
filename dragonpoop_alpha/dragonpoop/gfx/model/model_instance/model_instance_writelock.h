@@ -18,6 +18,7 @@ namespace dragonpoop
     class model_writelock;
     class renderer_model_instance;
     class dpvertexindex_buffer;
+    class model_instance_animation;
     
     class model_instance_writelock : public shared_obj_writelock
     {
@@ -71,6 +72,10 @@ namespace dragonpoop
         void setRenderer( renderer_model_instance *r );
         //populate vertex buffer for rendering
         void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
+        //find animation
+        model_instance_animation *findAnimation( dpid id );
+        //get animations
+        void getAnimations( std::list<model_instance_animation *> *l );
 
         friend class model_instance;
     };

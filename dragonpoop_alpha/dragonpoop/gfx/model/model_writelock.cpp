@@ -288,4 +288,22 @@ namespace dragonpoop
         this->t->getMaterials( l );
     }
     
+    //add animation
+    model_animation *model_writelock::makeAnimation( dpid id )
+    {
+        return this->t->makeAnimation( id );
+    }
+    
+    //find animation
+    model_animation *model_writelock::findAnimation( dpid id )
+    {
+        return this->t->findAnimation( id );
+    }
+    
+    //get animations
+    void model_writelock::getAnimations( std::list<model_animation *> *l )
+    {
+        this->t->getAnimations( l );
+    }
+    
 };

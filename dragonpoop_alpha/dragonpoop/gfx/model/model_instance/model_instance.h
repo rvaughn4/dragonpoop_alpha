@@ -30,6 +30,8 @@ namespace dragonpoop
     class renderer_model_instance_ref;
     class model_group_triangle;
     class dpvertexindex_buffer;
+    class model_instance_animation;
+    class model_animation;
     
     class model_instance : public shared_obj
     {
@@ -124,6 +126,14 @@ namespace dragonpoop
         void setRenderer( renderer_model_instance *r );
         //populate vertex buffer for rendering
         void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
+        //add animation
+        model_instance_animation *makeAnimation( model_animation *g );
+        //find animation
+        model_instance_animation *findAnimation( dpid id );
+        //get animations
+        void getAnimations( std::list<model_instance_animation *> *l );
+        //make animations
+        void makeAnimations( model_writelock *ml );
         
     public:
         

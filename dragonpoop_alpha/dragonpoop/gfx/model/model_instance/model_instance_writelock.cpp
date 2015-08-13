@@ -125,4 +125,16 @@ namespace dragonpoop
         this->t->fillVertexBuffer( group_id, vb );
     }
 
+    //find animation
+    model_instance_animation *model_instance_writelock::findAnimation( dpid id )
+    {
+        return this->t->findAnimation( id );
+    }
+    
+    //get animations
+    void model_instance_writelock::getAnimations( std::list<model_instance_animation *> *l )
+    {
+        this->t->getAnimations( l );
+    }
+    
 };
