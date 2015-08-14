@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		79020BCC1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79020BCA1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp */; };
 		790A78861B68DBA40046C55C /* model_animation_frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A78831B68DBA40046C55C /* model_animation_frame.cpp */; };
 		790A788B1B68E3EA0046C55C /* model_frame_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A78881B68E3EA0046C55C /* model_frame_joint.cpp */; };
 		79291AD01B69A8BB00E85E62 /* model_vertex_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79291ACD1B69A8BB00E85E62 /* model_vertex_joint.cpp */; };
@@ -158,6 +159,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		79020BCA1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_animation.cpp; sourceTree = "<group>"; };
+		79020BCB1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_animation.h; sourceTree = "<group>"; };
 		790A78831B68DBA40046C55C /* model_animation_frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_animation_frame.cpp; sourceTree = "<group>"; };
 		790A78841B68DBA40046C55C /* model_animation_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_animation_frame.h; sourceTree = "<group>"; };
 		790A78851B68DBA40046C55C /* model_animation_frames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_animation_frames.h; sourceTree = "<group>"; };
@@ -1138,6 +1141,8 @@
 				79B9315A1B6E72F20054295B /* model_loader_ms3d_state_make_verts.h */,
 				79B931601B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp */,
 				79B931611B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.h */,
+				79020BCA1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp */,
+				79020BCB1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.h */,
 				79B931631B6E9C570054295B /* model_loader_ms3d_state_make_groups.cpp */,
 				79B931641B6E9C570054295B /* model_loader_ms3d_state_make_groups.h */,
 				794610D71B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.cpp */,
@@ -1361,6 +1366,7 @@
 				79E7447B1B6D02D9005BFDE0 /* model_loader_state_openfile.cpp in Sources */,
 				7970E8981B64EFB2008E8328 /* main.cpp in Sources */,
 				7970E9981B64F26E008E8328 /* openglx_1o5_renderer_writelock.cpp in Sources */,
+				79020BCC1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp in Sources */,
 				7970E9691B64F26E008E8328 /* dptask.cpp in Sources */,
 				7970E96F1B64F26E008E8328 /* dptaskpool_readlock.cpp in Sources */,
 				7970E9741B64F26E008E8328 /* dpthread_lock.cpp in Sources */,

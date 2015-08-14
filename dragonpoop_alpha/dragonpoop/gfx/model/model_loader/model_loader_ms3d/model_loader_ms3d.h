@@ -7,6 +7,7 @@
 #include "model_loader_ms3d_triangle.h"
 #include "model_loader_ms3d_group.h"
 #include "model_loader_ms3d_material.h"
+#include "model_loader_ms3d_animation.h"
 #include <vector>
 
 namespace dragonpoop
@@ -21,6 +22,8 @@ namespace dragonpoop
         std::atomic<std::vector<ms3d_model_triangle_m> *> tris;
         std::atomic<std::vector<ms3d_model_group_m> *> groups;
         std::atomic<std::vector<ms3d_model_material_m> *> materials;
+        ms3d_model_animation_section anim;
+        dpid anim_id;
         
     protected:
         
@@ -43,6 +46,8 @@ namespace dragonpoop
         friend class model_loader_ms3d_state_make_groups;
         friend class model_loader_ms3d_state_parse_materials;
         friend class model_loader_ms3d_state_make_materials;
+        friend class model_loader_ms3d_state_parse_animation;
+        friend class model_loader_ms3d_state_make_animation;
         
         friend class model_loader_ms3d_state_cleanup;
     };
