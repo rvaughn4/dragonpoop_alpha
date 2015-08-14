@@ -12,6 +12,7 @@ namespace dragonpoop
         this->tris = 0;
         this->groups = 0;
         this->materials = 0;
+        this->joints = 0;
     }
     
     //dtor

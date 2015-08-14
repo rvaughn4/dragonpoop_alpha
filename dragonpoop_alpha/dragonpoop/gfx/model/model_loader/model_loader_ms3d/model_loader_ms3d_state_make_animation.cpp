@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_make_animation.h"
-//#include "model_loader_ms3d_state_make_animation.h"
+#include "model_loader_ms3d_state_parse_joints.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_animation.h"
 #include "model_loader_ms3d_state_cleanup.h"
@@ -50,8 +50,7 @@ namespace dragonpoop
         ma->setRepeated( 1 );
         t->anim_id = m->getId();
         
-        //return new model_loader_ms3d_state_make_animation( this->b, this->m );
-        return new model_loader_ms3d_state_cleanup( this->b, this->m, 1 );
+        return new model_loader_ms3d_state_parse_joints( this->b, this->m );
     }
     
 };
