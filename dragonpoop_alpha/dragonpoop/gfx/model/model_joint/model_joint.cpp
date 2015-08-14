@@ -28,4 +28,16 @@ namespace dragonpoop
         *x = this->pos;
     }
 
+    //set rotation
+    void model_joint::setRotation( dpxyzw *x )
+    {
+        this->rot = *x;
+    }
+    
+    //get rotation
+    void model_joint::getRotation( dpxyzw *x )
+    {
+        *x = this->rot;
+    }
+    
 };

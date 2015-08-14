@@ -306,4 +306,22 @@ namespace dragonpoop
         this->t->getAnimations( l );
     }
     
+    //add joint
+    model_joint *model_writelock::makeJoint( dpid id )
+    {
+        return this->t->makeJoint( id );
+    }
+    
+    //find joint
+    model_joint *model_writelock::findJoint( dpid id )
+    {
+        return this->t->findJoint( id );
+    }
+    
+    //get joints
+    void model_writelock::getJoints( std::list<model_joint *> *l )
+    {
+        this->t->getJoints( l );
+    }
+    
 };

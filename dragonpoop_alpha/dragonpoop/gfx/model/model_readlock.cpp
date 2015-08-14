@@ -185,4 +185,16 @@ namespace dragonpoop
         this->t->getAnimations( l );
     }
     
+    //find joint
+    model_joint *model_readlock::findJoint( dpid id )
+    {
+        return this->t->findJoint( id );
+    }
+    
+    //get joints
+    void model_readlock::getJoints( std::list<model_joint *> *l )
+    {
+        this->t->getJoints( l );
+    }
+    
 };

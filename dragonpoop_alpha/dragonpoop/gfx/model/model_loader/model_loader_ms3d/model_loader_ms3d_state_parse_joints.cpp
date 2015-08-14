@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_parse_joints.h"
-//#include "model_loader_ms3d_state_make_joints.h"
+#include "model_loader_ms3d_state_make_joints.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_joint.h"
 #include "model_loader_ms3d_state_cleanup.h"
@@ -60,8 +60,7 @@ namespace dragonpoop
             v->push_back( h );
         }
         
-        return new model_loader_ms3d_state_cleanup( this->b, this->m, 1 );
-       // return new model_loader_ms3d_state_make_joints( this->b, this->m );
+        return new model_loader_ms3d_state_make_joints( this->b, this->m );
     }
     
     bool model_loader_ms3d_state_parse_joints__kf( dpbuffer *b, unsigned int max, std::vector<ms3d_model_joint_keyframe> *l )

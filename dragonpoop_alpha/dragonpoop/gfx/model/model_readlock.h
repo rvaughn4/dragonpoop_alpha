@@ -19,6 +19,7 @@ namespace dragonpoop
     class model_group_triangle;
     class model_material;
     class model_animation;
+    class model_joint;
 
     class model_readlock : public shared_obj_readlock
     {
@@ -92,6 +93,10 @@ namespace dragonpoop
         model_animation *findAnimation( dpid id );
         //get animations
         void getAnimations( std::list<model_animation *> *l );
+        //find joint
+        model_joint *findJoint( dpid id );
+        //get joints
+        void getJoints( std::list<model_joint *> *l );
 
         friend class model;
     };

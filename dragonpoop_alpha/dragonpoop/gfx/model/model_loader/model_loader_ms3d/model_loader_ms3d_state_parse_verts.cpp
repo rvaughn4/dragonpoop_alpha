@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_parse_verts.h"
-#include "model_loader_ms3d_state_make_verts.h"
+#include "model_loader_ms3d_state_parse_triangles.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_vertex.h"
 #include "model_loader_ms3d_state_cleanup.h"
@@ -54,7 +54,7 @@ namespace dragonpoop
             v->push_back( h );
         }
         
-        return new model_loader_ms3d_state_make_verts( this->b, this->m );
+        return new model_loader_ms3d_state_parse_triangles( this->b, this->m );
     }
     
 };

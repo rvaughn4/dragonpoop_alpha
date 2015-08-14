@@ -28,6 +28,7 @@ namespace dragonpoop
     class renderer_model;
     class model_material;
     class model_animation;
+    class model_joint;
 
     class model : public shared_obj
     {
@@ -162,6 +163,12 @@ namespace dragonpoop
         model_animation *findAnimation( dpid id );
         //get animations
         void getAnimations( std::list<model_animation *> *l );
+        //add joint
+        model_joint *makeJoint( dpid id );
+        //find joint
+        model_joint *findJoint( dpid id );
+        //get joints
+        void getJoints( std::list<model_joint *> *l );
         
     public:
 

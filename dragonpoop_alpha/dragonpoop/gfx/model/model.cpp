@@ -23,6 +23,7 @@
 #include "../../renderer/renderer_model/renderer_model_readlock.h"
 #include "../../renderer/renderer_model/renderer_model_writelock.h"
 #include "model_animation/model_animation.h"
+#include "model_joint/model_joint.h"
 
 namespace dragonpoop
 {
@@ -605,6 +606,27 @@ namespace dragonpoop
     void model::getAnimations( std::list<model_animation *> *l )
     {
         this->getComponents( model_component_type_animation, (std::list<model_component *> *)l );
+    }
+    
+    //add joint
+    model_joint *model::makeJoint( dpid id )
+    {
+        model_joint *c;
+        c = new model_joint( id );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find joint
+    model_joint *model::findJoint( dpid id )
+    {
+        return (model_joint *)this->findComponent( model_component_type_joint, id );
+    }
+    
+    //get joints
+    void model::getJoints( std::list<model_joint *> *l )
+    {
+        this->getComponents( model_component_type_joint, (std::list<model_component *> *)l );
     }
     
 };

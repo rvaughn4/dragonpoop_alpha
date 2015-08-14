@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_parse_materials.h"
-#include "model_loader_ms3d_state_make_materials.h"
+#include "model_loader_ms3d_state_parse_animation.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_loader_ms3d_material.h"
 #include "model_loader_ms3d_state_cleanup.h"
@@ -54,7 +54,7 @@ namespace dragonpoop
             v->push_back( h );
         }
         
-        return new model_loader_ms3d_state_make_materials( this->b, this->m );
+        return new model_loader_ms3d_state_parse_animation( this->b, this->m );
     }
     
 };
