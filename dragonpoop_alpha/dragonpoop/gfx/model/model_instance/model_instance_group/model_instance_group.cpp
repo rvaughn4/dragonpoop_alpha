@@ -7,7 +7,12 @@ namespace dragonpoop
     //ctor
     model_instance_group::model_instance_group( model_group *g ) : model_component( g->getId(), model_component_type_group )
     {
+        std::string s;
+        
         this->m_id = g->getMaterialId();
+        
+        g->getName( &s );
+        this->setName( &s );
     }
     
     //dtor

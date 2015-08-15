@@ -32,10 +32,10 @@ namespace dragonpoop
         this->g = (gfx_ref *)g->getRef();
         this->bDoRun = 1;
         this->bIsRun = 0;
-        this->bActive = 0;
+        this->bActive = 1;
         this->bActiveOld = 0;
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 15, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 14, 1 );
         tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
     }

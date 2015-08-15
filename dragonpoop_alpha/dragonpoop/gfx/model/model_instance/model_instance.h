@@ -32,6 +32,8 @@ namespace dragonpoop
     class dpvertexindex_buffer;
     class model_instance_animation;
     class model_animation;
+    class model_instance_joint;
+    class model_joint;
     
     class model_instance : public shared_obj
     {
@@ -134,6 +136,14 @@ namespace dragonpoop
         void getAnimations( std::list<model_instance_animation *> *l );
         //make animations
         void makeAnimations( model_writelock *ml );
+        //add joint
+        model_instance_joint *makeJoint( model_joint *g );
+        //find joint
+        model_instance_joint *findJoint( dpid id );
+        //get joints
+        void getJoints( std::list<model_instance_joint *> *l );
+        //make joints
+        void makeJoints( model_writelock *ml );
         
     public:
         

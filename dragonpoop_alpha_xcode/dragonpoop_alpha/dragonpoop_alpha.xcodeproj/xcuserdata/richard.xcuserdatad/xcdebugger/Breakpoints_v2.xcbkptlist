@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "461242730.799971"
+            timestampString = "461331649.033566"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "640"
-            endingLineNumber = "640"
+            startingLineNumber = "641"
+            endingLineNumber = "641"
             landmarkName = "model_instance::makeAnimations( model_writelock *ml )"
             landmarkType = "5">
          </BreakpointContent>

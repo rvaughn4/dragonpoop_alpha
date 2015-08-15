@@ -22,6 +22,7 @@
 #include "../../dpvertex/dpvertexindex_buffer.h"
 #include "model_instance_animation/model_instance_animation.h"
 #include "../model_animation/model_animation.h"
+#include "model_instance_joint/model_instance_joint.h"
 
 namespace dragonpoop
 {
@@ -391,7 +392,7 @@ namespace dragonpoop
         renderer_model_instance_readlock *rl;
 
         this->makeAnimations( ml );
-        
+        this->makeJoints( ml );
         this->makeVertexes( ml );
         this->makeTriangleVertexes( ml );
         this->makeTriangles( ml );
@@ -651,6 +652,57 @@ namespace dragonpoop
             if( t.findLeaf( p->getId() ) )
                 continue;
             this->makeAnimation( p );
+        }
+    }
+    
+    //add joint
+    model_instance_joint *model_instance::makeJoint( model_joint *g )
+    {
+        model_instance_joint *c;
+        c = new model_instance_joint( g );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find joint
+    model_instance_joint *model_instance::findJoint( dpid id )
+    {
+        return (model_instance_joint *)this->findComponent( model_component_type_joint, id );
+    }
+    
+    //get joints
+    void model_instance::getJoints( std::list<model_instance_joint *> *l )
+    {
+        this->getComponents( model_component_type_joint, (std::list<model_component *> *)l );
+    }
+    
+    //make joints
+    void model_instance::makeJoints( model_writelock *ml )
+    {
+        std::list<model_joint *> l;
+        std::list<model_joint *>::iterator i;
+        model_joint *p;
+        std::list<model_instance_joint *> li;
+        std::list<model_instance_joint *>::iterator ii;
+        model_instance_joint *pi;
+        dpid_bytetree t;
+        
+        this->getJoints( &li );
+        
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
+        
+        ml->getJoints( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            if( t.findLeaf( p->getId() ) )
+                continue;
+            this->makeJoint( p );
         }
     }
     

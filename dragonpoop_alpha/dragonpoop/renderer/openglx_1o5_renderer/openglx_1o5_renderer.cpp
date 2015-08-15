@@ -227,13 +227,13 @@ namespace dragonpoop
         switch (event.type)
         {
             case VisibilityNotify:
-                this->setActiveState( event.xvisibility.state == VisibilityUnobscured );
+                //this->setActiveState( event.xvisibility.state == VisibilityUnobscured );
                 break;
             case FocusIn:
-                this->setActiveState( 1 );
+                //this->setActiveState( 1 );
                 break;
             case FocusOut:
-                this->setActiveState( 0 );
+                //this->setActiveState( 0 );
                 break;
             case ConfigureNotify:
                 if(
