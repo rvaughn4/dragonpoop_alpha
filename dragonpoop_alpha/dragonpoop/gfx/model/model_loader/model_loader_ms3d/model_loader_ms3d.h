@@ -10,6 +10,7 @@
 #include "model_loader_ms3d_animation.h"
 #include "model_loader_ms3d_joint.h"
 #include <vector>
+#include <string>
 
 namespace dragonpoop
 {
@@ -26,6 +27,7 @@ namespace dragonpoop
         std::atomic<std::vector<ms3d_model_joint_m> *> joints;
         ms3d_model_animation_section anim;
         dpid anim_id;
+        std::string cmt;
         
     protected:
         
@@ -52,6 +54,7 @@ namespace dragonpoop
         friend class model_loader_ms3d_state_make_animation;
         friend class model_loader_ms3d_state_parse_joints;
         friend class model_loader_ms3d_state_make_joints;
+        friend class model_loader_ms3d_state_parse_comments;
         
         friend class model_loader_ms3d_state_cleanup;
     };

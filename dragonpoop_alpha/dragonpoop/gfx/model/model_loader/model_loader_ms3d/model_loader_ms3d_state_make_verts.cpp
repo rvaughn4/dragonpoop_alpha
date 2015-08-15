@@ -12,8 +12,6 @@
 #include "../../model_vertex/model_vertex.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
     
@@ -57,12 +55,12 @@ namespace dragonpoop
             mv = m->makeVertex( thd->genId() );
             if( !mv )
                 continue;
+            v->id = mv->getId();
             
             x.x = v->f.position.x;
             x.y = v->f.position.y;
             x.z = v->f.position.z;
             x.w = 1;
-            v->id = mv->getId();
             
             mv->setPosition( &x );
         }

@@ -7,14 +7,14 @@ namespace dragonpoop
 {
     
 #pragma pack( 1 )
-    struct ms3d_model_comment_section
+    struct ms3d_model_extras_section
     {
         int32_t version;
     };
 #pragma pack()
     
 #pragma pack( 1 )
-    struct ms3d_model_comment_header
+    struct ms3d_model_comment_section
     {
         int32_t cnt;
     };

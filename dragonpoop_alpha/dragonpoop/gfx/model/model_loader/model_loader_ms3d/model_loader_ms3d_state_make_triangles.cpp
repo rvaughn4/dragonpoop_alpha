@@ -12,8 +12,6 @@
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include "../../model_triangle_vertex/model_triangle_vertex.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
     
