@@ -39,7 +39,7 @@ namespace dragonpoop
         if( !this->readModelComments( b, ml ) )
             return new model_loader_ms3d_state_make_joints( this->b, this->m );
 
-        return new model_loader_ms3d_state_make_joints( this->b, this->m );
+        return new model_loader_ms3d_state_parse_vertex_extras( this->b, this->m );
     }
   
     //read comment into string

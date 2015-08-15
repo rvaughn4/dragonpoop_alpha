@@ -43,6 +43,7 @@ namespace dragonpoop
         
         
         friend class model_loader_ms3d_state_parse_verts;
+        friend class model_loader_ms3d_state_parse_vertex_extras;
         friend class model_loader_ms3d_state_make_verts;
         friend class model_loader_ms3d_state_parse_triangles;
         friend class model_loader_ms3d_state_make_triangles;
