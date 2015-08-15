@@ -29,6 +29,7 @@ namespace dragonpoop
     class model_material;
     class model_animation;
     class model_joint;
+    class model_vertex_joint;
 
     class model : public shared_obj
     {
@@ -169,6 +170,12 @@ namespace dragonpoop
         model_joint *findJoint( dpid id );
         //get joints
         void getJoints( std::list<model_joint *> *l );
+        //add vertex joint
+        model_vertex_joint *makeVertexJoint( dpid id, dpid vertex_id, dpid joint_id, float w );
+        //find vertex joint
+        model_vertex_joint *findVertexJoint( dpid id );
+        //get vertex joints
+        void getVertexJoints( std::list<model_vertex_joint *> *l );
         
     public:
 

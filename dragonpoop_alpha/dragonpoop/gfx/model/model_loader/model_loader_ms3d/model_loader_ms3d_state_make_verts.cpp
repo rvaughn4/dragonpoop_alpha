@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_make_verts.h"
-#include "model_loader_ms3d_state_make_triangles.h"
+#include "model_loader_ms3d_state_make_vertex_joints.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "../model_loader_state_fail.h"
 #include "../model_loader_writelock.h"
@@ -66,7 +66,7 @@ namespace dragonpoop
         }
         o.unlock();
         
-        return new model_loader_ms3d_state_make_triangles( this->b, this->m );
+        return new model_loader_ms3d_state_make_vertex_joints( this->b, this->m );
     }
     
 };

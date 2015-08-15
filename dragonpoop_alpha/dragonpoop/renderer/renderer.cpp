@@ -137,14 +137,14 @@ namespace dragonpoop
         else
             this->bDoRun = 0;
         
-        if( this->bActive != this->bActiveOld )
-        {
-            this->bActiveOld = this->bActive;
-            if( this->bActive )
-                tskl->setDelay( 14 );
-            else
-                tskl->setDelay( 500 );
-        }
+        //if( this->bActive != this->bActiveOld )
+        //{
+         //   this->bActiveOld = this->bActive;
+//            if( this->bActive )
+  //              tskl->setDelay( 14 );
+    //        else
+      //          tskl->setDelay( 500 );
+       // }
     }
 
     //render

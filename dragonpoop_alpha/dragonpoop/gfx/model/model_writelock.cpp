@@ -324,4 +324,22 @@ namespace dragonpoop
         this->t->getJoints( l );
     }
     
+    //add vertex joint
+    model_vertex_joint *model_writelock::makeVertexJoint( dpid id, dpid vertex_id, dpid joint_id, float w )
+    {
+        return this->t->makeVertexJoint( id, vertex_id, joint_id, w );
+    }
+    
+    //find vertex joint
+    model_vertex_joint *model_writelock::findVertexJoint( dpid id )
+    {
+        return this->t->findVertexJoint( id );
+    }
+    
+    //get vertex joints
+    void model_writelock::getVertexJoints( std::list<model_vertex_joint *> *l )
+    {
+        this->t->getVertexJoints( l );
+    }
+    
 };

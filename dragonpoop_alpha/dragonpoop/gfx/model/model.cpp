@@ -24,6 +24,7 @@
 #include "../../renderer/renderer_model/renderer_model_writelock.h"
 #include "model_animation/model_animation.h"
 #include "model_joint/model_joint.h"
+#include "model_vertex_joint/model_vertex_joint.h"
 
 namespace dragonpoop
 {
@@ -627,6 +628,28 @@ namespace dragonpoop
     void model::getJoints( std::list<model_joint *> *l )
     {
         this->getComponents( model_component_type_joint, (std::list<model_component *> *)l );
+    }
+    
+    //add vertex joint
+    model_vertex_joint *model::makeVertexJoint( dpid id, dpid vertex_id, dpid joint_id, float w )
+    {
+        model_vertex_joint *c;
+        c = new model_vertex_joint( id, vertex_id, joint_id );
+        c->setWeight( w );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find vertex joint
+    model_vertex_joint *model::findVertexJoint( dpid id )
+    {
+        return (model_vertex_joint *)this->findComponent( model_component_type_vertex_joint, id );
+    }
+    
+    //get vertex joints
+    void model::getVertexJoints( std::list<model_vertex_joint *> *l )
+    {
+        this->getComponents( model_component_type_vertex_joint, (std::list<model_component *> *)l );
     }
     
 };

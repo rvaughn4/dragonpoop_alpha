@@ -197,4 +197,16 @@ namespace dragonpoop
         this->t->getJoints( l );
     }
     
+    //find vertex joint
+    model_vertex_joint *model_readlock::findVertexJoint( dpid id )
+    {
+        return this->t->findVertexJoint( id );
+    }
+    
+    //get vertex joints
+    void model_readlock::getVertexJoints( std::list<model_vertex_joint *> *l )
+    {
+        this->t->getVertexJoints( l );
+    }
+    
 };

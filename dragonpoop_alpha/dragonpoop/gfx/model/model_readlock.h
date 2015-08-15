@@ -20,6 +20,7 @@ namespace dragonpoop
     class model_material;
     class model_animation;
     class model_joint;
+    class model_vertex_joint;
 
     class model_readlock : public shared_obj_readlock
     {
@@ -97,6 +98,10 @@ namespace dragonpoop
         model_joint *findJoint( dpid id );
         //get joints
         void getJoints( std::list<model_joint *> *l );
+        //find vertex joint
+        model_vertex_joint *findVertexJoint( dpid id );
+        //get vertex joints
+        void getVertexJoints( std::list<model_vertex_joint *> *l );
 
         friend class model;
     };
