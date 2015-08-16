@@ -1,6 +1,7 @@
 
 #include "dpbitmap_bitmap_loader.h"
 #include <fstream>
+#include <string.h>
 
 namespace dragonpoop
 {
@@ -323,12 +324,12 @@ namespace dragonpoop
         std::string s( fname );
         return bl.writeFile( &s );
     }
-    
+
     //saves a bitmap to memory, returns size used/needed when params are null
     unsigned int dpbitmap_bitmap_loader::saveMemory( dpbitmap *img, char *b, unsigned int sizeMax )
     {
         dpbitmap_bitmap_loader bl( img );
         return bl.writeHeader( b, sizeMax );
     }
-    
+
 };

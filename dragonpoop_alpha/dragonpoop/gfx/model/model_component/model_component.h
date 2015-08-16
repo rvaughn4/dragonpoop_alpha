@@ -4,6 +4,7 @@
 
 #include "../../../core/dpid/dpid.h"
 #include <string>
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -50,7 +51,7 @@ namespace dragonpoop
         virtual bool hasParent( dpid id );
 
     };
-    
+
 };
 
 #endif

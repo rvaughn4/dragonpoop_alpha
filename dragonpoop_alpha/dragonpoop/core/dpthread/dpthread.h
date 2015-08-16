@@ -4,6 +4,7 @@
 
 #include "dpthread_interface.h"
 #include <thread>
+#include <atomic>
 
 namespace dragonpoop
 {

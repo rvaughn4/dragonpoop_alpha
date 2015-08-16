@@ -5,6 +5,7 @@
 #include "shared_obj_interface.h"
 #include "shared_obj_refkernal.h"
 #include <list>
+#include <memory>
 
 namespace dragonpoop
 {
@@ -61,7 +62,7 @@ namespace dragonpoop
         virtual void unlink( void );
 
     };
-    
+
 };
 
 #endif

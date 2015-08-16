@@ -7,7 +7,7 @@
 #include <GL/glx.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <X11/extensions/xf86vmode.h>
+//#include <X11/extensions/xf86vmode.h>
 #include <X11/keysym.h>
 #include "../../gfx/dpmatrix/dpmatrix.h"
 
@@ -93,7 +93,7 @@ namespace dragonpoop
         friend class openglx_1o5_renderer_writelock;
         friend class openglx_1o5_renderer_ref;
     };
-    
+
 };
 
 #endif

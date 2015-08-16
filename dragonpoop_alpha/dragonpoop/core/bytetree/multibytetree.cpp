@@ -1,5 +1,7 @@
 
 #include "multibytetree.h"
+#include <string.h>
+#include <stdint.h>
 
 namespace dragonpoop
 {

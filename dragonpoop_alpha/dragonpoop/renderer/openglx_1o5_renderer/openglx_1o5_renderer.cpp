@@ -11,6 +11,7 @@
 
 #include <sstream>
 #include <vector>
+#include <string.h>
 
 namespace dragonpoop
 {
@@ -170,7 +171,7 @@ namespace dragonpoop
         GLfloat LightAmbient[]= { 0.5f, 0.5f, 0.5f, 1.0f };
         GLfloat LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };
         GLfloat LightPosition[]= { 0.0f, 0.0f, 20.0f, -10.0f };
-        
+
         glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);             // Setup The Ambient Light
         glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);             // Setup The Diffuse Light
         glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
@@ -179,7 +180,7 @@ namespace dragonpoop
         GLfloat LightAmbient2[]= { 0.5f, 0.5f, 0.5f, 1.0f };
         GLfloat LightDiffuse2[]= { 1.0f, 0.8f, 0.3f, 1.0f };
         GLfloat LightPosition2[]= { 0.0f, 0.0f, 10.0f, -5.0f };
-        
+
         glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient2);             // Setup The Ambient Light
         glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse2);             // Setup The Diffuse Light
         glLightfv(GL_LIGHT2, GL_POSITION,LightPosition2);
@@ -209,14 +210,14 @@ namespace dragonpoop
     void openglx_1o5_renderer::runWindow( void )
     {
         XEvent event;
-        
+
         if( this->fps != this->getFps() )
         {
             std::stringstream ss;
-            
+
             this->fps = this->getFps();
             ss << "Dragonpoop: its as smooth as silk! " << (int)this->fps << " fps";
-            
+
             XSetStandardProperties( this->gl.dpy, this->gl.win, ss.str().c_str(), ss.str().c_str(), None, NULL, 0, NULL );
         }
 
@@ -237,9 +238,9 @@ namespace dragonpoop
                 break;
             case ConfigureNotify:
                 if(
-                   ( event.xconfigure.width != this->gl.width )
+                   ( event.xconfigure.width != (int)this->gl.width )
                    ||
-                   ( event.xconfigure.height != this->gl.height )
+                   ( event.xconfigure.height != (int)this->gl.height )
                    )
                 {
                     this->gl.width = event.xconfigure.width;
@@ -299,10 +300,10 @@ namespace dragonpoop
     //prepare for rendering world
     void openglx_1o5_renderer::prepareWorldRender( unsigned int w, unsigned int h )
     {
-        float fw, fh;
+//        float fw, fh;
 
-        fw = w * 0.5f;
-        fh = h * 0.5f;
+  //      fw = w * 0.5f;
+    //    fh = h * 0.5f;
 
         glClearDepth( 1.0f );
         glClear( GL_DEPTH_BUFFER_BIT );
@@ -341,17 +342,17 @@ namespace dragonpoop
         openglx_1o5_renderer_model_material *gmat;
         float r_start, r_end;
         std::vector<uint16_t> indicies;
-        
+
         r_start = 1;
         r_end = 0;
-        
+
         og = (openglx_1o5_renderer_model_instance_group *)g;
         gmat = (openglx_1o5_renderer_model_material *)mat;
         vb = og->getVertexBuffer();
-        
+
         ip = vb->getIndexBuffer( &is );
         vp = vb->getVertexBuffer( &vs );
-        
+
         for( vi = 0 ; vi < vs; vi++ )
         {
             v = &vp[ vi ];
@@ -368,7 +369,7 @@ namespace dragonpoop
         }
         vp = nvb.getBuffer();
         vs = nvb.getSize();
-        
+
         for( ii = 0; ii < is; ii++ )
         {
             ix = &ip[ ii ];
@@ -377,12 +378,12 @@ namespace dragonpoop
                 continue;
             indicies.push_back( ix->i );
         }
-        
+
         static float rr;
-        
+
         glLoadMatrixf( this->world_m.getRaw4by4() );
         rr += 2.0f;
-        
+
         glRotatef( rr, 0, 1, 0 );
         GLfloat LightPosition[]= { 0.0f, 0.0f, 8.0f, 0.0f };
         glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
@@ -390,14 +391,14 @@ namespace dragonpoop
         glLoadMatrixf( this->world_m.getRaw4by4() );
         glTranslatef( 0, 0, -4 );
         glRotatef( rr * 0.2f, 0, 1, 0 );
-        
+
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
-       
+
         glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->start.texcoords[ 0 ] );
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->start.normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->start.pos );
         glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
-       
+
     }
-    
+
 };
