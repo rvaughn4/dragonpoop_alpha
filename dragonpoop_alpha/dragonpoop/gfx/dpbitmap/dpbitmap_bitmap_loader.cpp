@@ -190,7 +190,7 @@ namespace dragonpoop
         while( scn < wu * sb )
             scn += 4;
 
-        for( pp.y = 0; pp.y < hu; pp.y++ )
+        for( pp.y = 0; pp.y < (int)hu; pp.y++ )
         {
 
             if( h <= 0 )
@@ -198,7 +198,7 @@ namespace dragonpoop
             else
                 py = ( hu - pp.y - 1 ) * scn;
 
-            for( pp.x = 0; pp.x < wu; pp.x++ )
+            for( pp.x = 0; pp.x < (int)wu; pp.x++ )
             {
 
                 if( w >= 0 )
@@ -271,10 +271,10 @@ namespace dragonpoop
         while( scn < w * sb )
             scn += 4;
 
-        for( pp.y = 0; pp.y < h; pp.y++ )
+        for( pp.y = 0; pp.y < (int)h; pp.y++ )
         {
             py = (h - pp.y - 1) * scn;
-            for( pp.x = 0; pp.x < w; pp.x++ )
+            for( pp.x = 0; pp.x < (int)w; pp.x++ )
             {
                 px = pp.x * sb;
                 pi = py + px;

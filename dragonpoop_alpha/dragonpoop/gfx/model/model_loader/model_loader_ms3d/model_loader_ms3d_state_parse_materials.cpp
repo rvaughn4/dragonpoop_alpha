@@ -45,7 +45,7 @@ namespace dragonpoop
         if( this->b->readBytes( (uint8_t *)&sh, sizeof( sh ) ) < sizeof( sh ) )
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
 
-        memset( &h, 0, sizeof( h ) );
+        memset( &h.f, 0, sizeof( h.f ) );
         v->clear();
 
         for( i = 0; i < sh.cnt; i++ )

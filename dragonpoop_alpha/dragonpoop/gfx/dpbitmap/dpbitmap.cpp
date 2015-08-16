@@ -99,9 +99,9 @@ namespace dragonpoop
         this->reset();
         this->resize( w, h );
 
-        for( p.y = 0; p.y < h; p.y++ )
+        for( p.y = 0; p.y < (int)h; p.y++ )
         {
-            for( p.x = 0; p.x < w; p.x++ )
+            for( p.x = 0; p.x < (int)w; p.x++ )
             {
                 c->getColor( &r, &p );
                 this->setColor( &r, &p, 0 );
@@ -527,30 +527,30 @@ namespace dragonpoop
 
         ext = sname.substr( lext + 1 );
 
-        
+
         if( ext.compare( "jpg" ) == 0 )
         {
             ext.assign( "bmp" );
             sname.append( ".bmp" );
         }
-        
+
         if( ext.compare( "bmp" ) == 0 )
             return dpbitmap_bitmap_loader::loadFile( this, sname.c_str() );
-        
+
         return 0;
     }
-    
+
     //saves a file, detects file type by extension
     bool dpbitmap::saveFile( const char *fname )
     {
         std::string sname, ext;
         std::size_t lext;
-        
+
         sname.assign( fname );
         lext = sname.find_last_of( "." );
         if( lext >= sname.size() )
             return 0;
-        
+
         ext = sname.substr( lext + 1 );
 
         if( ext.compare( "jpg" ) == 0 )
@@ -558,12 +558,12 @@ namespace dragonpoop
             ext.assign( "bmp" );
             sname.append( ".bmp" );
         }
-            
+
         if( ext.compare( "bmp" ) == 0 )
             return dpbitmap_bitmap_loader::saveFile( this, sname.c_str() );
-        
+
         return 0;
     }
-    
+
 };
 

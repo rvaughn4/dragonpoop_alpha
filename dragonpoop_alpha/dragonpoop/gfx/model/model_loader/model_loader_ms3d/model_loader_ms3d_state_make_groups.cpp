@@ -14,20 +14,20 @@
 
 namespace dragonpoop
 {
-    
+
     //ctor
     model_loader_ms3d_state_make_groups::model_loader_ms3d_state_make_groups( dpbuffer *b, model_ref *m )
     {
         this->b = b;
         this->m = m;
     }
-    
+
     //dtor
     model_loader_ms3d_state_make_groups::~model_loader_ms3d_state_make_groups( void )
     {
-        
+
     }
-    
+
     //run state, returns next state
     model_loader_state *model_loader_ms3d_state_make_groups::run( dpthread_lock *thd, model_loader_writelock *ml )
     {
@@ -37,13 +37,13 @@ namespace dragonpoop
         model_loader_ms3d *t;
         ms3d_model_group_m *v;
         std::vector<ms3d_model_group_m> *l;
-        
+
         m = (model_writelock *)o.writeLock( this->m );
         if( !m )
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
-        
+
         t = (model_loader_ms3d *)ml->getLoader();
-        
+
         l = t->groups;
         e = (unsigned int)l->size();
         for( i = 0; i < e; i++ )
@@ -52,11 +52,11 @@ namespace dragonpoop
             this->makeGroup( thd, ml, v, m );
         }
         o.unlock();
-        
+
         return new model_loader_ms3d_state_make_animation( this->b, this->m );
     }
-    
-    
+
+
     //make triangle
     void model_loader_ms3d_state_make_groups::makeGroup( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_group_m *t, model_writelock *m )
     {
@@ -66,14 +66,14 @@ namespace dragonpoop
         model_loader_ms3d *mld;
         std::vector<ms3d_model_material_m> *l;
 
-        
+
         mv = m->makeGroup( thd->genId() );
         if( !mv )
             return;
         t->id = mv->getId();
         s.assign( (char *)t->f.name, sizeof( t->f.name ) );
         mv->setName( &s );
-        
+
         if( t->e.index >= 0 )
         {
             mld = (model_loader_ms3d *)ml->getLoader();
@@ -83,28 +83,27 @@ namespace dragonpoop
             if( mi < ms )
                 mv->setMaterialId( ( *l )[ mi ].id );
         }
-        
+
         e = t->f.cntTriangles;
         for( i = 0; i < e; i++ )
             this->makeGroupTriangle( thd, ml, t, m, mv, t->triangles[ i ].index );
     }
-    
+
     //make triangle vertex
     void model_loader_ms3d_state_make_groups::makeGroupTriangle( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_group_m *t, model_writelock *m, model_group *tr, int vid )
     {
-        model_group_triangle *tv;
         ms3d_model_triangle_m *v;
         model_loader_ms3d *ldr;
         std::vector<ms3d_model_triangle_m> *vz;
- 
+
         ldr = (model_loader_ms3d *)ml->getLoader();
         vz = ldr->tris;
-        
-        if( vid < 0 || vid >= vz->size() )
+
+        if( vid < 0 || vid >= (int)vz->size() )
             return;
         v = &( ( *vz )[ vid ] );
-        
-        tv = m->makeGroupTriangle( thd->genId(), t->id, v->id );
+
+        m->makeGroupTriangle( thd->genId(), t->id, v->id );
     }
-    
+
 };
