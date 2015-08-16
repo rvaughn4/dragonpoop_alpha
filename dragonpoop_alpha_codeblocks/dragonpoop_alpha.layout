@@ -16,11 +16,20 @@
 	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpbitmap/dpbitmap_bitmap_loader.cpp" open="0" top="0" tabpos="6">
 		<Cursor position="8739" topLine="262" />
 	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model.cpp" open="1" top="1" tabpos="3">
+		<Cursor position="1529" topLine="24" />
+	</File>
 	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_component/model_component.h" open="0" top="0" tabpos="8">
 		<Cursor position="148" topLine="0" />
 	</File>
 	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_component/model_component_tree_bytype.h" open="0" top="0" tabpos="9">
 		<Cursor position="169" topLine="0" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="12030" topLine="387" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.h" open="1" top="0" tabpos="2">
+		<Cursor position="4755" topLine="116" />
 	</File>
 	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader.cpp" open="0" top="0" tabpos="10">
 		<Cursor position="167" topLine="0" />

@@ -36,7 +36,7 @@ namespace dragonpoop
         this->id = id;
         this->r = 0;
         this->gtsk = new model_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 1000, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 500, 1 );
         tp->addTask( this->tsk );
     }
 
@@ -158,28 +158,28 @@ namespace dragonpoop
        // this->comps.bytype.addLeaf( c->getType(), c );
         //this->comps.bytypeid.addLeaf( c->getType(), c->getId(), c );
     }
-    
+
     //add component, 1 parent
     void model::addComponent( model_component *c, dpid p1 )
     {
         this->addComponent( c );
         //this->comps.bytypeowner.addLeaf( c->getType(), p1, c );
     }
-    
+
     //add component, 2 parents
     void model::addComponent( model_component *c, dpid p1, dpid p2 )
     {
         this->addComponent( c, p1 );
         //this->comps.bytypeowner.addLeaf( c->getType(), p2, c );
     }
-    
+
     //delete all components
     void model::deleteComponents( void )
     {
         std::list<model_component *> *l, d;
         std::list<model_component *>::iterator i;
         model_component *c;
-        
+
         l = &this->comps.lst;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -187,7 +187,7 @@ namespace dragonpoop
             d.push_back( c );
         }
         l->clear();
-        
+
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -195,16 +195,16 @@ namespace dragonpoop
             delete c;
         }
     }
-    
+
     //find component by type and id
     model_component *model::findComponent( uint16_t mtype, dpid id )
     {
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;
         model_component *c;
-        
+
         //return this->comps.bytypeid.findLeaf( mtype, id );
-        
+
         l = &this->comps.lst;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -215,10 +215,10 @@ namespace dragonpoop
                 continue;
             return c;
         }
-        
+
         return 0;
     }
-    
+
     //find components by type
     void model::getComponents( uint16_t mtype, std::list<model_component *> *ll )
     {
@@ -236,14 +236,14 @@ namespace dragonpoop
             ll->push_back( c );
         }
     }
-    
+
     //find components by type and 1 parent
     void model::getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *ll )
     {
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;
         model_component *c;
-        
+
         //this->comps.bytypeowner.findLeaves( mtype, p1, l );
         l = &this->comps.lst;
         for( i = l->begin(); i != l->end(); ++i )
@@ -256,14 +256,14 @@ namespace dragonpoop
             ll->push_back( c );
         }
     }
-    
+
     //find components by type and 2 parents
     void model::getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *ll )
     {
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;
         model_component *c;
-        
+
         //this->comps.bytypeowner.findLeaves( mtype, p1, l );
         l = &this->comps.lst;
         for( i = l->begin(); i != l->end(); ++i )
@@ -278,13 +278,13 @@ namespace dragonpoop
             ll->push_back( c );
         }
     }
-    
+
     //remove component
     void model::removeComponent( model_component *c )
     {
         this->comps.lst.remove( c );
     }
-    
+
     //add vertex
     model_vertex *model::makeVertex( dpid id )
     {
@@ -293,13 +293,13 @@ namespace dragonpoop
         this->addComponent( c );
         return c;
     }
-    
+
     //find vertex
     model_vertex *model::findVertex( dpid id )
     {
         return (model_vertex *)this->findComponent( model_component_type_vertex, id );
     }
-    
+
     //get vertexes
     void model::getVertexes( std::list<model_vertex *> *l )
     {
@@ -314,19 +314,19 @@ namespace dragonpoop
         this->addComponent( c );
         return c;
     }
-    
+
     //find triangle
     model_triangle *model::findTriangle( dpid id )
     {
         return (model_triangle *)this->findComponent( model_component_type_triangle, id );
     }
-    
+
     //get triangles
     void model::getTriangles( std::list<model_triangle *> *l )
     {
         this->getComponents( model_component_type_triangle, (std::list<model_component *> *)l );
     }
-    
+
     //add group
     model_group *model::makeGroup( dpid id )
     {
@@ -335,19 +335,19 @@ namespace dragonpoop
         this->addComponent( c );
         return c;
     }
-    
+
     //find group
     model_group *model::findGroup( dpid id )
     {
         return (model_group *)this->findComponent( model_component_type_group, id );
     }
-    
+
     //get groups
     void model::getGroups( std::list<model_group *> *l )
     {
         this->getComponents( model_component_type_group, (std::list<model_component *> *)l );
     }
-  
+
     //add triangle vertex
     model_triangle_vertex *model::makeTriangleVertex( dpid id, dpid triangle_id, dpid vertex_id )
     {
@@ -356,37 +356,37 @@ namespace dragonpoop
         this->addComponent( c, triangle_id, vertex_id );
         return c;
     }
-    
+
     //find triangle vertex
     model_triangle_vertex *model::findTriangleVertex( dpid id )
     {
         return (model_triangle_vertex *)this->findComponent( model_component_type_triangle_vertex, id );
     }
-    
+
     //find triangle vertex
     model_triangle_vertex *model::findTriangleVertex( dpid triangle_id, dpid vertex_id )
     {
         std::list<model_triangle_vertex *> l;
-        
+
         this->getComponentsByParents( model_component_type_triangle_vertex, triangle_id, vertex_id, (std::list<model_component *> *)&l );
 
         if( l.size() < 1 )
             return 0;
         return l.front();
     }
-    
+
     //get triangle vertexes
     void model::getTriangleVertexes( std::list<model_triangle_vertex *> *l )
     {
         this->getComponents( model_component_type_triangle_vertex, (std::list<model_component *> *)l );
     }
-    
+
     //get triangle vertexes by triangle or vertex id
     void model::getTriangleVertexes( std::list<model_triangle_vertex *> *l, dpid pid )
     {
         this->getComponentsByParent( model_component_type_triangle_vertex, pid, (std::list<model_component *> *)l );
     }
-    
+
     //add a group triangle
     model_group_triangle *model::makeGroupTriangle( dpid id, dpid group_id, dpid triangle_id )
     {
@@ -395,44 +395,44 @@ namespace dragonpoop
         this->addComponent( c, group_id, triangle_id );
         return c;
     }
-    
+
     //find a group triangle
     model_group_triangle *model::findGroupTriangle( dpid id )
     {
         return (model_group_triangle *)this->findComponent( model_component_type_group_triangle, id );
     }
-    
+
     //find a group triangle
     model_group_triangle *model::findGroupTriangle( dpid group_id, dpid triangle_id )
     {
         std::list<model_group_triangle *> l;
-        
+
         this->getComponentsByParents( model_component_type_group_triangle, group_id, triangle_id, (std::list<model_component *> *)&l );
-        
+
         if( l.size() < 1 )
             return 0;
         return l.front();
     }
-    
+
     //get all group triangles
     void model::getGroupTriangles( std::list<model_group_triangle *> *l )
     {
         this->getComponents( model_component_type_group_triangle, (std::list<model_component *> *)l );
     }
-    
+
     //get all group triangles belonging to a group or triangle id
     void model::getGroupTriangles( std::list<model_group_triangle *> *l, dpid pid )
     {
         this->getComponentsByParent( model_component_type_group_triangle, pid, (std::list<model_component *> *)l );
     }
-  
+
     //delete instances
     void model::deleteInstances( void )
     {
         std::list<model_instance *> *l, d;
         std::list<model_instance *>::iterator i;
         model_instance *p;
-        
+
         l = &this->instances;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -448,7 +448,7 @@ namespace dragonpoop
             delete p;
         }
     }
-    
+
     //run instances
     void model::runInstances( dpthread_lock *thd, model_writelock *g )
     {
@@ -457,7 +457,7 @@ namespace dragonpoop
         model_instance *p;
         model_instance_writelock *pl;
         shared_obj_guard o;
-        
+
         l = &this->instances;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -469,7 +469,7 @@ namespace dragonpoop
             //
             //d.push_back( p );
         }
-        
+
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -477,7 +477,7 @@ namespace dragonpoop
             delete p;
         }
     }
-    
+
     //sync instances
     void model::syncInstances( model_writelock *g )
     {
@@ -486,7 +486,7 @@ namespace dragonpoop
         model_instance *p;
         model_instance_writelock *pl;
         shared_obj_guard o;
-        
+
         l = &this->instances;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -497,14 +497,14 @@ namespace dragonpoop
             pl->sync( g );
         }
     }
-    
+
     //create instance
     model_instance_ref *model::makeInstance( dpid id, model_writelock *ml )
     {
         model_instance *p;
         model_instance_writelock *pl;
         shared_obj_guard o;
-        
+
         p = new model_instance( id, ml );
         if( !p )
             return 0;
@@ -514,7 +514,7 @@ namespace dragonpoop
             return 0;
         return (model_instance_ref *)pl->getRef();
     }
-    
+
     //get instances
     void model::getInstances( std::list<model_instance_ref *> *ll )
     {
@@ -523,7 +523,7 @@ namespace dragonpoop
         model_instance *p;
         model_instance_writelock *pl;
         shared_obj_guard o;
-        
+
         l = &this->instances;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -534,7 +534,7 @@ namespace dragonpoop
             ll->push_back( (model_instance_ref *)pl->getRef() );
         }
     }
-    
+
     //sync model instance with changes
     void model::sync( model_writelock *ml )
     {
@@ -542,7 +542,7 @@ namespace dragonpoop
         renderer_model_readlock *rl;
 
         this->syncInstances( ml );
-        
+
         if( !this->r )
             return;
         rl = (renderer_model_readlock *)o.tryReadLock( this->r, 400 );
@@ -556,17 +556,17 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         renderer_model_writelock *rl;
-        
+
         if( this->r )
             delete this->r;
         this->r = 0;
-        
+
         rl = (renderer_model_writelock *)o.tryWriteLock( r, 1000 );
         if( !rl )
             return;
         this->r = (renderer_model_ref *)rl->getRef();
     }
-  
+
     //add material
     model_material *model::makeMaterial( dpid id )
     {
@@ -575,13 +575,13 @@ namespace dragonpoop
         this->addComponent( c );
         return c;
     }
-    
+
     //find material
     model_material *model::findMaterial( dpid id )
     {
         return (model_material *)this->findComponent( model_component_type_material, id );
     }
-    
+
     //get materials
     void model::getMaterials( std::list<model_material *> *l )
     {
@@ -596,19 +596,19 @@ namespace dragonpoop
         this->addComponent( c );
         return c;
     }
-    
+
     //find animation
     model_animation *model::findAnimation( dpid id )
     {
         return (model_animation *)this->findComponent( model_component_type_animation, id );
     }
-    
+
     //get animations
     void model::getAnimations( std::list<model_animation *> *l )
     {
         this->getComponents( model_component_type_animation, (std::list<model_component *> *)l );
     }
-    
+
     //add joint
     model_joint *model::makeJoint( dpid id )
     {
@@ -617,19 +617,19 @@ namespace dragonpoop
         this->addComponent( c );
         return c;
     }
-    
+
     //find joint
     model_joint *model::findJoint( dpid id )
     {
         return (model_joint *)this->findComponent( model_component_type_joint, id );
     }
-    
+
     //get joints
     void model::getJoints( std::list<model_joint *> *l )
     {
         this->getComponents( model_component_type_joint, (std::list<model_component *> *)l );
     }
-    
+
     //add vertex joint
     model_vertex_joint *model::makeVertexJoint( dpid id, dpid vertex_id, dpid joint_id, float w )
     {
@@ -639,17 +639,17 @@ namespace dragonpoop
         this->addComponent( c );
         return c;
     }
-    
+
     //find vertex joint
     model_vertex_joint *model::findVertexJoint( dpid id )
     {
         return (model_vertex_joint *)this->findComponent( model_component_type_vertex_joint, id );
     }
-    
+
     //get vertex joints
     void model::getVertexJoints( std::list<model_vertex_joint *> *l )
     {
         this->getComponents( model_component_type_vertex_joint, (std::list<model_component *> *)l );
     }
-    
+
 };
