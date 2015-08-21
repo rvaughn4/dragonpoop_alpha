@@ -13,6 +13,7 @@ namespace dragonpoop
         this->groups = 0;
         this->materials = 0;
         this->joints = 0;
+        this->frames = 0;
     }
     
     //dtor

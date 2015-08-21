@@ -32,6 +32,7 @@ namespace dragonpoop
         std::vector<ms3d_model_group_m> *g;
         std::vector<ms3d_model_material_m> *mt;
         std::vector<ms3d_model_joint_m> *j;
+        std::vector<ms3d_model_frame> *f;
         model_loader_ms3d *mld;
         
         
@@ -51,6 +52,9 @@ namespace dragonpoop
         
         j = mld->joints;
         delete j;
+        
+        f = mld->frames;
+        delete f;
         
         delete this->m;
         

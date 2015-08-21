@@ -25,6 +25,7 @@ namespace dragonpoop
         std::atomic<std::vector<ms3d_model_group_m> *> groups;
         std::atomic<std::vector<ms3d_model_material_m> *> materials;
         std::atomic<std::vector<ms3d_model_joint_m> *> joints;
+        std::atomic<std::vector<ms3d_model_frame> *> frames;
         ms3d_model_animation_section anim;
         dpid anim_id;
         std::string cmt;
@@ -57,6 +58,7 @@ namespace dragonpoop
         friend class model_loader_ms3d_state_parse_joints;
         friend class model_loader_ms3d_state_make_joints;
         friend class model_loader_ms3d_state_parse_comments;
+        friend class model_loader_ms3d_state_make_frames;
         
         friend class model_loader_ms3d_state_cleanup;
     };
