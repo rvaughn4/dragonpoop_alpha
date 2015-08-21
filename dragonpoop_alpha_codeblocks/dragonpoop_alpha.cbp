@@ -31,10 +31,12 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-std=c++11" />
+			<Add directory="/opt/X11/include" />
 		</Compiler>
 		<Linker>
 			<Add library="GL" />
 			<Add library="X11" />
+			<Add directory="/opt/X11/lib" />
 		</Linker>
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/bytetree/bytetree.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/bytetree/bytetree.h" />
@@ -387,7 +389,10 @@
 		<Unit filename="../dragonpoop_alpha/main.cpp" />
 		<Extensions>
 			<code_completion />
-			<debugger />
+			<debugger>
+				<search_path add="/opt/local/var/macports/sources/rsync.macports.org/release/tarballs/ports/devel/gdb" />
+			</debugger>
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

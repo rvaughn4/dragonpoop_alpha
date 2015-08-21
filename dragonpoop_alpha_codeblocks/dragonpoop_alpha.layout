@@ -1,76 +1,129 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../dragonpoop_alpha/dragonpoop/core/bytetree/multibytetree.cpp" open="0" top="0" tabpos="2">
-		<Cursor position="67" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_triangle_vertex/model_instance_triangle_vertex.h" open="1" top="1" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="496" topLine="6" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.h" open="0" top="0" tabpos="5">
-		<Cursor position="129" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_groups.cpp" open="0" top="0" tabpos="19" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/core/shared_obj/shared_obj.h" open="0" top="0" tabpos="4">
-		<Cursor position="167" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/core/shared_obj/shared_obj.h" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpbitmap/dpbitmap.cpp" open="0" top="0" tabpos="18">
-		<Cursor position="2023" topLine="90" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_verts.cpp" open="0" top="0" tabpos="15" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpbitmap/dpbitmap_bitmap_loader.cpp" open="0" top="0" tabpos="6">
-		<Cursor position="8739" topLine="262" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model.cpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model.cpp" open="1" top="1" tabpos="3">
-		<Cursor position="1529" topLine="24" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpbitmap/dpbitmap.cpp" open="0" top="0" tabpos="18" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_component/model_component.h" open="0" top="0" tabpos="8">
-		<Cursor position="148" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_component/model_component.h" open="0" top="0" tabpos="8" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_component/model_component_tree_bytype.h" open="0" top="0" tabpos="9">
-		<Cursor position="169" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_materials.cpp" open="0" top="0" tabpos="13" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp" open="1" top="0" tabpos="1">
-		<Cursor position="12030" topLine="387" />
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer.cpp" open="0" top="0" tabpos="16" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.h" open="1" top="0" tabpos="2">
-		<Cursor position="4755" topLine="116" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_vertex_joints.cpp" open="0" top="0" tabpos="20" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader.cpp" open="0" top="0" tabpos="10">
-		<Cursor position="167" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpbitmap/dpbitmap_bitmap_loader.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_material.h" open="0" top="0" tabpos="17">
-		<Cursor position="851" topLine="24" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_material/model_material.cpp" open="0" top="0" tabpos="22" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_groups.cpp" open="0" top="0" tabpos="19">
-		<Cursor position="3201" topLine="83" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader.cpp" open="0" top="0" tabpos="10" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_vertex_joints.cpp" open="0" top="0" tabpos="20">
-		<Cursor position="3290" topLine="72" />
+	<File name="../dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.h" open="1" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="494" topLine="20" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_comments.cpp" open="0" top="0" tabpos="21">
-		<Cursor position="2103" topLine="50" />
+	<File name="../dragonpoop_alpha/main.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_groups.cpp" open="0" top="0" tabpos="11">
-		<Cursor position="926" topLine="29" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_comments.cpp" open="0" top="0" tabpos="21" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_joints.cpp" open="0" top="0" tabpos="12">
-		<Cursor position="1469" topLine="33" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_triangles.cpp" open="0" top="0" tabpos="14" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_materials.cpp" open="0" top="0" tabpos="13">
-		<Cursor position="1367" topLine="35" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_triangles.cpp" open="0" top="0" tabpos="14">
-		<Cursor position="326" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_verts.cpp" open="0" top="0" tabpos="15">
-		<Cursor position="323" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_material.h" open="0" top="0" tabpos="17" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_material/model_material.cpp" open="0" top="0" tabpos="22">
-		<Cursor position="0" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_joints.cpp" open="0" top="0" tabpos="12" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer.cpp" open="0" top="0" tabpos="16">
-		<Cursor position="9905" topLine="291" />
+	<File name="../dragonpoop_alpha/dragonpoop/core/bytetree/multibytetree.cpp" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer.h" open="0" top="0" tabpos="7">
-		<Cursor position="191" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer.h" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
-	<File name="../dragonpoop_alpha/main.cpp" open="0" top="0" tabpos="1">
-		<Cursor position="0" topLine="0" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_parse_groups.cpp" open="0" top="0" tabpos="11" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_component/model_component_tree_bytype.h" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="0" topLine="0" />
+		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

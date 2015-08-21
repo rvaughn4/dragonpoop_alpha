@@ -10,26 +10,26 @@
 
 namespace dragonpoop
 {
-    
+
     class model_instance_triangle_vertex : public model_component
     {
-        
+
     private:
-        
+
         dpid v_id, t_id;
-        dpxyzw norm, pos;
+        dpxyzw norm;
         dpst texcoords0, texcoords1;
-        
+
         struct
         {
             dpxyzw norm;
             uint64_t t;
         } start, end;
-        
+
     protected:
-        
+
     public:
-        
+
         //ctor
         model_instance_triangle_vertex( model_triangle_vertex *tv );
         //dtor
@@ -52,9 +52,9 @@ namespace dragonpoop
         void getTexCoord1( dpst *x );
         //returns true if has parent
         virtual bool hasParent( dpid id );
-        
+
     };
-    
+
 };
 
 #endif
