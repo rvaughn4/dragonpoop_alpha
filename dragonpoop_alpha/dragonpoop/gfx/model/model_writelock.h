@@ -24,6 +24,7 @@ namespace dragonpoop
     class model_animation;
     class model_joint;
     class model_vertex_joint;
+    class model_frame;
 
     class model_writelock : public shared_obj_writelock
     {
@@ -149,6 +150,12 @@ namespace dragonpoop
         model_vertex_joint *findVertexJoint( dpid id );
         //get vertex joints
         void getVertexJoints( std::list<model_vertex_joint *> *l );
+        //add frame
+        model_frame *makeFrame( dpid id );
+        //find frame
+        model_frame *findFrame( dpid id );
+        //get frame
+        void getFrames( std::list<model_frame *> *l );
 
         friend class model;
     };

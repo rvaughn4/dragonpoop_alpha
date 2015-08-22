@@ -18,7 +18,7 @@ namespace dragonpoop
     
     struct ms3d_model_frame
     {
-        float t;
+        unsigned int t;
         dpid id, afid;
     };
     

@@ -11,6 +11,7 @@
 #include "../../model_frame/model_frame.h"
 #include "../../model_animation_frame/model_animation_frame.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
+#include <sstream>
 
 #include <iostream>
 
@@ -35,6 +36,7 @@ namespace dragonpoop
     {
 
         this->findUnique( ml );
+        this->makeFrames( thd, ml );
         
         return new model_loader_ms3d_state_make_verts( this->b, this->m );
     }
@@ -56,8 +58,6 @@ namespace dragonpoop
             this->findUnique( ml, &p->rotate_frames );
             this->findUnique( ml, &p->translate_frames );
         }
-        
-        
     }
     
     //find unique frame times in a joint
@@ -85,6 +85,74 @@ namespace dragonpoop
             }
             if( !f )
                 this->frame_times.push_back( ft );
+        }
+    }
+  
+    //make frames
+    void model_loader_ms3d_state_make_frames::makeFrames( dpthread_lock *thd, model_loader_writelock *ml )
+    {
+        model_loader_ms3d *ldr;
+        unsigned int i, e;
+        ms3d_model_frame f;
+        model_frame *frm;
+        model_writelock *m;
+        shared_obj_guard o;
+        std::string s;
+        std::vector<ms3d_model_frame> *fl;
+        
+        ldr = (model_loader_ms3d *)ml->getLoader();
+        e = (unsigned int)this->frame_times.size();
+        
+        fl = ldr->frames;
+        if( fl )
+            delete fl;
+        fl = new std::vector<ms3d_model_frame>();
+        ldr->frames = fl;
+        
+        m = (model_writelock *)o.tryWriteLock( this->m, 1000 );
+        if( !m )
+            return;
+        
+        for( i = 0; i < e; i++ )
+        {
+            std::stringstream ss;
+            f.t = this->frame_times[ i ];
+            
+            ss << "MS3D Frame #" << f.t << "";
+            s = ss.str();
+            std::cout << s << "\r\n";
+            
+            f.t = f.t * 1000 / (int)ldr->anim.fps;
+            
+            frm = m->makeFrame( thd->genId() );
+            frm->setName( &s );
+            f.id = frm->getId();
+            
+            fl->push_back( f );
+        }
+    }
+    
+    //make animation frames
+    void model_loader_ms3d_state_make_frames::makeAnimationFrames( dpthread_lock *thd, model_loader_writelock *ml )
+    {
+        model_loader_ms3d *ldr;
+        unsigned int i, e;
+        ms3d_model_frame *f;
+        model_animation_frame *frm;
+        model_writelock *m;
+        shared_obj_guard o;
+        std::vector<ms3d_model_frame> *fl;
+        
+        m = (model_writelock *)o.tryWriteLock( this->m, 1000 );
+        if( !m )
+            return;
+        ldr = (model_loader_ms3d *)ml->getLoader();
+        fl = ldr->frames;
+        e = (unsigned int)fl->size();
+        
+        for( i = 0; i < e; i++ )
+        {
+
         }
         
     }

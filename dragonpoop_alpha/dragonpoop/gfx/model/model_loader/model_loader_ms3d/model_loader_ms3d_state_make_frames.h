@@ -23,7 +23,7 @@ namespace dragonpoop
         
         dpbuffer *b;
         model_ref *m;
-        std::vector<int> frame_times, sorted_frames;
+        std::vector<int> frame_times;
         
     protected:
         
@@ -31,6 +31,10 @@ namespace dragonpoop
         void findUnique( model_loader_writelock *ml );
         //find unique frame times in a joint
         void findUnique( model_loader_writelock *ml, std::vector<ms3d_model_joint_keyframe> *l );
+        //make frames
+        void makeFrames( dpthread_lock *thd, model_loader_writelock *ml );
+        //make animation frames
+        void makeAnimationFrames( dpthread_lock *thd, model_loader_writelock *ml );
         
         
     public:

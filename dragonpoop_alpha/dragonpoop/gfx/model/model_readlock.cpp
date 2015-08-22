@@ -209,4 +209,16 @@ namespace dragonpoop
         this->t->getVertexJoints( l );
     }
     
+    //find frame
+    model_frame *model_readlock::findFrame( dpid id )
+    {
+        return this->t->findFrame( id );
+    }
+    
+    //get frame
+    void model_readlock::getFrames( std::list<model_frame *> *l )
+    {
+        this->t->getFrames( l );
+    }
+ 
 };

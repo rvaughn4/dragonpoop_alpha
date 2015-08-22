@@ -342,4 +342,22 @@ namespace dragonpoop
         this->t->getVertexJoints( l );
     }
     
+    //add frame
+    model_frame *model_writelock::makeFrame( dpid id )
+    {
+        return this->t->makeFrame( id );
+    }
+    
+    //find frame
+    model_frame *model_writelock::findFrame( dpid id )
+    {
+        return this->t->findFrame( id );
+    }
+    
+    //get frame
+    void model_writelock::getFrames( std::list<model_frame *> *l )
+    {
+        this->t->getFrames( l );
+    }
+    
 };
