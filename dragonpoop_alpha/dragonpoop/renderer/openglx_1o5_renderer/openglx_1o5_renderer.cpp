@@ -8,6 +8,7 @@
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_instance/openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_material/openglx_1o5_renderer_model_material.h"
 #include "../renderer_model/renderer_model_material/renderer_model_material.h"
+#include "../../core/dpthread/dpthread_lock.h"
 
 #include <sstream>
 #include <vector>
@@ -340,12 +341,11 @@ namespace dragonpoop
         unsigned int ii, is, vi, vs;
         openglx_1o5_renderer_model_instance_group *og;
         openglx_1o5_renderer_model_material *gmat;
-        float r_start, r_end;
+        float r_start, r_end, td, tt;
         std::vector<uint16_t> indicies;
+        uint64_t t;
 
-        r_start = 1;
-        r_end = 0;
-
+        t = thd->getTicks();
         og = (openglx_1o5_renderer_model_instance_group *)g;
         gmat = (openglx_1o5_renderer_model_material *)mat;
         vb = og->getVertexBuffer();
@@ -357,6 +357,19 @@ namespace dragonpoop
         {
             v = &vp[ vi ];
             b = *v;
+            
+            td = b.end.t - b.start.t;
+            tt = t - b.start.t;
+            if( tt > td )
+                tt = td;
+            if( td > 0 )
+                r_end = tt / td;
+            else
+                r_end = 0;
+            r_start = 1.0f - r_end;
+            r_end = 1;
+            r_start = 0;
+            
             b.start.pos.x = v->start.pos.x * r_start + v->end.pos.x * r_end;
             b.start.pos.y = v->start.pos.y * r_start + v->end.pos.y * r_end;
             b.start.pos.z = v->start.pos.z * r_start + v->end.pos.z * r_end;

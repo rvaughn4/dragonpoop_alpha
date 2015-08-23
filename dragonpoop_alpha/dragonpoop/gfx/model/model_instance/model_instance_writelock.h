@@ -67,7 +67,7 @@ namespace dragonpoop
         //run model from task
         void run( dpthread_lock *thd );
         //sync
-        void sync( model_writelock *ml );
+        void sync( model_writelock *ml, uint64_t tms );
         //set renderer model
         void setRenderer( renderer_model_instance *r );
         //populate vertex buffer for rendering

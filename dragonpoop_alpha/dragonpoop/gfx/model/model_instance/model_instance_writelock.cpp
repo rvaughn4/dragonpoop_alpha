@@ -108,9 +108,9 @@ namespace dragonpoop
     }
     
     //sync
-    void model_instance_writelock::sync( model_writelock *ml )
+    void model_instance_writelock::sync( model_writelock *ml, uint64_t tms )
     {
-        this->t->sync( ml );
+        this->t->sync( ml, tms );
     }
 
     //set renderer model

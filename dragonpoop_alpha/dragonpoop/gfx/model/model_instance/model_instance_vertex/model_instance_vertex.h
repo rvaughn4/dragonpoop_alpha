@@ -34,6 +34,23 @@ namespace dragonpoop
         void setPosition( dpxyzw *x );
         //get position
         void getPosition( dpxyzw *x );
+        //set start position
+        void setStartPosition( dpxyzw *x );
+        //get start position
+        void getStartPosition( dpxyzw *x );
+        //get start time
+        uint64_t getStartTime( void );
+        //set start time
+        void setStartTime( uint64_t t );
+        //set end position
+        void setEndPosition( dpxyzw *x );
+        //get end position
+        void getEndPosition( dpxyzw *x );
+        //get end time
+        uint64_t getEndTime( void );
+        //set end time
+        void setEndTime( uint64_t t );
+        
     };
     
 };

@@ -65,6 +65,12 @@ namespace dragonpoop
         this->t->sync();
     }
 
+    //animate
+    void renderer_model_instance_writelock::animate( void )
+    {
+        this->t->animate();
+    }
+    
     //run model from task
     void renderer_model_instance_writelock::run( dpthread_lock *thd )
     {

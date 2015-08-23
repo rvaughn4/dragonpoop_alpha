@@ -34,7 +34,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->sync( ml );
+        this->sync( ml, 0 );
     }
     
     //dtor
@@ -95,7 +95,7 @@ namespace dragonpoop
     //run model from task
     void model_instance::run( dpthread_lock *thd, model_instance_writelock *g )
     {
-        
+        this->animate( g );
     }
     
     //get id
@@ -386,7 +386,7 @@ namespace dragonpoop
     }
     
     //sync
-    void model_instance::sync( model_writelock *ml )
+    void model_instance::sync( model_writelock *ml, uint64_t tms )
     {
         shared_obj_guard o;
         renderer_model_instance_readlock *rl;
@@ -397,7 +397,6 @@ namespace dragonpoop
         this->makeTriangleVertexes( ml );
         this->makeTriangles( ml );
         this->makeGroups( ml );
-        this->computeMeshes();
         
         if( !this->r )
             return;
@@ -405,6 +404,24 @@ namespace dragonpoop
         if( !rl )
             return;
         rl->sync();
+    }
+    
+    //do animation
+    void model_instance::animate( model_writelock *ml, uint64_t tms )
+    {
+        shared_obj_guard o;
+        renderer_model_instance_readlock *rl;
+    
+        this->t_end = tms + 200;
+        this->t_start = this->t_end;
+        this->computeMeshes();
+        
+        if( !this->r )
+            return;
+        rl = (renderer_model_instance_readlock *)o.tryReadLock( this->r, 400 );
+        if( !rl )
+            return;
+        rl->animate();
     }
  
     //set renderer model
@@ -502,12 +519,12 @@ namespace dragonpoop
         vb->copy( g->getVertexBuffer() );
     }
     
-    void model_instance__computeMeshes_0( dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_0( uint64_t t, dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb );
     
     //populate vertex buffer for rendering
     void model_instance::computeMeshes( void )
     {
-        dpid_bytetree t_v;
+        dpid_bytetree t_v, t_j;
         dpid_multibytetree t_tv, t_t;
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;
@@ -535,6 +552,9 @@ namespace dragonpoop
                 case model_component_type_vertex:
                     t_v.addLeaf( p->getId(), p );
                     break;
+                case model_component_type_joint:
+                    t_j.addLeaf( p->getId(), p );
+                    break;
             }
         }
         
@@ -543,14 +563,14 @@ namespace dragonpoop
             g = *it;
             vb = g->getVertexBuffer();
             vb->clear();
-            model_instance__computeMeshes_0( g->getId(), &t_t, &t_tv, &t_v, vb );
+            model_instance__computeMeshes_0( this->t_start, g->getId(), &t_t, &t_tv, &t_v, &t_j, vb );
         }
         
     }
     
-    void model_instance__computeMeshes_1( model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_1( uint64_t tms, model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb );
     
-    void model_instance__computeMeshes_0( dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_0( uint64_t t, dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb )
     {
         std::list<model_instance_triangle *> lt;
         std::list<model_instance_triangle *>::iterator it;
@@ -561,13 +581,13 @@ namespace dragonpoop
         for( it = lt.begin(); it != lt.end(); ++it )
         {
             p = *it;
-            model_instance__computeMeshes_1( p, t_tv, t_v, vb );
+            model_instance__computeMeshes_1( t, p, t_tv, t_v, t_j, vb );
         }
     }
 
-    void model_instance__computeMeshes_2( model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *v, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_2( uint64_t tms, model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb );
     
-    void model_instance__computeMeshes_1( model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_1( uint64_t tms, model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb )
     {
         std::list<model_instance_triangle_vertex *> ltv;
         std::list<model_instance_triangle_vertex *>::iterator it;
@@ -581,25 +601,46 @@ namespace dragonpoop
         for( it = ltv.begin(); it != ltv.end(); ++it )
         {
             p = *it;
-            model_instance__computeMeshes_2( t, p, t_v, vb );
+            model_instance__computeMeshes_2( tms, t, p, t_v, t_j, vb );
         }
     }
 
-    void model_instance__computeMeshes_2( model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *v, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_2( uint64_t tms, model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb )
     {
         model_instance_vertex *p;
         dpvertex vt;
+        float rs, re, td, tt;
         
-        p = (model_instance_vertex *)v->findLeaf( tv->getVertexId() );
+        p = (model_instance_vertex *)t_v->findLeaf( tv->getVertexId() );
         if( !p )
             return;
         
+        td = p->getEndTime() - p->getStartTime();
+        tt = tms - p->getStartTime();
+        re = tt / td;
+        rs = 1.0f - re;
+        
+        p->getStartPosition( &vt.start.pos );
+        p->getEndPosition( &vt.end.pos );
+        vt.start.pos.x = rs * vt.start.pos.x + re * vt.end.pos.x;
+        vt.start.pos.y = rs * vt.start.pos.y + re * vt.end.pos.y;
+        vt.start.pos.z = rs * vt.start.pos.z + re * vt.end.pos.z;
+        vt.start.pos.w = rs * vt.start.pos.w + re * vt.end.pos.w;
+      //  p->setStartPosition( &vt.start.pos );
+        p->setStartTime( tms );
         p->getPosition( &vt.start.pos );
+        p->getPosition( &vt.end.pos );
+     //   p->setEndPosition( &vt.end.pos );
+        p->setEndTime( tms + 500 );
+        vt.start.t = tms;
+        vt.end.t = tms + 500;
+        
         tv->getNormal( &vt.start.normal );
         tv->getTexCoord0( &vt.start.texcoords[ 0 ] );
         tv->getTexCoord1( &vt.start.texcoords[ 1 ] );
-
-        vt.end = vt.start;
+        tv->getNormal( &vt.end.normal );
+        tv->getTexCoord0( &vt.end.texcoords[ 0 ] );
+        tv->getTexCoord1( &vt.end.texcoords[ 1 ] );
         
         vb->addVertexUnique( &vt );
     }

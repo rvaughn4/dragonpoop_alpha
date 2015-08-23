@@ -33,7 +33,7 @@ namespace dragonpoop
         {
             std::list<model_component *> lst;
         } comps;
-        std::atomic<bool> bIsSynced;
+        std::atomic<bool> bIsSynced, bIsAnimated;
         model_instance_ref *m;
         
         //delete all components
@@ -67,8 +67,12 @@ namespace dragonpoop
         void getGroups( std::list<renderer_model_instance_group *> *l );
         //make groups
         void makeGroups( model_instance_writelock *ml );
+        //animate groups
+        void animateGroups( model_instance_writelock *ml );
         //sync
         void sync( void );
+        //animate
+        void animate( void );
         //run model from task
         void run( dpthread_lock *thd, renderer_model_instance_writelock *g );
         //handle sync

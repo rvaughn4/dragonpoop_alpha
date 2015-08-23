@@ -48,6 +48,7 @@ namespace dragonpoop
             std::list<model_component *> lst;
         } comps;
         renderer_model_instance_ref *r;
+        uint64_t t_start, t_end;
         
         //delete all components
         void deleteComponents( void );
@@ -122,12 +123,6 @@ namespace dragonpoop
         void makeTriangleVertexes( model_writelock *ml );
         //make groups
         void makeGroups( model_writelock *ml );
-        //sync
-        void sync( model_writelock *ml );
-        //set renderer model
-        void setRenderer( renderer_model_instance *r );
-        //populate vertex buffer for rendering
-        void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
         //add animation
         model_instance_animation *makeAnimation( model_animation *g );
         //find animation
@@ -144,6 +139,14 @@ namespace dragonpoop
         void getJoints( std::list<model_instance_joint *> *l );
         //make joints
         void makeJoints( model_writelock *ml );
+        //sync
+        void sync( model_writelock *ml, uint64_t tms );
+        //do animation
+        void animate( model_writelock *ml, uint64_t tms );
+        //set renderer model
+        void setRenderer( renderer_model_instance *r );
+        //populate vertex buffer for rendering
+        void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
         
     public:
         

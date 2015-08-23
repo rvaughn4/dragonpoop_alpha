@@ -28,6 +28,7 @@
 #include "model_frame/model_frame.h"
 #include "model_animation_frame/model_animation_frame.h"
 #include "model_frame_joint/model_frame_joint.h"
+#include "../../core/dpthread/dpthread_lock.h"
 
 namespace dragonpoop
 {
@@ -97,6 +98,7 @@ namespace dragonpoop
     //run model from task
     void model::run( dpthread_lock *thd, model_writelock *g )
     {
+        this->ran_time = thd->getTicks();
         this->runInstances( thd, g );
     }
 
@@ -482,7 +484,7 @@ namespace dragonpoop
     }
 
     //sync instances
-    void model::syncInstances( model_writelock *g )
+    void model::syncInstances( model_writelock *g, uint64_t tms )
     {
         std::list<model_instance *> *l;
         std::list<model_instance *>::iterator i;
@@ -497,7 +499,7 @@ namespace dragonpoop
             pl = ( model_instance_writelock *)o.tryWriteLock( p, 300 );
             if( !pl )
                 continue;
-            pl->sync( g );
+            pl->sync( g, tms );
         }
     }
 
@@ -544,7 +546,7 @@ namespace dragonpoop
         shared_obj_guard o;
         renderer_model_readlock *rl;
 
-        this->syncInstances( ml );
+        this->syncInstances( ml, this->ran_time );
 
         if( !this->r )
             return;

@@ -15,6 +15,7 @@ namespace dragonpoop
     {
         dpxyzw pos, normal;
         dpst texcoords[ 2 ];
+        uint64_t t;
     };
 #pragma pack(  )
 

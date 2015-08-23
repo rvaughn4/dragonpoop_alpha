@@ -48,6 +48,8 @@ namespace dragonpoop
         void getGroups( std::list<renderer_model_instance_group *> *l );
         //sync
         void sync( void );
+        //animate
+        void animate( void );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m );
         

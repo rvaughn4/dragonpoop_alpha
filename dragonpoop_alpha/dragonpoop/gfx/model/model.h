@@ -53,6 +53,7 @@ namespace dragonpoop
         } comps;
         std::list<model_instance *> instances;
         renderer_model_ref *r;
+        uint64_t ran_time;
         
         //delete all components
         void deleteComponents( void );
@@ -61,7 +62,7 @@ namespace dragonpoop
         //run instances
         void runInstances( dpthread_lock *thd, model_writelock *g );
         //sync instances
-        void syncInstances( model_writelock *g );
+        void syncInstances( model_writelock *g, uint64_t tms );
         
     protected:
 

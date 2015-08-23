@@ -250,6 +250,34 @@ namespace dragonpoop
         }
     }
     
+    //animate groups
+    void renderer_model_instance::animateGroups( model_instance_writelock *ml )
+    {
+        std::list<renderer_model_instance_group *> l;
+        std::list<renderer_model_instance_group *>::iterator i;
+        renderer_model_instance_group *p;
+        std::list<model_instance_group *> lg;
+        std::list<model_instance_group *>::iterator ig;
+        model_instance_group *pg;
+        dpid_bytetree t;
+
+        ml->getGroups( &lg );
+        for( ig = lg.begin(); ig != lg.end(); ++ig )
+        {
+            pg = *ig;
+            t.addLeaf( pg->getId(), pg );
+        }
+        
+        this->getGroups( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pg = (model_instance_group *)t.findLeaf( p->getId() );
+            if( pg )
+                p->sync( ml, pg );
+        }
+    }
+    
     //run model from task
     void renderer_model_instance::run( dpthread_lock *thd, renderer_model_instance_writelock *g )
     {
@@ -266,12 +294,28 @@ namespace dragonpoop
                 this->onSync( thd, g, ml );
             }
         }
+
+        if( !this->bIsAnimated )
+        {
+            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300 );
+            if( ml )
+            {
+                this->animateGroups( ml );
+                this->bIsAnimated = 1;
+            }
+        }
     }
     
     //sync
     void renderer_model_instance::sync( void )
     {
         this->bIsSynced = 0;
+    }
+    
+    //animate
+    void renderer_model_instance::animate( void )
+    {
+        this->bIsAnimated = 0;
     }
     
     //handle sync
