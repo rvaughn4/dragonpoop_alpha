@@ -40,7 +40,7 @@ namespace dragonpoop
         this->id = id;
         this->r = 0;
         this->gtsk = new model_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 500, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 2000, 1 );
         tp->addTask( this->tsk );
     }
 
@@ -470,7 +470,7 @@ namespace dragonpoop
             pl = ( model_instance_writelock *)o.tryWriteLock( p, 10 );
             if( !pl )
                 continue;
-            pl->run( thd );
+            pl->run( thd, g );
             //
             //d.push_back( p );
         }

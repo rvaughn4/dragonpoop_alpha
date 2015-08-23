@@ -102,9 +102,9 @@ namespace dragonpoop
     }
 
     //run model from task
-    void model_instance_writelock::run( dpthread_lock *thd )
+    void model_instance_writelock::run( dpthread_lock *thd, model_writelock *m )
     {
-        this->t->run( thd, this );
+        this->t->run( thd, this, m );
     }
     
     //sync

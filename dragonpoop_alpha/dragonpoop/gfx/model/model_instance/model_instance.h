@@ -64,7 +64,7 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run model from task
-        void run( dpthread_lock *thd, model_instance_writelock *g );
+        void run( dpthread_lock *thd, model_instance_writelock *g, model_writelock *m );
         //get id
         dpid getId( void );
         //add component to list and trees

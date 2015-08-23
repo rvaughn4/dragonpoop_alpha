@@ -65,7 +65,7 @@ namespace dragonpoop
         //get triangle vertexes by triangle or vertex id
         void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid );
         //run model from task
-        void run( dpthread_lock *thd );
+        void run( dpthread_lock *thd, model_writelock *m );
         //sync
         void sync( model_writelock *ml, uint64_t tms );
         //set renderer model
