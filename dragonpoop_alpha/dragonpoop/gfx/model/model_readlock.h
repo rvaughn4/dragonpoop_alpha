@@ -23,6 +23,7 @@ namespace dragonpoop
     class model_vertex_joint;
     class model_frame;
     class model_animation_frame;
+    class model_frame_joint;
 
     class model_readlock : public shared_obj_readlock
     {
@@ -114,6 +115,12 @@ namespace dragonpoop
         void getAnimationFrames( std::list<model_animation_frame *> *l );
         //get animation frame by frame or animation id
         void getAnimationFrames( std::list<model_animation_frame *> *l, dpid parent_id );
+        //find FrameJoint
+        model_frame_joint *findFrameJoint( dpid id );
+        //get FrameJoints
+        void getFrameJoints( std::list<model_frame_joint *> *l );
+        //get FrameJoints by frame or animation id
+        void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id );
 
         friend class model;
     };

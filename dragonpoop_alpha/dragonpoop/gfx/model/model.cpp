@@ -27,6 +27,7 @@
 #include "model_vertex_joint/model_vertex_joint.h"
 #include "model_frame/model_frame.h"
 #include "model_animation_frame/model_animation_frame.h"
+#include "model_frame_joint/model_frame_joint.h"
 
 namespace dragonpoop
 {
@@ -681,7 +682,7 @@ namespace dragonpoop
         model_animation_frame *c;
         c = new model_animation_frame( id, animation_id, frame_id );
         c->setTime( time_ms );
-        this->addComponent( c );
+        this->addComponent( c, animation_id, frame_id );
         return c;
     }
     
@@ -701,6 +702,33 @@ namespace dragonpoop
     void model::getAnimationFrames( std::list<model_animation_frame *> *l, dpid parent_id )
     {
         this->getComponentsByParent( model_component_type_animation_frame, parent_id, (std::list<model_component *> *)l );
+    }
+    
+    //add FrameJoint
+    model_frame_joint *model::makeFrameJoint( dpid id, dpid frame_id, dpid joint_id )
+    {
+        model_frame_joint *c;
+        c = new model_frame_joint( id, frame_id, joint_id );
+        this->addComponent( c, frame_id, joint_id );
+        return c;
+    }
+    
+    //find FrameJoint
+    model_frame_joint *model::findFrameJoint( dpid id )
+    {
+        return (model_frame_joint *)this->findComponent( model_component_type_frame_joint, id );
+    }
+    
+    //get FrameJoints
+    void model::getFrameJoints( std::list<model_frame_joint *> *l )
+    {
+        this->getComponents( model_component_type_frame_joint, (std::list<model_component *> *)l );
+    }
+    
+    //get FrameJoints by frame or animation id
+    void model::getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id )
+    {
+        this->getComponentsByParent( model_component_type_frame_joint, parent_id, (std::list<model_component *> *)l );
     }
     
 };

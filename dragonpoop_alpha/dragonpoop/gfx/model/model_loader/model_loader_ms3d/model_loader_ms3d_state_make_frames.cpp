@@ -9,10 +9,12 @@
 #include "../../../../core/shared_obj/shared_obj_guard.h"
 #include "model_loader_ms3d_state_cleanup.h"
 #include "../../model_frame/model_frame.h"
+#include "../../model_frame_joint/model_frame_joint.h"
 #include "../../model_animation_frame/model_animation_frame.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <sstream>
 
+#include <iostream>
 namespace dragonpoop
 {
     
@@ -36,6 +38,7 @@ namespace dragonpoop
         this->findUnique( ml );
         this->makeFrames( thd, ml );
         this->makeAnimationFrames( thd, ml );
+        this->makeFrameJoints( thd, ml );
         
         return new model_loader_ms3d_state_make_verts( this->b, this->m );
     }
@@ -120,6 +123,7 @@ namespace dragonpoop
             ss << "MS3D Frame #" << f.t << "";
             s = ss.str();
             
+            f.ot = (float)f.t / ldr->anim.fps;
             f.t = f.t * 1000 / (int)ldr->anim.fps;
             
             frm = m->makeFrame( thd->genId() );
@@ -154,6 +158,60 @@ namespace dragonpoop
             frm = m->makeAnimationFrame( thd->genId(), ldr->anim_id, f->id, f->t );
             f->afid = frm->getId();
         }
+    }
+    
+    //make frame joints
+    void model_loader_ms3d_state_make_frames::makeFrameJoints( dpthread_lock *thd, model_loader_writelock *ml )
+    {
+        model_loader_ms3d *ldr;
+        unsigned int i_f, e_f, i_j, e_j;
+        model_writelock *m;
+        shared_obj_guard o;
+        std::vector<ms3d_model_frame> *fl;
+        std::vector<ms3d_model_joint_m> *jl;
+        ms3d_model_frame *f;
+        ms3d_model_joint_m *j;
+        model_frame_joint *fjnt;
+        dpxyzw x;
+        
+        m = (model_writelock *)o.tryWriteLock( this->m, 1000 );
+        if( !m )
+            return;
+        ldr = (model_loader_ms3d *)ml->getLoader();
+        fl = ldr->frames;
+        jl = ldr->joints;
+        e_f = (unsigned int)fl->size();
+        e_j = (unsigned int)jl->size();
+        
+        for( i_f = 0; i_f < e_f; i_f++ )
+        {
+            f = &( *fl )[ i_f ];
+            
+            //std::cout << "frame " << i_f << " " << f->t << " " << f->ot << "\r\n";
+            
+            for( i_j = 0; i_j < e_f; i_j++ )
+            {
+                j = &( *jl )[ i_j ];
+                
+                fjnt = m->makeFrameJoint( thd->genId(), f->id, j->id );
+                
+                this->getKeyframe( f->t, &j->rotate_frames, &x );
+                fjnt->setRotation( &x );
+                this->getKeyframe( f->t, &j->translate_frames, &x );
+                fjnt->setTranslation( &x );
+                
+                //std::cout << "\tjoint " << i_j << "\r\n";
+            }
+        }
+        
+        
+        
+    }
+    
+    //find xyz keyframe before and after time and interpolate
+    void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyzw *x )
+    {
+        
     }
     
 };
