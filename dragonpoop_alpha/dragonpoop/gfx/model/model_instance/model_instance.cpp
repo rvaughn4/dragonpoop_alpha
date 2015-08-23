@@ -11,6 +11,7 @@
 #include "model_instance_triangle/model_instance_triangle.h"
 #include "../model_writelock.h"
 #include "../model_ref.h"
+#include "../../../core/dpbtree/dpid_btree.h"
 #include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../core/bytetree/dpid_multibytetree.h"
 #include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance.h"
@@ -24,6 +25,7 @@
 #include "../model_animation/model_animation.h"
 #include "model_instance_joint/model_instance_joint.h"
 #include "../../../core/dpthread/dpthread_lock.h"
+#include <random>
 
 namespace dragonpoop
 {
@@ -35,6 +37,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
+        this->t_frame_time = 500;
         this->sync( ml, 0 );
     }
     
@@ -96,7 +99,14 @@ namespace dragonpoop
     //run model from task
     void model_instance::run( dpthread_lock *thd, model_instance_writelock *g, model_writelock *m )
     {
-        this->animate( m, thd->getTicks() );
+        uint64_t t;
+        
+        t = thd->getTicks();
+        if( t - this->t_last_animate > this->t_frame_time )
+        {
+            this->animate( m, t );
+            this->t_last_animate = t - 10 * rand() / RAND_MAX;
+        }
     }
     
     //get id
@@ -413,8 +423,8 @@ namespace dragonpoop
         shared_obj_guard o;
         renderer_model_instance_readlock *rl;
     
-        this->t_end = tms + 200;
-        this->t_start = this->t_end;
+        this->t_end = tms + this->t_frame_time;
+        this->t_start = tms;
         this->computeMeshes();
         
         if( !this->r )
@@ -446,7 +456,7 @@ namespace dragonpoop
     {
         model_instance_triangle *c;
         c = new model_instance_triangle( gt );
-        this->addComponent( c );//, triangle_id, vertex_id );
+        this->addComponent( c );
         return c;
     }
     
@@ -520,12 +530,13 @@ namespace dragonpoop
         vb->copy( g->getVertexBuffer() );
     }
     
-    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
     
     //populate vertex buffer for rendering
     void model_instance::computeMeshes( void )
     {
-        dpid_bytetree t_v, t_j;
+        dpid_btree t_v;
+        dpid_bytetree t_j;
         dpid_multibytetree t_tv, t_t;
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;
@@ -533,9 +544,14 @@ namespace dragonpoop
         model_instance_group *g;
         std::list<model_instance_group *> lg;
         std::list<model_instance_group *>::iterator it;
+        std::list<model_instance_vertex *> lv;
+        std::list<model_instance_vertex *>::iterator iv;
+        model_instance_vertex *v;
         dpvertexindex_buffer *vb;
+        int vflip;
         
         l = &this->comps.lst;
+        vflip = 1;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -551,12 +567,22 @@ namespace dragonpoop
                     t_tv.addLeaf( ( (model_instance_triangle_vertex *)p )->getTriangleId(), p );
                     break;
                 case model_component_type_vertex:
-                    t_v.addLeaf( p->getId(), p );
+                    if( vflip > 0 )
+                        lv.push_back( (model_instance_vertex *)p );
+                    else
+                        lv.push_front( (model_instance_vertex *)p );
+                    vflip *= -1;
                     break;
                 case model_component_type_joint:
                     t_j.addLeaf( p->getId(), p );
                     break;
             }
+        }
+
+        for( iv = lv.begin(); iv != lv.end(); ++iv )
+        {
+            v = *iv;
+            t_v.addLeaf( v->getId(), v );
         }
         
         for( it = lg.begin(); it != lg.end(); ++it )
@@ -569,9 +595,9 @@ namespace dragonpoop
         
     }
     
-    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dpid_multibytetree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
     
-    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
     {
         std::list<model_instance_triangle *> lt;
         std::list<model_instance_triangle *>::iterator it;
@@ -586,9 +612,9 @@ namespace dragonpoop
         }
     }
 
-    void model_instance__computeMeshes_2( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_2( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, model_instance_triangle_vertex *tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
     
-    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dpid_multibytetree *t_tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dpid_multibytetree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
     {
         std::list<model_instance_triangle_vertex *> ltv;
         std::list<model_instance_triangle_vertex *>::iterator it;
@@ -606,19 +632,26 @@ namespace dragonpoop
         }
     }
 
-    void model_instance__computeMeshes_2( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, model_instance_triangle_vertex *tv, dpid_bytetree *t_v, dpid_bytetree *t_j, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_2( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, model_instance_triangle_vertex *tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
     {
         model_instance_vertex *p;
         dpvertex vt;
         float rs, re, td, tt;
+        dpid id;
         
-        p = (model_instance_vertex *)t_v->findLeaf( tv->getVertexId() );
+        id = tv->getVertexId();
+        p = (model_instance_vertex *)t_v->findLeaf( (char *)&id, sizeof( id ) );
         if( !p )
             return;
         
         td = p->getEndTime() - p->getStartTime();
         tt = t_start - p->getStartTime();
-        re = tt / td;
+        if( tt > td )
+            tt = td;
+        if( td > 0 )
+            re = tt / td;
+        else
+            re = 0;
         rs = 1.0f - re;
         
         p->getStartPosition( &vt.start.pos );
@@ -627,14 +660,13 @@ namespace dragonpoop
         vt.start.pos.y = rs * vt.start.pos.y + re * vt.end.pos.y;
         vt.start.pos.z = rs * vt.start.pos.z + re * vt.end.pos.z;
         vt.start.pos.w = rs * vt.start.pos.w + re * vt.end.pos.w;
-      //  p->setStartPosition( &vt.start.pos );
+        p->setStartPosition( &vt.start.pos );
         p->setStartTime( t_start );
-        p->getPosition( &vt.start.pos );
-        p->getPosition( &vt.end.pos );
-     //   p->setEndPosition( &vt.end.pos );
         p->setEndTime( t_end );
         vt.start.t = t_start;
         vt.end.t = t_end;
+        p->getPosition( &vt.end.pos );
+        p->setEndPosition( &vt.end.pos );
         
         tv->getNormal( &vt.start.normal );
         tv->getTexCoord0( &vt.start.texcoords[ 0 ] );

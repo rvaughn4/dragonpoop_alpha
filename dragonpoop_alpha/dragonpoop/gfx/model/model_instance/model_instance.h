@@ -48,7 +48,7 @@ namespace dragonpoop
             std::list<model_component *> lst;
         } comps;
         renderer_model_instance_ref *r;
-        uint64_t t_start, t_end;
+        uint64_t t_start, t_end, t_last_animate, t_frame_time;
         
         //delete all components
         void deleteComponents( void );

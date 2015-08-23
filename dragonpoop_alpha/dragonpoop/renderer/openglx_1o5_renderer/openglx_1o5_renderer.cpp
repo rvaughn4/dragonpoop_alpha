@@ -367,17 +367,19 @@ namespace dragonpoop
             else
                 r_end = 0;
             r_start = 1.0f - r_end;
-            r_end = 1;
-            r_start = 0;
+            //r_end = 1;
+            //r_start = 0;
             
             b.start.pos.x = v->start.pos.x * r_start + v->end.pos.x * r_end;
             b.start.pos.y = v->start.pos.y * r_start + v->end.pos.y * r_end;
             b.start.pos.z = v->start.pos.z * r_start + v->end.pos.z * r_end;
             b.start.pos.w = v->start.pos.w * r_start + v->end.pos.w * r_end;
+            /*
             b.start.normal.x = v->start.normal.x * r_start + v->end.normal.x * r_end;
             b.start.normal.y = v->start.normal.y * r_start + v->end.normal.y * r_end;
             b.start.normal.z = v->start.normal.z * r_start + v->end.normal.z * r_end;
             b.start.normal.w = v->start.normal.w * r_start + v->end.normal.w * r_end;
+             */
             nvb.addVertex( &b );
         }
         vp = nvb.getBuffer();

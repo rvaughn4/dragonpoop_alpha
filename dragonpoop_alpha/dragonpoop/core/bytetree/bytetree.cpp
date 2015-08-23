@@ -72,13 +72,6 @@ namespace dragonpoop
             t->addLeaf( 0, 0, o );
     }
 
-    //clear
-    void bytetree::clear( void )
-    {
-        this->clearBranches();
-        this->clearLeaves();
-    }
-
     //clear leaves
     void bytetree::clearLeaves( void )
     {
