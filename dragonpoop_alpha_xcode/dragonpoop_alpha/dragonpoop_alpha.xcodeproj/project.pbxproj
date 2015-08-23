@@ -125,6 +125,7 @@
 		79BF2CBE1B8A3E82007C9BA2 /* dpmultibtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79BF2CBA1B8A3E82007C9BA2 /* dpmultibtree.cpp */; };
 		79BF2CBF1B8A3E82007C9BA2 /* dptree_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79BF2CBC1B8A3E82007C9BA2 /* dptree_wrapper.cpp */; };
 		79BF2CC21B8A3ECB007C9BA2 /* dpid_tree_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79BF2CC01B8A3ECB007C9BA2 /* dpid_tree_wrapper.cpp */; };
+		79BF2CC51B8A43EC007C9BA2 /* dpid_multibtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79BF2CC31B8A43EC007C9BA2 /* dpid_multibtree.cpp */; };
 		79E7444F1B6CD5F3005BFDE0 /* dpbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E7444C1B6CD5F3005BFDE0 /* dpbuffer.cpp */; };
 		79E744541B6CD650005BFDE0 /* dpbuffer_dynamic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E744501B6CD650005BFDE0 /* dpbuffer_dynamic.cpp */; };
 		79E744551B6CD650005BFDE0 /* dpbuffer_static.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E744521B6CD650005BFDE0 /* dpbuffer_static.cpp */; };
@@ -456,6 +457,8 @@
 		79BF2CBD1B8A3E82007C9BA2 /* dptree_wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dptree_wrapper.h; sourceTree = "<group>"; };
 		79BF2CC01B8A3ECB007C9BA2 /* dpid_tree_wrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpid_tree_wrapper.cpp; sourceTree = "<group>"; };
 		79BF2CC11B8A3ECB007C9BA2 /* dpid_tree_wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpid_tree_wrapper.h; sourceTree = "<group>"; };
+		79BF2CC31B8A43EC007C9BA2 /* dpid_multibtree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpid_multibtree.cpp; sourceTree = "<group>"; };
+		79BF2CC41B8A43EC007C9BA2 /* dpid_multibtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpid_multibtree.h; sourceTree = "<group>"; };
 		79E7444C1B6CD5F3005BFDE0 /* dpbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpbuffer.cpp; sourceTree = "<group>"; };
 		79E7444D1B6CD5F3005BFDE0 /* dpbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpbuffer.h; sourceTree = "<group>"; };
 		79E7444E1B6CD5F3005BFDE0 /* dpbuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpbuffers.h; sourceTree = "<group>"; };
@@ -1121,6 +1124,8 @@
 				79BF2CB21B8A2590007C9BA2 /* dpbtrees.h */,
 				79BF2CB31B8A2590007C9BA2 /* dpid_btree.cpp */,
 				79BF2CB41B8A2590007C9BA2 /* dpid_btree.h */,
+				79BF2CC31B8A43EC007C9BA2 /* dpid_multibtree.cpp */,
+				79BF2CC41B8A43EC007C9BA2 /* dpid_multibtree.h */,
 			);
 			path = dpbtree;
 			sourceTree = "<group>";
@@ -1405,6 +1410,7 @@
 				79B931621B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp in Sources */,
 				79F107221B6ED076000723E4 /* model_instance_joint.cpp in Sources */,
 				794610F01B6D42CE00311E86 /* model_loader_ms3d_state_parse_comments.cpp in Sources */,
+				79BF2CC51B8A43EC007C9BA2 /* dpid_multibtree.cpp in Sources */,
 				7970E9841B64F26E008E8328 /* dpvertexindex_buffer.cpp in Sources */,
 				7970E9751B64F26E008E8328 /* shared_obj.cpp in Sources */,
 				799F07A51B76CFA80084E9CC /* openglx_1o5_renderer_model_readlock.cpp in Sources */,
