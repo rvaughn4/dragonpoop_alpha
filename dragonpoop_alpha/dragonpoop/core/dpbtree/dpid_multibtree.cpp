@@ -18,13 +18,19 @@ namespace dragonpoop
     //find leaf
     void *dpid_multibtree::findLeaf( dpid id )
     {
-        return this->dpbtree::findLeaf( (char *)&id, sizeof( id ) );
+        return this->dpmultibtree::findLeaf( (char *)&id, sizeof( id ) );
+    }
+    
+    //find leaves
+    void dpid_multibtree::findLeaves( dpid id, std::list<void *> *l )
+    {
+        this->dpmultibtree::findLeaves( (char *)&id, sizeof( id ), l );
     }
     
     //add leaf
     void dpid_multibtree::addLeaf( dpid id, void *o )
     {
-        this->dpbtree::addLeaf( (char *)&id, sizeof( id ), o );
+        this->dpmultibtree::addLeaf( (char *)&id, sizeof( id ), o );
     }
     
     //ovverride to handle deleteion of leaf
@@ -34,7 +40,7 @@ namespace dragonpoop
     }
     
     //ovverride to generate branches
-    dpbtree *dpid_multibtree::genBranch( void )
+    dptree *dpid_multibtree::genBranch( void )
     {
         return new dpid_multibtree();
     }
@@ -59,31 +65,31 @@ namespace dragonpoop
             return 5;
         
         if( this->k.randno > c->randno )
-            return dpbtree_left;
+            return dpmultibtree_left;
         if( this->k.randno < c->randno )
-            return dpbtree_right;
+            return dpmultibtree_right;
         
         if( this->k.counter > c->counter )
-            return dpbtree_left;
+            return dpmultibtree_left;
         if( this->k.counter < c->counter )
-            return dpbtree_right;
+            return dpmultibtree_right;
         
         if( this->k.addr > c->addr )
-            return dpbtree_left;
+            return dpmultibtree_left;
         if( this->k.addr < c->addr )
-            return dpbtree_right;
+            return dpmultibtree_right;
         
         if( this->k.ticks > c->ticks )
-            return dpbtree_left;
+            return dpmultibtree_left;
         if( this->k.ticks < c->ticks )
-            return dpbtree_right;
+            return dpmultibtree_right;
         
         if( this->k.epoch > c->epoch )
-            return dpbtree_left;
+            return dpmultibtree_left;
         if( this->k.epoch < c->epoch )
-            return dpbtree_right;
+            return dpmultibtree_right;
         
-        return dpbtree_leaf;
+        return dpmultibtree_leaf;
     }
     
 };

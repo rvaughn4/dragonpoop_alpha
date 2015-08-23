@@ -7,6 +7,10 @@
 #include <string>
 #include <list>
 #include "model_component/model_components.h"
+#include "../../core/dpbtree/dpid_multibtree.h"
+#include "../../core/dpbtree/dpid_btree.h"
+#include "../../core/bytetree/dpid_bytetree.h"
+#include "../../core/bytetree/dpid_multibytetree.h"
 
 namespace dragonpoop
 {
@@ -47,9 +51,9 @@ namespace dragonpoop
         struct
         {
             std::list<model_component *> lst;
-           // model_component_tree_bytype bytype;
-            //model_component_tree_bytypeid bytypeid;
-            //model_component_tree_bytypeid bytypeowner;
+            multibytetree bytype;
+            dpid_btree byid;
+            dpid_multibytetree byowner;
         } comps;
         std::list<model_instance *> instances;
         renderer_model_ref *r;

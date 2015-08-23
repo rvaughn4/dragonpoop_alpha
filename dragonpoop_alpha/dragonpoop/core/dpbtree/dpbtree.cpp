@@ -26,6 +26,7 @@ namespace dragonpoop
     void *dpbtree::findLeaf( char *key, unsigned int key_size )
     {
         int r;
+        dpbtree *b;
         
         if( !key || !key_size )
             return 0;
@@ -35,13 +36,15 @@ namespace dragonpoop
         {
             case dpbtree_left:
             {
-                if( this->leftbranch )
-                    return this->leftbranch->findLeaf( key, key_size );
+                b = this->leftbranch;
+                if( b )
+                    return b->findLeaf( key, key_size );
             }
             case dpbtree_right:
             {
-                if( this->rightbranch )
-                    return this->rightbranch->findLeaf( key, key_size );
+                b = this->rightbranch;
+                if( b )
+                    return b->findLeaf( key, key_size );
             }
             case dpbtree_leaf:
             {
@@ -56,6 +59,7 @@ namespace dragonpoop
     void dpbtree::addLeaf( char *key, unsigned int key_size, void *o )
     {
         int r;
+        dpbtree *b;
         
         if( !key || !key_size )
             return;
@@ -70,17 +74,19 @@ namespace dragonpoop
         {
             case dpbtree_left:
             {
-                if( !this->leftbranch )
-                    this->leftbranch = (dpbtree *)this->genBranch();
-                if( this->leftbranch )
-                    return this->leftbranch->addLeaf( key, key_size, o );
+                b = this->leftbranch;
+                if( !b )
+                    this->leftbranch = b = (dpbtree *)this->genBranch();
+                if( b )
+                    return b->addLeaf( key, key_size, o );
             }
             case dpbtree_right:
             {
-                if( !this->rightbranch )
-                    this->rightbranch = (dpbtree *)this->genBranch();
-                if( this->rightbranch )
-                    return this->rightbranch->addLeaf( key, key_size, o );
+                b = this->rightbranch;
+                if( !b )
+                    this->rightbranch = b = (dpbtree *)this->genBranch();
+                if( b )
+                    return b->addLeaf( key, key_size, o );
             }
             case dpbtree_leaf:
             {
@@ -95,6 +101,7 @@ namespace dragonpoop
     void dpbtree::clear( void )
     {
         this->dptree::clear();
+        this->hasKey = 0;
         if( this->key.buffer )
             free( this->key.buffer );
         this->key.buffer = 0;
@@ -104,24 +111,34 @@ namespace dragonpoop
     //remove leaf
     void dpbtree::removeLeaf( void *o )
     {
+        dpbtree *b;
+        
         if( this->o == o )
         {
             this->onRemoveLeaf( o );
             this->o = 0;
         }
-        if( this->leftbranch )
-            this->leftbranch->removeLeaf( o );
-        if( this->rightbranch )
-            this->rightbranch->removeLeaf( o );
+
+        b = this->leftbranch;
+        if( b )
+            b->removeLeaf( o );
+        b = this->rightbranch;
+        if( b )
+            b->removeLeaf( o );
     }
     
     //clear leaves
     void dpbtree::clearLeaves( void )
     {
-        if( this->leftbranch )
-            this->leftbranch->clearLeaves();
-        if( this->rightbranch )
-            this->rightbranch->clearLeaves();
+        dpbtree *b;
+        
+        b = this->leftbranch;
+        if( b )
+            b->clearLeaves();
+        b = this->rightbranch;
+        if( b )
+            b->clearLeaves();
+
         if( this->o )
             this->onRemoveLeaf( this->o );
         this->o = 0;
@@ -130,10 +147,14 @@ namespace dragonpoop
     //clear branches
     void dpbtree::clearBranches( void )
     {
-        if( this->leftbranch )
-            delete this->leftbranch;
-        if( this->rightbranch )
-            delete this->rightbranch;
+        dpbtree *b;
+        
+        b = this->leftbranch;
+        if( b )
+            delete b;
+        b = this->rightbranch;
+        if( b )
+            delete b;
         this->leftbranch = this->rightbranch = 0;
     }
     
@@ -244,6 +265,7 @@ namespace dragonpoop
     void dpbtree::findLeaves( char *key, unsigned int key_size, std::list<void *> *l )
     {
         int r;
+        dpbtree *b;
         
         if( !key || !key_size )
             return;
@@ -253,13 +275,15 @@ namespace dragonpoop
         {
             case dpbtree_left:
             {
-                if( this->leftbranch )
-                    return this->leftbranch->findLeaves( key, key_size, l );
+                b = this->leftbranch;
+                if( b )
+                    return b->findLeaves( key, key_size, l );
             }
             case dpbtree_right:
             {
-                if( this->rightbranch )
-                    return this->rightbranch->findLeaves( key, key_size, l );
+                b = this->rightbranch;
+                if( b )
+                    return b->findLeaves( key, key_size, l );
             }
             case dpbtree_leaf:
             {

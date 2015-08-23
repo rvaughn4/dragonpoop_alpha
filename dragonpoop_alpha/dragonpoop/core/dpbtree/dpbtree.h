@@ -3,6 +3,7 @@
 #define dragonpoop_dpbtree_h
 
 #include "dptree.h"
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -16,16 +17,16 @@ namespace dragonpoop
     private:
         
         //branches
-        dpbtree *leftbranch, *rightbranch;
+        std::atomic<dpbtree *> leftbranch, rightbranch;
         //leaf
-        void *o;
+        std::atomic<void *> o;
         //key
         struct
         {
-            unsigned int size;
-            char *buffer;
+            std::atomic<unsigned int> size;
+            std::atomic<char *> buffer;
         } key;
-        bool hasKey;
+        std::atomic<bool> hasKey;
         
     protected:
         

@@ -6,6 +6,9 @@
 #include "../../../core/dpid/dpid.h"
 #include <string>
 #include "../model_component/model_components.h"
+#include "../../../core/bytetree/dpid_multibytetree.h"
+#include "../../../core/bytetree/multibytetree.h"
+#include "../../../core/dpbtree/dpid_btree.h"
 
 namespace dragonpoop
 {
@@ -46,6 +49,9 @@ namespace dragonpoop
         struct
         {
             std::list<model_component *> lst;
+            dpid_btree byid;
+            multibytetree bytype;
+            dpid_multibytetree byowner;
         } comps;
         renderer_model_instance_ref *r;
         uint64_t t_start, t_end, t_last_animate, t_frame_time;

@@ -12,6 +12,7 @@
 #include "../model_writelock.h"
 #include "../model_ref.h"
 #include "../../../core/dpbtree/dpid_btree.h"
+#include "../../../core/dpbtree/dpid_multibtree.h"
 #include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../core/bytetree/dpid_multibytetree.h"
 #include "../../../renderer/renderer_model/renderer_model_instance/renderer_model_instance.h"
@@ -118,81 +119,60 @@ namespace dragonpoop
     //add component to list and trees
     void model_instance::addComponent( model_component *c )
     {
+        uint16_t k;
+        
         this->comps.lst.push_back( c );
-        // this->comps.bytype.addLeaf( c->getType(), c );
-        //this->comps.bytypeid.addLeaf( c->getType(), c->getId(), c );
+        this->comps.byid.addLeaf( c->getId(), c );
+        k = c->getType();
+        this->comps.bytype.addLeaf( (char *)&k, sizeof( k ), c );
     }
     
     //add component, 1 parent
     void model_instance::addComponent( model_component *c, dpid p1 )
     {
         this->addComponent( c );
-        //this->comps.bytypeowner.addLeaf( c->getType(), p1, c );
+        this->comps.byowner.addLeaf( p1, c );
     }
     
     //add component, 2 parents
     void model_instance::addComponent( model_component *c, dpid p1, dpid p2 )
     {
         this->addComponent( c, p1 );
-        //this->comps.bytypeowner.addLeaf( c->getType(), p2, c );
+        this->comps.byowner.addLeaf( p2, c );
     }
     
     //find component by type and id
     model_component *model_instance::findComponent( uint16_t mtype, dpid id )
     {
-        std::list<model_component *> *l;
-        std::list<model_component *>::iterator i;
         model_component *c;
         
-        //return this->comps.bytypeid.findLeaf( mtype, id );
+        c = (model_component *)this->comps.byid.findLeaf( id );
         
-        l = &this->comps.lst;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            c = *i;
-            if( c->getType() != mtype )
-                continue;
-            if( !c->compareId( id ) )
-                continue;
-            return c;
-        }
+        if( !c || c->getType() != mtype )
+            return 0;
         
-        return 0;
+        return c;
     }
     
     //find components by type
-    void model_instance::getComponents( uint16_t mtype, std::list<model_component *> *ll )
+    void model_instance::getComponents( uint16_t mtype, std::list<model_component *> *l )
     {
-        std::list<model_component *> *l;
-        std::list<model_component *>::iterator i;
-        model_component *c;
-        
-        //this->comps.bytype.findLeaves( mtype, ll );
-        l = &this->comps.lst;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            c = *i;
-            if( c->getType() != mtype )
-                continue;
-            ll->push_back( c );
-        }
+        this->comps.bytype.findLeaves( (char *)&mtype, sizeof( mtype ), (std::list<void *> *)l );
     }
     
     //find components by type and 1 parent
     void model_instance::getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *ll )
     {
-        std::list<model_component *> *l;
+        std::list<model_component *> l;
         std::list<model_component *>::iterator i;
         model_component *c;
         
-        //this->comps.bytypeowner.findLeaves( mtype, p1, l );
-        l = &this->comps.lst;
-        for( i = l->begin(); i != l->end(); ++i )
+        this->comps.byowner.findLeaves( p1, (std::list<void *> *)&l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
         {
             c = *i;
             if( c->getType() != mtype )
-                continue;
-            if( !c->hasParent( p1 ) )
                 continue;
             ll->push_back( c );
         }
@@ -201,18 +181,16 @@ namespace dragonpoop
     //find components by type and 2 parents
     void model_instance::getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *ll )
     {
-        std::list<model_component *> *l;
+        std::list<model_component *> l;
         std::list<model_component *>::iterator i;
         model_component *c;
         
-        //this->comps.bytypeowner.findLeaves( mtype, p1, l );
-        l = &this->comps.lst;
-        for( i = l->begin(); i != l->end(); ++i )
+        this->comps.byowner.findLeaves( p1, (std::list<void *> *)&l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
         {
             c = *i;
             if( c->getType() != mtype )
-                continue;
-            if( !c->hasParent( p1 ) )
                 continue;
             if( !c->hasParent( p2 ) )
                 continue;
@@ -224,6 +202,9 @@ namespace dragonpoop
     void model_instance::removeComponent( model_component *c )
     {
         this->comps.lst.remove( c );
+        this->comps.byid.removeLeaf( c );
+        this->comps.byowner.removeLeaf( c );
+        this->comps.bytype.removeLeaf( c );
     }
     
     //add vertex
@@ -273,7 +254,7 @@ namespace dragonpoop
     {
         model_instance_triangle_vertex *c;
         c = new model_instance_triangle_vertex( v );
-        this->addComponent( c );//, triangle_id, vertex_id );
+        this->addComponent( c, v->getTriangleId(), v->getVertexId() );
         return c;
     }
     
@@ -456,7 +437,7 @@ namespace dragonpoop
     {
         model_instance_triangle *c;
         c = new model_instance_triangle( gt );
-        this->addComponent( c );
+        this->addComponent( c, gt->getGroupId(), gt->getTriangleId() );
         return c;
     }
     
@@ -530,7 +511,7 @@ namespace dragonpoop
         vb->copy( g->getVertexBuffer() );
     }
     
-    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dptree *t_t, dptree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
     
     //populate vertex buffer for rendering
     void model_instance::computeMeshes( void )
@@ -595,15 +576,15 @@ namespace dragonpoop
         
     }
     
-    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dpid_multibytetree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
+    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dptree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
     
-    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dpid_multibytetree *t_t, dpid_multibytetree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dptree *t_t, dptree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
     {
         std::list<model_instance_triangle *> lt;
         std::list<model_instance_triangle *>::iterator it;
         model_instance_triangle *p;
         
-        t_t->findLeaves( group_id, (std::list<void *> *)&lt );
+        t_t->findLeaves( (char *)&group_id, sizeof( group_id ), (std::list<void *> *)&lt );
         
         for( it = lt.begin(); it != lt.end(); ++it )
         {
@@ -614,13 +595,15 @@ namespace dragonpoop
 
     void model_instance__computeMeshes_2( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, model_instance_triangle_vertex *tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
     
-    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dpid_multibytetree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
+    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dptree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
     {
         std::list<model_instance_triangle_vertex *> ltv;
         std::list<model_instance_triangle_vertex *>::iterator it;
         model_instance_triangle_vertex *p;
+        dpid id;
 
-        t_tv->findLeaves( t->getTriangleId(), (std::list<void *> *)&ltv );
+        id = t->getTriangleId();
+        t_tv->findLeaves( (char *)&id, sizeof( id ), (std::list<void *> *)&ltv );
         
         if( ltv.size() != 3 )
             return;
@@ -708,7 +691,7 @@ namespace dragonpoop
         std::list<model_instance_animation *> li;
         std::list<model_instance_animation *>::iterator ii;
         model_instance_animation *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getAnimations( &li );
         
@@ -759,7 +742,7 @@ namespace dragonpoop
         std::list<model_instance_joint *> li;
         std::list<model_instance_joint *>::iterator ii;
         model_instance_joint *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getJoints( &li );
         

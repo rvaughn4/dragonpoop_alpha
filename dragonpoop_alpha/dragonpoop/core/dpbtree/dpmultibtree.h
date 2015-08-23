@@ -1,8 +1,9 @@
 
-#ifndef dragonpoop_dpbtree_h
-#define dragonpoop_dpbtree_h
+#ifndef dragonpoop_dpmultibtree_h
+#define dragonpoop_dpmultibtree_h
 
 #include "dptree.h"
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -16,16 +17,31 @@ namespace dragonpoop
     private:
         
         //branches
-        dpmultibtree *leftbranch, *rightbranch;
+        std::atomic<dpmultibtree *> leftbranch, rightbranch;
         //leaf
-        std::list<void *> leaves;
+        struct
+        {
+            std::atomic<void **> buffer;
+            std::atomic<unsigned int> size;
+        } leaves;
         //key
         struct
         {
-            unsigned int size;
-            char *buffer;
+            std::atomic<unsigned int> size;
+            std::atomic<char *> buffer;
         } key;
-        bool hasKey;
+        std::atomic<bool> hasKey;
+        
+        //add new leaf using free space
+        bool _addUseFreeSpace( void * );
+        //add new leaf by increasing size of buffer
+        bool _addAllocSpace( void *v );
+        //remove leaf by freeing slot
+        bool _remove( void *v );
+        //clear leaves buffer
+        void _clear( void );
+        //copy leaves
+        void _copy( std::list< void *> *l );
         
     protected:
         

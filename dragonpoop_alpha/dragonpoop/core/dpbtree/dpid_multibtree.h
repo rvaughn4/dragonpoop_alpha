@@ -2,13 +2,13 @@
 #ifndef dragonpoop_dpid_multibtree_h
 #define dragonpoop_dpid_multibtree_h
 
-#include "dpbtree.h"
+#include "dpmultibtree.h"
 #include "../dpid/dpid.h"
 
 namespace dragonpoop
 {
     
-    class dpid_multibtree : public dpbtree
+    class dpid_multibtree : public dpmultibtree
     {
     private:
         
@@ -19,7 +19,7 @@ namespace dragonpoop
         //ovverride to handle deleteion of leaf
         virtual void onRemoveLeaf( void *o );
         //ovverride to generate branches
-        virtual dpbtree *genBranch( void );
+        virtual dptree *genBranch( void );
         //set key
         virtual void setKey( char *k, unsigned int sz );
         //compare key
@@ -35,6 +35,8 @@ namespace dragonpoop
         void *findLeaf( dpid id );
         //add leaf
         void addLeaf( dpid id, void *o );
+        //find leaves
+        void findLeaves( dpid id, std::list<void *> *l );
         
     };
     
