@@ -31,7 +31,7 @@ namespace dragonpoop
     {
 
         ms3d_model_joint_section sh;
-        ms3d_model_joint_m h;
+        ms3d_model_joint_m h, *p;
         unsigned int i;
         model_loader_ms3d *m;
         std::vector<ms3d_model_joint_m> *v;
@@ -54,11 +54,12 @@ namespace dragonpoop
         {
             if( this->b->readBytes( (uint8_t *)&h.f, sizeof( h.f ) ) < sizeof( h.f ) )
                 return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
-            if( !model_loader_ms3d_state_parse_joints__kf( this->b, h.f.cnt_rot_frames, &h.rotate_frames ) )
-                return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
-            if( !model_loader_ms3d_state_parse_joints__kf( this->b, h.f.cnt_pos_frames, &h.translate_frames ) )
-                return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
             v->push_back( h );
+            p = &( *v )[ i ];
+            if( !model_loader_ms3d_state_parse_joints__kf( this->b, p->f.cnt_rot_frames, &p->rotate_frames ) )
+                return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
+            if( !model_loader_ms3d_state_parse_joints__kf( this->b, p->f.cnt_pos_frames, &p->translate_frames ) )
+                return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
         }
 
         return new model_loader_ms3d_state_parse_extras( this->b, this->m );

@@ -14,7 +14,6 @@
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <sstream>
 
-#include <iostream>
 namespace dragonpoop
 {
     
@@ -187,31 +186,58 @@ namespace dragonpoop
         {
             f = &( *fl )[ i_f ];
             
-            //std::cout << "frame " << i_f << " " << f->t << " " << f->ot << "\r\n";
-            
-            for( i_j = 0; i_j < e_f; i_j++ )
+            for( i_j = 0; i_j < e_j; i_j++ )
             {
                 j = &( *jl )[ i_j ];
                 
                 fjnt = m->makeFrameJoint( thd->genId(), f->id, j->id );
                 
-                this->getKeyframe( f->t, &j->rotate_frames, &x );
+                this->getKeyframe( f->ot, &j->rotate_frames, &x );
                 fjnt->setRotation( &x );
-                this->getKeyframe( f->t, &j->translate_frames, &x );
+                this->getKeyframe( f->ot, &j->translate_frames, &x );
                 fjnt->setTranslation( &x );
-                
-                //std::cout << "\tjoint " << i_j << "\r\n";
             }
         }
-        
-        
         
     }
     
     //find xyz keyframe before and after time and interpolate
     void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyzw *x )
     {
+        ms3d_model_joint_keyframe *kb, *ke, *k;
+        unsigned int i, e;
+        float td, tt, rb, re;
         
+        kb = 0; ke = 0;
+        e = (unsigned int)l->size();
+        if( l->empty() )
+            return;
+        
+        for( i = 0; i < e; i++ )
+        {
+            k = &( *l )[ i ];
+            if( !kb || ( k->time <= t && k->time >= kb->time ) )
+                kb = k;
+            if( !ke || ( k->time >= t && k->time <= ke->time ) || ( ke->time <= t && ke->time <= k->time ) )
+                ke = k;
+        }
+        
+        if( !kb || !ke )
+            return;
+        if( t > ke->time )
+            t = ke->time;
+        if( t < kb->time )
+            t = kb->time;
+        
+        td = ke->time - kb->time;
+        tt = t - kb->time;
+        re = tt / td;
+        rb = 1.0f - re;
+        
+        x->x = rb * kb->x + re * ke->x;
+        x->y = rb * kb->y + re * ke->y;
+        x->z = rb * kb->z + re * ke->z;
+        x->w = 1;
     }
     
 };
