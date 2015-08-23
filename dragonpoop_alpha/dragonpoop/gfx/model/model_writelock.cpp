@@ -360,4 +360,28 @@ namespace dragonpoop
         this->t->getFrames( l );
     }
     
+    //add animation frame
+    model_animation_frame *model_writelock::makeAnimationFrame( dpid id, dpid animation_id, dpid frame_id, unsigned int time_ms )
+    {
+        return this->t->makeAnimationFrame( id, animation_id, frame_id, time_ms );
+    }
+    
+    //find animation frame
+    model_animation_frame *model_writelock::findAnimationFrame( dpid id )
+    {
+        return this->t->findAnimationFrame( id );
+    }
+    
+    //get animation frame
+    void model_writelock::getAnimationFrames( std::list<model_animation_frame *> *l )
+    {
+        this->t->getAnimationFrames( l );
+    }
+    
+    //get animation frame by frame or animation id
+    void model_writelock::getAnimationFrames( std::list<model_animation_frame *> *l, dpid parent_id )
+    {
+        this->t->getAnimationFrames( l, parent_id );
+    }
+    
 };

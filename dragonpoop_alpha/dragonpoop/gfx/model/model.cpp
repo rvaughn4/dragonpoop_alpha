@@ -26,6 +26,7 @@
 #include "model_joint/model_joint.h"
 #include "model_vertex_joint/model_vertex_joint.h"
 #include "model_frame/model_frame.h"
+#include "model_animation_frame/model_animation_frame.h"
 
 namespace dragonpoop
 {
@@ -672,6 +673,34 @@ namespace dragonpoop
     void model::getFrames( std::list<model_frame *> *l )
     {
         this->getComponents( model_component_type_frame, (std::list<model_component *> *)l );
+    }
+    
+    //add animation frame
+    model_animation_frame *model::makeAnimationFrame( dpid id, dpid animation_id, dpid frame_id, unsigned int time_ms )
+    {
+        model_animation_frame *c;
+        c = new model_animation_frame( id, animation_id, frame_id );
+        c->setTime( time_ms );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find animation frame
+    model_animation_frame *model::findAnimationFrame( dpid id )
+    {
+        return (model_animation_frame *)this->findComponent( model_component_type_animation_frame, id );
+    }
+    
+    //get animation frame
+    void model::getAnimationFrames( std::list<model_animation_frame *> *l )
+    {
+        this->getComponents( model_component_type_animation_frame, (std::list<model_component *> *)l );
+    }
+    
+    //get animation frame by frame or animation id
+    void model::getAnimationFrames( std::list<model_animation_frame *> *l, dpid parent_id )
+    {
+        this->getComponentsByParent( model_component_type_animation_frame, parent_id, (std::list<model_component *> *)l );
     }
     
 };

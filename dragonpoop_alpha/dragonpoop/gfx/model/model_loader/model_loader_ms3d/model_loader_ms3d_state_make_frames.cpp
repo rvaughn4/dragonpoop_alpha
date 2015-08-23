@@ -13,8 +13,6 @@
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <sstream>
 
-#include <iostream>
-
 namespace dragonpoop
 {
     
@@ -37,6 +35,7 @@ namespace dragonpoop
 
         this->findUnique( ml );
         this->makeFrames( thd, ml );
+        this->makeAnimationFrames( thd, ml );
         
         return new model_loader_ms3d_state_make_verts( this->b, this->m );
     }
@@ -120,7 +119,6 @@ namespace dragonpoop
             
             ss << "MS3D Frame #" << f.t << "";
             s = ss.str();
-            std::cout << s << "\r\n";
             
             f.t = f.t * 1000 / (int)ldr->anim.fps;
             
@@ -152,9 +150,10 @@ namespace dragonpoop
         
         for( i = 0; i < e; i++ )
         {
-
+            f = &( *ldr->frames )[ i ];
+            frm = m->makeAnimationFrame( thd->genId(), ldr->anim_id, f->id, f->t );
+            f->afid = frm->getId();
         }
-        
     }
     
 };

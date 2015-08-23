@@ -221,4 +221,22 @@ namespace dragonpoop
         this->t->getFrames( l );
     }
  
+    //find animation frame
+    model_animation_frame *model_readlock::findAnimationFrame( dpid id )
+    {
+        return this->t->findAnimationFrame( id );
+    }
+    
+    //get animation frame
+    void model_readlock::getAnimationFrames( std::list<model_animation_frame *> *l )
+    {
+        this->t->getAnimationFrames( l );
+    }
+    
+    //get animation frame by frame or animation id
+    void model_readlock::getAnimationFrames( std::list<model_animation_frame *> *l, dpid parent_id )
+    {
+        this->t->getAnimationFrames( l, parent_id );
+    }
+    
 };
