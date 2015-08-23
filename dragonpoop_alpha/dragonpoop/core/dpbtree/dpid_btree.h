@@ -12,13 +12,19 @@ namespace dragonpoop
     {
     private:
         
+        dpid k;
+        
     protected:
         
         //ovverride to handle deleteion of leaf
         virtual void onRemoveLeaf( void *o );
         //ovverride to generate branches
         virtual dpbtree *genBranch( void );
-        
+        //set key
+        virtual void setKey( char *k, unsigned int sz );
+        //compare key
+        virtual int compareKey( char *k, unsigned int sz );
+ 
     public:
         
         //ctor

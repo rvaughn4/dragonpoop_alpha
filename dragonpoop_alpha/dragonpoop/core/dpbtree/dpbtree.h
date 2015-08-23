@@ -1,6 +1,6 @@
 
-#ifndef dragonpoop_dpbtrees_h
-#define dragonpoop_dpbtrees_h
+#ifndef dragonpoop_dpbtree_h
+#define dragonpoop_dpbtree_h
 
 #include "dptree.h"
 
@@ -25,6 +25,7 @@ namespace dragonpoop
             unsigned int size;
             char *buffer;
         } key;
+        bool hasKey;
         
     protected:
         
@@ -35,11 +36,11 @@ namespace dragonpoop
         //ovverride to handle deleteion of leaf
         virtual void onRemoveLeaf( void *o );
         //ovverride to generate branches
-        virtual dpbtree *genBranch( void );
+        virtual dptree *genBranch( void );
         //set key
-        void setKey( char *k, unsigned int sz );
+        virtual void setKey( char *k, unsigned int sz );
         //compare key
-        int compareKey( char *k, unsigned int sz );
+        virtual int compareKey( char *k, unsigned int sz );
         
     public:
         
@@ -55,6 +56,10 @@ namespace dragonpoop
         virtual void clear( void );
         //remove leaf
         virtual void removeLeaf( void *o );
+        //get leaves
+        virtual void getLeaves( std::list< void *> *l );
+        //find leaves
+        virtual void findLeaves( char *key, unsigned int key_size, std::list<void *> *l );
         
     };
     

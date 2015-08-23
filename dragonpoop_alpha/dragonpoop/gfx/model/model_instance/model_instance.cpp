@@ -316,7 +316,7 @@ namespace dragonpoop
         std::list<model_instance_vertex *> li;
         std::list<model_instance_vertex *>::iterator ii;
         model_instance_vertex *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getVertexes( &li );
         
@@ -346,7 +346,7 @@ namespace dragonpoop
         std::list<model_instance_triangle_vertex *> li;
         std::list<model_instance_triangle_vertex *>::iterator ii;
         model_instance_triangle_vertex *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getTriangleVertexes( &li );
         
@@ -376,7 +376,7 @@ namespace dragonpoop
         std::list<model_instance_group *> li;
         std::list<model_instance_group *>::iterator ii;
         model_instance_group *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getGroups( &li );
         
@@ -499,7 +499,7 @@ namespace dragonpoop
         std::list<model_instance_triangle *> li;
         std::list<model_instance_triangle *>::iterator ii;
         model_instance_triangle *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getTriangles( &li );
         
@@ -536,7 +536,7 @@ namespace dragonpoop
     void model_instance::computeMeshes( void )
     {
         dpid_btree t_v;
-        dpid_bytetree t_j;
+        dpid_btree t_j;
         dpid_multibytetree t_tv, t_t;
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;

@@ -39,4 +39,51 @@ namespace dragonpoop
         return new dpid_btree();
     }
     
+    //set key
+    void dpid_btree::setKey( char *k, unsigned int sz )
+    {
+        if( sz != sizeof( dpid ) )
+            return;
+        this->k.addr = ( (dpid *)k )->addr;
+        this->k.counter = ( (dpid *)k )->counter;
+        this->k.epoch = ( (dpid *)k )->epoch;
+        this->k.randno = ( (dpid *)k )->randno;
+        this->k.ticks = ( (dpid *)k )->ticks;
+    }
+    
+    //compare key
+    int dpid_btree::compareKey( char *k, unsigned int sz )
+    {
+        dpid *c = (dpid *)k;
+        if( sz != sizeof( dpid ) )
+            return 5;
+        
+        if( this->k.randno > c->randno )
+            return dpbtree_left;
+        if( this->k.randno < c->randno )
+            return dpbtree_right;
+        
+        if( this->k.counter > c->counter )
+            return dpbtree_left;
+        if( this->k.counter < c->counter )
+            return dpbtree_right;
+
+        if( this->k.addr > c->addr )
+            return dpbtree_left;
+        if( this->k.addr < c->addr )
+            return dpbtree_right;
+        
+        if( this->k.ticks > c->ticks )
+            return dpbtree_left;
+        if( this->k.ticks < c->ticks )
+            return dpbtree_right;
+
+        if( this->k.epoch > c->epoch )
+            return dpbtree_left;
+        if( this->k.epoch < c->epoch )
+            return dpbtree_right;
+        
+        return dpbtree_leaf;
+    }
+    
 };

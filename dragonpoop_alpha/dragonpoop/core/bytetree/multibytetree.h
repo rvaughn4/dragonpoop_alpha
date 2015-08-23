@@ -2,12 +2,12 @@
 #ifndef dragonpoop_multibytetree_h
 #define dragonpoop_multibytetree_h
 
-#include <list>
+#include "../dpbtree/dptree.h"
 
 namespace dragonpoop
 {
 
-    class multibytetree
+    class multibytetree : public dptree
     {
     private:
 
@@ -19,9 +19,9 @@ namespace dragonpoop
     protected:
 
         //clear leaves
-        void clearLeaves( void );
+        virtual void clearLeaves( void );
         //clear branches
-        void clearBranches( void );
+        virtual void clearBranches( void );
         //ovverride to handle deleteion of leaf
         virtual void onRemoveLeaf( void *o );
         //ovverride to generate branches
@@ -34,17 +34,15 @@ namespace dragonpoop
         //dtor
         virtual ~multibytetree( void );
         //find leaf
-        void *findLeaf( char *key, unsigned int key_size );
+        virtual void *findLeaf( char *key, unsigned int key_size );
         //find leaves
-        void findLeaves( char *key, unsigned int key_size, std::list<void *> *l );
+        virtual void findLeaves( char *key, unsigned int key_size, std::list<void *> *l );
         //add leaf
-        void addLeaf( char *key, unsigned int key_size, void *o );
-        //clear
-        void clear( void );
+        virtual void addLeaf( char *key, unsigned int key_size, void *o );
         //remove leaf
-        void removeLeaf( void *o );
+        virtual void removeLeaf( void *o );
         //get leaves
-        void getLeaves( std::list< void *> *l );
+        virtual void getLeaves( std::list< void *> *l );
         
     };
     

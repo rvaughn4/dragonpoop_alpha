@@ -59,7 +59,7 @@ namespace dragonpoop
         t = this->branches[ k ];
         if( !t )
         {
-            t = this->genBranch();
+            t = (bytetree *)this->genBranch();
             this->branches[ k ] = t;
         }
         if( !t )
@@ -112,7 +112,7 @@ namespace dragonpoop
     }
 
     //ovverride to generate branches
-    bytetree *bytetree::genBranch( void )
+    dptree *bytetree::genBranch( void )
     {
         return new bytetree();
     }
@@ -137,4 +137,32 @@ namespace dragonpoop
         }
     }
 
+    //get leaves
+    void bytetree::getLeaves( std::list< void *> *l )
+    {
+        if( this->o )
+            l->push_back( this->o );
+    }
+    
+    //find leaves
+    void bytetree::findLeaves( char *key, unsigned int key_size, std::list<void *> *l )
+    {
+        uint8_t k, *b;
+        bytetree *t;
+        
+        if( !key || !key_size )
+            return;
+        
+        b = (uint8_t *)key;
+        k = b[ 0 ];
+        t = this->branches[ k ];
+        if( !t )
+            return;
+        
+        key_size--;
+        if( key_size )
+            return t->findLeaves( &key[ 1 ], key_size, l );
+        return t->findLeaves( 0, 0, l );
+    }
+    
 };

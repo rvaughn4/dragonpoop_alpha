@@ -1,5 +1,5 @@
 
-#include "dpbtree.h"
+#include "dpmultibtree.h"
 #include <stdlib.h>
 #include <string.h>
 
@@ -7,23 +7,22 @@ namespace dragonpoop
 {
     
     //ctor
-    dpbtree::dpbtree( void )
+    dpmultibtree::dpmultibtree( void )
     {
         this->leftbranch = this->rightbranch = 0;
-        this->o = 0;
         this->key.size = 0;
         this->key.buffer = 0;
         this->hasKey = 0;
     }
     
     //dtor
-    dpbtree::~dpbtree( void )
+    dpmultibtree::~dpmultibtree( void )
     {
         this->clear();
     }
     
     //find leaf
-    void *dpbtree::findLeaf( char *key, unsigned int key_size )
+    void *dpmultibtree::findLeaf( char *key, unsigned int key_size )
     {
         int r;
         
@@ -33,27 +32,29 @@ namespace dragonpoop
         r = this->compareKey( key, key_size );
         switch( r )
         {
-            case dpbtree_left:
+            case dpmultibtree_left:
             {
                 if( this->leftbranch )
                     return this->leftbranch->findLeaf( key, key_size );
             }
-            case dpbtree_right:
+            case dpmultibtree_right:
             {
                 if( this->rightbranch )
                     return this->rightbranch->findLeaf( key, key_size );
             }
-            case dpbtree_leaf:
+            case dpmultibtree_leaf:
             {
-                return this->o;
+                if( this->leaves.empty() )
+                    return 0;
+                return this->leaves.front();
             }
         }
-     
+        
         return 0;
     }
     
     //add leaf
-    void dpbtree::addLeaf( char *key, unsigned int key_size, void *o )
+    void dpmultibtree::addLeaf( char *key, unsigned int key_size, void *o )
     {
         int r;
         
@@ -64,35 +65,34 @@ namespace dragonpoop
             this->setKey( key, key_size );
             this->hasKey = 1;
         }
-     
+        
         r = this->compareKey( key, key_size );
         switch( r )
         {
-            case dpbtree_left:
+            case dpmultibtree_left:
             {
                 if( !this->leftbranch )
-                    this->leftbranch = (dpbtree *)this->genBranch();
+                    this->leftbranch = (dpmultibtree *)this->genBranch();
                 if( this->leftbranch )
                     return this->leftbranch->addLeaf( key, key_size, o );
             }
-            case dpbtree_right:
+            case dpmultibtree_right:
             {
                 if( !this->rightbranch )
-                    this->rightbranch = (dpbtree *)this->genBranch();
+                    this->rightbranch = (dpmultibtree *)this->genBranch();
                 if( this->rightbranch )
                     return this->rightbranch->addLeaf( key, key_size, o );
             }
-            case dpbtree_leaf:
+            case dpmultibtree_leaf:
             {
-                if( this->o )
-                    this->onRemoveLeaf( this->o );
-                this->o = o;
+                if( o )
+                    this->leaves.push_back( o );
             }
         }
     }
     
     //clear
-    void dpbtree::clear( void )
+    void dpmultibtree::clear( void )
     {
         this->dptree::clear();
         if( this->key.buffer )
@@ -102,13 +102,23 @@ namespace dragonpoop
     }
     
     //remove leaf
-    void dpbtree::removeLeaf( void *o )
+    void dpmultibtree::removeLeaf( void *o )
     {
-        if( this->o == o )
+        std::list< void *> *l;
+        std::list< void *>::iterator li;
+        void *p;
+        
+        l = &this->leaves;
+        for( li = l->begin(); li != l->end(); ++li )
         {
-            this->onRemoveLeaf( o );
-            this->o = 0;
+            p = *li;
+            if( p != o )
+                continue;
+            this->onRemoveLeaf( p );
+            *li = 0;
         }
+        l->remove( 0 );
+
         if( this->leftbranch )
             this->leftbranch->removeLeaf( o );
         if( this->rightbranch )
@@ -116,19 +126,29 @@ namespace dragonpoop
     }
     
     //clear leaves
-    void dpbtree::clearLeaves( void )
+    void dpmultibtree::clearLeaves( void )
     {
+        std::list< void *> *l;
+        std::list< void *>::iterator li;
+        void *p;
+        
+        l = &this->leaves;
+        for( li = l->begin(); li != l->end(); ++li )
+        {
+            p = *li;
+            this->onRemoveLeaf( p );
+        }
+        l->clear();
+        
         if( this->leftbranch )
             this->leftbranch->clearLeaves();
         if( this->rightbranch )
             this->rightbranch->clearLeaves();
-        if( this->o )
-            this->onRemoveLeaf( this->o );
-        this->o = 0;
+
     }
     
     //clear branches
-    void dpbtree::clearBranches( void )
+    void dpmultibtree::clearBranches( void )
     {
         if( this->leftbranch )
             delete this->leftbranch;
@@ -138,19 +158,19 @@ namespace dragonpoop
     }
     
     //ovverride to handle deleteion of leaf
-    void dpbtree::onRemoveLeaf( void *o )
+    void dpmultibtree::onRemoveLeaf( void *o )
     {
         
     }
     
     //ovverride to generate branches
-    dptree *dpbtree::genBranch( void )
+    dptree *dpmultibtree::genBranch( void )
     {
-        return new dpbtree();
+        return new dpmultibtree();
     }
-
+    
     //set key
-    void dpbtree::setKey( char *k, unsigned int sz )
+    void dpmultibtree::setKey( char *k, unsigned int sz )
     {
         if( this->key.buffer )
             free( this->key.buffer );
@@ -161,7 +181,7 @@ namespace dragonpoop
     }
     
     //compare key
-    int dpbtree::compareKey( char *k, unsigned int sz )
+    int dpmultibtree::compareKey( char *k, unsigned int sz )
     {
         unsigned int i, l, le;
         union
@@ -173,7 +193,7 @@ namespace dragonpoop
         } a, b;
         
         if( !this->key.buffer || !this->key.size )
-            return dpbtree_left;
+            return dpmultibtree_left;
         
         le = sz;
         if( this->key.size < le )
@@ -189,9 +209,9 @@ namespace dragonpoop
             if( l >= 8 )
             {
                 if( *a.p8 > *b.p8 )
-                    return dpbtree_right;
+                    return dpmultibtree_right;
                 if( *a.p8 < *b.p8 )
-                    return dpbtree_left;
+                    return dpmultibtree_left;
                 i += 8;
             }
             else
@@ -199,9 +219,9 @@ namespace dragonpoop
                 if( l >= 4 )
                 {
                     if( *a.p4 > *b.p4 )
-                        return dpbtree_right;
+                        return dpmultibtree_right;
                     if( *a.p4 < *b.p4 )
-                        return dpbtree_left;
+                        return dpmultibtree_left;
                     i += 4;
                 }
                 else
@@ -209,39 +229,47 @@ namespace dragonpoop
                     if( l >= 2 )
                     {
                         if( *a.p2 > *b.p2 )
-                            return dpbtree_right;
+                            return dpmultibtree_right;
                         if( *a.p2 < *b.p2 )
-                            return dpbtree_left;
+                            return dpmultibtree_left;
                         i += 2;
                     }
                     else
                     {
                         if( *a.p1 > *b.p1 )
-                            return dpbtree_right;
+                            return dpmultibtree_right;
                         if( *a.p1 < *b.p1 )
-                            return dpbtree_left;
+                            return dpmultibtree_left;
                         i += 1;
                     }
                 }
             }
         }
         if( i > sz )
-            return dpbtree_left;
+            return dpmultibtree_left;
         if( i > this->key.size )
-            return dpbtree_right;
+            return dpmultibtree_right;
         
-        return dpbtree_leaf;
+        return dpmultibtree_leaf;
     }
     
     //get leaves
-    void dpbtree::getLeaves( std::list< void *> *l )
+    void dpmultibtree::getLeaves( std::list< void *> *ll )
     {
-        if( this->o )
-            l->push_back( this->o );
+        std::list< void *> *l;
+        std::list< void *>::iterator li;
+        void *p;
+        
+        l = &this->leaves;
+        for( li = l->begin(); li != l->end(); ++li )
+        {
+            p = *li;
+            ll->push_back( p );
+        }
     }
     
     //find leaves
-    void dpbtree::findLeaves( char *key, unsigned int key_size, std::list<void *> *l )
+    void dpmultibtree::findLeaves( char *key, unsigned int key_size, std::list<void *> *l )
     {
         int r;
         
@@ -251,17 +279,17 @@ namespace dragonpoop
         r = this->compareKey( key, key_size );
         switch( r )
         {
-            case dpbtree_left:
+            case dpmultibtree_left:
             {
                 if( this->leftbranch )
                     return this->leftbranch->findLeaves( key, key_size, l );
             }
-            case dpbtree_right:
+            case dpmultibtree_right:
             {
                 if( this->rightbranch )
                     return this->rightbranch->findLeaves( key, key_size, l );
             }
-            case dpbtree_leaf:
+            case dpmultibtree_leaf:
             {
                 return this->getLeaves( l );
             }

@@ -34,7 +34,7 @@ namespace dragonpoop
     }
 
     //ovverride to generate branches
-    bytetree *dpid_bytetree::genBranch( void )
+    dptree *dpid_bytetree::genBranch( void )
     {
         return new dpid_bytetree();
     }

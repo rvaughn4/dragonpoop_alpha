@@ -1,23 +1,34 @@
 
-#ifndef dragonpoop_bytetree_h
-#define dragonpoop_bytetree_h
+#ifndef dragonpoop_dpbtree_h
+#define dragonpoop_dpbtree_h
 
-#include "../dpbtree/dptree.h"
+#include "dptree.h"
 
 namespace dragonpoop
 {
-
-    class bytetree : public dptree
+    
+#define dpmultibtree_left 0
+#define dpmultibtree_right 1
+#define dpmultibtree_leaf 2
+    
+    class dpmultibtree : public dptree
     {
     private:
-
+        
         //branches
-        bytetree *branches[ 256 ];
+        dpmultibtree *leftbranch, *rightbranch;
         //leaf
-        void *o;
-
+        std::list<void *> leaves;
+        //key
+        struct
+        {
+            unsigned int size;
+            char *buffer;
+        } key;
+        bool hasKey;
+        
     protected:
-
+        
         //clear leaves
         virtual void clearLeaves( void );
         //clear branches
@@ -26,26 +37,32 @@ namespace dragonpoop
         virtual void onRemoveLeaf( void *o );
         //ovverride to generate branches
         virtual dptree *genBranch( void );
+        //set key
+        virtual void setKey( char *k, unsigned int sz );
+        //compare key
+        virtual int compareKey( char *k, unsigned int sz );
         
     public:
-
+        
         //ctor
-        bytetree( void );
+        dpmultibtree( void );
         //dtor
-        virtual ~bytetree( void );
+        virtual ~dpmultibtree( void );
         //find leaf
         virtual void *findLeaf( char *key, unsigned int key_size );
         //add leaf
         virtual void addLeaf( char *key, unsigned int key_size, void *o );
+        //clear
+        virtual void clear( void );
         //remove leaf
         virtual void removeLeaf( void *o );
         //get leaves
         virtual void getLeaves( std::list< void *> *l );
         //find leaves
         virtual void findLeaves( char *key, unsigned int key_size, std::list<void *> *l );
-
+        
     };
-
+    
 };
 
 #endif

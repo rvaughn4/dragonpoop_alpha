@@ -81,13 +81,6 @@ namespace dragonpoop
             t->addLeaf( 0, 0, o );
     }
 
-    //clear
-    void multibytetree::clear( void )
-    {
-        this->clearBranches();
-        this->clearLeaves();
-    }
-
     //remove leaf
     void multibytetree::removeLeaf( void *o )
     {

@@ -2,6 +2,8 @@
 #ifndef dragonpoop_dptree_h
 #define dragonpoop_dptree_h
 
+#include <list>
+
 namespace dragonpoop
 {
     
@@ -34,7 +36,11 @@ namespace dragonpoop
         virtual void clear( void );
         //remove leaf
         virtual void removeLeaf( void *o ) = 0;
-        
+        //get leaves
+        virtual void getLeaves( std::list< void *> *l ) = 0;
+        //find leaves
+        virtual void findLeaves( char *key, unsigned int key_size, std::list<void *> *l ) = 0;
+ 
     };
     
 };

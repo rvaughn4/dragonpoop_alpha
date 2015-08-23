@@ -17,7 +17,7 @@ namespace dragonpoop
         //ovverride to handle deleteion of leaf
         virtual void onRemoveLeaf( void *o );
         //ovverride to generate branches
-        virtual bytetree *genBranch( void );
+        virtual dptree *genBranch( void );
 
     public:
 
