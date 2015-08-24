@@ -480,7 +480,7 @@ namespace dragonpoop
         std::list<model_instance_triangle *> li;
         std::list<model_instance_triangle *>::iterator ii;
         model_instance_triangle *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getTriangles( &li );
         
@@ -533,16 +533,28 @@ namespace dragonpoop
         std::list<void *> l;
         std::list<void *>::iterator i;
         void *p;
+        unsigned int tcnt;
+        dpvertexindex_buffer b;
         
         vb = g->getVertexBuffer();
         vb->clear();
         
+        tcnt = 0;
         this->getTriangles( (std::list<model_instance_triangle *> *)&l );
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            this->redoMesh( vb, (model_instance_triangle *)p );
+            this->redoMesh( &b, (model_instance_triangle *)p );
+            tcnt++;
+            if( tcnt > 15 )
+            {
+                tcnt = 0;
+                vb->append( &b );
+                b.clear();
+            }
         }
+        
+        vb->append( &b );
     }
     
     //redo triangle mesh
@@ -635,7 +647,7 @@ namespace dragonpoop
         std::list<model_instance_animation *> li;
         std::list<model_instance_animation *>::iterator ii;
         model_instance_animation *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getAnimations( &li );
         
@@ -686,7 +698,7 @@ namespace dragonpoop
         std::list<model_instance_joint *> li;
         std::list<model_instance_joint *>::iterator ii;
         model_instance_joint *pi;
-        dpid_bytetree t;
+        dpid_btree t;
         
         this->getJoints( &li );
         

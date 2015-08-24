@@ -63,4 +63,25 @@ namespace dragonpoop
         return this->ib.getBuffer();
     }
     
+    //append buffer to this one
+    void dpvertexindex_buffer::append( dpvertexindex_buffer *c )
+    {
+        dpindex *ix, *ip;
+        dpvertex *v, *vp;
+        unsigned int ii, is, vi, vs;
+        
+        ip = c->getIndexBuffer( &is );
+        vp = c->getVertexBuffer( &vs );
+        
+        for( ii = 0 ; ii < is; ii++ )
+        {
+            ix = &ip[ ii ];
+            vi = ix->i;
+            if( vi >= vs )
+                continue;
+            v = &vp[ vi ];
+            this->addVertex( v );
+        }
+    }
+    
 };

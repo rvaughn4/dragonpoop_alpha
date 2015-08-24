@@ -6,6 +6,9 @@
 #include "../../../core/dpid/dpid.h"
 #include <string>
 #include "../../../gfx/model/model_component/model_components.h"
+#include "../../../core/dpbtree/dpid_btree.h"
+#include "../../../core/dpbtree/dpid_multibtree.h"
+#include "../../../core/dpbtree/dpmultibtree.h"
 
 namespace dragonpoop
 {
@@ -32,6 +35,9 @@ namespace dragonpoop
         struct
         {
             std::list<model_component *> lst;
+            dpid_btree byid;
+            dpid_multibtree byowner;
+            dpmultibtree bytype;
         } comps;
         std::atomic<bool> bIsSynced, bIsAnimated;
         model_instance_ref *m;

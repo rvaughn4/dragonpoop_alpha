@@ -6,11 +6,9 @@
 #include "../../../core/dpid/dpid.h"
 #include <string>
 #include "../model_component/model_components.h"
-#include "../../../core/bytetree/dpid_multibytetree.h"
-#include "../../../core/bytetree/dpid_bytetree.h"
-#include "../../../core/bytetree/multibytetree.h"
 #include "../../../core/dpbtree/dpid_btree.h"
 #include "../../../core/dpbtree/dpid_multibtree.h"
+#include "../../../core/dpbtree/dpmultibtree.h"
 
 namespace dragonpoop
 {

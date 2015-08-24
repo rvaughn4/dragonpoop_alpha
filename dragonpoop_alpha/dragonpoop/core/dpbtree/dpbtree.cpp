@@ -68,7 +68,16 @@ namespace dragonpoop
     //remove leaf
     void dpbtree::removeLeaf( void *o )
     {
+        std::map<dpbtree_key, void *>::iterator i, e;
         
+        e = this->m.end();
+        for( i = this->m.begin(); i != e; ++i )
+        {
+            if( o != i->second )
+                continue;
+            this->m.erase( i );
+            return this->removeLeaf( o );
+        }
     }
     
     //clear leaves
@@ -115,7 +124,13 @@ namespace dragonpoop
     //get leaves
     void dpbtree::getLeaves( std::list< void *> *l )
     {
-
+        std::map<dpbtree_key, void *>::iterator i, e;
+        
+        e = this->m.end();
+        for( i = this->m.begin(); i != e; ++i )
+        {
+            l->push_back( i->second );
+        }
     }
     
     //ctor

@@ -26,6 +26,8 @@ namespace dragonpoop
         virtual ~dpvertexindex_buffer( void );
         //copy
         void copy( dpvertexindex_buffer *c );
+        //append buffer to this one
+        void append( dpvertexindex_buffer *c );
         //clear
         void clear( void );
         //add vertex

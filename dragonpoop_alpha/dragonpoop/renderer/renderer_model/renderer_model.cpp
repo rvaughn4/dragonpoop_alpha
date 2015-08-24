@@ -210,7 +210,7 @@ namespace dragonpoop
         std::list<model_instance_ref *>::iterator i;
         renderer_model_instance *pi;
         model_instance_ref *p;
-        dpid_bytetree t;
+        dpid_btree t;
         shared_obj_guard o;
         model_instance_writelock *pl;
         
@@ -344,7 +344,7 @@ namespace dragonpoop
         std::list<model_material *>::iterator i;
         renderer_model_material *pi;
         model_material *p;
-        dpid_bytetree t;
+        dpid_btree t;
         
         //build index
         this->getMaterials( &li );

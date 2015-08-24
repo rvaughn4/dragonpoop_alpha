@@ -65,6 +65,9 @@ namespace dragonpoop
             d.push_back( c );
         }
         l->clear();
+        this->comps.byid.clear();
+        this->comps.byowner.clear();
+        this->comps.bytype.clear();
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
@@ -83,65 +86,44 @@ namespace dragonpoop
     //add component to list and trees
     void renderer_model_instance::addComponent( model_component *c )
     {
+        uint16_t k;
         this->comps.lst.push_back( c );
+        this->comps.byid.addLeaf( c->getId(), c );
+        k = c->getType();
+        this->comps.bytype.addLeaf( (char *)&k, sizeof( k ), c );
     }
     
     //find component by type and id
     model_component *renderer_model_instance::findComponent( uint16_t mtype, dpid id )
     {
-        std::list<model_component *> *l;
-        std::list<model_component *>::iterator i;
         model_component *c;
         
-        //return this->comps.bytypeid.findLeaf( mtype, id );
+        c = (model_component *)this->comps.byid.findLeaf( id );
+        if( !c || c->getType() != mtype )
+            return 0;
         
-        l = &this->comps.lst;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            c = *i;
-            if( c->getType() != mtype )
-                continue;
-            if( !c->compareId( id ) )
-                continue;
-            return c;
-        }
-        
-        return 0;
+        return c;
     }
     
     //find components by type
-    void renderer_model_instance::getComponents( uint16_t mtype, std::list<model_component *> *ll )
+    void renderer_model_instance::getComponents( uint16_t mtype, std::list<model_component *> *l )
     {
-        std::list<model_component *> *l;
-        std::list<model_component *>::iterator i;
-        model_component *c;
-        
-        //this->comps.bytype.findLeaves( mtype, ll );
-        l = &this->comps.lst;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            c = *i;
-            if( c->getType() != mtype )
-                continue;
-            ll->push_back( c );
-        }
+        this->comps.bytype.findLeaves( (char *)&mtype, sizeof( mtype ), (std::list<void *> *)l );
     }
     
     //find components by type and 1 parent
     void renderer_model_instance::getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *ll )
     {
-        std::list<model_component *> *l;
+        std::list<model_component *> l;
         std::list<model_component *>::iterator i;
         model_component *c;
         
-        //this->comps.bytypeowner.findLeaves( mtype, p1, l );
-        l = &this->comps.lst;
-        for( i = l->begin(); i != l->end(); ++i )
+        this->comps.byowner.findLeaves( p1, (std::list<void *> *)&l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
         {
             c = *i;
             if( c->getType() != mtype )
-                continue;
-            if( !c->hasParent( p1 ) )
                 continue;
             ll->push_back( c );
         }
@@ -150,18 +132,16 @@ namespace dragonpoop
     //find components by type and 2 parents
     void renderer_model_instance::getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *ll )
     {
-        std::list<model_component *> *l;
+        std::list<model_component *> l;
         std::list<model_component *>::iterator i;
         model_component *c;
         
-        //this->comps.bytypeowner.findLeaves( mtype, p1, l );
-        l = &this->comps.lst;
-        for( i = l->begin(); i != l->end(); ++i )
+        this->comps.byowner.findLeaves( p1, (std::list<void *> *)&l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
         {
             c = *i;
             if( c->getType() != mtype )
-                continue;
-            if( !c->hasParent( p1 ) )
                 continue;
             if( !c->hasParent( p2 ) )
                 continue;
@@ -173,6 +153,9 @@ namespace dragonpoop
     void renderer_model_instance::removeComponent( model_component *c )
     {
         this->comps.lst.remove( c );
+        this->comps.byid.removeLeaf( c );
+        this->comps.byowner.removeLeaf( c );
+        this->comps.bytype.removeLeaf( c );
     }
     
     //add group
@@ -208,7 +191,7 @@ namespace dragonpoop
         std::list<model_instance_group *>::iterator i;
         renderer_model_instance_group *pi;
         model_instance_group *p;
-        dpid_bytetree t;
+        dpid_btree t;
         
         //build index
         this->getGroups( &li );
@@ -259,7 +242,7 @@ namespace dragonpoop
         std::list<model_instance_group *> lg;
         std::list<model_instance_group *>::iterator ig;
         model_instance_group *pg;
-        dpid_bytetree t;
+        dpid_btree t;
 
         ml->getGroups( &lg );
         for( ig = lg.begin(); ig != lg.end(); ++ig )

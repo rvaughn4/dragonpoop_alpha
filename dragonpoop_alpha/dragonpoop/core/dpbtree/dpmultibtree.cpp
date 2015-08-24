@@ -65,6 +65,16 @@ namespace dragonpoop
     //remove leaf
     void dpmultibtree::removeLeaf( void *o )
     {
+        std::multimap<dpmultibtree_key, void *>::iterator i, e;
+        
+        e = this->m.end();
+        for( i = this->m.begin(); i != e; ++i )
+        {
+            if( o != i->second )
+                continue;
+            this->m.erase( i );
+            return this->removeLeaf( o );
+        }
     }
     
     //clear leaves
@@ -81,6 +91,13 @@ namespace dragonpoop
     //get leaves
     void dpmultibtree::getLeaves( std::list< void *> *l )
     {
+        std::multimap<dpmultibtree_key, void *>::iterator i, e;
+        
+        e = this->m.end();
+        for( i = this->m.begin(); i != e; ++i )
+        {
+            l->push_back( i->second );
+        }
     }
     
     //compare key, return >0 if a > b, <0 if a<b or 0 if a==b
