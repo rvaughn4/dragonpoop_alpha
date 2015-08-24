@@ -10,11 +10,10 @@ namespace dragonpoop
 #pragma pack( 1 )
     struct dpid
     {
-        uint32_t ticks;
-        uint32_t epoch;
-        uint16_t counter;
-        uint16_t addr;
-        uint16_t randno;
+        uint16_t epoch;
+        uint32_t counter;
+        uint8_t addr;
+        uint8_t rdm;
     };
 #pragma pack()
 
@@ -26,7 +25,9 @@ namespace dragonpoop
     bool dpid_compare( dpid *a, dpid *b );
     //copy dpids
     void dpid_copy( dpid *src, dpid *dst );
-
+    //compare dpid
+    int dpid_signed_compare( dpid *a, dpid *b );
+    
 }
 
 #endif

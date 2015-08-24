@@ -7,8 +7,10 @@
 #include <string>
 #include "../model_component/model_components.h"
 #include "../../../core/bytetree/dpid_multibytetree.h"
+#include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../core/bytetree/multibytetree.h"
 #include "../../../core/dpbtree/dpid_btree.h"
+#include "../../../core/dpbtree/dpid_multibtree.h"
 
 namespace dragonpoop
 {
@@ -50,8 +52,8 @@ namespace dragonpoop
         {
             std::list<model_component *> lst;
             dpid_btree byid;
-            multibytetree bytype;
-            dpid_multibytetree byowner;
+            dpmultibtree bytype;
+            dpid_multibtree byowner;
         } comps;
         renderer_model_instance_ref *r;
         uint64_t t_start, t_end, t_last_animate, t_frame_time;
@@ -60,6 +62,15 @@ namespace dragonpoop
         void deleteComponents( void );
         //populate vertex buffer for rendering
         void computeMeshes( void );
+        
+        //redo mesh
+        void redoMesh( void );
+        //redo group mesh
+        void redoMesh( model_instance_group *g );
+        //redo triangle mesh
+        void redoMesh( dpvertexindex_buffer *vb, model_instance_triangle *t );
+        //redo vertex mesh
+        void redoMesh( dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv );
 
     protected:
         

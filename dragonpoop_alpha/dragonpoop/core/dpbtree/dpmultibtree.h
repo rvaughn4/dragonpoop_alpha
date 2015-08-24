@@ -3,45 +3,53 @@
 #define dragonpoop_dpmultibtree_h
 
 #include "dptree.h"
-#include <atomic>
+#include <map>
 
 namespace dragonpoop
 {
     
-#define dpmultibtree_left 0
-#define dpmultibtree_right 1
-#define dpmultibtree_leaf 2
+    class dpmultibtree_key;
+    class dpmultibtree;
+    
+    class dpmultibtree_key
+    {
+        
+        char *ptr;
+        unsigned int size;
+        dpmultibtree *t;
+        
+    public:
+        
+        //ctor
+        dpmultibtree_key( dpmultibtree *t );
+        //copy ctor
+        dpmultibtree_key( const dpmultibtree_key &c );
+        //dtor
+        virtual ~dpmultibtree_key( void );
+        //set value
+        void set( char *k, unsigned int sz );
+        //equals
+        bool operator==(const dpmultibtree_key &b ) const;
+        //not equals
+        bool operator!=(const dpmultibtree_key &b) const;
+        //less than
+        bool operator<(const dpmultibtree_key &b) const;
+        //greater than
+        bool operator>(const dpmultibtree_key &b) const;
+        //less than or equal
+        bool operator<=(const dpmultibtree_key &b) const;
+        //greater than or equal
+        bool operator>=(const dpmultibtree_key &b) const;
+        //assignment
+        dpmultibtree_key& operator=( const dpmultibtree_key& b );
+        
+    };
     
     class dpmultibtree : public dptree
     {
     private:
         
-        //branches
-        std::atomic<dpmultibtree *> leftbranch, rightbranch;
-        //leaf
-        struct
-        {
-            std::atomic<void **> buffer;
-            std::atomic<unsigned int> size;
-        } leaves;
-        //key
-        struct
-        {
-            std::atomic<unsigned int> size;
-            std::atomic<char *> buffer;
-        } key;
-        std::atomic<bool> hasKey;
-        
-        //add new leaf using free space
-        bool _addUseFreeSpace( void * );
-        //add new leaf by increasing size of buffer
-        bool _addAllocSpace( void *v );
-        //remove leaf by freeing slot
-        bool _remove( void *v );
-        //clear leaves buffer
-        void _clear( void );
-        //copy leaves
-        void _copy( std::list< void *> *l );
+        std::multimap<dpmultibtree_key, void *> m;
         
     protected:
         
@@ -49,15 +57,11 @@ namespace dragonpoop
         virtual void clearLeaves( void );
         //clear branches
         virtual void clearBranches( void );
-        //ovverride to handle deleteion of leaf
-        virtual void onRemoveLeaf( void *o );
+        //compare keys
+        int compareKey( char *k_a, char *k_b, unsigned int k_a_size, unsigned int k_b_size );
         //ovverride to generate branches
         virtual dptree *genBranch( void );
-        //set key
-        virtual void setKey( char *k, unsigned int sz );
-        //compare key
-        virtual int compareKey( char *k, unsigned int sz );
-        
+
     public:
         
         //ctor
@@ -68,8 +72,6 @@ namespace dragonpoop
         virtual void *findLeaf( char *key, unsigned int key_size );
         //add leaf
         virtual void addLeaf( char *key, unsigned int key_size, void *o );
-        //clear
-        virtual void clear( void );
         //remove leaf
         virtual void removeLeaf( void *o );
         //get leaves
@@ -77,6 +79,7 @@ namespace dragonpoop
         //find leaves
         virtual void findLeaves( char *key, unsigned int key_size, std::list<void *> *l );
         
+        friend class dpmultibtree_key;
     };
     
 };

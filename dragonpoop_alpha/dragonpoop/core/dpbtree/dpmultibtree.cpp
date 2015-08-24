@@ -1,7 +1,5 @@
 
 #include "dpmultibtree.h"
-#include <stdlib.h>
-#include <string.h>
 
 namespace dragonpoop
 {
@@ -9,358 +7,189 @@ namespace dragonpoop
     //ctor
     dpmultibtree::dpmultibtree( void )
     {
-        this->leftbranch = this->rightbranch = 0;
-        this->key.size = 0;
-        this->key.buffer = 0;
-        this->hasKey = 0;
-        this->leaves.buffer = 0;
-        this->leaves.size = 0;
     }
     
     //dtor
     dpmultibtree::~dpmultibtree( void )
     {
-        void **b;
-        
         this->clear();
-        
-        b = this->leaves.buffer;
-        if( b )
-            delete[] b;
     }
     
     //find leaf
     void *dpmultibtree::findLeaf( char *key, unsigned int key_size )
     {
-        int r;
-        dpmultibtree *b;
+        std::multimap<dpmultibtree_key, void *>::iterator i, e;
+        dpmultibtree_key k( this );
         
-        if( !key || !key_size )
+        if( this->m.empty() )
             return 0;
         
-        r = this->compareKey( key, key_size );
-        switch( r )
-        {
-            case dpmultibtree_left:
-            {
-                b = this->leftbranch;
-                if( b )
-                    return b->findLeaf( key, key_size );
-            }
-            case dpmultibtree_right:
-            {
-                b = this->rightbranch;
-                if( b )
-                    return b->findLeaf( key, key_size );
-            }
-            case dpmultibtree_leaf:
-            {
-                if( !this->leaves.size || !this->leaves.buffer )
-                    return 0;
-                return this->leaves.buffer;
-            }
-        }
+        k.set( key, key_size );
+        e = this->m.end();
+        i = this->m.find( k );
         
-        return 0;
+        if( i == e )
+            return 0;
+        return i->second;
+    }
+    
+    //find leaves
+    void dpmultibtree::findLeaves( char *key, unsigned int key_size, std::list<void *> *l )
+    {
+        std::multimap<dpmultibtree_key, void *>::iterator i, e;
+        dpmultibtree_key k( this );
+        
+        if( this->m.empty() )
+            return;
+        
+        k.set( key, key_size );
+        std::pair<std::multimap<dpmultibtree_key, void *>::iterator, std::multimap<dpmultibtree_key, void *>::iterator> r;
+        r = this->m.equal_range( k );
+        e = r.second;
+        i = r.first;
+        
+        if( i == this->m.end() )
+            return;
+        for( ; i != e; ++i )
+            l->push_back( i->second );
     }
     
     //add leaf
     void dpmultibtree::addLeaf( char *key, unsigned int key_size, void *o )
     {
-        int r;
-        dpmultibtree *b;
-        
-        if( !key || !key_size )
-            return;
-        if( !this->hasKey )
-        {
-            this->setKey( key, key_size );
-            this->hasKey = 1;
-        }
-        
-        r = this->compareKey( key, key_size );
-        switch( r )
-        {
-            case dpmultibtree_left:
-            {
-                b = this->leftbranch;
-                if( !b )
-                    this->leftbranch = b = (dpmultibtree *)this->genBranch();
-                if( b )
-                    return b->addLeaf( key, key_size, o );
-            }
-            case dpmultibtree_right:
-            {
-                b = this->rightbranch;
-                if( !b )
-                    this->rightbranch = b = (dpmultibtree *)this->genBranch();
-                if( b )
-                    return b->addLeaf( key, key_size, o );
-            }
-            case dpmultibtree_leaf:
-            {
-                if( !this->_addUseFreeSpace( o ) )
-                    this->_addAllocSpace( o );
-            }
-        }
-    }
-    
-    //clear
-    void dpmultibtree::clear( void )
-    {
-        char *b;
-        
-        this->dptree::clear();
-        
-        b = this->key.buffer;
-        if( b )
-            delete[] b;
-        this->hasKey = 0;
-        this->key.buffer = 0;
-        this->key.size = 0;
+        dpmultibtree_key k( this );
+        k.set( key, key_size );
+        this->m.insert( std::pair<dpmultibtree_key, void *>( k, o ) );
     }
     
     //remove leaf
     void dpmultibtree::removeLeaf( void *o )
     {
-        dpmultibtree *b;
-        
-        if( this->_remove( o ) )
-            this->onRemoveLeaf( o );
-        
-        b = this->leftbranch;
-        if( b )
-            b->removeLeaf( o );
-        b = this->rightbranch;
-        if( b )
-            b->removeLeaf( o );
     }
     
     //clear leaves
     void dpmultibtree::clearLeaves( void )
     {
-        dpmultibtree *b;
-
-        this->_clear();
-        
-        b = this->leftbranch;
-        if( b )
-            b->clearLeaves();
-        b = this->rightbranch;
-        if( b )
-            b->clearLeaves();
+        this->m.clear();
     }
     
     //clear branches
     void dpmultibtree::clearBranches( void )
     {
-        dpmultibtree *b;
-
-        b = this->leftbranch;
-        if( b )
-            delete b;
-        b = this->rightbranch;
-        if( b )
-            delete b;
-
-        this->leftbranch = this->rightbranch = 0;
     }
     
-    //ovverride to handle deleteion of leaf
-    void dpmultibtree::onRemoveLeaf( void *o )
+    //get leaves
+    void dpmultibtree::getLeaves( std::list< void *> *l )
     {
-        
     }
     
+    //compare key, return >0 if a > b, <0 if a<b or 0 if a==b
+    int dpmultibtree::compareKey( char *k_a, char *k_b, unsigned int k_a_size, unsigned int k_b_size )
+    {
+        unsigned int i, l;
+        
+        l = k_a_size;
+        if( k_b_size > l )
+            l = k_b_size;
+        
+        for( i = 0; i < l; i++ )
+        {
+            if( k_a[ i ] < k_b[ i ] )
+                return -1;
+            if( k_a[ i ] > k_b[ i ] )
+                return 1;
+        }
+        if( i > k_a_size )
+            return 1;
+        if( i > k_b_size )
+            return -1;
+        
+        return 0;
+    }
+
     //ovverride to generate branches
     dptree *dpmultibtree::genBranch( void )
     {
         return new dpmultibtree();
     }
     
-    //set key
-    void dpmultibtree::setKey( char *k, unsigned int sz )
+    //ctor
+    dpmultibtree_key::dpmultibtree_key( dpmultibtree *t )
     {
-        if( this->key.buffer )
-            free( this->key.buffer );
-        this->key.buffer = new char[ sz ];
-        this->key.size = sz;
-        if( this->key.buffer )
-            memcpy( this->key.buffer, k, sz );
+        this->t = t;
+        this->size = 0;
+        this->ptr = 0;
     }
     
-    //compare key
-    int dpmultibtree::compareKey( char *k, unsigned int sz )
+    //ctor
+    dpmultibtree_key::dpmultibtree_key( const dpmultibtree_key &c )
     {
-        unsigned int i, le;
-        struct
-        {
-            uint8_t *p1;
-        } a, b;
-        
-        if( !this->key.buffer || !this->key.size )
-            return dpmultibtree_left;
-        
-        le = sz;
-        if( this->key.size < le )
-            le = this->key.size;
-        
-        i = 0;
-        while( i < le )
-        {
-            a.p1 = (uint8_t *)&( k[ i ] );
-            b.p1 = (uint8_t *)&( this->key.buffer[ i ] );
-            if( *a.p1 > *b.p1 )
-                return dpmultibtree_right;
-            if( *a.p1 < *b.p1 )
-                return dpmultibtree_left;
-            i += 1;
-        }
-        if( i > sz )
-            return dpmultibtree_left;
-        if( i > this->key.size )
-            return dpmultibtree_right;
-        
-        return dpmultibtree_leaf;
+        this->t = c.t;
+        this->ptr = 0;
+        this->set( c.ptr, c.size );
     }
     
-    //get leaves
-    void dpmultibtree::getLeaves( std::list< void *> *l )
+    //dtor
+    dpmultibtree_key::~dpmultibtree_key( void )
     {
-        this->_copy( l );
+        if( this->ptr )
+            delete[] this->ptr;
     }
     
-    //find leaves
-    void dpmultibtree::findLeaves( char *key, unsigned int key_size, std::list<void *> *l )
+    //set value
+    void dpmultibtree_key::set( char *k, unsigned int sz )
     {
-        int r;
-        dpmultibtree *b;
-        
-        if( !key || !key_size )
-            return;
-        
-        r = this->compareKey( key, key_size );
-        switch( r )
-        {
-            case dpmultibtree_left:
-            {
-                b = this->leftbranch;
-                if( b )
-                    return b->findLeaves( key, key_size, l );
-            }
-            case dpmultibtree_right:
-            {
-                b = this->rightbranch;
-                if( b )
-                    return b->findLeaves( key, key_size, l );
-            }
-            case dpmultibtree_leaf:
-            {
-                return this->getLeaves( l );
-            }
-        }
-        
+        if( this->ptr )
+            delete[] this->ptr;
+        this->ptr = new char[ sz ];
+        this->size = sz;
+        if( this->ptr )
+            memcpy( this->ptr, k, sz );
     }
     
-    //add new leaf using free space
-    bool dpmultibtree::_addUseFreeSpace( void *v )
+    //equals
+    bool dpmultibtree_key::operator==(const dpmultibtree_key &b ) const
     {
-        unsigned int i;
-        void *p, **l;
-        
-        if( !this->leaves.size || !this->leaves.buffer )
-            return 0;
-        
-        l = this->leaves.buffer;
-        for( i = 0; i < this->leaves.size; i++ )
-        {
-            p = l[ i ];
-            if( p )
-                continue;
-            l[ i ] = v;
-            return 1;
-        }
-        
-        return 0;
+        return this->t->compareKey( this->ptr, b.ptr, this->size, b.size ) == 0;
     }
     
-    //add new leaf by increasing size of buffer
-    bool dpmultibtree::_addAllocSpace( void *v )
+    //not equals
+    bool dpmultibtree_key::operator!=(const dpmultibtree_key &b) const
     {
-        void **nb, **ob;
-        unsigned int ns, os;
-        
-        ob = this->leaves.buffer;
-        os = this->leaves.size;
-        
-        ns = os * 2 + 3;
-        nb = new void *[ ns ];
-        if( !nb )
-            return 0;
-        memset( nb, 0, ns * sizeof( void *) );
-        if( ob )
-        {
-            memcpy( nb, ob, os );
-            delete[] ob;
-        }
-        this->leaves.buffer = nb;
-        this->leaves.size = ns;
-        
-        return this->_addUseFreeSpace( v );
+        return this->t->compareKey( this->ptr, b.ptr, this->size, b.size ) != 0;
     }
     
-    //remove leaf by freeing slot
-    bool dpmultibtree::_remove( void *v )
+    //less than
+    bool dpmultibtree_key::operator<(const dpmultibtree_key &b) const
     {
-        unsigned int i;
-        void *p, **l;
-        
-        if( !this->leaves.size || !this->leaves.buffer )
-            return 0;
-        
-        l = this->leaves.buffer;
-        for( i = 0; i < this->leaves.size; i++ )
-        {
-            p = l[ i ];
-            if( p == v )
-                return 1;
-        }
-        
-        return 0;
+        return this->t->compareKey( this->ptr, b.ptr, this->size, b.size ) < 0;
     }
     
-    //clear leaves buffer
-    void dpmultibtree::_clear( void )
+    //greater than
+    bool dpmultibtree_key::operator>(const dpmultibtree_key &b) const
     {
-        unsigned int i;
-        void **l;
-        
-        if( !this->leaves.size || !this->leaves.buffer )
-            return;
-        
-        l = this->leaves.buffer;
-        for( i = 0; i < this->leaves.size; i++ )
-        {
-            l[ i ] = 0;
-        }
+        return this->t->compareKey( this->ptr, b.ptr, this->size, b.size ) > 0;
     }
     
-    //copy leaves
-    void dpmultibtree::_copy( std::list< void *> *ll )
+    //less than or equal
+    bool dpmultibtree_key::operator<=(const dpmultibtree_key &b) const
     {
-        unsigned int i;
-        void *p, **l;
-        
-        if( !this->leaves.size || !this->leaves.buffer )
-            return;
-        
-        l = this->leaves.buffer;
-        for( i = 0; i < this->leaves.size; i++ )
-        {
-            p = l[ i ];
-            if( p )
-                ll->push_back( p );
-        }
+        return this->t->compareKey( this->ptr, b.ptr, this->size, b.size ) <= 0;
+    }
+    
+    //greater than or equal
+    bool dpmultibtree_key::operator>=(const dpmultibtree_key &b) const
+    {
+        return this->t->compareKey( this->ptr, b.ptr, this->size, b.size ) >= 0;
+    }
+    
+    //assignment
+    dpmultibtree_key& dpmultibtree_key::operator=( const dpmultibtree_key& b )
+    {
+        this->t = b.t;
+        this->ptr = 0;
+        this->set( b.ptr, b.size );
+        return *this;
     }
     
 };

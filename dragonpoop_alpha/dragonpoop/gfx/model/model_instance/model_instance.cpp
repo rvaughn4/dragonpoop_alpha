@@ -403,10 +403,10 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         renderer_model_instance_readlock *rl;
-    
+        
         this->t_end = tms + this->t_frame_time;
         this->t_start = tms;
-        this->computeMeshes();
+        this->redoMesh();
         
         if( !this->r )
             return;
@@ -480,7 +480,7 @@ namespace dragonpoop
         std::list<model_instance_triangle *> li;
         std::list<model_instance_triangle *>::iterator ii;
         model_instance_triangle *pi;
-        dpid_btree t;
+        dpid_bytetree t;
         
         this->getTriangles( &li );
         
@@ -511,124 +511,68 @@ namespace dragonpoop
         vb->copy( g->getVertexBuffer() );
     }
     
-    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dptree *t_t, dptree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
-    
-    //populate vertex buffer for rendering
-    void model_instance::computeMeshes( void )
+    //redo mesh
+    void model_instance::redoMesh( void )
     {
-        dpid_btree t_v;
-        dpid_btree t_j;
-        dpid_multibytetree t_tv, t_t;
-        std::list<model_component *> *l;
-        std::list<model_component *>::iterator i;
-        model_component *p;
-        model_instance_group *g;
-        std::list<model_instance_group *> lg;
-        std::list<model_instance_group *>::iterator it;
-        std::list<model_instance_vertex *> lv;
-        std::list<model_instance_vertex *>::iterator iv;
-        model_instance_vertex *v;
-        dpvertexindex_buffer *vb;
-        int vflip;
+        std::list<model_instance_group *> l;
+        std::list<model_instance_group *>::iterator i;
+        model_instance_group *p;
         
-        l = &this->comps.lst;
-        vflip = 1;
-        for( i = l->begin(); i != l->end(); ++i )
+        this->getGroups( &l );
+        for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            switch( p->getType() )
-            {
-                case model_component_type_group:
-                    lg.push_back( (model_instance_group *)p );
-                    break;
-                case model_component_type_triangle:
-                    t_t.addLeaf( ( (model_instance_triangle *)p )->getGroupId(), p );
-                    break;
-                case model_component_type_triangle_vertex:
-                    t_tv.addLeaf( ( (model_instance_triangle_vertex *)p )->getTriangleId(), p );
-                    break;
-                case model_component_type_vertex:
-                    if( vflip > 0 )
-                        lv.push_back( (model_instance_vertex *)p );
-                    else
-                        lv.push_front( (model_instance_vertex *)p );
-                    vflip *= -1;
-                    break;
-                case model_component_type_joint:
-                    t_j.addLeaf( p->getId(), p );
-                    break;
-            }
-        }
-
-        for( iv = lv.begin(); iv != lv.end(); ++iv )
-        {
-            v = *iv;
-            t_v.addLeaf( v->getId(), v );
-        }
-        
-        for( it = lg.begin(); it != lg.end(); ++it )
-        {
-            g = *it;
-            vb = g->getVertexBuffer();
-            vb->clear();
-            model_instance__computeMeshes_0( this->t_start, this->t_end, g->getId(), &t_t, &t_tv, &t_v, &t_j, vb );
-        }
-        
-    }
-    
-    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dptree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
-    
-    void model_instance__computeMeshes_0( uint64_t t_start, uint64_t t_end, dpid group_id, dptree *t_t, dptree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
-    {
-        std::list<model_instance_triangle *> lt;
-        std::list<model_instance_triangle *>::iterator it;
-        model_instance_triangle *p;
-        
-        t_t->findLeaves( (char *)&group_id, sizeof( group_id ), (std::list<void *> *)&lt );
-        
-        for( it = lt.begin(); it != lt.end(); ++it )
-        {
-            p = *it;
-            model_instance__computeMeshes_1( t_start, t_end, p, t_tv, t_v, t_j, vb );
+            this->redoMesh( p );
         }
     }
-
-    void model_instance__computeMeshes_2( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, model_instance_triangle_vertex *tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb );
     
-    void model_instance__computeMeshes_1( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, dptree *t_tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
+    //redo group mesh
+    void model_instance::redoMesh( model_instance_group *g )
     {
-        std::list<model_instance_triangle_vertex *> ltv;
-        std::list<model_instance_triangle_vertex *>::iterator it;
+        dpvertexindex_buffer *vb;
+        std::list<void *> l;
+        std::list<void *>::iterator i;
+        void *p;
+        
+        vb = g->getVertexBuffer();
+        vb->clear();
+        
+        this->getTriangles( (std::list<model_instance_triangle *> *)&l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            this->redoMesh( vb, (model_instance_triangle *)p );
+        }
+    }
+    
+    //redo triangle mesh
+    void model_instance::redoMesh( dpvertexindex_buffer *vb, model_instance_triangle *t )
+    {
+        std::list<model_instance_triangle_vertex *> l;
+        std::list<model_instance_triangle_vertex *>::iterator i;
         model_instance_triangle_vertex *p;
-        dpid id;
-
-        id = t->getTriangleId();
-        t_tv->findLeaves( (char *)&id, sizeof( id ), (std::list<void *> *)&ltv );
         
-        if( ltv.size() != 3 )
-            return;
-        
-        for( it = ltv.begin(); it != ltv.end(); ++it )
+        this->getTriangleVertexes( &l, t->getTriangleId() );
+        for( i = l.begin(); i != l.end(); ++i )
         {
-            p = *it;
-            model_instance__computeMeshes_2( t_start, t_end, t, p, t_v, t_j, vb );
+            p = *i;
+            this->redoMesh( vb, p );
         }
     }
-
-    void model_instance__computeMeshes_2( uint64_t t_start, uint64_t t_end, model_instance_triangle *t, model_instance_triangle_vertex *tv, dptree *t_v, dptree *t_j, dpvertexindex_buffer *vb )
+    
+    //redo vertex mesh
+    void model_instance::redoMesh( dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv )
     {
         model_instance_vertex *p;
         dpvertex vt;
         float rs, re, td, tt;
-        dpid id;
         
-        id = tv->getVertexId();
-        p = (model_instance_vertex *)t_v->findLeaf( (char *)&id, sizeof( id ) );
+        p = this->findVertex( tv->getVertexId() );
         if( !p )
             return;
         
         td = p->getEndTime() - p->getStartTime();
-        tt = t_start - p->getStartTime();
+        tt = this->t_start - p->getStartTime();
         if( tt > td )
             tt = td;
         if( td > 0 )
@@ -644,10 +588,10 @@ namespace dragonpoop
         vt.start.pos.z = rs * vt.start.pos.z + re * vt.end.pos.z;
         vt.start.pos.w = rs * vt.start.pos.w + re * vt.end.pos.w;
         p->setStartPosition( &vt.start.pos );
-        p->setStartTime( t_start );
-        p->setEndTime( t_end );
-        vt.start.t = t_start;
-        vt.end.t = t_end;
+        p->setStartTime( this->t_start );
+        p->setEndTime( this->t_end );
+        vt.start.t = this->t_start;
+        vt.end.t = this->t_end;
         p->getPosition( &vt.end.pos );
         p->setEndPosition( &vt.end.pos );
         
@@ -691,7 +635,7 @@ namespace dragonpoop
         std::list<model_instance_animation *> li;
         std::list<model_instance_animation *>::iterator ii;
         model_instance_animation *pi;
-        dpid_btree t;
+        dpid_bytetree t;
         
         this->getAnimations( &li );
         
@@ -742,7 +686,7 @@ namespace dragonpoop
         std::list<model_instance_joint *> li;
         std::list<model_instance_joint *>::iterator ii;
         model_instance_joint *pi;
-        dpid_btree t;
+        dpid_bytetree t;
         
         this->getJoints( &li );
         

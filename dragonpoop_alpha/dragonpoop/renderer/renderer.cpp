@@ -253,7 +253,7 @@ namespace dragonpoop
         uint64_t tr;
         
         tr = thd->getTicks();
-        if( tr - this->t_last_m_ran < 1000 )
+        if( tr - this->t_last_m_ran < 200 )
             return;
         this->t_last_m_ran = tr;
         
@@ -274,7 +274,7 @@ namespace dragonpoop
         for( ii = li.begin(); ii != li.end(); ++ii )
         {
             pi = *ii;
-            pl = (model_writelock *)o.tryWriteLock( pi, 20 );
+            pl = (model_writelock *)o.tryWriteLock( pi, 3 );
             delete pi;
             if( !pl )
                 continue;

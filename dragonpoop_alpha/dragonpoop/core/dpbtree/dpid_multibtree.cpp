@@ -33,63 +33,12 @@ namespace dragonpoop
         this->dpmultibtree::addLeaf( (char *)&id, sizeof( id ), o );
     }
     
-    //ovverride to handle deleteion of leaf
-    void dpid_multibtree::onRemoveLeaf( void *o )
+    //compare key, return >0 if a > b, <0 if a<b or 0 if a==b
+    int dpid_multibtree::compareKey( char *k_a, char *k_b, unsigned int k_a_size, unsigned int k_b_size )
     {
-        
-    }
-    
-    //ovverride to generate branches
-    dptree *dpid_multibtree::genBranch( void )
-    {
-        return new dpid_multibtree();
-    }
-    
-    //set key
-    void dpid_multibtree::setKey( char *k, unsigned int sz )
-    {
-        if( sz != sizeof( dpid ) )
-            return;
-        this->k.addr = ( (dpid *)k )->addr;
-        this->k.counter = ( (dpid *)k )->counter;
-        this->k.epoch = ( (dpid *)k )->epoch;
-        this->k.randno = ( (dpid *)k )->randno;
-        this->k.ticks = ( (dpid *)k )->ticks;
-    }
-    
-    //compare key
-    int dpid_multibtree::compareKey( char *k, unsigned int sz )
-    {
-        dpid *c = (dpid *)k;
-        if( sz != sizeof( dpid ) )
-            return 5;
-        
-        if( this->k.randno > c->randno )
-            return dpmultibtree_left;
-        if( this->k.randno < c->randno )
-            return dpmultibtree_right;
-        
-        if( this->k.counter > c->counter )
-            return dpmultibtree_left;
-        if( this->k.counter < c->counter )
-            return dpmultibtree_right;
-        
-        if( this->k.addr > c->addr )
-            return dpmultibtree_left;
-        if( this->k.addr < c->addr )
-            return dpmultibtree_right;
-        
-        if( this->k.ticks > c->ticks )
-            return dpmultibtree_left;
-        if( this->k.ticks < c->ticks )
-            return dpmultibtree_right;
-        
-        if( this->k.epoch > c->epoch )
-            return dpmultibtree_left;
-        if( this->k.epoch < c->epoch )
-            return dpmultibtree_right;
-        
-        return dpmultibtree_leaf;
+        if( k_a_size != sizeof( dpid ) || k_b_size != sizeof( dpid ) )
+            return -1;
+        return dpid_signed_compare( (dpid *)k_a, (dpid *)k_b );
     }
     
 };

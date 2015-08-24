@@ -349,14 +349,26 @@ namespace dragonpoop
             void *p;
             uint64_t pi;
         };
+        static unsigned int r0, r1;
 
         p = (void *)this;
-        r.addr = (uint16_t)pi;
+        r.addr = 0 + pi;
+        r0 += 1;
+        if( r0 > 1 )
+        {
+            r0 = 0;
+            r.addr = 255 - r.addr;
+        }
         this->idctr++;
-        r.counter = this->idctr;
-        r.epoch = (uint32_t)this->epoch;
-        r.ticks = (uint32_t)this->ticks;
-        r.randno = rand();
+        r.counter = 0 + this->idctr;
+        r.epoch = 0 + this->epoch;
+        r.rdm = 0 + rand();
+        r1 += 1;
+        if( r1 > 1 )
+        {
+            r1 = 0;
+            r.rdm = 255 - r.rdm;
+        }
 
         return r;
     }

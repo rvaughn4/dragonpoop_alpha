@@ -29,7 +29,6 @@ namespace dragonpoop
     private:
 
         dptaskpool_ref *tp;
-//        uint64_t tp_new_cnt, tp_dump_cnt;
         dpmutex *l;
         dpmutex_master *lm;
         struct

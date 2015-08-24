@@ -21,7 +21,7 @@ int main( int argc, const char * argv[] )
         i++;
     }
  
-    gl->loadModel( "test", "felhound_hi_milkshape.ms3d", 0, 0 );
+    gl->loadModel( "test", "felhound_milkshape.ms3d", 0, 0 );
     m = gl->makeModelInstance( "test" );
 
     o.unlock();

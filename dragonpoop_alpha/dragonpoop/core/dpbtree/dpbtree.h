@@ -3,30 +3,53 @@
 #define dragonpoop_dpbtree_h
 
 #include "dptree.h"
-#include <atomic>
+#include <map>
 
 namespace dragonpoop
 {
     
-#define dpbtree_left 0
-#define dpbtree_right 1
-#define dpbtree_leaf 2
+    class dpbtree_key;
+    class dpbtree;
+    
+    class dpbtree_key
+    {
+        
+        char *ptr;
+        unsigned int size;
+        dpbtree *t;
+        
+    public:
+        
+        //ctor
+        dpbtree_key( dpbtree *t );
+        //copy ctor
+        dpbtree_key( const dpbtree_key &c );
+        //dtor
+        virtual ~dpbtree_key( void );
+        //set value
+        void set( char *k, unsigned int sz );
+        //equals
+        bool operator==(const dpbtree_key &b ) const;
+        //not equals
+        bool operator!=(const dpbtree_key &b) const;
+        //less than
+        bool operator<(const dpbtree_key &b) const;
+        //greater than
+        bool operator>(const dpbtree_key &b) const;
+        //less than or equal
+        bool operator<=(const dpbtree_key &b) const;
+        //greater than or equal
+        bool operator>=(const dpbtree_key &b) const;
+        //assignment
+        dpbtree_key& operator=( const dpbtree_key& b );
+        
+    };
     
     class dpbtree : public dptree
     {
     private:
         
-        //branches
-        std::atomic<dpbtree *> leftbranch, rightbranch;
-        //leaf
-        std::atomic<void *> o;
-        //key
-        struct
-        {
-            std::atomic<unsigned int> size;
-            std::atomic<char *> buffer;
-        } key;
-        std::atomic<bool> hasKey;
+        std::map<dpbtree_key, void *> m;
         
     protected:
         
@@ -34,14 +57,10 @@ namespace dragonpoop
         virtual void clearLeaves( void );
         //clear branches
         virtual void clearBranches( void );
-        //ovverride to handle deleteion of leaf
-        virtual void onRemoveLeaf( void *o );
         //ovverride to generate branches
         virtual dptree *genBranch( void );
-        //set key
-        virtual void setKey( char *k, unsigned int sz );
-        //compare key
-        virtual int compareKey( char *k, unsigned int sz );
+        //compare key, return >0 if a > b, <0 if a<b or 0 if a==b
+        virtual int compareKey( char *k_a, char *k_b, unsigned int k_a_size, unsigned int k_b_size );
         
     public:
         
@@ -62,6 +81,7 @@ namespace dragonpoop
         //find leaves
         virtual void findLeaves( char *key, unsigned int key_size, std::list<void *> *l );
         
+        friend class dpbtree_key;
     };
     
 };
