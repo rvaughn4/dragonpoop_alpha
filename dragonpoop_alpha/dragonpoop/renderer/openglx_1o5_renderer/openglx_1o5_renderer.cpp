@@ -357,6 +357,19 @@ namespace dragonpoop
         ss = vbsmooth->getSize();
         sp = vbsmooth->getBuffer();
 
+        td = og->getEndTime() - og->getStartTime();
+        tt = t - og->getStartTime();
+        if( tt > td )
+            tt = td;
+        if( td > 0 )
+            r_end = tt / td;
+        else
+            r_end = 0;
+        r_start = og->getSmoothRatio();
+        r_end += ( r_end - r_start ) * 0.2f;
+        og->setSmoothRatio( r_end );
+        r_start = 1.0f - r_end;
+        
         st = og->getSmoothTime();
         if( t - st > 40 )
         {
@@ -367,14 +380,14 @@ namespace dragonpoop
                 b = *v;
                 s = &sp[ vi ];
                 
-                s->start.pos.x += ( v->start.pos.x - s->start.pos.x ) * 0.1f;
-                s->start.pos.y += ( v->start.pos.y - s->start.pos.y ) * 0.1f;
-                s->start.pos.z += ( v->start.pos.z - s->start.pos.z ) * 0.1f;
+                s->start.pos.x += ( v->start.pos.x - s->start.pos.x ) * 0.5f;
+                s->start.pos.y += ( v->start.pos.y - s->start.pos.y ) * 0.5f;
+                s->start.pos.z += ( v->start.pos.z - s->start.pos.z ) * 0.5f;
                 s->start.pos.w = v->start.pos.w;
                 
-                s->end.pos.x += ( v->end.pos.x - s->end.pos.x ) * 0.1f;
-                s->end.pos.y += ( v->end.pos.y - s->end.pos.y ) * 0.1f;
-                s->end.pos.z += ( v->end.pos.z - s->end.pos.z ) * 0.1f;
+                s->end.pos.x += ( v->end.pos.x - s->end.pos.x ) * 0.5f;
+                s->end.pos.y += ( v->end.pos.y - s->end.pos.y ) * 0.5f;
+                s->end.pos.z += ( v->end.pos.z - s->end.pos.z ) * 0.5f;
                 s->end.pos.w = v->end.pos.w;
             }
         }
@@ -385,27 +398,16 @@ namespace dragonpoop
             b = *v;
             s = &sp[ vi ];
             
-            td = b.end.t - b.start.t;
-            tt = t - b.start.t;
-            if( tt > td )
-                tt = td;
-            if( td > 0 )
-                r_end = tt / td;
-            else
-                r_end = 0;
-            r_start = 1.0f - r_end;
-            
-            
             b.start.pos.x = s->start.pos.x * r_start + s->end.pos.x * r_end;
             b.start.pos.y = s->start.pos.y * r_start + s->end.pos.y * r_end;
             b.start.pos.z = s->start.pos.z * r_start + s->end.pos.z * r_end;
             b.start.pos.w = s->start.pos.w * r_start + s->end.pos.w * r_end;
-            /*
+            
             b.start.normal.x = v->start.normal.x * r_start + v->end.normal.x * r_end;
             b.start.normal.y = v->start.normal.y * r_start + v->end.normal.y * r_end;
             b.start.normal.z = v->start.normal.z * r_start + v->end.normal.z * r_end;
             b.start.normal.w = v->start.normal.w * r_start + v->end.normal.w * r_end;
-             */
+            
             nvb.addVertex( &b );
         }
         vp = nvb.getBuffer();

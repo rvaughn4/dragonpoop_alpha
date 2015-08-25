@@ -33,6 +33,20 @@ namespace dragonpoop
     void renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g )
     {
         this->m_id = g->getMaterialId();
+        this->t_start = g->getStartTime();
+        this->t_end = g->getEndTime();
+    }
+    
+    //get start time
+    uint64_t renderer_model_instance_group::getStartTime( void )
+    {
+        return this->t_start;
+    }
+    
+    //get end time
+    uint64_t renderer_model_instance_group::getEndTime( void )
+    {
+        return this->t_end;
     }
     
 };

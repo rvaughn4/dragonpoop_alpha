@@ -538,6 +538,8 @@ namespace dragonpoop
         
         vb = g->getVertexBuffer();
         vb->clear();
+        g->setStartTime( this->t_start );
+        g->setEndTime( this->t_end );
         
         tcnt = 0;
         this->getTriangles( (std::list<model_instance_triangle *> *)&l );
@@ -602,8 +604,6 @@ namespace dragonpoop
         p->setStartPosition( &vt.start.pos );
         p->setStartTime( this->t_start );
         p->setEndTime( this->t_end );
-        vt.start.t = this->t_start;
-        vt.end.t = this->t_end;
         p->getPosition( &vt.end.pos );
         vt.end.pos.x += 0.5f * ( ( (float)rand() * 2.0f / (float)RAND_MAX ) - 1.0f );
         vt.end.pos.y += 0.5f * ( ( (float)rand() * 2.0f / (float)RAND_MAX ) - 1.0f );

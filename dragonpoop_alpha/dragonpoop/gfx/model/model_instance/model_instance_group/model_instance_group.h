@@ -18,6 +18,7 @@ namespace dragonpoop
         
         dpid m_id;
         dpvertexindex_buffer vb;
+        uint64_t t_start, t_end;
         
         
     protected:
@@ -34,6 +35,14 @@ namespace dragonpoop
         dpid getMaterialId( void );
         //get vertex buffer
         dpvertexindex_buffer *getVertexBuffer();
+        //set start time
+        void setStartTime( uint64_t t );
+        //get start time
+        uint64_t getStartTime( void );
+        //set end time
+        void setEndTime( uint64_t t );
+        //get end time
+        uint64_t getEndTime( void );
 
     };
     

@@ -16,6 +16,7 @@ namespace dragonpoop
     private:
         
         dpid m_id;
+        uint64_t t_start, t_end;
         
     protected:
         
@@ -31,6 +32,10 @@ namespace dragonpoop
         dpid getMaterialId( void );
         //sync with group
         virtual void sync( model_instance_writelock *ml, model_instance_group *g );
+        //get start time
+        uint64_t getStartTime( void );
+        //get end time
+        uint64_t getEndTime( void );
         
     };
     

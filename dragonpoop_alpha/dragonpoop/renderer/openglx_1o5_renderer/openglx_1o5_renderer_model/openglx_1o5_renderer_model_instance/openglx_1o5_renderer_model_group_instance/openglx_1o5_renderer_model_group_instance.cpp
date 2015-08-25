@@ -11,6 +11,7 @@ namespace dragonpoop
     {
         this->vb = new dpvertexindex_buffer();
         this->vbsmooth = new dpvertex_buffer();
+        this->f_ratio = 0;
     }
     
     //dtor
@@ -60,6 +61,18 @@ namespace dragonpoop
     void openglx_1o5_renderer_model_instance_group::setSmoothTime( uint64_t t )
     {
         this->last_smooth_time = t;
+    }
+    
+    //sets smooth ratio
+    void openglx_1o5_renderer_model_instance_group::setSmoothRatio( float f )
+    {
+        this->f_ratio = f;
+    }
+    
+    //gets smooth ratio
+    float openglx_1o5_renderer_model_instance_group::getSmoothRatio( void )
+    {
+        return this->f_ratio;
     }
     
 };

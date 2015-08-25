@@ -18,6 +18,7 @@ namespace dragonpoop
         dpvertexindex_buffer *vb;
         dpvertex_buffer *vbsmooth;
         uint64_t last_smooth_time;
+        float f_ratio;
         
     protected:
         
@@ -37,6 +38,10 @@ namespace dragonpoop
         uint64_t getSmoothTime( void );
         //sets smooth time
         void setSmoothTime( uint64_t t );
+        //sets smooth ratio
+        void setSmoothRatio( float f );
+        //gets smooth ratio
+        float getSmoothRatio( void );
         
     };
     
