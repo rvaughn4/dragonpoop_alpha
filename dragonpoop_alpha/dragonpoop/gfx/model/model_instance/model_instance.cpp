@@ -38,7 +38,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 500;
+        this->t_frame_time = 2000;
         this->sync( ml, 0 );
     }
     
@@ -103,7 +103,7 @@ namespace dragonpoop
         uint64_t t;
         
         t = thd->getTicks();
-        if( t - this->t_last_animate > this->t_frame_time )
+        if( t - this->t_last_animate > this->t_frame_time / 2 )
         {
             this->animate( m, t );
             this->t_last_animate = t - 10 * rand() / RAND_MAX;
@@ -605,6 +605,9 @@ namespace dragonpoop
         vt.start.t = this->t_start;
         vt.end.t = this->t_end;
         p->getPosition( &vt.end.pos );
+        vt.end.pos.x += 0.5f * ( ( (float)rand() * 2.0f / (float)RAND_MAX ) - 1.0f );
+        vt.end.pos.y += 0.5f * ( ( (float)rand() * 2.0f / (float)RAND_MAX ) - 1.0f );
+        vt.end.pos.z += 0.5f * ( ( (float)rand() * 2.0f / (float)RAND_MAX ) - 1.0f );
         p->setEndPosition( &vt.end.pos );
         
         tv->getNormal( &vt.start.normal );

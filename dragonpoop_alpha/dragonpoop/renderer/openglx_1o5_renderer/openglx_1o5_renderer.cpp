@@ -335,28 +335,55 @@ namespace dragonpoop
     void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
     {
         dpvertexindex_buffer *vb;
+        dpvertex_buffer *vbsmooth;
         dpvertex_buffer nvb;
         dpindex *ix, *ip;
-        dpvertex *v, *vp, b;
-        unsigned int ii, is, vi, vs;
+        dpvertex *v, *vp, b, *s, *sp;
+        unsigned int ii, is, vi, vs, ss;
         openglx_1o5_renderer_model_instance_group *og;
         openglx_1o5_renderer_model_material *gmat;
         float r_start, r_end, td, tt;
         std::vector<uint16_t> indicies;
-        uint64_t t;
+        uint64_t t, st;
 
         t = thd->getTicks();
         og = (openglx_1o5_renderer_model_instance_group *)g;
         gmat = (openglx_1o5_renderer_model_material *)mat;
         vb = og->getVertexBuffer();
-
+        vbsmooth = og->getSmoothBuffer();
+        
         ip = vb->getIndexBuffer( &is );
         vp = vb->getVertexBuffer( &vs );
+        ss = vbsmooth->getSize();
+        sp = vbsmooth->getBuffer();
 
-        for( vi = 0 ; vi < vs; vi++ )
+        st = og->getSmoothTime();
+        if( t - st > 40 )
+        {
+            og->setSmoothTime( t );
+            for( vi = 0 ; vi < vs && vi < ss; vi++ )
+            {
+                v = &vp[ vi ];
+                b = *v;
+                s = &sp[ vi ];
+                
+                s->start.pos.x += ( v->start.pos.x - s->start.pos.x ) * 0.1f;
+                s->start.pos.y += ( v->start.pos.y - s->start.pos.y ) * 0.1f;
+                s->start.pos.z += ( v->start.pos.z - s->start.pos.z ) * 0.1f;
+                s->start.pos.w = v->start.pos.w;
+                
+                s->end.pos.x += ( v->end.pos.x - s->end.pos.x ) * 0.1f;
+                s->end.pos.y += ( v->end.pos.y - s->end.pos.y ) * 0.1f;
+                s->end.pos.z += ( v->end.pos.z - s->end.pos.z ) * 0.1f;
+                s->end.pos.w = v->end.pos.w;
+            }
+        }
+        
+        for( vi = 0 ; vi < vs && vi < ss; vi++ )
         {
             v = &vp[ vi ];
             b = *v;
+            s = &sp[ vi ];
             
             td = b.end.t - b.start.t;
             tt = t - b.start.t;
@@ -367,13 +394,12 @@ namespace dragonpoop
             else
                 r_end = 0;
             r_start = 1.0f - r_end;
-            //r_end = 1;
-            //r_start = 0;
             
-            b.start.pos.x = v->start.pos.x * r_start + v->end.pos.x * r_end;
-            b.start.pos.y = v->start.pos.y * r_start + v->end.pos.y * r_end;
-            b.start.pos.z = v->start.pos.z * r_start + v->end.pos.z * r_end;
-            b.start.pos.w = v->start.pos.w * r_start + v->end.pos.w * r_end;
+            
+            b.start.pos.x = s->start.pos.x * r_start + s->end.pos.x * r_end;
+            b.start.pos.y = s->start.pos.y * r_start + s->end.pos.y * r_end;
+            b.start.pos.z = s->start.pos.z * r_start + s->end.pos.z * r_end;
+            b.start.pos.w = s->start.pos.w * r_start + s->end.pos.w * r_end;
             /*
             b.start.normal.x = v->start.normal.x * r_start + v->end.normal.x * r_end;
             b.start.normal.y = v->start.normal.y * r_start + v->end.normal.y * r_end;
