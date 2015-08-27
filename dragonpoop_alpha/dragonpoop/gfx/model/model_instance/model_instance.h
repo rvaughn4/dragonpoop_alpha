@@ -38,6 +38,7 @@ namespace dragonpoop
     class model_instance_joint;
     class model_joint;
     struct dpxyzw;
+    class model_vertex_joint;
     
     class model_instance : public shared_obj
     {
@@ -63,13 +64,17 @@ namespace dragonpoop
         void computeMeshes( void );
         
         //redo mesh
-        void redoMesh( void );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m );
         //redo group mesh
-        void redoMesh( model_instance_group *g );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_group *g );
         //redo triangle mesh
-        void redoMesh( dpvertexindex_buffer *vb, model_instance_triangle *t );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_instance_triangle *t );
         //redo vertex mesh
-        void redoMesh( dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv );
+        //redo vertex mesh, transform using joints
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm );
+        //redo vertex mesh, transform using joints
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, model_vertex_joint *vj, dpxyzw *pos, dpxyzw *norm );
         
         //redo animation
         void redoAnim( model_writelock *m );
@@ -167,7 +172,7 @@ namespace dragonpoop
         //sync
         void sync( model_writelock *ml, uint64_t tms );
         //do animation
-        void animate( model_writelock *ml, uint64_t tms );
+        void animate( model_instance_writelock *mi, model_writelock *ml, uint64_t tms );
         //set renderer model
         void setRenderer( renderer_model_instance *r );
         //populate vertex buffer for rendering

@@ -342,6 +342,18 @@ namespace dragonpoop
         this->t->getVertexJoints( l );
     }
     
+    //get vertex joints
+    void model_writelock::getVertexJoints( std::list<model_vertex_joint *> *l, dpid p1 )
+    {
+        this->t->getVertexJoints( l, p1 );
+    }
+    
+    //get vertex joints
+    void model_writelock::getVertexJoints( std::list<model_vertex_joint *> *l, dpid p1, dpid p2 )
+    {
+        this->t->getVertexJoints( l, p1, p2 );
+    }
+    
     //add frame
     model_frame *model_writelock::makeFrame( dpid id )
     {

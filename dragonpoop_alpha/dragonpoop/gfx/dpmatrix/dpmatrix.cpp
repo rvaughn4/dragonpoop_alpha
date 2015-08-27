@@ -116,6 +116,30 @@ namespace dragonpoop
         m.setRotationZ( deg );
         this->multiply( &m );
     }
+    
+    //multiply rotation to matrix
+    void dpmatrix::rotateXrad( float rad )
+    {
+        dpmatrix m;
+        m.setRotationXrad( rad );
+        this->multiply( &m );
+    }
+    
+    //multiply rotation to matrix
+    void dpmatrix::rotateYrad( float rad )
+    {
+        dpmatrix m;
+        m.setRotationYrad( rad );
+        this->multiply( &m );
+    }
+    
+    //multiply rotation to matrix
+    void dpmatrix::rotateZrad( float rad )
+    {
+        dpmatrix m;
+        m.setRotationZrad( rad );
+        this->multiply( &m );
+    }
 
     //multiply scaling to matrix
     void dpmatrix::scale( float x, float y, float z )
@@ -203,6 +227,36 @@ namespace dragonpoop
     {
         this->setIdentity();
         deg = deg * 3.14f / 180.0f;
+        this->values.c1.r1 = cos( deg );
+        this->values.c2.r1 = -sin( deg );
+        this->values.c1.r2 = sin( deg );
+        this->values.c2.r2 = cos( deg );
+    }
+    
+    //set rotation matrix
+    void dpmatrix::setRotationXrad( float deg )
+    {
+        this->setIdentity();
+        this->values.c2.r2 = cos( deg );
+        this->values.c3.r2 = -sin( deg );
+        this->values.c2.r3 = sin( deg );
+        this->values.c3.r3 = cos( deg );
+    }
+    
+    //set rotation matrix
+    void dpmatrix::setRotationYrad( float deg )
+    {
+        this->setIdentity();
+        this->values.c1.r1 = cos( deg );
+        this->values.c3.r1 = sin( deg );
+        this->values.c1.r3 = -sin( deg );
+        this->values.c3.r3 = cos( deg );
+    }
+    
+    //set rotation matrix
+    void dpmatrix::setRotationZrad( float deg )
+    {
+        this->setIdentity();
         this->values.c1.r1 = cos( deg );
         this->values.c2.r1 = -sin( deg );
         this->values.c1.r2 = sin( deg );

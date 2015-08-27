@@ -50,6 +50,12 @@ namespace dragonpoop
         void rotateY( float deg );
         //multiply rotation to matrix
         void rotateZ( float deg );
+        //multiply rotation to matrix
+        void rotateXrad( float rad );
+        //multiply rotation to matrix
+        void rotateYrad( float rad );
+        //multiply rotation to matrix
+        void rotateZrad( float rad );
         //multiply scaling to matrix
         void scale( float x, float y, float z );
         //set ortho matrix
@@ -64,6 +70,12 @@ namespace dragonpoop
         void setRotationY( float deg );
         //set rotation matrix
         void setRotationZ( float deg );
+        //set rotation matrix
+        void setRotationXrad( float rad );
+        //set rotation matrix
+        void setRotationYrad( float rad );
+        //set rotation matrix
+        void setRotationZrad( float rad );
         //set scaling matrix
         void setScaling( float x, float y, float z );
         //transform

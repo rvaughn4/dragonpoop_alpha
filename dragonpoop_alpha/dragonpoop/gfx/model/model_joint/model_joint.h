@@ -14,6 +14,7 @@ namespace dragonpoop
     private:
         
         dpxyzw pos, rot;
+        dpid parent_id;
         
     protected:
         
@@ -31,6 +32,10 @@ namespace dragonpoop
         void setRotation( dpxyzw *x );
         //get rotation
         void getRotation( dpxyzw *x );
+        //set parent
+        void setParent( dpid id );
+        //get parent
+        dpid getParent( void );
         
     };
     

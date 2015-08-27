@@ -1,5 +1,6 @@
 
 #include "model_instance_joint.h"
+#include "../model_instance_writelock.h"
 
 namespace dragonpoop
 {
@@ -62,6 +63,50 @@ namespace dragonpoop
     void model_instance_joint::setAnimationRotation( dpxyzw *x )
     {
         this->apos = *x;
+    }
+    
+    //transform using matrix
+    void model_instance_joint::transform( model_instance_writelock *m, dpxyzw *x )
+    {
+        this->redoMatrix( m );
+        this->chained.transform( x );
+    }
+    
+    //reset matrix
+    void model_instance_joint::reset( void )
+    {
+        this->isChained = 0;
+    }
+    
+    //redo matrix
+    void model_instance_joint::redoMatrix( model_instance_writelock *m )
+    {
+        model_instance_joint *j;
+        
+        if( this->isChained )
+            return;
+        
+        this->orig.setIdentity();
+        this->orig.rotateXrad( this->arot.x );
+        this->orig.rotateYrad( this->arot.y );
+        this->orig.rotateZrad( this->arot.z );
+        this->orig.translate( this->apos.x, this->apos.y, this->apos.z );
+        
+        j = 0;
+        if( !dpid_isZero( &this->parent_id ) )
+            j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
+        if( !j )
+        {
+            this->chained.copy( &this->orig );
+            this->isChained = 1;
+            return;
+        }
+        j->redoMatrix( m );
+        
+        this->chained.setIdentity();
+        this->chained.multiply( &j->chained );
+        this->chained.multiply( &this->orig );
+        this->isChained = 1;
     }
     
 };

@@ -28,6 +28,8 @@
 #include "../../../core/dpthread/dpthread_lock.h"
 #include "../model_frame/model_frame.h"
 #include "../model_frame_joint/model_frame_joint.h"
+#include "../model_vertex_joint/model_vertex_joint.h"
+#include "../../dpmatrix/dpmatrix.h"
 #include <random>
 #include <iostream>
 
@@ -41,7 +43,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 200;
+        this->t_frame_time = 2000;
         this->sync( ml, 0 );
     }
     
@@ -108,7 +110,7 @@ namespace dragonpoop
         t = thd->getTicks();
         if( t - this->t_last_animate > this->t_frame_time / 2 )
         {
-            this->animate( m, t );
+            this->animate( g, m, t );
             this->t_last_animate = t - 10 * rand() / RAND_MAX;
         }
     }
@@ -402,7 +404,7 @@ namespace dragonpoop
     }
     
     //do animation
-    void model_instance::animate( model_writelock *ml, uint64_t tms )
+    void model_instance::animate( model_instance_writelock *mi, model_writelock *ml, uint64_t tms )
     {
         shared_obj_guard o;
         renderer_model_instance_readlock *rl;
@@ -410,7 +412,7 @@ namespace dragonpoop
         this->t_end = tms + this->t_frame_time;
         this->t_start = tms;
         this->redoAnim( ml );
-        this->redoMesh();
+        this->redoMesh( mi, ml );
         
         if( !this->r )
             return;
@@ -618,7 +620,7 @@ namespace dragonpoop
     }
     
     //redo mesh
-    void model_instance::redoMesh( void )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m )
     {
         std::list<model_instance_group *> l;
         std::list<model_instance_group *>::iterator i;
@@ -628,12 +630,12 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            this->redoMesh( p );
+            this->redoMesh( mi, m, p );
         }
     }
     
     //redo group mesh
-    void model_instance::redoMesh( model_instance_group *g )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_group *g )
     {
         dpvertexindex_buffer *vb;
         std::list<void *> l;
@@ -652,7 +654,7 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            this->redoMesh( &b, (model_instance_triangle *)p );
+            this->redoMesh( mi, m, &b, (model_instance_triangle *)p );
             tcnt++;
             if( tcnt > 15 )
             {
@@ -666,7 +668,7 @@ namespace dragonpoop
     }
     
     //redo triangle mesh
-    void model_instance::redoMesh( dpvertexindex_buffer *vb, model_instance_triangle *t )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_instance_triangle *t )
     {
         std::list<model_instance_triangle_vertex *> l;
         std::list<model_instance_triangle_vertex *>::iterator i;
@@ -676,12 +678,12 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            this->redoMesh( vb, p );
+            this->redoMesh( mi, m, vb, p );
         }
     }
     
     //redo vertex mesh
-    void model_instance::redoMesh( dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv )
     {
         model_instance_vertex *p;
         dpvertex vt;
@@ -701,6 +703,12 @@ namespace dragonpoop
             re = 0;
         rs = 1.0f - re;
         
+        tv->getNormal( &vt.start.normal );
+        tv->getTexCoord0( &vt.start.texcoords[ 0 ] );
+        tv->getTexCoord1( &vt.start.texcoords[ 1 ] );
+        tv->getNormal( &vt.end.normal );
+        tv->getTexCoord0( &vt.end.texcoords[ 0 ] );
+        tv->getTexCoord1( &vt.end.texcoords[ 1 ] );
         p->getStartPosition( &vt.start.pos );
         p->getEndPosition( &vt.end.pos );
         vt.start.pos.x = rs * vt.start.pos.x + re * vt.end.pos.x;
@@ -711,16 +719,80 @@ namespace dragonpoop
         p->setStartTime( this->t_start );
         p->setEndTime( this->t_end );
         p->getPosition( &vt.end.pos );
+        vt.start.pos = vt.end.pos;
+        this->redoMesh( mi, m, tv, &vt.end.pos, &vt.end.normal );
         p->setEndPosition( &vt.end.pos );
         
-        tv->getNormal( &vt.start.normal );
-        tv->getTexCoord0( &vt.start.texcoords[ 0 ] );
-        tv->getTexCoord1( &vt.start.texcoords[ 1 ] );
-        tv->getNormal( &vt.end.normal );
-        tv->getTexCoord0( &vt.end.texcoords[ 0 ] );
-        tv->getTexCoord1( &vt.end.texcoords[ 1 ] );
         
         vb->addVertexUnique( &vt );
+    }
+    
+    //redo vertex mesh, transform using joints
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm )
+    {
+        std::list<model_vertex_joint *> l;
+        std::list<model_vertex_joint *>::iterator i;
+        model_vertex_joint *vj;
+        dpxyzw apos, anorm, p, n;
+        float a, w;
+        
+        memset( &apos, 0, sizeof( apos ) );
+        memset( &anorm, 0, sizeof( anorm ) );
+        a = 0;
+        
+        m->getVertexJoints( &l, tv->getVertexId() );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            vj = *i;
+            
+            w = vj->getWeight();
+            if( w < 0.001f )
+                continue;
+            
+            p = *pos;
+            n = *norm;
+            this->redoMesh( mi, m, tv, vj, &p, &n );
+            
+            a += w;
+
+            apos.x += w * p.x;
+            apos.y += w * p.y;
+            apos.z += w * p.z;
+            apos.w += w * p.w;
+
+            anorm.x += w * n.x;
+            anorm.y += w * n.y;
+            anorm.z += w * n.z;
+            anorm.w += w * n.w;
+        }
+        
+        if( a < 0.001f )
+            return;
+        
+        pos->x = apos.x / a;
+        pos->y = apos.y / a;
+        pos->z = apos.z / a;
+        pos->w = apos.w / a;
+        
+        norm->x = anorm.x / a;
+        norm->y = anorm.y / a;
+        norm->z = anorm.z / a;
+        norm->w = anorm.w / a;
+        
+    }
+    
+    //redo vertex mesh, transform using joints
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, model_vertex_joint *vj, dpxyzw *pos, dpxyzw *norm )
+    {
+        model_instance_joint *j;
+
+        j = this->findJoint( vj->getJointId() );
+        if( !j )
+            return;
+        
+        j->transform( mi, pos );
+        j->transform( mi, norm );
     }
     
     //redo animation
@@ -781,6 +853,7 @@ namespace dragonpoop
         dpxyzw atrans, arot, trans, rot;
         
         this->getAnimations( &l );
+        j->reset();
         
         memset( &atrans, 0, sizeof( atrans ) );
         memset( &arot, 0, sizeof( arot ) );

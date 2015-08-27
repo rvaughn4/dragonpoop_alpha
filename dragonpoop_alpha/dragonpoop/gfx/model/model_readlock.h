@@ -105,6 +105,10 @@ namespace dragonpoop
         model_vertex_joint *findVertexJoint( dpid id );
         //get vertex joints
         void getVertexJoints( std::list<model_vertex_joint *> *l );
+        //get vertex joints
+        void getVertexJoints( std::list<model_vertex_joint *> *l, dpid p1 );
+        //get vertex joints
+        void getVertexJoints( std::list<model_vertex_joint *> *l, dpid p1, dpid p2 );
         //find frame
         model_frame *findFrame( dpid id );
         //get frame

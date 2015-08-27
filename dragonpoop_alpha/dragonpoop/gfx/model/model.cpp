@@ -623,7 +623,7 @@ namespace dragonpoop
         model_vertex_joint *c;
         c = new model_vertex_joint( id, vertex_id, joint_id );
         c->setWeight( w );
-        this->addComponent( c );
+        this->addComponent( c, vertex_id, joint_id );
         return c;
     }
 
@@ -637,6 +637,18 @@ namespace dragonpoop
     void model::getVertexJoints( std::list<model_vertex_joint *> *l )
     {
         this->getComponents( model_component_type_vertex_joint, (std::list<model_component *> *)l );
+    }
+
+    //get vertex joints
+    void model::getVertexJoints( std::list<model_vertex_joint *> *l, dpid p1 )
+    {
+        this->getComponentsByParent( model_component_type_vertex_joint, p1, (std::list<model_component *> *)l );
+    }
+    
+    //get vertex joints
+    void model::getVertexJoints( std::list<model_vertex_joint *> *l, dpid p1, dpid p2 )
+    {
+        this->getComponentsByParents( model_component_type_vertex_joint, p1, p2, (std::list<model_component *> *)l );
     }
 
     //add frame

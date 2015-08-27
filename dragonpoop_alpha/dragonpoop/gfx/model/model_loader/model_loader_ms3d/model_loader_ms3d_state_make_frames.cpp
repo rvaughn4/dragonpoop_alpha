@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_make_frames.h"
-#include "model_loader_ms3d_state_make_verts.h"
+#include "model_loader_ms3d_state_make_triangles.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "../model_loader_writelock.h"
 #include "model_loader_ms3d.h"
@@ -39,7 +39,7 @@ namespace dragonpoop
         this->makeAnimationFrames( thd, ml );
         this->makeFrameJoints( thd, ml );
         
-        return new model_loader_ms3d_state_make_verts( this->b, this->m );
+        return new model_loader_ms3d_state_make_triangles( this->b, this->m );
     }
     
     //find unqiue frame times

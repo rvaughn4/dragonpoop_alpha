@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_make_joints.h"
-#include "model_loader_ms3d_state_make_animation.h"
+#include "model_loader_ms3d_state_make_verts.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "../model_loader_writelock.h"
 #include "model_loader_ms3d.h"
@@ -38,6 +38,7 @@ namespace dragonpoop
         model_loader_ms3d *t;
         ms3d_model_joint_m *v;
         std::vector<ms3d_model_joint_m> *l;
+        model_joint *j;
         
         m = (model_writelock *)o.writeLock( this->m );
         if( !m )
@@ -52,9 +53,25 @@ namespace dragonpoop
             v = &( ( *l )[ i ] );
             this->makejoint( thd, ml, v, m );
         }
+
+        for( i = 0; i < e; i++ )
+        {
+            v = &( ( *l )[ i ] );
+            
+            //find parent
+        
+            j = m->findJoint( v->id );
+            if( !j )
+                continue;
+            
+            
+        }
+        
         o.unlock();
         
-        return new model_loader_ms3d_state_make_animation( this->b, this->m );
+        
+        
+        return new model_loader_ms3d_state_make_verts( this->b, this->m );
     }
     
     
