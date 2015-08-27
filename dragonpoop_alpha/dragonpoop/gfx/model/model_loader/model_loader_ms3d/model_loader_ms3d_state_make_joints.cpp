@@ -1,6 +1,6 @@
 
 #include "model_loader_ms3d_state_make_joints.h"
-#include "model_loader_ms3d_state_make_frames.h"
+#include "model_loader_ms3d_state_make_animation.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "../model_loader_writelock.h"
 #include "model_loader_ms3d.h"
@@ -54,7 +54,7 @@ namespace dragonpoop
         }
         o.unlock();
         
-        return new model_loader_ms3d_state_make_frames( this->b, this->m );
+        return new model_loader_ms3d_state_make_animation( this->b, this->m );
     }
     
     

@@ -40,5 +40,11 @@ namespace dragonpoop
     {
         return this->time_ms;
     }
+    
+    //returns true if has parent
+    bool model_animation_frame::hasParent( dpid id )
+    {
+        return dpid_compare( &this->frame_id, &id ) || dpid_compare( &this->animation_id, &id );
+    }
 
 };

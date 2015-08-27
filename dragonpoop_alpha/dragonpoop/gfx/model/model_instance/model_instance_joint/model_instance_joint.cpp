@@ -31,7 +31,10 @@ namespace dragonpoop
     //get position
     void model_instance_joint::getPosition( dpxyzw *x )
     {
-        *x = this->pos;
+        x->x = this->pos.x + this->apos.x;
+        x->y = this->pos.y + this->apos.y;
+        x->z = this->pos.z + this->apos.z;
+        x->w = this->pos.w + this->apos.w;
     }
     
     //set rotation
@@ -43,7 +46,22 @@ namespace dragonpoop
     //get rotation
     void model_instance_joint::getRotation( dpxyzw *x )
     {
-        *x = this->rot;
+        x->x = this->rot.x + this->arot.x;
+        x->y = this->rot.y + this->arot.y;
+        x->z = this->rot.z + this->arot.z;
+        x->w = this->rot.w + this->arot.w;
+    }
+    
+    //set animation position
+    void model_instance_joint::setAnimationPosition( dpxyzw *x )
+    {
+        this->arot = *x;
+    }
+    
+    //set animation rotation
+    void model_instance_joint::setAnimationRotation( dpxyzw *x )
+    {
+        this->apos = *x;
     }
     
 };

@@ -31,6 +31,8 @@ namespace dragonpoop
         void setTime( unsigned int ms );
         //get time in ms
         unsigned int getTime( void );
+        //returns true if has parent
+        virtual bool hasParent( dpid id );
         
     };
     

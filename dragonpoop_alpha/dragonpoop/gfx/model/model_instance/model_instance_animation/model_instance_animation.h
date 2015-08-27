@@ -11,6 +11,7 @@ namespace dragonpoop
     class model_readlock;
     class dpthread_lock;
     class model_frame;
+    class model_writelock;
     
     class model_instance_animation : public model_component
     {
@@ -20,6 +21,7 @@ namespace dragonpoop
         bool bIsRepeat, bIsAutplay;
         unsigned int repeat_delay_ms;
         uint64_t start_time, end_time;
+        dpid start_frame, end_frame;
         
     protected:
         
@@ -42,18 +44,26 @@ namespace dragonpoop
         //get delay between repeats
         unsigned int getRepeatDelay( void );
         //start animation
-        void start( dpthread_lock *thd, model_readlock *ml );
+        void start( uint64_t t, model_writelock *ml );
         //stop animation
         void stop( void );
         //returns true if playing
         bool isPlaying( void );
         //return ms played
-        uint64_t getPlayTime( dpthread_lock *thd );
+        uint64_t getPlayTime( uint64_t tm );
         //return closest frame after time
-        model_frame *getFrameAtTime( model_readlock *ml, uint64_t t, uint64_t *p_time );
+        model_frame *findFrameAtTime( model_writelock *ml, uint64_t t, uint64_t *p_time );
         //return closest frame before time
-        model_frame *getFrameBeforeTime( model_readlock *ml, uint64_t t, uint64_t *p_time );
-        
+        model_frame *findFrameBeforeTime( model_writelock *ml, uint64_t t, uint64_t *p_time );
+        //set start frame id
+        void setStartFrame( dpid id );
+        //get start frame id
+        dpid getStartFrame( void );
+        //set end frame id
+        void setEndFrame( dpid id );
+        //get end frame id
+        dpid getEndFrame( void );
+
     };
     
 };

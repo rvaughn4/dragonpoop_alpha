@@ -37,6 +37,7 @@ namespace dragonpoop
     class model_animation;
     class model_instance_joint;
     class model_joint;
+    struct dpxyzw;
     
     class model_instance : public shared_obj
     {
@@ -69,6 +70,15 @@ namespace dragonpoop
         void redoMesh( dpvertexindex_buffer *vb, model_instance_triangle *t );
         //redo vertex mesh
         void redoMesh( dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv );
+        
+        //redo animation
+        void redoAnim( model_writelock *m );
+        //redo animation, compute current frame
+        void redoAnim( model_writelock *m, model_instance_animation *a );
+        //redo animation, compound joint transforms
+        void redoAnim( model_writelock *m, model_instance_joint *j );
+        //redo animation, compound joint transforms for a given animation
+        void redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyzw *trans, dpxyzw *rot );
 
     protected:
         

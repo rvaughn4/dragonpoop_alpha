@@ -12,7 +12,7 @@ namespace dragonpoop
         
     private:
         
-        dpxyzw pos, rot;
+        dpxyzw pos, rot, apos, arot;
         
     protected:
         
@@ -30,6 +30,10 @@ namespace dragonpoop
         void setRotation( dpxyzw *x );
         //get rotation
         void getRotation( dpxyzw *x );
+        //set animation position
+        void setAnimationPosition( dpxyzw *x );
+        //set animation rotation
+        void setAnimationRotation( dpxyzw *x );
         
     };
     

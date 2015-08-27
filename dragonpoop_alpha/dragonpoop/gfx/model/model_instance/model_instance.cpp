@@ -26,7 +26,10 @@
 #include "../model_animation/model_animation.h"
 #include "model_instance_joint/model_instance_joint.h"
 #include "../../../core/dpthread/dpthread_lock.h"
+#include "../model_frame/model_frame.h"
+#include "../model_frame_joint/model_frame_joint.h"
 #include <random>
+#include <iostream>
 
 namespace dragonpoop
 {
@@ -38,7 +41,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 2000;
+        this->t_frame_time = 200;
         this->sync( ml, 0 );
     }
     
@@ -406,6 +409,7 @@ namespace dragonpoop
         
         this->t_end = tms + this->t_frame_time;
         this->t_start = tms;
+        this->redoAnim( ml );
         this->redoMesh();
         
         if( !this->r )
@@ -498,6 +502,108 @@ namespace dragonpoop
             if( t.findLeaf( p->getId() ) )
                 continue;
             this->makeTriangle( p );
+        }
+    }
+    
+    //add animation
+    model_instance_animation *model_instance::makeAnimation( model_animation *g )
+    {
+        model_instance_animation *c;
+        c = new model_instance_animation( g );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find animation
+    model_instance_animation *model_instance::findAnimation( dpid id )
+    {
+        return (model_instance_animation *)this->findComponent( model_component_type_animation, id );
+    }
+    
+    //get animations
+    void model_instance::getAnimations( std::list<model_instance_animation *> *l )
+    {
+        this->getComponents( model_component_type_animation, (std::list<model_component *> *)l );
+    }
+    
+    //make animations
+    void model_instance::makeAnimations( model_writelock *ml )
+    {
+        std::list<model_animation *> l;
+        std::list<model_animation *>::iterator i;
+        model_animation *p;
+        std::list<model_instance_animation *> li;
+        std::list<model_instance_animation *>::iterator ii;
+        model_instance_animation *pi;
+        dpid_btree t;
+        
+        this->getAnimations( &li );
+        
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
+        
+        ml->getAnimations( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            if( t.findLeaf( p->getId() ) )
+                continue;
+            this->makeAnimation( p );
+        }
+    }
+    
+    //add joint
+    model_instance_joint *model_instance::makeJoint( model_joint *g )
+    {
+        model_instance_joint *c;
+        c = new model_instance_joint( g );
+        this->addComponent( c );
+        return c;
+    }
+    
+    //find joint
+    model_instance_joint *model_instance::findJoint( dpid id )
+    {
+        return (model_instance_joint *)this->findComponent( model_component_type_joint, id );
+    }
+    
+    //get joints
+    void model_instance::getJoints( std::list<model_instance_joint *> *l )
+    {
+        this->getComponents( model_component_type_joint, (std::list<model_component *> *)l );
+    }
+    
+    //make joints
+    void model_instance::makeJoints( model_writelock *ml )
+    {
+        std::list<model_joint *> l;
+        std::list<model_joint *>::iterator i;
+        model_joint *p;
+        std::list<model_instance_joint *> li;
+        std::list<model_instance_joint *>::iterator ii;
+        model_instance_joint *pi;
+        dpid_btree t;
+        
+        this->getJoints( &li );
+        
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
+        
+        ml->getJoints( &l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            if( t.findLeaf( p->getId() ) )
+                continue;
+            this->makeJoint( p );
         }
     }
     
@@ -605,9 +711,6 @@ namespace dragonpoop
         p->setStartTime( this->t_start );
         p->setEndTime( this->t_end );
         p->getPosition( &vt.end.pos );
-        vt.end.pos.x += 0.5f * ( ( (float)rand() * 2.0f / (float)RAND_MAX ) - 1.0f );
-        vt.end.pos.y += 0.5f * ( ( (float)rand() * 2.0f / (float)RAND_MAX ) - 1.0f );
-        vt.end.pos.z += 0.5f * ( ( (float)rand() * 2.0f / (float)RAND_MAX ) - 1.0f );
         p->setEndPosition( &vt.end.pos );
         
         tv->getNormal( &vt.start.normal );
@@ -619,107 +722,133 @@ namespace dragonpoop
         
         vb->addVertexUnique( &vt );
     }
+    
+    //redo animation
+    void model_instance::redoAnim( model_writelock *m )
+    {
+        std::list<model_component *> l;
+        std::list<model_component *>::iterator i;
+        model_component *p;
+        
+        this->getAnimations( (std::list<model_instance_animation *> *)&l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            this->redoAnim( m, (model_instance_animation *)p );
+        }
+        
+        l.clear();
+        this->getJoints( (std::list<model_instance_joint *> *)&l );
 
-    //add animation
-    model_instance_animation *model_instance::makeAnimation( model_animation *g )
-    {
-        model_instance_animation *c;
-        c = new model_instance_animation( g );
-        this->addComponent( c );
-        return c;
-    }
-    
-    //find animation
-    model_instance_animation *model_instance::findAnimation( dpid id )
-    {
-        return (model_instance_animation *)this->findComponent( model_component_type_animation, id );
-    }
-    
-    //get animations
-    void model_instance::getAnimations( std::list<model_instance_animation *> *l )
-    {
-        this->getComponents( model_component_type_animation, (std::list<model_component *> *)l );
-    }
-    
-    //make animations
-    void model_instance::makeAnimations( model_writelock *ml )
-    {
-        std::list<model_animation *> l;
-        std::list<model_animation *>::iterator i;
-        model_animation *p;
-        std::list<model_instance_animation *> li;
-        std::list<model_instance_animation *>::iterator ii;
-        model_instance_animation *pi;
-        dpid_btree t;
-        
-        this->getAnimations( &li );
-        
-        for( ii = li.begin(); ii != li.end(); ++ii )
+        for( i = l.begin(); i != l.end(); ++i )
         {
-            pi = *ii;
-            t.addLeaf( pi->getId(), pi );
+            p = *i;
+            this->redoAnim( m, (model_instance_joint *)p );
         }
+    }
+
+    //redo animation, compute current frame
+    void model_instance::redoAnim( model_writelock *m, model_instance_animation *a )
+    {
+        model_frame *f;
+        uint64_t ts, te, pt;
         
-        ml->getAnimations( &l );
+        if( !a->isPlaying() && a->isAutoPlay() )
+            a->start( this->t_end, m );
+        
+        pt = a->getPlayTime( this->t_end );
+        if( !a->isPlaying() )
+            return;
+        
+        f = a->findFrameBeforeTime( m, pt, &ts );
+        if( f )
+            a->setStartFrame( f->getId() );
+
+        f = a->findFrameAtTime( m, pt, &te );
+        if( f )
+            a->setEndFrame( f->getId() );
+        
+        std::cout << " " << this->t_end << " " << pt << " " << ts << " " << te << "\r\n";
+    }
+    
+    //redo animation, compound joint transforms
+    void model_instance::redoAnim( model_writelock *m, model_instance_joint *j )
+    {
+        std::list<model_instance_animation *> l;
+        std::list<model_instance_animation *>::iterator i;
+        model_instance_animation *p;
+        dpxyzw atrans, arot, trans, rot;
+        
+        this->getAnimations( &l );
+        
+        memset( &atrans, 0, sizeof( atrans ) );
+        memset( &arot, 0, sizeof( arot ) );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            if( t.findLeaf( p->getId() ) )
+            
+            if( !p->isPlaying() )
                 continue;
-            this->makeAnimation( p );
-        }
-    }
-    
-    //add joint
-    model_instance_joint *model_instance::makeJoint( model_joint *g )
-    {
-        model_instance_joint *c;
-        c = new model_instance_joint( g );
-        this->addComponent( c );
-        return c;
-    }
-    
-    //find joint
-    model_instance_joint *model_instance::findJoint( dpid id )
-    {
-        return (model_instance_joint *)this->findComponent( model_component_type_joint, id );
-    }
-    
-    //get joints
-    void model_instance::getJoints( std::list<model_instance_joint *> *l )
-    {
-        this->getComponents( model_component_type_joint, (std::list<model_component *> *)l );
-    }
-    
-    //make joints
-    void model_instance::makeJoints( model_writelock *ml )
-    {
-        std::list<model_joint *> l;
-        std::list<model_joint *>::iterator i;
-        model_joint *p;
-        std::list<model_instance_joint *> li;
-        std::list<model_instance_joint *>::iterator ii;
-        model_instance_joint *pi;
-        dpid_btree t;
-        
-        this->getJoints( &li );
-        
-        for( ii = li.begin(); ii != li.end(); ++ii )
-        {
-            pi = *ii;
-            t.addLeaf( pi->getId(), pi );
+            
+            this->redoAnim( m, j, p, &trans, &rot );
+            
+            atrans.x += trans.x;
+            atrans.y += trans.y;
+            atrans.z += trans.z;
+            atrans.w += trans.w;
+            
+            arot.x += rot.x;
+            arot.y += rot.y;
+            arot.z += rot.z;
+            arot.w += rot.w;
         }
         
-        ml->getJoints( &l );
+        j->setAnimationPosition( &atrans );
+        j->setAnimationRotation( &arot );
+    }
+    
+    //redo animation, compound joint transforms for a given animation
+    void model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyzw *atrans, dpxyzw *arot )
+    {
+        std::list<model_frame_joint *> l;
+        std::list<model_frame_joint *>::iterator i;
+        model_frame_joint *p;
+        dpid id, idd;
+        dpxyzw trans, rot;
+        
+        m->getFrameJoints( &l, a->getEndFrame() );
+        memset( atrans, 0, sizeof( trans ) );
+        memset( arot, 0, sizeof( rot ) );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            if( t.findLeaf( p->getId() ) )
+            
+            id = p->getJointId();
+            idd = j->getId();
+            if( !dpid_compare( &id, &idd ) )
                 continue;
-            this->makeJoint( p );
+            
+            id = p->getFrameId();
+            idd = a->getEndFrame();
+            if( !dpid_compare( &id, &idd ) )
+                continue;
+            
+            p->getRotation( &rot );
+            p->getTranslation( &trans );
+            
+            atrans->x += trans.x;
+            atrans->y += trans.y;
+            atrans->z += trans.z;
+            atrans->w += trans.w;
+            
+            arot->x += rot.x;
+            arot->y += rot.y;
+            arot->z += rot.z;
+            arot->w += rot.w;
         }
     }
-    
+        
 };

@@ -2,6 +2,7 @@
 #include "model_instance_animation.h"
 #include "../../model_animation/model_animation.h"
 #include "../../model_readlock.h"
+#include "../../model_writelock.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <list>
 #include "../../model_animation_frame/model_animation_frame.h"
@@ -61,16 +62,16 @@ namespace dragonpoop
     }
     
     //start animation
-    void model_instance_animation::start( dpthread_lock *thd, model_readlock *ml )
+    void model_instance_animation::start( uint64_t t, model_writelock *ml )
     {
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p;
         
-        this->start_time = thd->getTicks();
+        this->start_time = t;
         this->end_time = 0;
         
-        ml->getComponentsByParent( model_component_type_animation_frame, this->getId(), (std::list<model_component *> *)&l );
+        ml->getAnimationFrames( &l );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -84,6 +85,7 @@ namespace dragonpoop
     void model_instance_animation::stop( void )
     {
         this->start_time = this->end_time = 0;
+        this->bIsAutplay = 0;
     }
     
     //returns true if playing
@@ -93,14 +95,13 @@ namespace dragonpoop
     }
     
     //return ms played
-    uint64_t model_instance_animation::getPlayTime( dpthread_lock *thd )
+    uint64_t model_instance_animation::getPlayTime( uint64_t t )
     {
-        uint64_t t, td;
+        uint64_t td;
         
         if( !this->start_time || !this->end_time )
             return 0;
             
-        t = thd->getTicks();
         if( t > this->start_time )
             td = t - this->start_time;
         else
@@ -108,6 +109,11 @@ namespace dragonpoop
         
         if( td > this->end_time )
         {
+            if( !this->bIsRepeat )
+            {
+                this->stop();
+                return 0;
+            }
             this->start_time = t + this->repeat_delay_ms - ( td - this->end_time );
             if( t > this->start_time )
                 td = t - this->start_time;
@@ -119,13 +125,13 @@ namespace dragonpoop
     }
     
     //return closest frame after time
-    model_frame *model_instance_animation::getFrameAtTime( model_readlock *ml, uint64_t t, uint64_t *p_time )
+    model_frame *model_instance_animation::findFrameAtTime( model_writelock *ml, uint64_t t, uint64_t *p_time )
     {
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
         
-        ml->getComponentsByParent( model_component_type_animation_frame, this->getId(), (std::list<model_component *> *)&l );
+        ml->getAnimationFrames( &l );
         
         f = 0;
         for( i = l.begin(); i != l.end(); ++i )
@@ -152,13 +158,13 @@ namespace dragonpoop
     }
 
     //return closest frame before time
-    model_frame *model_instance_animation::getFrameBeforeTime( model_readlock *ml, uint64_t t, uint64_t *p_time )
+    model_frame *model_instance_animation::findFrameBeforeTime( model_writelock *ml, uint64_t t, uint64_t *p_time )
     {
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
         
-        ml->getComponentsByParent( model_component_type_animation_frame, this->getId(), (std::list<model_component *> *)&l );
+        ml->getAnimationFrames( &l );
         
         f = 0;
         for( i = l.begin(); i != l.end(); ++i )
@@ -182,6 +188,30 @@ namespace dragonpoop
         
         *p_time = f->getTime();
         return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
+    }
+    
+    //set start frame id
+    void model_instance_animation::setStartFrame( dpid id )
+    {
+        this->start_frame = id;
+    }
+    
+    //get start frame id
+    dpid model_instance_animation::getStartFrame( void )
+    {
+        return this->start_frame;
+    }
+    
+    //set end frame id
+    void model_instance_animation::setEndFrame( dpid id )
+    {
+        this->end_frame = id;
+    }
+    
+    //get end frame id
+    dpid model_instance_animation::getEndFrame( void )
+    {
+        return this->end_frame;
     }
     
 };
