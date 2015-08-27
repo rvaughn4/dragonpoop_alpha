@@ -14,6 +14,7 @@ namespace dragonpoop
     class dpbitmap;
     struct ms3d_model_joint_m;
     class model_writelock;
+    class model_loader_ms3d;
     
     class model_loader_ms3d_state_make_joints : public model_loader_state
     {
@@ -27,6 +28,8 @@ namespace dragonpoop
         
         //create joint
         void makejoint( dpthread_lock *thd, model_loader_writelock *ml, ms3d_model_joint_m *t, model_writelock *m );
+        //find joint by name
+        ms3d_model_joint_m *findJoint( char *cname, unsigned int sz, model_loader_ms3d *t );
         
     public:
         

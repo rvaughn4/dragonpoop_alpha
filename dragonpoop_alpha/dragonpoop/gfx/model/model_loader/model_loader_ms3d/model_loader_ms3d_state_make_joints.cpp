@@ -29,6 +29,30 @@ namespace dragonpoop
         
     }
     
+    //find joint by name
+    ms3d_model_joint_m *model_loader_ms3d_state_make_joints::findJoint( char *cname, unsigned int sz, model_loader_ms3d *t )
+    {
+        ms3d_model_joint_m *v;
+        std::vector<ms3d_model_joint_m> *l;
+        unsigned int i, e;
+        std::string s0, s1;
+        
+        s0.assign( cname, sz );
+        
+        l = t->joints;
+        e = (unsigned int)l->size();
+        for( i = 0; i < e; i++ )
+        {
+            v = &( ( *l )[ i ] );
+            
+            s1.assign( (char *)v->f.name, sizeof( v->f.name ) );
+            if( s0.compare( s1 ) == 0 )
+                return v;
+        }
+        
+        return 0;
+    }
+    
     //run state, returns next state
     model_loader_state *model_loader_ms3d_state_make_joints::run( dpthread_lock *thd, model_loader_writelock *ml )
     {
@@ -36,7 +60,7 @@ namespace dragonpoop
         model_writelock *m;
         unsigned int i, e;
         model_loader_ms3d *t;
-        ms3d_model_joint_m *v;
+        ms3d_model_joint_m *v, *p;
         std::vector<ms3d_model_joint_m> *l;
         model_joint *j;
         
@@ -58,19 +82,18 @@ namespace dragonpoop
         {
             v = &( ( *l )[ i ] );
             
-            //find parent
-        
+            p = this->findJoint( (char *)v->f.parent_name, sizeof( v->f.parent_name ), t );
+            if( !p )
+                continue;
             j = m->findJoint( v->id );
             if( !j )
                 continue;
             
-            
+            j->setParent( p->id );
+            v->pid = p->id;
         }
         
         o.unlock();
-        
-        
-        
         return new model_loader_ms3d_state_make_verts( this->b, this->m );
     }
     

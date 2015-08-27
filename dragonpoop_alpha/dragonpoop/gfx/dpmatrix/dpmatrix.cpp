@@ -332,5 +332,67 @@ namespace dragonpoop
         this->transform( &p->normal );
         this->transform( &p->pos );
     }
-
+    
+    //rotate ( Z * Y ) * X
+    void dpmatrix::rotateRad( float x, float y, float z )
+    {
+        dpmatrix zm, ym, xm;
+        
+        xm.setRotationXrad( x );
+        ym.setRotationYrad( y );
+        zm.setRotationZrad( z );
+        
+        zm.multiply( &ym );
+        zm.multiply( &xm );
+        
+        this->multiply( &zm );
+    }
+    
+    //rotate ( Z * Y ) * X
+    void dpmatrix::rotate( float x, float y, float z )
+    {
+        dpmatrix zm, ym, xm;
+        
+        xm.setRotationX( x );
+        ym.setRotationY( y );
+        zm.setRotationZ( z );
+        
+        zm.multiply( &ym );
+        zm.multiply( &xm );
+        
+        this->multiply( &zm );
+    }
+/*
+    void AngleMatrix (const vec3_t angles, float (*matrix)[4] )
+    {
+        float		angle;
+        float		sr, sp, sy, cr, cp, cy;    float		angle;
+    float		sr, sp, sy, cr, cp, cy;
+    
+    angle = angles[2];
+    sy = sin(angle);
+    cy = cos(angle);
+    angle = angles[1];
+    sp = sin(angle);
+    cp = cos(angle);
+    angle = angles[0];
+    sr = sin(angle);
+    cr = cos(angle);
+    
+    // matrix = (Z * Y) * X
+    matrix[0][0] = cp*cy;
+    matrix[1][0] = cp*sy;
+    matrix[2][0] = -sp;
+    matrix[0][1] = sr*sp*cy+cr*-sy;
+    matrix[1][1] = sr*sp*sy+cr*cy;
+    matrix[2][1] = sr*cp;
+    matrix[0][2] = (cr*sp*cy+-sr*-sy);
+    matrix[1][2] = (cr*sp*sy+-sr*cy);
+    matrix[2][2] = cr*cp;
+    matrix[0][3] = 0.0;
+    matrix[1][3] = 0.0;
+    matrix[2][3] = 0.0;
+        
+    }
+ */
 };

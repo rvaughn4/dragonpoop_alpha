@@ -88,6 +88,10 @@ namespace dragonpoop
         void transform( dpxyz_f *p );
         //transform
         void transform( dpvertex_unit *p );
+        //rotate ( Z * Y ) * X
+        void rotateRad( float x, float y, float z );
+        //rotate ( Z * Y ) * X
+        void rotate( float x, float y, float z );
 
     };
 

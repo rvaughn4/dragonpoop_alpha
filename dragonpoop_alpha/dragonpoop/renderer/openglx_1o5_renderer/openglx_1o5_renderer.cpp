@@ -365,9 +365,7 @@ namespace dragonpoop
             r_end = tt / td;
         else
             r_end = 0;
-        r_start = og->getSmoothRatio();
-        r_end += ( r_end - r_start ) * 0.2f;
-        og->setSmoothRatio( r_end );
+        r_end = 1;
         r_start = 1.0f - r_end;
         
         st = og->getSmoothTime();
@@ -380,14 +378,14 @@ namespace dragonpoop
                 b = *v;
                 s = &sp[ vi ];
                 
-                s->start.pos.x += ( v->start.pos.x - s->start.pos.x ) * 0.5f;
-                s->start.pos.y += ( v->start.pos.y - s->start.pos.y ) * 0.5f;
-                s->start.pos.z += ( v->start.pos.z - s->start.pos.z ) * 0.5f;
+                s->start.pos.x += ( v->start.pos.x - s->start.pos.x ) * 0.99f;
+                s->start.pos.y += ( v->start.pos.y - s->start.pos.y ) * 0.99f;
+                s->start.pos.z += ( v->start.pos.z - s->start.pos.z ) * 0.99f;
                 s->start.pos.w = v->start.pos.w;
                 
-                s->end.pos.x += ( v->end.pos.x - s->end.pos.x ) * 0.5f;
-                s->end.pos.y += ( v->end.pos.y - s->end.pos.y ) * 0.5f;
-                s->end.pos.z += ( v->end.pos.z - s->end.pos.z ) * 0.5f;
+                s->end.pos.x += ( v->end.pos.x - s->end.pos.x ) * 0.25f;
+                s->end.pos.y += ( v->end.pos.y - s->end.pos.y ) * 0.25f;
+                s->end.pos.z += ( v->end.pos.z - s->end.pos.z ) * 0.25f;
                 s->end.pos.w = v->end.pos.w;
             }
         }
@@ -396,7 +394,7 @@ namespace dragonpoop
         {
             v = &vp[ vi ];
             b = *v;
-            s = &sp[ vi ];
+            s = &vp[ vi ];
             
             b.start.pos.x = s->start.pos.x * r_start + s->end.pos.x * r_end;
             b.start.pos.y = s->start.pos.y * r_start + s->end.pos.y * r_end;

@@ -16,7 +16,7 @@ namespace dragonpoop
     private:
         
         dpxyzw pos, rot, apos, arot;
-        dpmatrix orig, chained;
+        dpmatrix bone_in, bone_out, local, global, final;
         bool isChained;
         dpid parent_id;
         
