@@ -43,7 +43,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 2000;
+        this->t_frame_time = 500;
         this->sync( ml, 0 );
     }
     
@@ -719,7 +719,7 @@ namespace dragonpoop
         p->setStartTime( this->t_start );
         p->setEndTime( this->t_end );
         p->getPosition( &vt.end.pos );
-        vt.start.pos = vt.end.pos;
+
         this->redoMesh( mi, m, tv, &vt.end.pos, &vt.end.normal );
         p->setEndPosition( &vt.end.pos );
         
@@ -789,7 +789,10 @@ namespace dragonpoop
 
         j = this->findJoint( vj->getJointId() );
         if( !j )
+        {
+            pos->x = pos->y = pos->z = 0;
             return;
+        }
         
         j->transform( mi, pos );
         j->transform( mi, norm );
@@ -812,6 +815,12 @@ namespace dragonpoop
         
         l.clear();
         this->getJoints( (std::list<model_instance_joint *> *)&l );
+
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            ( (model_instance_joint *)p )->reset();
+        }
 
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -853,7 +862,6 @@ namespace dragonpoop
         dpxyzw atrans, arot, trans, rot;
         
         this->getAnimations( &l );
-        j->reset();
         
         memset( &atrans, 0, sizeof( atrans ) );
         memset( &arot, 0, sizeof( arot ) );

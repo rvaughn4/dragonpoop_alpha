@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462359087.974027"
+            timestampString = "462501933.702455"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "913"
-            endingLineNumber = "913"
+            startingLineNumber = "921"
+            endingLineNumber = "921"
             landmarkName = "model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyzw *atrans, dpxyzw *arot )"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462359087.974027"
+            timestampString = "462501933.702455"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "806"
-            endingLineNumber = "806"
+            startingLineNumber = "809"
+            endingLineNumber = "809"
             landmarkName = "model_instance::redoAnim( model_writelock *m )"
             landmarkType = "5">
          </BreakpointContent>
@@ -202,11 +202,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_joint/model_instance_joint.cpp"
-            timestampString = "462412609.270928"
+            timestampString = "462502268.336612"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
             landmarkName = "model_instance_joint::redoMatrix( model_instance_writelock *m )"
             landmarkType = "5">
          </BreakpointContent>

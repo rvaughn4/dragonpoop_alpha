@@ -232,6 +232,7 @@ namespace dragonpoop
         td = ke->time - kb->time;
         tt = t - kb->time;
         re = tt / td;
+        //re = 1.0f;
         rb = 1.0f - re;
         
         x->x = rb * kb->x + re * ke->x;

@@ -12,7 +12,6 @@ namespace dragonpoop
         
         j->getPosition( &this->pos );
         j->getRotation( &this->rot );
-        this->abone = this->pos;
         this->parent_id = j->getParent();
         
         j->getName( &s );
@@ -71,14 +70,17 @@ namespace dragonpoop
     void model_instance_joint::transform( model_instance_writelock *m, dpxyzw *x )
     {
         this->redoMatrix( m );
-        x->x -= this->abone.x;
-        x->y -= this->abone.y;
-        x->z -= this->abone.z;
+/*
+        x->x -= this->global_bone.x;
+        x->y -= this->global_bone.y;
+        x->z -= this->global_bone.z;
+  */
         this->global.transform( x );
-        x->x += this->abone.x + this->apos.x;
-        x->y += this->abone.y + this->apos.y;
-        x->z += this->abone.z + this->apos.z;
-    }
+/*
+        x->x += this->global_bone.x;
+        x->y += this->global_bone.y;
+        x->z += this->global_bone.z;
+  */  }
     
     //reset matrix
     void model_instance_joint::reset( void )
@@ -94,28 +96,32 @@ namespace dragonpoop
         if( this->isChained )
             return;
         
+        this->global_bone = this->pos;
         
         this->local.setIdentity();
-        //this->local.translate( this->apos.x, this->apos.y, this->apos.z );
-        this->local.rotateZrad( this->arot.z );
-        this->local.rotateYrad( this->arot.y );
-        this->local.rotateXrad( this->arot.x );
+        this->local.rotateRad( this->arot.x, this->arot.y, this->arot.z );
+        this->local.translate( this->apos.x, this->apos.y, this->apos.z );
         
         j = 0;
         if( !dpid_isZero( &this->parent_id ) )
             j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
         if( !j )
         {
-            this->global.setIdentity();
-            this->global.multiply( &this->local );
             this->isChained = 1;
+            this->global.copy( &this->local );
             return;
         }
+
         j->redoMatrix( m );
         
         this->global.setIdentity();
-        this->global.multiply( &this->local );
         this->global.multiply( &j->global );
+        this->global.multiply( &this->local );
+
+        this->global_bone.x += j->global_bone.x;
+        this->global_bone.y += j->global_bone.y;
+        this->global_bone.z += j->global_bone.z;
+        
         this->isChained = 1;
     }
     

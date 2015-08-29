@@ -69,7 +69,7 @@ namespace dragonpoop
     {
         unsigned int i;
         ms3d_model_joint_keyframe k;
-
+        
         for( i = 0; i < max; i++ )
         {
             if( !b->readBytes( (uint8_t *)&k, sizeof( k ) ) )

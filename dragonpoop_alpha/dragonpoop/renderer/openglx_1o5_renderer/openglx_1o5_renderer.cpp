@@ -365,7 +365,7 @@ namespace dragonpoop
             r_end = tt / td;
         else
             r_end = 0;
-        r_end = 1;
+        //r_end = 1;
         r_start = 1.0f - r_end;
         
         st = og->getSmoothTime();

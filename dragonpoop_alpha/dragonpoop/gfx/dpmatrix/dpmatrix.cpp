@@ -293,11 +293,16 @@ namespace dragonpoop
         if( pw )
             w = *pw;
 
-        rx = this->values.c1.r1 * x + this->values.c2.r1 * y + this->values.c3.r1 * z + this->values.c4.r1 * w;
-        ry = this->values.c1.r2 * x + this->values.c2.r2 * y + this->values.c3.r2 * z + this->values.c4.r2 * w;
-        rz = this->values.c1.r3 * x + this->values.c2.r3 * y + this->values.c3.r3 * z + this->values.c4.r3 * w;
-        rw = this->values.c1.r4 * x + this->values.c2.r4 * y + this->values.c3.r4 * z + this->values.c4.r4 * w;
+        //rx = this->values.c1.r1 * x + this->values.c2.r1 * y + this->values.c3.r1 * z + this->values.c4.r1 * w;
+        //ry = this->values.c1.r2 * x + this->values.c2.r2 * y + this->values.c3.r2 * z + this->values.c4.r2 * w;
+        //rz = this->values.c1.r3 * x + this->values.c2.r3 * y + this->values.c3.r3 * z + this->values.c4.r3 * w;
+        //rw = this->values.c1.r4 * x + this->values.c2.r4 * y + this->values.c3.r4 * z + this->values.c4.r4 * w;
         
+        rx = x * this->values.c1.r1 + y * this->values.c1.r2 + z * this->values.c1.r3 + this->values.c1.r4;
+        ry = x * this->values.c2.r1 + y * this->values.c2.r2 + z * this->values.c2.r3 + this->values.c2.r4;
+        rz = x * this->values.c3.r1 + y * this->values.c3.r2 + z * this->values.c3.r3 + this->values.c3.r4;
+        rw = 1;
+
         if( px )
             *px = rx;
         if( py )
@@ -331,6 +336,67 @@ namespace dragonpoop
     {
         this->transform( &p->normal );
         this->transform( &p->pos );
+    }
+
+    //inverse transform
+    void dpmatrix::itransform( float *px, float *py, float *pz, float *pw )
+    {
+        float x, y, z, w;
+        float rx, ry, rz, rw;
+        
+        x = y = z = 0;
+        w = 1.0f;
+        
+        if( px )
+            x = *px;
+        if( py )
+            y = *py;
+        if( pz )
+            z = *pz;
+        if( pw )
+            w = *pw;
+        
+        x = x - this->values.c4.r1;
+        y = y - this->values.c4.r2;
+        z = z - this->values.c4.r3;
+        
+        rx = x * this->values.c1.r1 + y * this->values.c1.r2 + z * this->values.c1.r3;
+        ry = y * this->values.c2.r1 + y * this->values.c2.r2 + z * this->values.c2.r3;
+        rz = z * this->values.c3.r1 + y * this->values.c3.r2 + z * this->values.c3.r3;
+        
+        if( px )
+            *px = rx;
+        if( py )
+            *py = ry;
+        if( pz )
+            *pz = rz;
+        if( pw )
+            *pw = rw;
+    }
+    
+    //inverse transform
+    void dpmatrix::itransform( dpxyzw *p )
+    {
+        this->itransform( &p->x, &p->y, &p->z, &p->w );
+    }
+    
+    //inverse transform
+    void dpmatrix::itransform( dpxyzw_f *p )
+    {
+        this->itransform( &p->x, &p->y, &p->z, &p->w );
+    }
+    
+    //inverse transform
+    void dpmatrix::itransform( dpxyz_f *p )
+    {
+        this->itransform( &p->x, &p->y, &p->z, 0 );
+    }
+    
+    //inverse transform
+    void dpmatrix::itransform( dpvertex_unit *p )
+    {
+        this->itransform( &p->normal );
+        this->itransform( &p->pos );
     }
     
     //rotate ( Z * Y ) * X
