@@ -9,6 +9,7 @@
 #include "../../../core/dpbtree/dpid_btree.h"
 #include "../../../core/dpbtree/dpid_multibtree.h"
 #include "../../../core/dpbtree/dpmultibtree.h"
+#include "../../../gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.h"
 
 namespace dragonpoop
 {
@@ -41,6 +42,7 @@ namespace dragonpoop
         } comps;
         std::atomic<bool> bIsSynced, bIsAnimated;
         model_instance_ref *m;
+        model_instance_joint_cache jnts;
         
         //delete all components
         void deleteComponents( void );
@@ -73,6 +75,8 @@ namespace dragonpoop
         void getGroups( std::list<renderer_model_instance_group *> *l );
         //make groups
         void makeGroups( model_instance_writelock *ml );
+        //sync groups
+        void syncGroups( model_instance_writelock *ml );
         //animate groups
         void animateGroups( model_instance_writelock *ml );
         //sync
@@ -87,6 +91,10 @@ namespace dragonpoop
         virtual renderer_model_instance_group *genGroup( model_instance_writelock *ml, model_instance_group *g );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi );
+        //returns joint cache
+        model_instance_joint_cache *getJointCache( void );
+        //sync joint cache
+        void syncJoints( model_instance_writelock *ml );
         
     public:
         

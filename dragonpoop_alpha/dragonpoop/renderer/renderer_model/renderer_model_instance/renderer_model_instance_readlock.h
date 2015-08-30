@@ -15,6 +15,7 @@ namespace dragonpoop
     class renderer_model_readlock;
     class renderer_model_instance_readlock;
     class dpthread_lock;
+    class model_instance_joint_cache;
     
     class renderer_model_instance_readlock : public shared_obj_readlock
     {
@@ -52,6 +53,8 @@ namespace dragonpoop
         void animate( void );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m );
+        //returns joint cache
+        model_instance_joint_cache *getJointCache( void );
         
         friend class renderer_model_instance;
     };

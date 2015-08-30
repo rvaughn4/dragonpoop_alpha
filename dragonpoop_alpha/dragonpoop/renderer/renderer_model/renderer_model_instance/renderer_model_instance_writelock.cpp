@@ -76,4 +76,11 @@ namespace dragonpoop
     {
         this->t->run( thd, this );
     }
+
+    //returns joint cache
+    model_instance_joint_cache *renderer_model_instance_writelock::getJointCache( void )
+    {
+        return this->t->getJointCache();
+    }
+    
 };

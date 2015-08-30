@@ -9,6 +9,8 @@
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_material/openglx_1o5_renderer_model_material.h"
 #include "../renderer_model/renderer_model_material/renderer_model_material.h"
 #include "../../core/dpthread/dpthread_lock.h"
+#include "../../gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.h"
+#include "../renderer_model/renderer_model_instance/renderer_model_instance_readlock.h"
 
 #include <sstream>
 #include <vector>
@@ -342,10 +344,12 @@ namespace dragonpoop
         unsigned int ii, is, vi, vs, ss;
         openglx_1o5_renderer_model_instance_group *og;
         openglx_1o5_renderer_model_material *gmat;
-        float r_start, r_end, td, tt;
+        float r_end, td, tt;
         std::vector<uint16_t> indicies;
         uint64_t t, st;
+        model_instance_joint_cache *jnts;
 
+        jnts = mi->getJointCache();
         t = thd->getTicks();
         og = (openglx_1o5_renderer_model_instance_group *)g;
         gmat = (openglx_1o5_renderer_model_material *)mat;
@@ -365,8 +369,6 @@ namespace dragonpoop
             r_end = tt / td;
         else
             r_end = 0;
-        //r_end = 1;
-        r_start = 1.0f - r_end;
         
         st = og->getSmoothTime();
         if( t - st > 40 )
@@ -391,6 +393,7 @@ namespace dragonpoop
             s = &vp[ vi ];
 
             b = *s;
+            jnts->transform( &b, r_end );
             nvb.addVertex( &b );
         }
         vp = nvb.getBuffer();

@@ -234,7 +234,7 @@ namespace dragonpoop
     }
     
     //animate groups
-    void renderer_model_instance::animateGroups( model_instance_writelock *ml )
+    void renderer_model_instance::syncGroups( model_instance_writelock *ml )
     {
         std::list<renderer_model_instance_group *> l;
         std::list<renderer_model_instance_group *>::iterator i;
@@ -261,6 +261,34 @@ namespace dragonpoop
         }
     }
     
+    //animate groups
+    void renderer_model_instance::animateGroups( model_instance_writelock *ml )
+    {
+        std::list<renderer_model_instance_group *> l;
+        std::list<renderer_model_instance_group *>::iterator i;
+        renderer_model_instance_group *p;
+        std::list<model_instance_group *> lg;
+        std::list<model_instance_group *>::iterator ig;
+        model_instance_group *pg;
+        dpid_btree t;
+        
+        ml->getGroups( &lg );
+        for( ig = lg.begin(); ig != lg.end(); ++ig )
+        {
+            pg = *ig;
+            t.addLeaf( pg->getId(), pg );
+        }
+        
+        this->getGroups( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pg = (model_instance_group *)t.findLeaf( p->getId() );
+            if( pg )
+                ;//p->sync( ml, pg );
+        }
+    }
+    
     //run model from task
     void renderer_model_instance::run( dpthread_lock *thd, renderer_model_instance_writelock *g )
     {
@@ -275,6 +303,8 @@ namespace dragonpoop
                 this->makeGroups( ml );
                 this->bIsSynced = 1;
                 this->onSync( thd, g, ml );
+                this->syncGroups( ml );
+                this->syncJoints( ml );
             }
         }
 
@@ -283,6 +313,7 @@ namespace dragonpoop
             ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300 );
             if( ml )
             {
+                this->syncJoints( ml );
                 this->animateGroups( ml );
                 this->bIsAnimated = 1;
             }
@@ -328,6 +359,28 @@ namespace dragonpoop
             g = *i;
             mat = m->findMaterial( g->getMaterialId() );
             r->renderGroup( thd, m, mi, g, mat );
+        }
+    }
+    
+    //returns joint cache
+    model_instance_joint_cache *renderer_model_instance::getJointCache( void )
+    {
+        return &this->jnts;
+    }
+    
+    //sync joint cache
+    void renderer_model_instance::syncJoints( model_instance_writelock *ml )
+    {
+        std::list<model_instance_joint *> l;
+        std::list<model_instance_joint *>::iterator i;
+        model_instance_joint *g;
+        
+        ml->getComponents( model_component_type_joint, (std::list<model_component *> *)&l );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            g = *i;
+            this->jnts.addJoint( g );
         }
     }
     

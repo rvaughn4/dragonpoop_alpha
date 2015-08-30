@@ -53,6 +53,12 @@ namespace dragonpoop
         return this->t->findGroup( id );
     }
     
+    //returns joint cache
+    model_instance_joint_cache *renderer_model_instance_readlock::getJointCache( void )
+    {
+        return this->t->getJointCache();
+    }
+    
     //get groups
     void renderer_model_instance_readlock::getGroups( std::list<renderer_model_instance_group *> *l )
     {

@@ -128,6 +128,7 @@
 		79BF2CBF1B8A3E82007C9BA2 /* dptree_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79BF2CBC1B8A3E82007C9BA2 /* dptree_wrapper.cpp */; };
 		79BF2CC21B8A3ECB007C9BA2 /* dpid_tree_wrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79BF2CC01B8A3ECB007C9BA2 /* dpid_tree_wrapper.cpp */; };
 		79BF2CC51B8A43EC007C9BA2 /* dpid_multibtree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79BF2CC31B8A43EC007C9BA2 /* dpid_multibtree.cpp */; };
+		79E0A2C91B93154E00CC1D91 /* model_instance_joint_cache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E0A2C61B93154E00CC1D91 /* model_instance_joint_cache.cpp */; };
 		79E7444F1B6CD5F3005BFDE0 /* dpbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E7444C1B6CD5F3005BFDE0 /* dpbuffer.cpp */; };
 		79E744541B6CD650005BFDE0 /* dpbuffer_dynamic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E744501B6CD650005BFDE0 /* dpbuffer_dynamic.cpp */; };
 		79E744551B6CD650005BFDE0 /* dpbuffer_static.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79E744521B6CD650005BFDE0 /* dpbuffer_static.cpp */; };
@@ -463,6 +464,9 @@
 		79BF2CC11B8A3ECB007C9BA2 /* dpid_tree_wrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpid_tree_wrapper.h; sourceTree = "<group>"; };
 		79BF2CC31B8A43EC007C9BA2 /* dpid_multibtree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpid_multibtree.cpp; sourceTree = "<group>"; };
 		79BF2CC41B8A43EC007C9BA2 /* dpid_multibtree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpid_multibtree.h; sourceTree = "<group>"; };
+		79E0A2C61B93154E00CC1D91 /* model_instance_joint_cache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_instance_joint_cache.cpp; sourceTree = "<group>"; };
+		79E0A2C71B93154E00CC1D91 /* model_instance_joint_cache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instance_joint_cache.h; sourceTree = "<group>"; };
+		79E0A2C81B93154E00CC1D91 /* model_instance_joint_caches.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instance_joint_caches.h; sourceTree = "<group>"; };
 		79E7444C1B6CD5F3005BFDE0 /* dpbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpbuffer.cpp; sourceTree = "<group>"; };
 		79E7444D1B6CD5F3005BFDE0 /* dpbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpbuffer.h; sourceTree = "<group>"; };
 		79E7444E1B6CD5F3005BFDE0 /* dpbuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpbuffers.h; sourceTree = "<group>"; };
@@ -1133,6 +1137,16 @@
 			path = dpbtree;
 			sourceTree = "<group>";
 		};
+		79E0A2C51B93154E00CC1D91 /* model_instance_joint_cache */ = {
+			isa = PBXGroup;
+			children = (
+				79E0A2C61B93154E00CC1D91 /* model_instance_joint_cache.cpp */,
+				79E0A2C71B93154E00CC1D91 /* model_instance_joint_cache.h */,
+				79E0A2C81B93154E00CC1D91 /* model_instance_joint_caches.h */,
+			);
+			path = model_instance_joint_cache;
+			sourceTree = "<group>";
+		};
 		79E7444B1B6CD5F3005BFDE0 /* dpbuffer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1241,6 +1255,7 @@
 		79F107011B6ED076000723E4 /* model_instance */ = {
 			isa = PBXGroup;
 			children = (
+				79E0A2C51B93154E00CC1D91 /* model_instance_joint_cache */,
 				79F1071E1B6ED076000723E4 /* model_instances.h */,
 				79F107101B6ED076000723E4 /* model_instance_readlock.cpp */,
 				79F107111B6ED076000723E4 /* model_instance_readlock.h */,
@@ -1365,6 +1380,7 @@
 			files = (
 				7970E96E1B64F26E008E8328 /* dptaskpool.cpp in Sources */,
 				7970E9721B64F26E008E8328 /* dpthread.cpp in Sources */,
+				79E0A2C91B93154E00CC1D91 /* model_instance_joint_cache.cpp in Sources */,
 				79BF2CBE1B8A3E82007C9BA2 /* dpmultibtree.cpp in Sources */,
 				79F5632D1B6B746D006E5C78 /* model_component_tree_bytypeid.cpp in Sources */,
 				79E744541B6CD650005BFDE0 /* dpbuffer_dynamic.cpp in Sources */,

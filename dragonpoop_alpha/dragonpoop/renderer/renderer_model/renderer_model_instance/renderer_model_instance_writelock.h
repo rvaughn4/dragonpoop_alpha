@@ -13,6 +13,7 @@ namespace dragonpoop
     class model_instance_vertex;
     class renderer_model_instance_group;
     class dpthread_lock;
+    class model_instance_joint_cache;
     
     class renderer_model_instance_writelock : public shared_obj_writelock
     {
@@ -50,6 +51,8 @@ namespace dragonpoop
         void animate( void );
         //run model from task
         void run( dpthread_lock *thd );
+        //returns joint cache
+        model_instance_joint_cache *getJointCache( void );
 
         friend class renderer_model_instance;
     };
