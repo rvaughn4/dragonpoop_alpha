@@ -9,6 +9,7 @@
 #include "../../../core/dpbtree/dpid_btree.h"
 #include "../../../core/dpbtree/dpid_multibtree.h"
 #include "../../../core/dpbtree/dpmultibtree.h"
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -19,10 +20,7 @@ namespace dragonpoop
     class dpthread_lock;
     class core;
     class model_instance_writelock;
-    class model_instance_vertex;
     class model_instance_group;
-    class model_instance_triangle;
-    class model_instance_triangle_vertex;
     class model_writelock;
     class model_ref;
     class model_vertex;
@@ -39,6 +37,7 @@ namespace dragonpoop
     class model_joint;
     struct dpxyzw;
     class model_vertex_joint;
+    struct dpvertex;
     
     class model_instance : public shared_obj
     {
@@ -57,6 +56,8 @@ namespace dragonpoop
         } comps;
         renderer_model_instance_ref *r;
         uint64_t t_start, t_end, t_last_animate, t_frame_time;
+        std::atomic<bool> bIsSynced;
+        int16_t j_ctr;
         
         //delete all components
         void deleteComponents( void );
@@ -68,13 +69,13 @@ namespace dragonpoop
         //redo group mesh
         void redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_group *g );
         //redo triangle mesh
-        void redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_instance_triangle *t );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_group_triangle *t );
         //redo vertex mesh
-        void redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_triangle_vertex *tv );
         //redo vertex mesh, transform using joints
-        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, dpvertex *v );
         //redo vertex mesh, transform using joints
-        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, model_vertex_joint *vj, dpxyzw *pos, dpxyzw *norm );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, model_vertex_joint *vj, dpvertex *v );
         
         //redo animation
         void redoAnim( model_writelock *m );
@@ -113,44 +114,12 @@ namespace dragonpoop
         void getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l );
         //remove component
         void removeComponent( model_component *c );
-        //add vertex
-        model_instance_vertex *makeVertex( model_vertex *v );
-        //find vertex
-        model_instance_vertex *findVertex( dpid id );
-        //get vertexes
-        void getVertexes( std::list<model_instance_vertex *> *l );
         //add group
         model_instance_group *makeGroup( model_group *g );
         //find group
         model_instance_group *findGroup( dpid id );
         //get groups
         void getGroups( std::list<model_instance_group *> *l );
-        //add triangle vertex
-        model_instance_triangle_vertex *makeTriangleVertex( model_triangle_vertex *tv );
-        //find triangle vertex
-        model_instance_triangle_vertex *findTriangleVertex( dpid id );
-        //find triangle vertex
-        model_instance_triangle_vertex *findTriangleVertex( dpid triangle_id, dpid vertex_id );
-        //get triangle vertexes
-        void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l );
-        //get triangle vertexes by triangle or vertex id
-        void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid );
-        //add triangle
-        model_instance_triangle *makeTriangle( model_group_triangle *gt );
-        //find triangle
-        model_instance_triangle *findTriangle( dpid id );
-        //find triangle
-        model_instance_triangle *findTriangle( dpid group_id, dpid triangle_id );
-        //get triangles
-        void getTriangles( std::list<model_instance_triangle *> *l );
-        //get triangles by triangle or group id
-        void getTriangles( std::list<model_instance_triangle *> *l, dpid pid );
-        //make verts
-        void makeVertexes( model_writelock *ml );
-        //make triangles
-        void makeTriangles( model_writelock *ml );
-        //make triangle verts
-        void makeTriangleVertexes( model_writelock *ml );
         //make groups
         void makeGroups( model_writelock *ml );
         //add animation
@@ -170,13 +139,15 @@ namespace dragonpoop
         //make joints
         void makeJoints( model_writelock *ml );
         //sync
-        void sync( model_writelock *ml, uint64_t tms );
+        void dosync( model_instance_writelock *mi, model_writelock *ml, uint64_t tms );
         //do animation
         void animate( model_instance_writelock *mi, model_writelock *ml, uint64_t tms );
         //set renderer model
         void setRenderer( renderer_model_instance *r );
         //populate vertex buffer for rendering
         void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
+        //sync
+        void sync( void );
         
     public:
         

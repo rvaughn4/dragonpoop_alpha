@@ -30,37 +30,49 @@ namespace dragonpoop
     }
 
     //set normals
-    void model_triangle_vertex::setNormal( dpxyzw *x )
+    void model_triangle_vertex::setNormal( dpxyz_f *x )
     {
         this->norm = *x;
     }
 
     //get normals
-    void model_triangle_vertex::getNormal( dpxyzw *x )
+    void model_triangle_vertex::getNormal( dpxyz_f *x )
     {
         *x = this->norm;
     }
+    
+    //set normals
+    void model_triangle_vertex::setNormal( model_vector *v )
+    {
+        v->getPosition( &this->norm );
+    }
+    
+    //get normals
+    void model_triangle_vertex::getNormal( model_vector *v )
+    {
+        v->setPosition( &this->norm );
+    }
 
     //set texcoord0
-    void model_triangle_vertex::setTexCoord0( dpst *x )
+    void model_triangle_vertex::setTexCoord0( dpst_f *x )
     {
         this->texcoords0 = *x;
     }
 
     //get texcoord0
-    void model_triangle_vertex::getTexCoord0( dpst *x )
+    void model_triangle_vertex::getTexCoord0( dpst_f *x )
     {
         *x = this->texcoords0;
     }
 
     //set texcoord1
-    void model_triangle_vertex::setTexCoord1( dpst *x )
+    void model_triangle_vertex::setTexCoord1( dpst_f *x )
     {
         this->texcoords1 = *x;
     }
 
     //get texcoord1
-    void model_triangle_vertex::getTexCoord1( dpst *x )
+    void model_triangle_vertex::getTexCoord1( dpst_f *x )
     {
         *x = this->texcoords1;
     }

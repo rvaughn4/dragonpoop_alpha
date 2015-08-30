@@ -3,7 +3,8 @@
 #define dragonpoop_model_vertex_h
 
 #include "../model_component/model_components.h"
-#include "../../dpvertex/dpxyzw.h"
+#include "../../dpvertex/dpxyz_f.h"
+#include "../model_matrix/model_vector.h"
 
 namespace dragonpoop
 {
@@ -13,7 +14,7 @@ namespace dragonpoop
 
     private:
 
-        dpxyzw x;
+        dpxyz_f x;
 
     protected:
 
@@ -24,9 +25,14 @@ namespace dragonpoop
         //dtor
         virtual ~model_vertex( void );
         //set position
-        void setPosition( dpxyzw *x );
+        void setPosition( dpxyz_f *x );
         //get position
-        void getPosition( dpxyzw *x );
+        void getPosition( dpxyz_f *x );
+        //set position
+        void setPosition( model_vector *v );
+        //get position
+        void getPosition( model_vector *v );
+        
     };
     
 };

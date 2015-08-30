@@ -3,26 +3,25 @@
 #define dragonpoop_dpvertex_h
 
 #include "../../core/dpid/dpid.h"
-#include "dpxyzw.h"
-#include "dpst.h"
+#include "dpxyz_f.h"
+#include "dpst_f.h"
 #include <stdint.h>
 
 namespace dragonpoop
 {
-
-#pragma pack( 1 )
-    struct dpvertex_unit
-    {
-        dpxyzw pos, normal;
-        dpst texcoords[ 2 ];
-        uint64_t t;
-    };
-#pragma pack(  )
+    
+#define dpvertex_bones_size 4
 
 #pragma pack( 1 )
     struct dpvertex
     {
-        dpvertex_unit start, end;
+        dpxyz_f pos, normal;
+        dpst_f texcoords[ 2 ];
+        struct
+        {
+            int16_t id;
+            float w;
+        } bones[ dpvertex_bones_size ];
     };
 #pragma pack(  )
 

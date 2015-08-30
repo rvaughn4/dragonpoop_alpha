@@ -38,7 +38,7 @@ namespace dragonpoop
         model_loader_ms3d *t;
         ms3d_model_vertex_m *v;
         std::vector<ms3d_model_vertex_m> *l;
-        dpxyzw x;
+        dpxyz_f x;
         
         m = (model_writelock *)o.writeLock( this->m );
         if( !m )
@@ -60,7 +60,6 @@ namespace dragonpoop
             x.x = v->f.position.x;
             x.y = v->f.position.y;
             x.z = v->f.position.z;
-            x.w = 1;
             
             mv->setPosition( &x );
         }

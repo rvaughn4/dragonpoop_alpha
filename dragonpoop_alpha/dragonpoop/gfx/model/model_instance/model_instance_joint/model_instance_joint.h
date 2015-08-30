@@ -20,6 +20,7 @@ namespace dragonpoop
 
         bool isChained;
         dpid parent_id;
+        int16_t index;
         
     protected:
         
@@ -48,7 +49,11 @@ namespace dragonpoop
         void transform( model_instance_writelock *m, dpxyzw *x );
         //reset matrix
         void reset( void );
-        
+        //set joint index
+        void setIndex( int16_t i );
+        //get joint index
+        int16_t getIndex( void );
+
     };
     
 };

@@ -18,6 +18,7 @@
 #include "model_instance/model_instance.h"
 #include "model_instance/model_instance_ref.h"
 #include "model_instance/model_instance_writelock.h"
+#include "model_instance/model_instance_readlock.h"
 #include "../../renderer/renderer_model/renderer_model.h"
 #include "../../renderer/renderer_model/renderer_model_ref.h"
 #include "../../renderer/renderer_model/renderer_model_readlock.h"
@@ -471,17 +472,17 @@ namespace dragonpoop
         std::list<model_instance *> *l;
         std::list<model_instance *>::iterator i;
         model_instance *p;
-        model_instance_writelock *pl;
+        model_instance_readlock *pl;
         shared_obj_guard o;
 
         l = &this->instances;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = ( model_instance_writelock *)o.tryWriteLock( p, 300 );
+            pl = ( model_instance_readlock *)o.tryReadLock( p, 300 );
             if( !pl )
                 continue;
-            pl->sync( g, tms );
+            pl->sync();
         }
     }
 

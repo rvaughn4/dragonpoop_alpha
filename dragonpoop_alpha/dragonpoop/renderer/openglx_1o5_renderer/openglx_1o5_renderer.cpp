@@ -378,15 +378,9 @@ namespace dragonpoop
                 b = *v;
                 s = &sp[ vi ];
                 
-                s->start.pos.x += ( v->start.pos.x - s->start.pos.x ) * 0.99f;
-                s->start.pos.y += ( v->start.pos.y - s->start.pos.y ) * 0.99f;
-                s->start.pos.z += ( v->start.pos.z - s->start.pos.z ) * 0.99f;
-                s->start.pos.w = v->start.pos.w;
-                
-                s->end.pos.x += ( v->end.pos.x - s->end.pos.x ) * 0.25f;
-                s->end.pos.y += ( v->end.pos.y - s->end.pos.y ) * 0.25f;
-                s->end.pos.z += ( v->end.pos.z - s->end.pos.z ) * 0.25f;
-                s->end.pos.w = v->end.pos.w;
+                s->pos.x += ( v->pos.x - s->pos.x ) * 0.25f;
+                s->pos.y += ( v->pos.y - s->pos.y ) * 0.25f;
+                s->pos.z += ( v->pos.z - s->pos.z ) * 0.25f;
             }
         }
         
@@ -395,17 +389,8 @@ namespace dragonpoop
             v = &vp[ vi ];
             b = *v;
             s = &vp[ vi ];
-            
-            b.start.pos.x = s->start.pos.x * r_start + s->end.pos.x * r_end;
-            b.start.pos.y = s->start.pos.y * r_start + s->end.pos.y * r_end;
-            b.start.pos.z = s->start.pos.z * r_start + s->end.pos.z * r_end;
-            b.start.pos.w = s->start.pos.w * r_start + s->end.pos.w * r_end;
-            
-            b.start.normal.x = v->start.normal.x * r_start + v->end.normal.x * r_end;
-            b.start.normal.y = v->start.normal.y * r_start + v->end.normal.y * r_end;
-            b.start.normal.z = v->start.normal.z * r_start + v->end.normal.z * r_end;
-            b.start.normal.w = v->start.normal.w * r_start + v->end.normal.w * r_end;
-            
+
+            b = *s;
             nvb.addVertex( &b );
         }
         vp = nvb.getBuffer();
@@ -435,9 +420,9 @@ namespace dragonpoop
 
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
 
-        glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->start.texcoords[ 0 ] );
-        glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->start.normal );
-        glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->start.pos );
+        glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
+        glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
+        glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
         glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
 
     }

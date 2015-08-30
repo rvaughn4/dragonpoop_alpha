@@ -53,18 +53,6 @@ namespace dragonpoop
         this->t->getComponentsByParents( mtype, p1, p2, l );
     }
     
-    //find vertex
-    model_instance_vertex *model_instance_readlock::findVertex( dpid id )
-    {
-        return this->t->findVertex( id );
-    }
-    
-    //get vertexes
-    void model_instance_readlock::getVertexes( std::list<model_instance_vertex *> *l )
-    {
-        this->t->getVertexes( l );
-    }
-    
     //find group
     model_instance_group *model_instance_readlock::findGroup( dpid id )
     {
@@ -75,30 +63,6 @@ namespace dragonpoop
     void model_instance_readlock::getGroups( std::list<model_instance_group *> *l )
     {
         this->t->getGroups( l );
-    }
-    
-    //find triangle vertex
-    model_instance_triangle_vertex *model_instance_readlock::findTriangleVertex( dpid id )
-    {
-        return this->t->findTriangleVertex( id );
-    }
-    
-    //find triangle vertex
-    model_instance_triangle_vertex *model_instance_readlock::findTriangleVertex( dpid triangle_id, dpid vertex_id )
-    {
-        return this->t->findTriangleVertex( triangle_id, vertex_id );
-    }
-    
-    //get triangle vertexes
-    void model_instance_readlock::getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l )
-    {
-        this->t->getTriangleVertexes( l );
-    }
-    
-    //get triangle vertexes by triangle or vertex id
-    void model_instance_readlock::getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid )
-    {
-        this->t->getTriangleVertexes( l, pid );
     }
 
     //populate vertex buffer for rendering
@@ -117,6 +81,12 @@ namespace dragonpoop
     void model_instance_readlock::getAnimations( std::list<model_instance_animation *> *l )
     {
         this->t->getAnimations( l );
+    }
+    
+    //sync
+    void model_instance_readlock::sync( void )
+    {
+        this->t->sync();
     }
     
 };

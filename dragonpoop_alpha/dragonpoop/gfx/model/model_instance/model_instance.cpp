@@ -6,9 +6,6 @@
 #include "../../../core/core.h"
 #include "model_instance_animation/model_instance_animation.h"
 #include "model_instance_group/model_instance_group.h"
-#include "model_instance_triangle_vertex/model_instance_triangle_vertex.h"
-#include "model_instance_vertex/model_instance_vertex.h"
-#include "model_instance_triangle/model_instance_triangle.h"
 #include "../model_writelock.h"
 #include "../model_ref.h"
 #include "../../../core/dpbtree/dpid_btree.h"
@@ -29,6 +26,9 @@
 #include "../model_frame/model_frame.h"
 #include "../model_frame_joint/model_frame_joint.h"
 #include "../model_vertex_joint/model_vertex_joint.h"
+#include "../model_group_triangle/model_group_triangle.h"
+#include "../model_triangle_vertex/model_triangle_vertex.h"
+#include "../model_vertex/model_vertex.h"
 #include "../../dpmatrix/dpmatrix.h"
 #include <random>
 #include <iostream>
@@ -44,7 +44,8 @@ namespace dragonpoop
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
         this->t_frame_time = 500;
-        this->sync( ml, 0 );
+        this->bIsSynced = 0;
+        this->j_ctr = 0;
     }
     
     //dtor
@@ -108,6 +109,12 @@ namespace dragonpoop
         uint64_t t;
         
         t = thd->getTicks();
+        if( !this->bIsSynced )
+        {
+            this->dosync( g, m, t );
+            this->bIsSynced = 1;
+        }
+        
         if( t - this->t_last_animate > this->t_frame_time / 2 )
         {
             this->animate( g, m, t );
@@ -211,28 +218,7 @@ namespace dragonpoop
         this->comps.byowner.removeLeaf( c );
         this->comps.bytype.removeLeaf( c );
     }
-    
-    //add vertex
-    model_instance_vertex *model_instance::makeVertex( model_vertex *v )
-    {
-        model_instance_vertex *c;
-        c = new model_instance_vertex( v );
-        this->addComponent( c );
-        return c;
-    }
-    
-    //find vertex
-    model_instance_vertex *model_instance::findVertex( dpid id )
-    {
-        return (model_instance_vertex *)this->findComponent( model_component_type_vertex, id );
-    }
-    
-    //get vertexes
-    void model_instance::getVertexes( std::list<model_instance_vertex *> *l )
-    {
-        this->getComponents( model_component_type_vertex, (std::list<model_component *> *)l );
-    }
-    
+
     //add group
     model_instance_group *model_instance::makeGroup( model_group *g )
     {
@@ -252,105 +238,6 @@ namespace dragonpoop
     void model_instance::getGroups( std::list<model_instance_group *> *l )
     {
         this->getComponents( model_component_type_group, (std::list<model_component *> *)l );
-    }
-    
-    //add triangle vertex
-    model_instance_triangle_vertex *model_instance::makeTriangleVertex( model_triangle_vertex *v )
-    {
-        model_instance_triangle_vertex *c;
-        c = new model_instance_triangle_vertex( v );
-        this->addComponent( c, v->getTriangleId(), v->getVertexId() );
-        return c;
-    }
-    
-    //find triangle vertex
-    model_instance_triangle_vertex *model_instance::findTriangleVertex( dpid id )
-    {
-        return (model_instance_triangle_vertex *)this->findComponent( model_component_type_triangle_vertex, id );
-    }
-    
-    //find triangle vertex
-    model_instance_triangle_vertex *model_instance::findTriangleVertex( dpid triangle_id, dpid vertex_id )
-    {
-        std::list<model_instance_triangle_vertex *> l;
-        
-        this->getComponentsByParents( model_component_type_triangle_vertex, triangle_id, vertex_id, (std::list<model_component *> *)&l );
-        
-        if( l.size() < 1 )
-            return 0;
-        return l.front();
-    }
-    
-    //get triangle vertexes
-    void model_instance::getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l )
-    {
-        this->getComponents( model_component_type_triangle_vertex, (std::list<model_component *> *)l );
-    }
-    
-    //get triangle vertexes by triangle or vertex id
-    void model_instance::getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid )
-    {
-        this->getComponentsByParent( model_component_type_triangle_vertex, pid, (std::list<model_component *> *)l );
-    }
-    
-    //make verts
-    void model_instance::makeVertexes( model_writelock *ml )
-    {
-        std::list<model_vertex *> l;
-        std::list<model_vertex *>::iterator i;
-        model_vertex *p;
-        std::list<model_instance_vertex *> li;
-        std::list<model_instance_vertex *>::iterator ii;
-        model_instance_vertex *pi;
-        dpid_btree t;
-        
-        this->getVertexes( &li );
-        
-        for( ii = li.begin(); ii != li.end(); ++ii )
-        {
-            pi = *ii;
-            t.addLeaf( pi->getId(), pi );
-        }
-        
-        ml->getVertexes( &l );
-        
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            if( t.findLeaf( p->getId() ) )
-                continue;
-            this->makeVertex( p );
-        }
-    }
-    
-    //make triangle verts
-    void model_instance::makeTriangleVertexes( model_writelock *ml )
-    {
-        std::list<model_triangle_vertex *> l;
-        std::list<model_triangle_vertex *>::iterator i;
-        model_triangle_vertex *p;
-        std::list<model_instance_triangle_vertex *> li;
-        std::list<model_instance_triangle_vertex *>::iterator ii;
-        model_instance_triangle_vertex *pi;
-        dpid_btree t;
-        
-        this->getTriangleVertexes( &li );
-        
-        for( ii = li.begin(); ii != li.end(); ++ii )
-        {
-            pi = *ii;
-            t.addLeaf( pi->getId(), pi );
-        }
-        
-        ml->getTriangleVertexes( &l );
-        
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            if( t.findLeaf( p->getId() ) )
-                continue;
-            this->makeTriangleVertex( p );
-        }
     }
     
     //make groups
@@ -383,17 +270,21 @@ namespace dragonpoop
     }
     
     //sync
-    void model_instance::sync( model_writelock *ml, uint64_t tms )
+    void model_instance::sync( void )
+    {
+        this->bIsSynced = 0;
+    }
+
+    //sync
+    void model_instance::dosync( model_instance_writelock *mi, model_writelock *ml, uint64_t tms )
     {
         shared_obj_guard o;
         renderer_model_instance_readlock *rl;
 
         this->makeAnimations( ml );
         this->makeJoints( ml );
-        this->makeVertexes( ml );
-        this->makeTriangleVertexes( ml );
-        this->makeTriangles( ml );
         this->makeGroups( ml );
+        this->redoMesh( mi, ml );
         
         if( !this->r )
             return;
@@ -412,7 +303,6 @@ namespace dragonpoop
         this->t_end = tms + this->t_frame_time;
         this->t_start = tms;
         this->redoAnim( ml );
-        this->redoMesh( mi, ml );
         
         if( !this->r )
             return;
@@ -436,75 +326,6 @@ namespace dragonpoop
         if( !rl )
             return;
         this->r = (renderer_model_instance_ref *)rl->getRef();
-    }
-    
-    //add triangle
-    model_instance_triangle *model_instance::makeTriangle( model_group_triangle *gt )
-    {
-        model_instance_triangle *c;
-        c = new model_instance_triangle( gt );
-        this->addComponent( c, gt->getGroupId(), gt->getTriangleId() );
-        return c;
-    }
-    
-    //find triangle
-    model_instance_triangle *model_instance::findTriangle( dpid id )
-    {
-        return (model_instance_triangle *)this->findComponent( model_component_type_triangle, id );
-    }
-    
-    //find triangle
-    model_instance_triangle *model_instance::findTriangle( dpid group_id, dpid triangle_id )
-    {
-        std::list<model_instance_triangle *> l;
-        
-        this->getComponentsByParents( model_component_type_triangle, group_id, triangle_id, (std::list<model_component *> *)&l );
-        
-        if( l.size() < 1 )
-            return 0;
-        return l.front();
-    }
-    
-    //get triangles
-    void model_instance::getTriangles( std::list<model_instance_triangle *> *l )
-    {
-        this->getComponents( model_component_type_triangle, (std::list<model_component *> *)l );
-    }
-    
-    //get triangles by triangle or group id
-    void model_instance::getTriangles( std::list<model_instance_triangle *> *l, dpid pid )
-    {
-        this->getComponentsByParent( model_component_type_triangle, pid, (std::list<model_component *> *)l );
-    }
-
-    //make triangles
-    void model_instance::makeTriangles( model_writelock *ml )
-    {
-        std::list<model_group_triangle *> l;
-        std::list<model_group_triangle *>::iterator i;
-        model_group_triangle *p;
-        std::list<model_instance_triangle *> li;
-        std::list<model_instance_triangle *>::iterator ii;
-        model_instance_triangle *pi;
-        dpid_btree t;
-        
-        this->getTriangles( &li );
-        
-        for( ii = li.begin(); ii != li.end(); ++ii )
-        {
-            pi = *ii;
-            t.addLeaf( pi->getId(), pi );
-        }
-        
-        ml->getGroupTriangles( &l );
-        
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            if( t.findLeaf( p->getId() ) )
-                continue;
-            this->makeTriangle( p );
-        }
     }
     
     //add animation
@@ -563,6 +384,8 @@ namespace dragonpoop
     {
         model_instance_joint *c;
         c = new model_instance_joint( g );
+        c->setIndex( this->j_ctr );
+        this->j_ctr++;
         this->addComponent( c );
         return c;
     }
@@ -650,11 +473,11 @@ namespace dragonpoop
         g->setEndTime( this->t_end );
         
         tcnt = 0;
-        this->getTriangles( (std::list<model_instance_triangle *> *)&l );
+        m->getGroupTriangles( (std::list<model_group_triangle *> *)&l );
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            this->redoMesh( mi, m, &b, (model_instance_triangle *)p );
+            this->redoMesh( mi, m, &b, (model_group_triangle *)p );
             tcnt++;
             if( tcnt > 15 )
             {
@@ -668,13 +491,13 @@ namespace dragonpoop
     }
     
     //redo triangle mesh
-    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_instance_triangle *t )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_group_triangle *t )
     {
-        std::list<model_instance_triangle_vertex *> l;
-        std::list<model_instance_triangle_vertex *>::iterator i;
-        model_instance_triangle_vertex *p;
+        std::list<model_triangle_vertex *> l;
+        std::list<model_triangle_vertex *>::iterator i;
+        model_triangle_vertex *p;
         
-        this->getTriangleVertexes( &l, t->getTriangleId() );
+        m->getTriangleVertexes( &l, t->getTriangleId() );
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
@@ -683,62 +506,39 @@ namespace dragonpoop
     }
     
     //redo vertex mesh
-    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_instance_triangle_vertex *tv )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, dpvertexindex_buffer *vb, model_triangle_vertex *tv )
     {
-        model_instance_vertex *p;
+        model_vertex *p;
         dpvertex vt;
-        float rs, re, td, tt;
         
-        p = this->findVertex( tv->getVertexId() );
+        p = m->findVertex( tv->getVertexId() );
         if( !p )
             return;
         
-        td = p->getEndTime() - p->getStartTime();
-        tt = this->t_start - p->getStartTime();
-        if( tt > td )
-            tt = td;
-        if( td > 0 )
-            re = tt / td;
-        else
-            re = 0;
-        rs = 1.0f - re;
-        
-        tv->getNormal( &vt.start.normal );
-        tv->getTexCoord0( &vt.start.texcoords[ 0 ] );
-        tv->getTexCoord1( &vt.start.texcoords[ 1 ] );
-        tv->getNormal( &vt.end.normal );
-        tv->getTexCoord0( &vt.end.texcoords[ 0 ] );
-        tv->getTexCoord1( &vt.end.texcoords[ 1 ] );
-        p->getStartPosition( &vt.start.pos );
-        p->getEndPosition( &vt.end.pos );
-        vt.start.pos.x = rs * vt.start.pos.x + re * vt.end.pos.x;
-        vt.start.pos.y = rs * vt.start.pos.y + re * vt.end.pos.y;
-        vt.start.pos.z = rs * vt.start.pos.z + re * vt.end.pos.z;
-        vt.start.pos.w = rs * vt.start.pos.w + re * vt.end.pos.w;
-        p->setStartPosition( &vt.start.pos );
-        p->setStartTime( this->t_start );
-        p->setEndTime( this->t_end );
-        p->getPosition( &vt.end.pos );
+        tv->getNormal( &vt.normal );
+        tv->getTexCoord0( &vt.texcoords[ 0 ] );
+        tv->getTexCoord1( &vt.texcoords[ 1 ] );
+        p->getPosition( &vt.pos );
 
-        this->redoMesh( mi, m, tv, &vt.end.pos, &vt.end.normal );
-        p->setEndPosition( &vt.end.pos );
-        
+        this->redoMesh( mi, m, tv, &vt );
         
         vb->addVertexUnique( &vt );
     }
     
     //redo vertex mesh, transform using joints
-    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, dpvertex *v )
     {
         std::list<model_vertex_joint *> l;
         std::list<model_vertex_joint *>::iterator i;
         model_vertex_joint *vj;
-        dpxyzw apos, anorm, p, n;
-        float a, w;
+        float w;
+        unsigned int vi, vs;
         
-        memset( &apos, 0, sizeof( apos ) );
-        memset( &anorm, 0, sizeof( anorm ) );
-        a = 0;
+        vs = dpvertex_bones_size;
+        for( vi = 0; vi < vs; vi++ )
+        {
+            v->bones[ vi ].id = -1;
+        }
         
         m->getVertexJoints( &l, tv->getVertexId() );
         
@@ -750,52 +550,44 @@ namespace dragonpoop
             if( w < 0.001f )
                 continue;
             
-            p = *pos;
-            n = *norm;
-            this->redoMesh( mi, m, tv, vj, &p, &n );
-            
-            a += w;
-
-            apos.x += w * p.x;
-            apos.y += w * p.y;
-            apos.z += w * p.z;
-            apos.w += w * p.w;
-
-            anorm.x += w * n.x;
-            anorm.y += w * n.y;
-            anorm.z += w * n.z;
-            anorm.w += w * n.w;
+            this->redoMesh( mi, m, tv, vj, v );
         }
-        
-        if( a < 0.001f )
-            return;
-        
-        pos->x = apos.x / a;
-        pos->y = apos.y / a;
-        pos->z = apos.z / a;
-        pos->w = apos.w / a;
-        
-        norm->x = anorm.x / a;
-        norm->y = anorm.y / a;
-        norm->z = anorm.z / a;
-        norm->w = anorm.w / a;
-        
+
+        w = 0;
+        for( vi = 0; vi < vs; vi++ )
+        {
+            if( v->bones[ vi ].id < 0 )
+                continue;
+            w += v->bones[ vi ].w;
+        }
+        if( w <= 0 )
+            w = 1.0f;
+        for( vi = 0; vi < vs; vi++ )
+        {
+            if( v->bones[ vi ].id < 0 )
+                continue;
+            v->bones[ vi ].w /= w;
+        }
     }
     
     //redo vertex mesh, transform using joints
-    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, model_vertex_joint *vj, dpxyzw *pos, dpxyzw *norm )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, model_vertex_joint *vj, dpvertex *v )
     {
         model_instance_joint *j;
-
+        unsigned int vi, vs;
+        
         j = this->findJoint( vj->getJointId() );
         if( !j )
-        {
-            pos->x = pos->y = pos->z = 0;
             return;
-        }
         
-        j->transform( mi, pos );
-        j->transform( mi, norm );
+        vs = dpvertex_bones_size;
+        for( vi = 0; vi < vs; vi++ )
+        {
+            if( v->bones[ vi ].id >= 0 )
+                continue;
+            v->bones[ vi ].id = j->getIndex();
+            v->bones[ vi ].w = vj->getWeight();
+        }
     }
     
     //redo animation

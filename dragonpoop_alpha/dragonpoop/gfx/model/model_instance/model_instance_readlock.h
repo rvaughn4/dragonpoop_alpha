@@ -11,9 +11,7 @@ namespace dragonpoop
     class model_instance;
     class core;
     class model_component;
-    class model_instance_vertex;
     class model_instance_group;
-    class model_instance_triangle_vertex;
     class dpvertexindex_buffer;
     class model_instance_animation;
     
@@ -45,28 +43,18 @@ namespace dragonpoop
         void getComponentsByParent( uint16_t mtype, dpid p1, std::list<model_component *> *l );
         //find components by type and 2 parents
         void getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l );
-        //find vertex
-        model_instance_vertex *findVertex( dpid id );
-        //get vertexes
-        void getVertexes( std::list<model_instance_vertex *> *l );
         //find group
         model_instance_group *findGroup( dpid id );
         //get groups
         void getGroups( std::list<model_instance_group *> *l );
-        //find triangle vertex
-        model_instance_triangle_vertex *findTriangleVertex( dpid id );
-        //find triangle vertex
-        model_instance_triangle_vertex *findTriangleVertex( dpid triangle_id, dpid vertex_id );
-        //get triangle vertexes
-        void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l );
-        //get triangle vertexes by triangle or vertex id
-        void getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid );
         //populate vertex buffer for rendering
         void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
         //find animation
         model_instance_animation *findAnimation( dpid id );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
+        //sync
+        void sync( void );
         
         friend class model_instance;
     };

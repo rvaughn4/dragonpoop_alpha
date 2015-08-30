@@ -86,8 +86,6 @@ namespace dragonpoop
         void transform( dpxyzw_f *p );
         //transform
         void transform( dpxyz_f *p );
-        //transform
-        void transform( dpvertex_unit *p );
         //inverse transform
         void itransform( float *px, float *py, float *pz, float *pw );
         //inverse transform
@@ -96,8 +94,6 @@ namespace dragonpoop
         void itransform( dpxyzw_f *p );
         //inverse transform
         void itransform( dpxyz_f *p );
-        //inverse transform
-        void itransform( dpvertex_unit *p );
 
         
         //rotate ( Z * Y ) * X

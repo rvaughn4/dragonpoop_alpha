@@ -38,4 +38,20 @@ namespace dragonpoop
         this->f.sv.z = z;
     }
     
+    //set position
+    void model_vector::setPosition( dpxyz_f *p )
+    {
+        this->f.sv.x = p->x;
+        this->f.sv.y = p->y;
+        this->f.sv.z = p->z;
+    }
+    
+    //get position
+    void model_vector::getPosition( dpxyz_f *p )
+    {
+        p->x = this->f.sv.x;
+        p->y = this->f.sv.y;
+        p->z = this->f.sv.z;
+    }
+    
 };

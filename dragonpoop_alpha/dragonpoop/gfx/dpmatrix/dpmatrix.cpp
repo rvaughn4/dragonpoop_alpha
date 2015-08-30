@@ -331,13 +331,6 @@ namespace dragonpoop
         this->transform( &p->x, &p->y, &p->z, 0 );
     }
 
-    //transform
-    void dpmatrix::transform( dpvertex_unit *p )
-    {
-        this->transform( &p->normal );
-        this->transform( &p->pos );
-    }
-
     //inverse transform
     void dpmatrix::itransform( float *px, float *py, float *pz, float *pw )
     {
@@ -390,13 +383,6 @@ namespace dragonpoop
     void dpmatrix::itransform( dpxyz_f *p )
     {
         this->itransform( &p->x, &p->y, &p->z, 0 );
-    }
-    
-    //inverse transform
-    void dpmatrix::itransform( dpvertex_unit *p )
-    {
-        this->itransform( &p->normal );
-        this->itransform( &p->pos );
     }
     
     //rotate ( Z * Y ) * X

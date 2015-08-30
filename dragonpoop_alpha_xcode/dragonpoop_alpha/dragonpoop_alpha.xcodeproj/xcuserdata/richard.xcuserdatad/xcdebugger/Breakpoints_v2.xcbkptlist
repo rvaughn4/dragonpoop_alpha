@@ -74,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462501933.702455"
+            timestampString = "462623409.522375"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "921"
-            endingLineNumber = "921"
+            startingLineNumber = "713"
+            endingLineNumber = "713"
             landmarkName = "model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyzw *atrans, dpxyzw *arot )"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,11 +90,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462501933.702455"
+            timestampString = "462623409.522375"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "809"
-            endingLineNumber = "809"
+            startingLineNumber = "601"
+            endingLineNumber = "601"
             landmarkName = "model_instance::redoAnim( model_writelock *m )"
             landmarkType = "5">
          </BreakpointContent>
@@ -106,60 +106,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462357910.30301"
+            timestampString = "462623409.522375"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "776"
-            endingLineNumber = "776"
-            landmarkName = "model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm )"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462357910.30301"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "761"
-            endingLineNumber = "761"
-            landmarkName = "model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm )"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462357910.30301"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "739"
-            endingLineNumber = "739"
-            landmarkName = "model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm )"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462357910.30301"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "745"
-            endingLineNumber = "745"
-            landmarkName = "model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm )"
+            startingLineNumber = "545"
+            endingLineNumber = "545"
+            landmarkName = "model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, dpvertex *v )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -186,12 +138,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "462357910.30301"
+            timestampString = "462623409.522375"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "750"
-            endingLineNumber = "750"
-            landmarkName = "model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_instance_triangle_vertex *tv, dpxyzw *pos, dpxyzw *norm )"
+            startingLineNumber = "550"
+            endingLineNumber = "550"
+            landmarkName = "model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, dpvertex *v )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

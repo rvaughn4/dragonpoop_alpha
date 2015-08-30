@@ -53,18 +53,6 @@ namespace dragonpoop
         this->t->getComponentsByParents( mtype, p1, p2, l );
     }
     
-    //find vertex
-    model_instance_vertex *model_instance_writelock::findVertex( dpid id )
-    {
-        return this->t->findVertex( id );
-    }
-    
-    //get vertexes
-    void model_instance_writelock::getVertexes( std::list<model_instance_vertex *> *l )
-    {
-        this->t->getVertexes( l );
-    }
-    
     //find group
     model_instance_group *model_instance_writelock::findGroup( dpid id )
     {
@@ -77,30 +65,6 @@ namespace dragonpoop
         this->t->getGroups( l );
     }
     
-    //find triangle vertex
-    model_instance_triangle_vertex *model_instance_writelock::findTriangleVertex( dpid id )
-    {
-        return this->t->findTriangleVertex( id );
-    }
-    
-    //find triangle vertex
-    model_instance_triangle_vertex *model_instance_writelock::findTriangleVertex( dpid triangle_id, dpid vertex_id )
-    {
-        return this->t->findTriangleVertex( triangle_id, vertex_id );
-    }
-    
-    //get triangle vertexes
-    void model_instance_writelock::getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l )
-    {
-        this->t->getTriangleVertexes( l );
-    }
-    
-    //get triangle vertexes by triangle or vertex id
-    void model_instance_writelock::getTriangleVertexes( std::list<model_instance_triangle_vertex *> *l, dpid pid )
-    {
-        this->t->getTriangleVertexes( l, pid );
-    }
-
     //run model from task
     void model_instance_writelock::run( dpthread_lock *thd, model_writelock *m )
     {
@@ -108,9 +72,9 @@ namespace dragonpoop
     }
     
     //sync
-    void model_instance_writelock::sync( model_writelock *ml, uint64_t tms )
+    void model_instance_writelock::sync( void )
     {
-        this->t->sync( ml, tms );
+        this->t->sync();
     }
 
     //set renderer model

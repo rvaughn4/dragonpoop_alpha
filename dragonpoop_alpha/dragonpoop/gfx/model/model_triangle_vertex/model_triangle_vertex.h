@@ -3,8 +3,9 @@
 #define dragonpoop_model_triangle_vertex_h
 
 #include "../model_component/model_components.h"
-#include "../../dpvertex/dpxyzw.h"
-#include "../../dpvertex/dpst.h"
+#include "../../dpvertex/dpxyz_f.h"
+#include "../../dpvertex/dpst_f.h"
+#include "../model_matrix/model_vector.h"
 
 namespace dragonpoop
 {
@@ -15,8 +16,8 @@ namespace dragonpoop
     private:
 
         dpid v_id, t_id;
-        dpxyzw norm;
-        dpst texcoords0, texcoords1;
+        dpxyz_f norm;
+        dpst_f texcoords0, texcoords1;
 
     protected:
 
@@ -31,17 +32,21 @@ namespace dragonpoop
         //get vertex id
         dpid getVertexId( void );
         //set normals
-        void setNormal( dpxyzw *x );
+        void setNormal( dpxyz_f *x );
         //get normals
-        void getNormal( dpxyzw *x );
+        void getNormal( dpxyz_f *x );
+        //set normals
+        void setNormal( model_vector *v );
+        //get normals
+        void getNormal( model_vector *v );
         //set texcoord0
-        void setTexCoord0( dpst *x );
+        void setTexCoord0( dpst_f *x );
         //get texcoord0
-        void getTexCoord0( dpst *x );
+        void getTexCoord0( dpst_f *x );
         //set texcoord1
-        void setTexCoord1( dpst *x );
+        void setTexCoord1( dpst_f *x );
         //get texcoord1
-        void getTexCoord1( dpst *x );
+        void getTexCoord1( dpst_f *x );
         //returns true if has parent
         virtual bool hasParent( dpid id );
 

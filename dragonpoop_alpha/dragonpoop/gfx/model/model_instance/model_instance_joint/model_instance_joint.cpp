@@ -125,4 +125,16 @@ namespace dragonpoop
         this->isChained = 1;
     }
     
+    //set joint index
+    void model_instance_joint::setIndex( int16_t i )
+    {
+        this->index = i;
+    }
+    
+    //get joint index
+    int16_t model_instance_joint::getIndex( void )
+    {
+        return this->index;
+    }
+    
 };

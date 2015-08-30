@@ -17,15 +17,27 @@ namespace dragonpoop
     }
 
     //get position
-    void model_vertex::getPosition( dpxyzw *x )
+    void model_vertex::getPosition( dpxyz_f *x )
     {
         *x = this->x;
     }
 
     //set position
-    void model_vertex::setPosition( dpxyzw *x )
+    void model_vertex::setPosition( dpxyz_f *x )
     {
         this->x = *x;
     }
 
+    //set position
+    void model_vertex::setPosition( model_vector *v )
+    {
+        v->getPosition( &this->x );
+    }
+    
+    //get position
+    void model_vertex::getPosition( model_vector *v )
+    {
+        v->setPosition( &this->x );
+    }
+    
 };

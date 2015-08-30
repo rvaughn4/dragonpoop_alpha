@@ -78,8 +78,8 @@ namespace dragonpoop
         ms3d_model_vertex_m *v;
         model_loader_ms3d *ldr;
         std::vector<ms3d_model_vertex_m> *vz;
-        dpxyzw x;
-        dpst s;
+        dpxyz_f x;
+        dpst_f s;
         
         ldr = (model_loader_ms3d *)ml->getLoader();
         vz = ldr->verts;
@@ -93,7 +93,6 @@ namespace dragonpoop
         x.x = t->f.normals[ vid ].x;
         x.y = t->f.normals[ vid ].y;
         x.z = t->f.normals[ vid ].z;
-        x.w = 1;
         tv->setNormal( &x );
         
         s.s = t->f.s[ vid ];

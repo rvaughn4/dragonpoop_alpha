@@ -2,6 +2,8 @@
 #ifndef dragonpoop_model_vector_h
 #define dragonpoop_model_vector_h
 
+#include "../../dpvertex/dpxyz_f.h"
+
 namespace dragonpoop
 {
     
@@ -41,6 +43,10 @@ namespace dragonpoop
         void setIdentity( void );
         //set position
         void setPosition( float x, float y, float z );
+        //set position
+        void setPosition( dpxyz_f *p );
+        //get position
+        void getPosition( dpxyz_f *p );
         
     };
     
