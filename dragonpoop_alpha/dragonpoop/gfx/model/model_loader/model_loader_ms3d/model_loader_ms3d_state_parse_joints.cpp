@@ -74,6 +74,7 @@ namespace dragonpoop
         {
             if( !b->readBytes( (uint8_t *)&k, sizeof( k ) ) )
                 return 0;
+            
             l->push_back( k );
         }
 

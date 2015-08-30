@@ -99,15 +99,17 @@ namespace dragonpoop
             j->redoMatrixUp( m, t );
         }
         
-        t->translate( -this->pos.x, -this->pos.y, -this->pos.z );
-        t->rotateXrad( -this->rot.x );
-        t->rotateYrad( -this->rot.y );
         t->rotateZrad( -this->rot.z );
+        t->rotateYrad( -this->rot.y );
+        t->rotateXrad( -this->rot.x );
+        t->translate( -this->pos.x, -this->pos.y, -this->pos.z );
         
         t->translate( -this->apos.x, -this->apos.y, -this->apos.z );
-        t->rotateXrad( this->arot.x );
+        t->rotateZrad( this->arot.x );
         t->rotateYrad( this->arot.y );
-        t->rotateZrad( this->arot.z );
+        t->rotateXrad( this->arot.z );
+        t->translate( this->apos.x, this->apos.y, this->apos.z );
+        
     }
     
     //redo matrix
@@ -119,12 +121,10 @@ namespace dragonpoop
         if( !dpid_isZero( &this->parent_id ) )
             j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
         
-        t->translate( this->apos.x, this->apos.y, this->apos.z );
-        
-        t->rotateZrad( this->rot.z );
-        t->rotateYrad( this->rot.y );
-        t->rotateXrad( this->rot.x );
         t->translate( this->pos.x, this->pos.y, this->pos.z );
+        t->rotateXrad( this->rot.x );
+        t->rotateYrad( this->rot.y );
+        t->rotateZrad( this->rot.z );
 
         if( j )
             j->redoMatrixDown( m, t );
