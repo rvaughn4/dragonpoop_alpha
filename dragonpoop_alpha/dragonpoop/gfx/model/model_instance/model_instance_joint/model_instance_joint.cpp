@@ -1,6 +1,7 @@
 
 #include "model_instance_joint.h"
 #include "../model_instance_writelock.h"
+#include "../../model_matrix/model_vector.h"
 
 namespace dragonpoop
 {
@@ -9,10 +10,16 @@ namespace dragonpoop
     model_instance_joint::model_instance_joint( model_joint *j ) : model_component( j->getId(), model_component_type_joint )
     {
         std::string s;
+        model_vector v;
         
         j->getPosition( &this->pos );
         j->getRotation( &this->rot );
         this->parent_id = j->getParent();
+        
+        v.setPosition( &this->rot );
+        this->local_bone.setAngle( &v );
+        v.setPosition( &this->pos );
+        this->local_bone.setPosition( &v );
         
         j->getName( &s );
         this->setName( &s );
@@ -25,62 +32,44 @@ namespace dragonpoop
     }
     
     //set position
-    void model_instance_joint::setPosition( dpxyzw *x )
+    void model_instance_joint::setPosition( dpxyz_f *x )
     {
         this->pos = *x;
     }
     
     //get position
-    void model_instance_joint::getPosition( dpxyzw *x )
+    void model_instance_joint::getPosition( dpxyz_f *x )
     {
         x->x = this->pos.x + this->apos.x;
         x->y = this->pos.y + this->apos.y;
         x->z = this->pos.z + this->apos.z;
-        x->w = this->pos.w + this->apos.w;
     }
     
     //set rotation
-    void model_instance_joint::setRotation( dpxyzw *x )
+    void model_instance_joint::setRotation( dpxyz_f *x )
     {
         this->rot = *x;
     }
     
     //get rotation
-    void model_instance_joint::getRotation( dpxyzw *x )
+    void model_instance_joint::getRotation( dpxyz_f *x )
     {
         x->x = this->rot.x + this->arot.x;
         x->y = this->rot.y + this->arot.y;
         x->z = this->rot.z + this->arot.z;
-        x->w = this->rot.w + this->arot.w;
     }
     
     //set animation position
-    void model_instance_joint::setAnimationPosition( dpxyzw *x )
+    void model_instance_joint::setAnimationPosition( dpxyz_f *x )
     {
         this->arot = *x;
     }
     
     //set animation rotation
-    void model_instance_joint::setAnimationRotation( dpxyzw *x )
+    void model_instance_joint::setAnimationRotation( dpxyz_f *x )
     {
         this->apos = *x;
     }
-    
-    //transform using matrix
-    void model_instance_joint::transform( model_instance_writelock *m, dpxyzw *x )
-    {
-        this->redoMatrix( m );
-/*
-        x->x -= this->global_bone.x;
-        x->y -= this->global_bone.y;
-        x->z -= this->global_bone.z;
-  */
-        this->global.transform( x );
-/*
-        x->x += this->global_bone.x;
-        x->y += this->global_bone.y;
-        x->z += this->global_bone.z;
-  */  }
     
     //reset matrix
     void model_instance_joint::reset( void )
@@ -92,15 +81,15 @@ namespace dragonpoop
     void model_instance_joint::redoMatrix( model_instance_writelock *m )
     {
         model_instance_joint *j;
+        model_vector v;
         
         if( this->isChained )
             return;
         
-        this->global_bone = this->pos;
-        
-        this->local.setIdentity();
-        this->local.rotateRad( this->arot.x, this->arot.y, this->arot.z );
-        this->local.translate( this->apos.x, this->apos.y, this->apos.z );
+        v.setPosition( &this->arot );
+        this->local.setAngle( &v );
+        v.setPosition( &this->apos );
+        this->local.setPosition( &v );
         
         j = 0;
         if( !dpid_isZero( &this->parent_id ) )
@@ -108,19 +97,11 @@ namespace dragonpoop
         if( !j )
         {
             this->isChained = 1;
-            this->global.copy( &this->local );
             return;
         }
 
         j->redoMatrix( m );
         
-        this->global.setIdentity();
-        this->global.multiply( &j->global );
-        this->global.multiply( &this->local );
-
-        this->global_bone.x += j->global_bone.x;
-        this->global_bone.y += j->global_bone.y;
-        this->global_bone.z += j->global_bone.z;
         
         this->isChained = 1;
     }

@@ -45,7 +45,7 @@ namespace dragonpoop
         //set position from vector
         void setPosition( model_vector *v );
         //set angle from quaternion
-        void setAngle( model_quaternion *q );
+        void setAngle( model_vector *v );
         //transform vector
         void transform( model_vector *v );
         //inverse transform vector

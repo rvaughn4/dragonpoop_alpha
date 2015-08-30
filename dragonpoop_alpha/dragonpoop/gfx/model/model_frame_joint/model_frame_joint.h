@@ -3,7 +3,7 @@
 #define dragonpoop_model_frame_joint_h
 
 #include "../model_component/model_components.h"
-#include "../../dpvertex/dpxyzw.h"
+#include "../../dpvertex/dpxyz_f.h"
 
 namespace dragonpoop
 {
@@ -13,7 +13,7 @@ namespace dragonpoop
         
     private:
         
-        dpxyzw trans, rot;
+        dpxyz_f trans, rot;
         dpid frame_id, joint_id;
         
     protected:
@@ -29,13 +29,13 @@ namespace dragonpoop
         //return joint id
         dpid getJointId( void );
         //set rotation
-        void setRotation( dpxyzw *x );
+        void setRotation( dpxyz_f *x );
         //get rotation
-        void getRotation( dpxyzw *x );
+        void getRotation( dpxyz_f *x );
         //set translation
-        void setTranslation( dpxyzw *x );
+        void setTranslation( dpxyz_f *x );
         //get translation
-        void getTranslation( dpxyzw *x );
+        void getTranslation( dpxyz_f *x );
         
     };
     

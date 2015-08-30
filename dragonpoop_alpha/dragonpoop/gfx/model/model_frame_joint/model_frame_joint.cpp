@@ -30,25 +30,25 @@ namespace dragonpoop
     }
     
     //set rotation
-    void model_frame_joint::setRotation( dpxyzw *x )
+    void model_frame_joint::setRotation( dpxyz_f *x )
     {
         this->rot = *x;
     }
     
     //get rotation
-    void model_frame_joint::getRotation( dpxyzw *x )
+    void model_frame_joint::getRotation( dpxyz_f *x )
     {
         *x = this->rot;
     }
     
     //set translation
-    void model_frame_joint::setTranslation( dpxyzw *x )
+    void model_frame_joint::setTranslation( dpxyz_f *x )
     {
         this->trans = *x;
     }
     
     //get translation
-    void model_frame_joint::getTranslation( dpxyzw *x )
+    void model_frame_joint::getTranslation( dpxyz_f *x )
     {
         *x = this->trans;
     }

@@ -3,7 +3,7 @@
 #define dragonpoop_model_joint_h
 
 #include "../model_component/model_components.h"
-#include "../../dpvertex/dpxyzw.h"
+#include "../../dpvertex/dpxyz_f.h"
 
 namespace dragonpoop
 {
@@ -13,7 +13,7 @@ namespace dragonpoop
         
     private:
         
-        dpxyzw pos, rot;
+        dpxyz_f pos, rot;
         dpid parent_id;
         
     protected:
@@ -25,13 +25,13 @@ namespace dragonpoop
         //dtor
         virtual ~model_joint( void );
         //set position
-        void setPosition( dpxyzw *x );
+        void setPosition( dpxyz_f *x );
         //get position
-        void getPosition( dpxyzw *x );
+        void getPosition( dpxyz_f *x );
         //set rotation
-        void setRotation( dpxyzw *x );
+        void setRotation( dpxyz_f *x );
         //get rotation
-        void getRotation( dpxyzw *x );
+        void getRotation( dpxyz_f *x );
         //set parent
         void setParent( dpid id );
         //get parent

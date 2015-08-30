@@ -15,7 +15,7 @@ namespace dragonpoop
     struct ms3d_model_frame;
     class model_writelock;
     struct ms3d_model_joint_keyframe;
-    struct dpxyzw;
+    struct dpxyz_f;
     
     class model_loader_ms3d_state_make_frames : public model_loader_state
     {
@@ -39,7 +39,7 @@ namespace dragonpoop
         //make frame joints
         void makeFrameJoints( dpthread_lock *thd, model_loader_writelock *ml );
         //find xyz keyframe before and after time and interpolate
-        void getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyzw *x );
+        void getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x );
         
     public:
         

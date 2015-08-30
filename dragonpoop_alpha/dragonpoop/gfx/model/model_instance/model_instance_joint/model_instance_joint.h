@@ -3,7 +3,8 @@
 #define dragonpoop_model_instance_joint_h
 
 #include "../../model_joint/model_joint.h"
-#include "../../../dpmatrix/dpmatrix.h"
+#include "../../model_matrix/model_matrix.h"
+#include "../../../dpvertex/dpxyz_f.h"
 
 namespace dragonpoop
 {
@@ -15,18 +16,15 @@ namespace dragonpoop
         
     private:
         
-        dpxyzw pos, rot, apos, arot, global_bone;
-        dpmatrix local, global;
+        dpxyz_f pos, rot, apos, arot;
+        model_matrix local, global, local_bone, global_bone;
 
         bool isChained;
         dpid parent_id;
         int16_t index;
         
     protected:
-        
-        //redo matrix
-        void redoMatrix( model_instance_writelock *m );
-        
+       
     public:
         
         //ctor
@@ -34,26 +32,26 @@ namespace dragonpoop
         //dtor
         virtual ~model_instance_joint( void );
         //set position
-        void setPosition( dpxyzw *x );
+        void setPosition( dpxyz_f *x );
         //get position
-        void getPosition( dpxyzw *x );
+        void getPosition( dpxyz_f *x );
         //set rotation
-        void setRotation( dpxyzw *x );
+        void setRotation( dpxyz_f *x );
         //get rotation
-        void getRotation( dpxyzw *x );
+        void getRotation( dpxyz_f *x );
         //set animation position
-        void setAnimationPosition( dpxyzw *x );
+        void setAnimationPosition( dpxyz_f *x );
         //set animation rotation
-        void setAnimationRotation( dpxyzw *x );
-        //transform using matrix
-        void transform( model_instance_writelock *m, dpxyzw *x );
+        void setAnimationRotation( dpxyz_f *x );
         //reset matrix
         void reset( void );
         //set joint index
         void setIndex( int16_t i );
         //get joint index
         int16_t getIndex( void );
-
+        //redo matrix
+        void redoMatrix( model_instance_writelock *m );
+        
     };
     
 };

@@ -311,7 +311,7 @@ namespace dragonpoop
         
         this->t_end = tms + this->t_frame_time;
         this->t_start = tms;
-        this->redoAnim( ml );
+        this->redoAnim( mi, ml );
         
         if( !this->r )
             return;
@@ -590,7 +590,7 @@ namespace dragonpoop
     }
     
     //redo animation
-    void model_instance::redoAnim( model_writelock *m )
+    void model_instance::redoAnim( model_instance_writelock *mi, model_writelock *m )
     {
         std::list<model_component *> l;
         std::list<model_component *>::iterator i;
@@ -617,6 +617,12 @@ namespace dragonpoop
         {
             p = *i;
             this->redoAnim( m, (model_instance_joint *)p );
+        }
+
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            ( (model_instance_joint *)p )->redoMatrix( mi );
         }
     }
 
@@ -650,7 +656,7 @@ namespace dragonpoop
         std::list<model_instance_animation *> l;
         std::list<model_instance_animation *>::iterator i;
         model_instance_animation *p;
-        dpxyzw atrans, arot, trans, rot;
+        dpxyz_f atrans, arot, trans, rot;
         
         this->getAnimations( &l );
         
@@ -669,12 +675,10 @@ namespace dragonpoop
             atrans.x += trans.x;
             atrans.y += trans.y;
             atrans.z += trans.z;
-            atrans.w += trans.w;
             
             arot.x += rot.x;
             arot.y += rot.y;
             arot.z += rot.z;
-            arot.w += rot.w;
         }
         
         j->setAnimationPosition( &atrans );
@@ -682,13 +686,13 @@ namespace dragonpoop
     }
     
     //redo animation, compound joint transforms for a given animation
-    void model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyzw *atrans, dpxyzw *arot )
+    void model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyz_f *atrans, dpxyz_f *arot )
     {
         std::list<model_frame_joint *> l;
         std::list<model_frame_joint *>::iterator i;
         model_frame_joint *p;
         dpid id, idd;
-        dpxyzw trans, rot;
+        dpxyz_f trans, rot;
         
         m->getFrameJoints( &l, a->getEndFrame() );
         memset( atrans, 0, sizeof( trans ) );
@@ -714,12 +718,10 @@ namespace dragonpoop
             atrans->x += trans.x;
             atrans->y += trans.y;
             atrans->z += trans.z;
-            atrans->w += trans.w;
             
             arot->x += rot.x;
             arot->y += rot.y;
             arot->z += rot.z;
-            arot->w += rot.w;
         }
     }
         

@@ -35,7 +35,7 @@ namespace dragonpoop
     class model_animation;
     class model_instance_joint;
     class model_joint;
-    struct dpxyzw;
+    struct dpxyz_f;
     class model_vertex_joint;
     struct dpvertex;
     
@@ -78,13 +78,13 @@ namespace dragonpoop
         void redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, model_vertex_joint *vj, dpvertex *v, unsigned int jcnt );
         
         //redo animation
-        void redoAnim( model_writelock *m );
+        void redoAnim( model_instance_writelock *mi, model_writelock *m );
         //redo animation, compute current frame
         void redoAnim( model_writelock *m, model_instance_animation *a );
         //redo animation, compound joint transforms
         void redoAnim( model_writelock *m, model_instance_joint *j );
         //redo animation, compound joint transforms for a given animation
-        void redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyzw *trans, dpxyzw *rot );
+        void redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyz_f *trans, dpxyz_f *rot );
 
         //sync
         void dosync( model_instance_writelock *mi, model_writelock *ml );

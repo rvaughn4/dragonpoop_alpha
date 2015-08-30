@@ -171,7 +171,7 @@ namespace dragonpoop
         ms3d_model_frame *f;
         ms3d_model_joint_m *j;
         model_frame_joint *fjnt;
-        dpxyzw x;
+        dpxyz_f x;
         
         m = (model_writelock *)o.tryWriteLock( this->m, 1000 );
         if( !m )
@@ -202,7 +202,7 @@ namespace dragonpoop
     }
     
     //find xyz keyframe before and after time and interpolate
-    void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyzw *x )
+    void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x )
     {
         ms3d_model_joint_keyframe *kb, *ke, *k;
         unsigned int i, e;
@@ -232,13 +232,11 @@ namespace dragonpoop
         td = ke->time - kb->time;
         tt = t - kb->time;
         re = tt / td;
-        //re = 1.0f;
         rb = 1.0f - re;
         
         x->x = rb * kb->x + re * ke->x;
         x->y = rb * kb->y + re * ke->y;
         x->z = rb * kb->z + re * ke->z;
-        x->w = 1;
     }
     
 };

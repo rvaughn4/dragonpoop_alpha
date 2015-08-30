@@ -50,14 +50,14 @@ namespace dragonpoop
     }
     
     //set angle from quaternion
-    void model_matrix::setAngle( model_quaternion *q )
+    void model_matrix::setAngle( model_vector *v )
     {
         float		angle;
         float		sr, sp, sy, cr, cp, cy;
-        model_quaternion_f *angles;
+        model_vector_f *angles;
         model_matrix_f *matrix;
         
-        angles = q->getData();
+        angles = v->getData();
         matrix = &this->f;
         
         angle = angles->fv[ 2 ];

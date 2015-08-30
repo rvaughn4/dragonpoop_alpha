@@ -17,25 +17,25 @@ namespace dragonpoop
     }
     
     //set position
-    void model_joint::setPosition( dpxyzw *x )
+    void model_joint::setPosition( dpxyz_f *x )
     {
         this->pos = *x;
     }
     
     //get position
-    void model_joint::getPosition( dpxyzw *x )
+    void model_joint::getPosition( dpxyz_f *x )
     {
         *x = this->pos;
     }
 
     //set rotation
-    void model_joint::setRotation( dpxyzw *x )
+    void model_joint::setRotation( dpxyz_f *x )
     {
         this->rot = *x;
     }
     
     //get rotation
-    void model_joint::getRotation( dpxyzw *x )
+    void model_joint::getRotation( dpxyz_f *x )
     {
         *x = this->rot;
     }

@@ -103,7 +103,7 @@ namespace dragonpoop
     {
         model_joint *mv;
         std::string s;
-        dpxyzw x;
+        dpxyz_f x;
         
         mv = m->makeJoint( thd->genId() );
         if( !mv )
@@ -115,13 +115,11 @@ namespace dragonpoop
         x.x = t->f.pos.x;
         x.y = t->f.pos.y;
         x.z = t->f.pos.z;
-        x.w = 1;
         mv->setPosition( &x );
 
         x.x = t->f.rot.x;
         x.y = t->f.rot.y;
         x.z = t->f.rot.z;
-        x.w = 1;
         mv->setRotation( &x );
     }
     
