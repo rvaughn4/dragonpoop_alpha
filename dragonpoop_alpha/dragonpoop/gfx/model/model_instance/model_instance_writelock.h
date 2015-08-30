@@ -62,6 +62,10 @@ namespace dragonpoop
         model_instance_animation *findAnimation( dpid id );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
+        //get start time
+        uint64_t getStartTime( void );
+        //get end time
+        uint64_t getEndTime( void );
 
         friend class model_instance;
     };

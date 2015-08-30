@@ -2,6 +2,7 @@
 #include "model_instance_joint.h"
 #include "../model_instance_writelock.h"
 #include "../../model_matrix/model_vector.h"
+#include "../../model_matrix/model_quaternion.h"
 #include "../../../dpvertex/dpxyz_f.h"
 #include "../model_instance_joint_cache/model_instance_joint_cache.h"
 
@@ -12,18 +13,11 @@ namespace dragonpoop
     model_instance_joint::model_instance_joint( model_joint *j ) : model_component( j->getId(), model_component_type_joint )
     {
         std::string s;
-        model_vector v;
         
         j->getPosition( &this->pos );
         j->getRotation( &this->rot );
         this->parent_id = j->getParent();
-        
-        this->isOldFilled = 0;
-        this->isChained = 0;
-        v.setPosition( &this->rot );
-        this->local_bone.setAngle( &v );
-        v.setPosition( &this->pos );
-        this->local_bone.setPosition( &v );
+        this->p_index = -1;
         
         j->getName( &s );
         this->setName( &s );
@@ -84,42 +78,56 @@ namespace dragonpoop
     //redo matrix
     void model_instance_joint::redoMatrix( model_instance_writelock *m )
     {
+        this->old_m.copy( &this->m );
+        this->m.setIdentity();
+        this->redoMatrixUp( m, &this->m );
+        this->redoMatrixDown( m, &this->m );
+    }
+    
+    //redo matrix
+    void model_instance_joint::redoMatrixUp( model_instance_writelock *m, dpmatrix *t )
+    {
         model_instance_joint *j;
-        model_vector v;
-        
-        if( this->isChained )
-            return;
-        
-        *( this->old_global.getData() ) = *( this->global.getData() );
-        v.setPosition( &this->arot );
-        v.setPosition( 0, 0, 0 );
-        this->local.setAngle( &v );
-        v.setPosition( &this->apos );
-        v.setPosition( 0, 0, 0 );
-        this->local.setPosition( &v );
         
         j = 0;
         if( !dpid_isZero( &this->parent_id ) )
             j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
         
-        if( !j )
+        if( j )
         {
-            *( this->global.getData() ) = *( this->local.getData() );
-            *( this->global_bone.getData() ) = *( this->local_bone.getData() );
+            this->p_index = j->getIndex();
+            j->redoMatrixUp( m, t );
         }
-        else
-        {
-            j->redoMatrix( m );
-            this->global_bone.concat( &this->local_bone, &j->global_bone );
-            this->global.concat( &this->local, &j->global );
-        }
+        
+        t->translate( -this->pos.x, -this->pos.y, -this->pos.z );
+        t->rotateXrad( -this->rot.x );
+        t->rotateYrad( -this->rot.y );
+        t->rotateZrad( -this->rot.z );
+        
+        t->translate( -this->apos.x, -this->apos.y, -this->apos.z );
+        t->rotateXrad( this->arot.x );
+        t->rotateYrad( this->arot.y );
+        t->rotateZrad( this->arot.z );
+    }
+    
+    //redo matrix
+    void model_instance_joint::redoMatrixDown( model_instance_writelock *m, dpmatrix *t )
+    {
+        model_instance_joint *j;
+        
+        j = 0;
+        if( !dpid_isZero( &this->parent_id ) )
+            j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
+        
+        t->translate( this->apos.x, this->apos.y, this->apos.z );
+        
+        t->rotateZrad( this->rot.z );
+        t->rotateYrad( this->rot.y );
+        t->rotateXrad( this->rot.x );
+        t->translate( this->pos.x, this->pos.y, this->pos.z );
 
-        if( !this->isOldFilled )
-        {
-            *( this->old_global.getData() ) = *( this->global.getData() );
-            this->isOldFilled = 1;
-        }
-        this->isChained = 1;
+        if( j )
+            j->redoMatrixDown( m, t );
     }
     
     //set joint index
@@ -138,8 +146,9 @@ namespace dragonpoop
     void model_instance_joint::fillCacheEntity( model_instance_joint_cache_element *e )
     {
         e->id = this->index;
-        e->start.bones = *this->global_bone.getData();
-        e->start.animation = *this->global.getData();
+        e->pid = this->p_index;
+        e->end.copy( &this->m );
+        e->start.copy( &this->old_m );
     }
     
 };

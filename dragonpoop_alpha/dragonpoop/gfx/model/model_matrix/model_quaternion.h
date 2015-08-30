@@ -19,6 +19,7 @@ namespace dragonpoop
     
     class model_matrix;
     class model_vector;
+    struct dpxyz_f;
     
     class model_quaternion
     {
@@ -41,6 +42,10 @@ namespace dragonpoop
         void setIdentity( void );
         //set position
         void setPosition( float x, float y, float z, float w );
+        //set angle
+        void setAngle( float x, float y, float z );
+        //set angle
+        void setAngle( dpxyz_f *x );
         
     };
     

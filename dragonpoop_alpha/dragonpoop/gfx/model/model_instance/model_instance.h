@@ -149,6 +149,10 @@ namespace dragonpoop
         void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
         //sync
         void sync( void );
+        //get start time
+        uint64_t getStartTime( void );
+        //get end time
+        uint64_t getEndTime( void );
         
     public:
         

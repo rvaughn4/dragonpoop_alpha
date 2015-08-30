@@ -55,7 +55,11 @@ namespace dragonpoop
         void getAnimations( std::list<model_instance_animation *> *l );
         //sync
         void sync( void );
-        
+        //get start time
+        uint64_t getStartTime( void );
+        //get end time
+        uint64_t getEndTime( void );
+
         friend class model_instance;
     };
     

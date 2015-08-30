@@ -39,28 +39,4 @@ namespace dragonpoop
         return &this->vb;
     }
     
-    //set start time
-    void model_instance_group::setStartTime( uint64_t t )
-    {
-        this->t_start = t;
-    }
-    
-    //get start time
-    uint64_t model_instance_group::getStartTime( void )
-    {
-        return this->t_start;
-    }
-    
-    //set end time
-    void model_instance_group::setEndTime( uint64_t t )
-    {
-        this->t_end = t;
-    }
-    
-    //get end time
-    uint64_t model_instance_group::getEndTime( void )
-    {
-        return this->t_end;
-    }
-    
 };

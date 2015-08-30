@@ -2,7 +2,6 @@
 #include "model_instance_joint_cache.h"
 #include "../model_instance_joint/model_instance_joint.h"
 #include "../../../dpvertex/dpvertex.h"
-#include "../../model_matrix/model_vector.h"
 
 namespace dragonpoop
 {
@@ -53,13 +52,31 @@ namespace dragonpoop
         e = this->getElement( i );
         if( !e )
             return;
-        e->id = i;
-        ////
+        j->fillCacheEntity( e );
     }
     
     //transform vertex
     void model_instance_joint_cache::transform( dpvertex *v, float ratio )
     {
+        dpxyz_f outps, outns, outpe, outne;
+        float s_ratio;
+        
+        this->transform( &v->pos, &outps, &outpe, v->bones[ 0 ].id );
+        this->transform( &v->normal, &outns, &outne, v->bones[ 0 ].id );
+        
+        if( ratio > 1 )
+            ratio = 1;
+        s_ratio = 1.0f - ratio;
+
+        v->pos.x = outps.x * s_ratio + outpe.x * ratio;
+        v->pos.y = outps.y * s_ratio + outpe.y * ratio;
+        v->pos.z = outps.z * s_ratio + outpe.z * ratio;
+        
+        v->normal.x = outns.x * s_ratio + outne.x * ratio;
+        v->normal.y = outns.y * s_ratio + outne.y * ratio;
+        v->normal.z = outns.z * s_ratio + outne.z * ratio;
+        
+        /*
         dpxyz_f *pos_in, pos_a_start, pos_a_end, pos_out_start, pos_out_end;
         dpxyz_f *norm_in, norm_a_start, norm_a_end, norm_out_start, norm_out_end;
         float w, aw, s_ratio;
@@ -67,6 +84,11 @@ namespace dragonpoop
         
         pos_in = &v->pos;
         norm_in = &v->normal;
+        
+        pos_a_start.x = pos_a_start.y = pos_a_start.z = 0;
+        pos_a_end.x = pos_a_end.y = pos_a_end.z = 0;
+        norm_a_start.x = norm_a_start.y = norm_a_start.z = 0;
+        norm_a_end.x = norm_a_end.y = norm_a_end.z = 0;
         
         e = dpvertex_bones_size;
         for( i = 0; i < e; i++ )
@@ -114,31 +136,36 @@ namespace dragonpoop
         pos_in->x /= aw;
         pos_in->y /= aw;
         pos_in->z /= aw;
+        
+        norm_in->x /= aw;
+        norm_in->y /= aw;
+        norm_in->z /= aw;
+
+        pos_in->x *= aw;
+        pos_in->y *= aw;
+        pos_in->z *= aw;
+        
+        norm_in->x *= aw;
+        norm_in->y *= aw;
+        norm_in->z *= aw;
+         
+         */
     }
     
     //transform vertex
     void model_instance_joint_cache::transform( dpxyz_f *in, dpxyz_f *out_start, dpxyz_f *out_end, int16_t i )
     {
-        model_vector v;
         model_instance_joint_cache_element *e;
         
         e = this->getElement( i );
         if( !e )
             return;
-        
-        v.setPosition( in );
-        *( m.getData() ) = e->start.bones;
-        m.inverse_transform( &v );
-        *( m.getData() ) = e->start.animation;
-        m.transform( &v );
-        v.getPosition( out_start );
-        
-        v.setPosition( in );
-        *( m.getData() ) = e->end.bones;
-        m.inverse_transform( &v );
-        *( m.getData() ) = e->end.animation;
-        m.transform( &v );
-        v.getPosition( out_end );
+
+        *out_start = *in;
+        *out_end = *in;
+
+        e->start.transform( out_start );
+        e->end.transform( out_end );
     }
     
     //auto resize

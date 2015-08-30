@@ -44,8 +44,10 @@ namespace dragonpoop
         void setIdentity( void );
         //set position from vector
         void setPosition( model_vector *v );
-        //set angle from quaternion
+        //set angle from vector
         void setAngle( model_vector *v );
+        //create matrix from quaternion
+        void setQuat( model_quaternion *q );
         //transform vector
         void transform( model_vector *v );
         //inverse transform vector

@@ -293,16 +293,11 @@ namespace dragonpoop
         if( pw )
             w = *pw;
 
-        //rx = this->values.c1.r1 * x + this->values.c2.r1 * y + this->values.c3.r1 * z + this->values.c4.r1 * w;
-        //ry = this->values.c1.r2 * x + this->values.c2.r2 * y + this->values.c3.r2 * z + this->values.c4.r2 * w;
-        //rz = this->values.c1.r3 * x + this->values.c2.r3 * y + this->values.c3.r3 * z + this->values.c4.r3 * w;
-        //rw = this->values.c1.r4 * x + this->values.c2.r4 * y + this->values.c3.r4 * z + this->values.c4.r4 * w;
+        rx = this->values.c1.r1 * x + this->values.c2.r1 * y + this->values.c3.r1 * z + this->values.c4.r1 * w;
+        ry = this->values.c1.r2 * x + this->values.c2.r2 * y + this->values.c3.r2 * z + this->values.c4.r2 * w;
+        rz = this->values.c1.r3 * x + this->values.c2.r3 * y + this->values.c3.r3 * z + this->values.c4.r3 * w;
+        rw = this->values.c1.r4 * x + this->values.c2.r4 * y + this->values.c3.r4 * z + this->values.c4.r4 * w;
         
-        rx = x * this->values.c1.r1 + y * this->values.c1.r2 + z * this->values.c1.r3 + this->values.c1.r4;
-        ry = x * this->values.c2.r1 + y * this->values.c2.r2 + z * this->values.c2.r3 + this->values.c2.r4;
-        rz = x * this->values.c3.r1 + y * this->values.c3.r2 + z * this->values.c3.r3 + this->values.c3.r4;
-        rw = 1;
-
         if( px )
             *px = rx;
         if( py )
@@ -414,37 +409,5 @@ namespace dragonpoop
         
         this->multiply( &zm );
     }
-/*
-    void AngleMatrix (const vec3_t angles, float (*matrix)[4] )
-    {
-        float		angle;
-        float		sr, sp, sy, cr, cp, cy;    float		angle;
-    float		sr, sp, sy, cr, cp, cy;
-    
-    angle = angles[2];
-    sy = sin(angle);
-    cy = cos(angle);
-    angle = angles[1];
-    sp = sin(angle);
-    cp = cos(angle);
-    angle = angles[0];
-    sr = sin(angle);
-    cr = cos(angle);
-    
-    // matrix = (Z * Y) * X
-    matrix[0][0] = cp*cy;
-    matrix[1][0] = cp*sy;
-    matrix[2][0] = -sp;
-    matrix[0][1] = sr*sp*cy+cr*-sy;
-    matrix[1][1] = sr*sp*sy+cr*cy;
-    matrix[2][1] = sr*cp;
-    matrix[0][2] = (cr*sp*cy+-sr*-sy);
-    matrix[1][2] = (cr*sp*sy+-sr*cy);
-    matrix[2][2] = cr*cp;
-    matrix[0][3] = 0.0;
-    matrix[1][3] = 0.0;
-    matrix[2][3] = 0.0;
-        
-    }
- */
+
 };

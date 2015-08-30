@@ -41,7 +41,7 @@ namespace dragonpoop
         this->id = id;
         this->r = 0;
         this->gtsk = new model_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 200, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 20, 1 );
         tp->addTask( this->tsk );
     }
 

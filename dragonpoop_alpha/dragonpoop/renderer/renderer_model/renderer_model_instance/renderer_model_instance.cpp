@@ -285,7 +285,7 @@ namespace dragonpoop
             p = *i;
             pg = (model_instance_group *)t.findLeaf( p->getId() );
             if( pg )
-                ;//p->sync( ml, pg );
+                p->animate( ml, pg );
         }
     }
     

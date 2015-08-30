@@ -1,6 +1,8 @@
 
 #include "renderer_model_group_instance.h"
 #include "../../../../gfx/model/model_instance/model_instance_group/model_instance_group.h"
+#include "../../../../gfx/model/model_instance/model_instance_writelock.h"
+
 
 namespace dragonpoop
 {
@@ -33,8 +35,15 @@ namespace dragonpoop
     void renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g )
     {
         this->m_id = g->getMaterialId();
-        this->t_start = g->getStartTime();
-        this->t_end = g->getEndTime();
+        this->t_start = ml->getStartTime();
+        this->t_end = ml->getEndTime();
+    }
+    
+    //sync with group
+    void renderer_model_instance_group::animate( model_instance_writelock *ml, model_instance_group *g )
+    {
+        this->t_start = ml->getStartTime();
+        this->t_end = ml->getEndTime();
     }
     
     //get start time

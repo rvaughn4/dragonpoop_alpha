@@ -32,7 +32,9 @@ namespace dragonpoop
     //set identity
     void model_matrix::setIdentity( void )
     {
-        memset( &this->f, 0, sizeof( this->f ) );
+        model_vector v;
+        v.setPosition( 0, 0, 0 );
+        this->setAngle( &v );
     }
     
     //set position from vector
@@ -49,7 +51,7 @@ namespace dragonpoop
         matrix->fv[2][3] = pos->fv[2];
     }
     
-    //set angle from quaternion
+    //set angle from vector
     void model_matrix::setAngle( model_vector *v )
     {
         float		angle;
@@ -83,6 +85,28 @@ namespace dragonpoop
         matrix->fv[0][3] = 0.0;
         matrix->fv[1][3] = 0.0;
         matrix->fv[2][3] = 0.0;
+    }
+    
+    //create matrix from quaternion
+    void model_matrix::setQuat( model_quaternion *q )
+    {
+        model_matrix_f *matrix;
+        model_quaternion_f *quaternion;
+        
+        matrix = &this->f;
+        quaternion = q->getData();
+        
+        matrix->fv[0][0] = 1.0 - 2.0 * quaternion->fv[1] * quaternion->fv[1] - 2.0 * quaternion->fv[2] * quaternion->fv[2];
+        matrix->fv[1][0] = 2.0 * quaternion->fv[0] * quaternion->fv[1] + 2.0 * quaternion->fv[3] * quaternion->fv[2];
+        matrix->fv[2][0] = 2.0 * quaternion->fv[0] * quaternion->fv[2] - 2.0 * quaternion->fv[3] * quaternion->fv[1];
+        
+        matrix->fv[0][1] = 2.0 * quaternion->fv[0] * quaternion->fv[1] - 2.0 * quaternion->fv[3] * quaternion->fv[2];
+        matrix->fv[1][1] = 1.0 - 2.0 * quaternion->fv[0] * quaternion->fv[0] - 2.0 * quaternion->fv[2] * quaternion->fv[2];
+        matrix->fv[2][1] = 2.0 * quaternion->fv[1] * quaternion->fv[2] + 2.0 * quaternion->fv[3] * quaternion->fv[0];
+        
+        matrix->fv[0][2] = 2.0 * quaternion->fv[0] * quaternion->fv[2] + 2.0 * quaternion->fv[3] * quaternion->fv[1];
+        matrix->fv[1][2] = 2.0 * quaternion->fv[1] * quaternion->fv[2] - 2.0 * quaternion->fv[3] * quaternion->fv[0];
+        matrix->fv[2][2] = 1.0 - 2.0 * quaternion->fv[0] * quaternion->fv[0] - 2.0 * quaternion->fv[1] * quaternion->fv[1];
     }
     
     //transform vector

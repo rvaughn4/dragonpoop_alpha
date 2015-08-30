@@ -3,7 +3,8 @@
 #define dragonpoop_model_instance_joint_h
 
 #include "../../model_joint/model_joint.h"
-#include "../../model_matrix/model_matrix.h"
+#include "../../../dpmatrix/dpmatrix.h"
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -18,14 +19,19 @@ namespace dragonpoop
     private:
         
         dpxyz_f pos, rot, apos, arot;
-        model_matrix local, global, local_bone, global_bone, old_global;
-
-        bool isChained, isOldFilled;
+        dpmatrix m, old_m;
         dpid parent_id;
-        int16_t index;
+        int16_t index, p_index;
+        std::atomic<bool> bIsChained;
+        
         
     protected:
-       
+        
+        //redo matrix
+        void redoMatrixUp( model_instance_writelock *m, dpmatrix *t );
+        //redo matrix
+        void redoMatrixDown( model_instance_writelock *m, dpmatrix *t );
+
     public:
         
         //ctor

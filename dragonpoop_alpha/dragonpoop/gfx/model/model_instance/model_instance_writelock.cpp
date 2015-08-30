@@ -101,4 +101,16 @@ namespace dragonpoop
         this->t->getAnimations( l );
     }
     
+    //get start time
+    uint64_t model_instance_writelock::getStartTime( void )
+    {
+        return this->t->getStartTime();
+    }
+    
+    //get end time
+    uint64_t model_instance_writelock::getEndTime( void )
+    {
+        return this->t->getEndTime();
+    }
+    
 };

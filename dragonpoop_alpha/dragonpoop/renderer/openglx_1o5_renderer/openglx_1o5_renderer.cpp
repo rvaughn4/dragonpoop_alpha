@@ -332,7 +332,7 @@ namespace dragonpoop
     {
         return new openglx_1o5_renderer_model( ml );
     }
-
+    
     //render model instance group
     void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
     {
@@ -370,19 +370,33 @@ namespace dragonpoop
         else
             r_end = 0;
         
+        dpmatrix p, u;
+        static float rr;
+        rr += 0.1f;
+
+        p.rotateY( rr );
+        u.rotateY( -rr );
+        
         for( vi = 0 ; vi < vs && vi < ss; vi++ )
         {
             v = &vp[ vi ];
             b = *v;
-            s = &vp[ vi ];
+            s = &sp[ vi ];
 
             jnts->transform( &b, r_end );
-
-            s->pos.x += ( b.pos.x - s->pos.x ) * 0.025f;
-            s->pos.y += ( b.pos.y - s->pos.y ) * 0.025f;
-            s->pos.z += ( b.pos.z - s->pos.z ) * 0.025f;
-
-            b.pos = s->pos;
+/*
+            s->pos.x += ( b.pos.x - s->pos.x ) * 0.125f;
+            s->pos.y += ( b.pos.y - s->pos.y ) * 0.125f;
+            s->pos.z += ( b.pos.z - s->pos.z ) * 0.125f;
+            s->normal.x += ( b.normal.x - s->normal.x ) * 0.125f;
+            s->normal.y += ( b.normal.y - s->normal.y ) * 0.125f;
+            s->normal.z += ( b.normal.z - s->normal.z ) * 0.125f;
+*/
+            //b.pos = s->pos;
+            //b.normal = s->normal;
+            
+            p.transform( &b.pos );
+            //u.transform( &b.pos );
             nvb.addVertex( &b );
         }
         vp = nvb.getBuffer();
@@ -397,10 +411,7 @@ namespace dragonpoop
             indicies.push_back( ix->i );
         }
 
-        static float rr;
-
         glLoadMatrixf( this->world_m.getRaw4by4() );
-        rr += 2.0f;
 
         glRotatef( rr, 0, 1, 0 );
         GLfloat LightPosition[]= { 0.0f, 0.0f, 8.0f, 0.0f };
@@ -408,7 +419,7 @@ namespace dragonpoop
 
         glLoadMatrixf( this->world_m.getRaw4by4() );
         glTranslatef( 0, 0, -4 );
-        glRotatef( rr * 0.2f, 0, 1, 0 );
+        //glRotatef( rr * 0.2f, 0, 1, 0 );
 
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
 
@@ -416,7 +427,7 @@ namespace dragonpoop
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
         glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
-
     }
+
 
 };

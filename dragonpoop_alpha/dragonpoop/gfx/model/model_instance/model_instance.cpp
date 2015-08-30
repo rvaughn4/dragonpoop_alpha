@@ -124,10 +124,10 @@ namespace dragonpoop
         }
         
         t = thd->getTicks();
-        if( t - this->t_last_animate > this->t_frame_time / 2 )
+        if( t - this->t_last_animate > this->t_frame_time )
         {
             this->animate( g, m, t );
-            this->t_last_animate = t - 10 * rand() / RAND_MAX;
+            this->t_last_animate = t;
         }
     }
     
@@ -480,8 +480,6 @@ namespace dragonpoop
         
         vb = g->getVertexBuffer();
         vb->clear();
-        g->setStartTime( this->t_start );
-        g->setEndTime( this->t_end );
         
         tcnt = 0;
         m->getGroupTriangles( (std::list<model_group_triangle *> *)&l );
@@ -542,7 +540,7 @@ namespace dragonpoop
         std::list<model_vertex_joint *> l;
         std::list<model_vertex_joint *>::iterator i;
         model_vertex_joint *vj;
-        float w;
+        float w, aw;
         unsigned int vi, vs, jcnt;
         
         vs = dpvertex_bones_size;
@@ -554,7 +552,7 @@ namespace dragonpoop
         m->getVertexJoints( &l, tv->getVertexId() );
         
         jcnt = 0;
-        w = 0;
+        aw = 0;
         for( i = l.begin(); i != l.end(); ++i, jcnt++ )
         {
             vj = *i;
@@ -565,13 +563,13 @@ namespace dragonpoop
             
             this->redoMesh( mi, m, tv, vj, v, jcnt );
             if( jcnt < vs )
-                w += v->bones[ jcnt ].w;
+                aw += v->bones[ jcnt ].w;
         }
 
-        if( w <= 0 )
-            w = 1.0f;
+        if( aw <= 0 )
+            aw = 1.0f;
         for( vi = 0; vi < jcnt; vi++ )
-            v->bones[ vi ].w /= w;
+            v->bones[ vi ].w /= aw;
     }
     
     //redo vertex mesh, transform using joints
@@ -606,12 +604,6 @@ namespace dragonpoop
         
         l.clear();
         this->getJoints( (std::list<model_instance_joint *> *)&l );
-
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            ( (model_instance_joint *)p )->reset();
-        }
 
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -724,5 +716,17 @@ namespace dragonpoop
             arot->z += rot.z;
         }
     }
-        
+    
+    //get start time
+    uint64_t model_instance::getStartTime( void )
+    {
+        return this->t_start;
+    }
+    
+    //get end time
+    uint64_t model_instance::getEndTime( void )
+    {
+        return this->t_end;
+    }
+    
 };

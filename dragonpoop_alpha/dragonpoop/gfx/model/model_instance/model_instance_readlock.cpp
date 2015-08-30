@@ -89,4 +89,16 @@ namespace dragonpoop
         this->t->sync();
     }
     
+    //get start time
+    uint64_t model_instance_readlock::getStartTime( void )
+    {
+        return this->t->getStartTime();
+    }
+    
+    //get end time
+    uint64_t model_instance_readlock::getEndTime( void )
+    {
+        return this->t->getEndTime();
+    }
+    
 };

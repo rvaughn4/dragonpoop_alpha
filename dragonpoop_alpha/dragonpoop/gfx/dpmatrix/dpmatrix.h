@@ -31,7 +31,7 @@ namespace dragonpoop
         //ctor
         dpmatrix( void );
         //dtor
-        virtual ~dpmatrix( void );
+        ~dpmatrix( void );
         //copy
         void copy( dpmatrix *m );
         //load identity
@@ -94,8 +94,6 @@ namespace dragonpoop
         void itransform( dpxyzw_f *p );
         //inverse transform
         void itransform( dpxyz_f *p );
-
-        
         //rotate ( Z * Y ) * X
         void rotateRad( float x, float y, float z );
         //rotate ( Z * Y ) * X
