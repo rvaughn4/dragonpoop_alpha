@@ -34,7 +34,7 @@ namespace dragonpoop
         b = this->vb->getVertexBuffer( &sn );
         while( so < sn )
         {
-            this->vbsmooth->addVertex( &b[ so ] );
+            this->vbsmooth->addVertex( &b[ 0 ] );
             so++;
         }
     }

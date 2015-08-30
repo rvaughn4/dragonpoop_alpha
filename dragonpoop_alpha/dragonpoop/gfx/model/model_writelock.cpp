@@ -259,9 +259,9 @@ namespace dragonpoop
     }
 
     //sync model instance with changes
-    void model_writelock::sync( void )
+    void model_writelock::sync( dpthread_lock *thd )
     {
-        this->t->sync( this );
+        this->t->sync( thd, this );
     }
     
     //set renderer model

@@ -64,7 +64,7 @@ namespace dragonpoop
         //run instances
         void runInstances( dpthread_lock *thd, model_writelock *g );
         //sync instances
-        void syncInstances( model_writelock *g, uint64_t tms );
+        void syncInstances( dpthread_lock *thd, model_writelock *g );
         
     protected:
 
@@ -155,7 +155,7 @@ namespace dragonpoop
         //get instances
         void getInstances( std::list<model_instance_ref *> *l );
         //sync model instance with changes
-        void sync( model_writelock *ml );
+        void sync( dpthread_lock *thd, model_writelock *ml );
         //set renderer model
         void setRenderer( renderer_model *r );
         //add material

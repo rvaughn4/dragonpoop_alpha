@@ -346,7 +346,7 @@ namespace dragonpoop
         openglx_1o5_renderer_model_material *gmat;
         float r_end, td, tt;
         std::vector<uint16_t> indicies;
-        uint64_t t, st;
+        uint64_t t;
         model_instance_joint_cache *jnts;
 
         jnts = mi->getJointCache();
@@ -370,30 +370,19 @@ namespace dragonpoop
         else
             r_end = 0;
         
-        st = og->getSmoothTime();
-        if( t - st > 40 )
-        {
-            og->setSmoothTime( t );
-            for( vi = 0 ; vi < vs && vi < ss; vi++ )
-            {
-                v = &vp[ vi ];
-                b = *v;
-                s = &sp[ vi ];
-                
-                s->pos.x += ( v->pos.x - s->pos.x ) * 0.25f;
-                s->pos.y += ( v->pos.y - s->pos.y ) * 0.25f;
-                s->pos.z += ( v->pos.z - s->pos.z ) * 0.25f;
-            }
-        }
-        
         for( vi = 0 ; vi < vs && vi < ss; vi++ )
         {
             v = &vp[ vi ];
             b = *v;
             s = &vp[ vi ];
 
-            b = *s;
             jnts->transform( &b, r_end );
+
+            s->pos.x += ( b.pos.x - s->pos.x ) * 0.25f;
+            s->pos.y += ( b.pos.y - s->pos.y ) * 0.25f;
+            s->pos.z += ( b.pos.z - s->pos.z ) * 0.25f;
+
+            b.pos = s->pos;
             nvb.addVertex( &b );
         }
         vp = nvb.getBuffer();

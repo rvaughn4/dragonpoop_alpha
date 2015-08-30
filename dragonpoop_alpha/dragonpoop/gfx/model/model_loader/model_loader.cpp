@@ -44,19 +44,12 @@ namespace dragonpoop
     //dtor
     model_loader::~model_loader( void )
     {
-        model_writelock *ml;
-        shared_obj_guard o;
-
         delete this->gtsk;
         delete this->tsk;
         if( this->cs )
             delete this->cs;
         if( this->buffer )
             free( this->buffer );
-
-        ml = (model_writelock *)o.writeLock( this->m );
-        ml->sync();
-        o.unlock();
 
         delete this->m;
     }

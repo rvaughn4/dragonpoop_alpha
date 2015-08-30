@@ -39,13 +39,22 @@ namespace dragonpoop
     //ctor
     model_instance::model_instance( dpid id, model_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
     {
+        model_instance_writelock *l;
+        shared_obj_guard g;
+        
         this->r = 0;
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 500;
-        this->bIsSynced = 0;
+        this->t_frame_time = 400;
+        this->bIsSynced = 1;
         this->j_ctr = 0;
+        
+        l = (model_instance_writelock *)g.tryWriteLock( this, 400 );
+        if( !l )
+            return;
+        this->bIsSynced = 1;
+        this->dosync( l, ml );
     }
     
     //dtor
@@ -108,13 +117,13 @@ namespace dragonpoop
     {
         uint64_t t;
         
-        t = thd->getTicks();
         if( !this->bIsSynced )
         {
-            this->dosync( g, m, t );
+            this->dosync( g, m );
             this->bIsSynced = 1;
         }
         
+        t = thd->getTicks();
         if( t - this->t_last_animate > this->t_frame_time / 2 )
         {
             this->animate( g, m, t );
@@ -276,7 +285,7 @@ namespace dragonpoop
     }
 
     //sync
-    void model_instance::dosync( model_instance_writelock *mi, model_writelock *ml, uint64_t tms )
+    void model_instance::dosync( model_instance_writelock *mi, model_writelock *ml )
     {
         shared_obj_guard o;
         renderer_model_instance_readlock *rl;
@@ -326,6 +335,8 @@ namespace dragonpoop
         if( !rl )
             return;
         this->r = (renderer_model_instance_ref *)rl->getRef();
+        rl->sync();
+        rl->animate();
     }
     
     //add animation
@@ -532,7 +543,7 @@ namespace dragonpoop
         std::list<model_vertex_joint *>::iterator i;
         model_vertex_joint *vj;
         float w;
-        unsigned int vi, vs;
+        unsigned int vi, vs, jcnt;
         
         vs = dpvertex_bones_size;
         for( vi = 0; vi < vs; vi++ )
@@ -542,7 +553,9 @@ namespace dragonpoop
         
         m->getVertexJoints( &l, tv->getVertexId() );
         
-        for( i = l.begin(); i != l.end(); ++i )
+        jcnt = 0;
+        w = 0;
+        for( i = l.begin(); i != l.end(); ++i, jcnt++ )
         {
             vj = *i;
             
@@ -550,44 +563,30 @@ namespace dragonpoop
             if( w < 0.001f )
                 continue;
             
-            this->redoMesh( mi, m, tv, vj, v );
+            this->redoMesh( mi, m, tv, vj, v, jcnt );
+            if( jcnt < vs )
+                w += v->bones[ jcnt ].w;
         }
 
-        w = 0;
-        for( vi = 0; vi < vs; vi++ )
-        {
-            if( v->bones[ vi ].id < 0 )
-                continue;
-            w += v->bones[ vi ].w;
-        }
         if( w <= 0 )
             w = 1.0f;
-        for( vi = 0; vi < vs; vi++ )
-        {
-            if( v->bones[ vi ].id < 0 )
-                continue;
+        for( vi = 0; vi < jcnt; vi++ )
             v->bones[ vi ].w /= w;
-        }
     }
     
     //redo vertex mesh, transform using joints
-    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, model_vertex_joint *vj, dpvertex *v )
+    void model_instance::redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, model_vertex_joint *vj, dpvertex *v, unsigned int jcnt )
     {
         model_instance_joint *j;
-        unsigned int vi, vs;
         
         j = this->findJoint( vj->getJointId() );
         if( !j )
             return;
         
-        vs = dpvertex_bones_size;
-        for( vi = 0; vi < vs; vi++ )
-        {
-            if( v->bones[ vi ].id >= 0 )
-                continue;
-            v->bones[ vi ].id = j->getIndex();
-            v->bones[ vi ].w = vj->getWeight();
-        }
+        if( jcnt >= dpvertex_bones_size )
+            return;
+        v->bones[ jcnt ].id = j->getIndex();
+        v->bones[ jcnt ].w = vj->getWeight();
     }
     
     //redo animation

@@ -125,7 +125,7 @@ namespace dragonpoop
         //get instances
         void getInstances( std::list<model_instance_ref *> *l );
         //sync model instance with changes
-        void sync( void );
+        void sync( dpthread_lock *thd );
         //set renderer model
         void setRenderer( renderer_model *r );
         //add material

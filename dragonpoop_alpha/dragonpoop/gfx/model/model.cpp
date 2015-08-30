@@ -41,7 +41,7 @@ namespace dragonpoop
         this->id = id;
         this->r = 0;
         this->gtsk = new model_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 50, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 200, 1 );
         tp->addTask( this->tsk );
     }
 
@@ -467,22 +467,23 @@ namespace dragonpoop
     }
 
     //sync instances
-    void model::syncInstances( model_writelock *g, uint64_t tms )
+    void model::syncInstances( dpthread_lock *thd, model_writelock *g )
     {
         std::list<model_instance *> *l;
         std::list<model_instance *>::iterator i;
         model_instance *p;
-        model_instance_readlock *pl;
+        model_instance_writelock *pl;
         shared_obj_guard o;
 
         l = &this->instances;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = ( model_instance_readlock *)o.tryReadLock( p, 300 );
+            pl = ( model_instance_writelock *)o.tryReadLock( p, 300 );
             if( !pl )
                 continue;
             pl->sync();
+            pl->run( thd, g );
         }
     }
 
@@ -524,12 +525,12 @@ namespace dragonpoop
     }
 
     //sync model instance with changes
-    void model::sync( model_writelock *ml )
+    void model::sync( dpthread_lock *thd, model_writelock *ml )
     {
         shared_obj_guard o;
         renderer_model_readlock *rl;
 
-        this->syncInstances( ml, this->ran_time );
+        this->syncInstances( thd, ml );
 
         if( !this->r )
             return;

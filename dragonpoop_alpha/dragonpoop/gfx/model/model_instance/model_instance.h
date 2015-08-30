@@ -75,7 +75,7 @@ namespace dragonpoop
         //redo vertex mesh, transform using joints
         void redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, dpvertex *v );
         //redo vertex mesh, transform using joints
-        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, model_vertex_joint *vj, dpvertex *v );
+        void redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, model_vertex_joint *vj, dpvertex *v, unsigned int jcnt );
         
         //redo animation
         void redoAnim( model_writelock *m );
@@ -85,6 +85,11 @@ namespace dragonpoop
         void redoAnim( model_writelock *m, model_instance_joint *j );
         //redo animation, compound joint transforms for a given animation
         void redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyzw *trans, dpxyzw *rot );
+
+        //sync
+        void dosync( model_instance_writelock *mi, model_writelock *ml );
+        //do animation
+        void animate( model_instance_writelock *mi, model_writelock *ml, uint64_t tms );
 
     protected:
         
@@ -138,10 +143,6 @@ namespace dragonpoop
         void getJoints( std::list<model_instance_joint *> *l );
         //make joints
         void makeJoints( model_writelock *ml );
-        //sync
-        void dosync( model_instance_writelock *mi, model_writelock *ml, uint64_t tms );
-        //do animation
-        void animate( model_instance_writelock *mi, model_writelock *ml, uint64_t tms );
         //set renderer model
         void setRenderer( renderer_model_instance *r );
         //populate vertex buffer for rendering
