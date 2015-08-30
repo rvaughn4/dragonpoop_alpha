@@ -4,12 +4,13 @@
 
 #include "../../model_joint/model_joint.h"
 #include "../../model_matrix/model_matrix.h"
-#include "../../../dpvertex/dpxyz_f.h"
 
 namespace dragonpoop
 {
     
     class model_instance_writelock;
+    struct model_instance_joint_cache_element;
+    struct dpxyz_f;
     
     class model_instance_joint : public model_component
     {
@@ -17,9 +18,9 @@ namespace dragonpoop
     private:
         
         dpxyz_f pos, rot, apos, arot;
-        model_matrix local, global, local_bone, global_bone;
+        model_matrix local, global, local_bone, global_bone, old_global;
 
-        bool isChained;
+        bool isChained, isOldFilled;
         dpid parent_id;
         int16_t index;
         
@@ -51,7 +52,9 @@ namespace dragonpoop
         int16_t getIndex( void );
         //redo matrix
         void redoMatrix( model_instance_writelock *m );
-        
+        //populate joint cache entity
+        void fillCacheEntity( model_instance_joint_cache_element *e );
+
     };
     
 };

@@ -2,6 +2,8 @@
 #include "model_instance_joint.h"
 #include "../model_instance_writelock.h"
 #include "../../model_matrix/model_vector.h"
+#include "../../../dpvertex/dpxyz_f.h"
+#include "../model_instance_joint_cache/model_instance_joint_cache.h"
 
 namespace dragonpoop
 {
@@ -16,6 +18,8 @@ namespace dragonpoop
         j->getRotation( &this->rot );
         this->parent_id = j->getParent();
         
+        this->isOldFilled = 0;
+        this->isChained = 0;
         v.setPosition( &this->rot );
         this->local_bone.setAngle( &v );
         v.setPosition( &this->pos );
@@ -74,7 +78,7 @@ namespace dragonpoop
     //reset matrix
     void model_instance_joint::reset( void )
     {
-        this->isChained = 0;
+        //this->isChained = 0;
     }
     
     //redo matrix
@@ -86,23 +90,35 @@ namespace dragonpoop
         if( this->isChained )
             return;
         
+        *( this->old_global.getData() ) = *( this->global.getData() );
         v.setPosition( &this->arot );
+        v.setPosition( 0, 0, 0 );
         this->local.setAngle( &v );
         v.setPosition( &this->apos );
+        v.setPosition( 0, 0, 0 );
         this->local.setPosition( &v );
         
         j = 0;
         if( !dpid_isZero( &this->parent_id ) )
             j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
+        
         if( !j )
         {
-            this->isChained = 1;
-            return;
+            *( this->global.getData() ) = *( this->local.getData() );
+            *( this->global_bone.getData() ) = *( this->local_bone.getData() );
+        }
+        else
+        {
+            j->redoMatrix( m );
+            this->global_bone.concat( &this->local_bone, &j->global_bone );
+            this->global.concat( &this->local, &j->global );
         }
 
-        j->redoMatrix( m );
-        
-        
+        if( !this->isOldFilled )
+        {
+            *( this->old_global.getData() ) = *( this->global.getData() );
+            this->isOldFilled = 1;
+        }
         this->isChained = 1;
     }
     
@@ -116,6 +132,14 @@ namespace dragonpoop
     int16_t model_instance_joint::getIndex( void )
     {
         return this->index;
+    }
+  
+    //populate joint cache entity
+    void model_instance_joint::fillCacheEntity( model_instance_joint_cache_element *e )
+    {
+        e->id = this->index;
+        e->start.bones = *this->global_bone.getData();
+        e->start.animation = *this->global.getData();
     }
     
 };

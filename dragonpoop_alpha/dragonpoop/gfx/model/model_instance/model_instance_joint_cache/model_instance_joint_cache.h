@@ -10,6 +10,7 @@ namespace dragonpoop
     
     class model_instance_joint;
     struct dpvertex;
+    struct dpxyz_f;
     
     struct model_instance_joint_cache_element
     {
@@ -27,11 +28,14 @@ namespace dragonpoop
         
         std::atomic<model_instance_joint_cache_element *> buffer;
         std::atomic<unsigned int> size, cnt;
+        model_matrix m;
         
         //auto resize
         void autoResize( unsigned int ncnt );
         //get pointer to location
         model_instance_joint_cache_element *getElement( int16_t i );
+        //transform vertex
+        void transform( dpxyz_f *in, dpxyz_f *out_start, dpxyz_f *out_end, int16_t i );
         
     protected:
         

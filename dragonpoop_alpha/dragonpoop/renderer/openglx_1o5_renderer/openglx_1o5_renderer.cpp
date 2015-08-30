@@ -378,9 +378,9 @@ namespace dragonpoop
 
             jnts->transform( &b, r_end );
 
-            s->pos.x += ( b.pos.x - s->pos.x ) * 0.25f;
-            s->pos.y += ( b.pos.y - s->pos.y ) * 0.25f;
-            s->pos.z += ( b.pos.z - s->pos.z ) * 0.25f;
+            s->pos.x += ( b.pos.x - s->pos.x ) * 0.025f;
+            s->pos.y += ( b.pos.y - s->pos.y ) * 0.025f;
+            s->pos.z += ( b.pos.z - s->pos.z ) * 0.025f;
 
             b.pos = s->pos;
             nvb.addVertex( &b );

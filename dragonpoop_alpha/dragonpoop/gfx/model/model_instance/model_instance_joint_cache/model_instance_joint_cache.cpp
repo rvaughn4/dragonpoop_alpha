@@ -2,6 +2,7 @@
 #include "model_instance_joint_cache.h"
 #include "../model_instance_joint/model_instance_joint.h"
 #include "../../../dpvertex/dpvertex.h"
+#include "../../model_matrix/model_vector.h"
 
 namespace dragonpoop
 {
@@ -59,7 +60,85 @@ namespace dragonpoop
     //transform vertex
     void model_instance_joint_cache::transform( dpvertex *v, float ratio )
     {
+        dpxyz_f *pos_in, pos_a_start, pos_a_end, pos_out_start, pos_out_end;
+        dpxyz_f *norm_in, norm_a_start, norm_a_end, norm_out_start, norm_out_end;
+        float w, aw, s_ratio;
+        unsigned int i, e;
         
+        pos_in = &v->pos;
+        norm_in = &v->normal;
+        
+        e = dpvertex_bones_size;
+        for( i = 0; i < e; i++ )
+        {
+            if( v->bones[ i ].id < 0 )
+            {
+                i = e;
+                continue;
+            }
+            w = v->bones[ i ].w;
+            aw += w;
+            this->transform( pos_in, &pos_out_start, &pos_out_end, v->bones[ i ].id );
+            this->transform( norm_in, &norm_out_start, &norm_out_end, v->bones[ i ].id );
+            
+            pos_a_start.x += pos_out_start.x * w;
+            pos_a_start.y += pos_out_start.y * w;
+            pos_a_start.z += pos_out_start.z * w;
+
+            pos_a_end.x += pos_out_end.x * w;
+            pos_a_end.y += pos_out_end.y * w;
+            pos_a_end.z += pos_out_end.z * w;
+            
+            norm_a_start.x += norm_out_start.x * w;
+            norm_a_start.y += norm_out_start.y * w;
+            norm_a_start.z += norm_out_start.z * w;
+            
+            norm_a_end.x += norm_out_end.x * w;
+            norm_a_end.y += norm_out_end.y * w;
+            norm_a_end.z += norm_out_end.z * w;
+        }
+        
+        if( aw <= 0.0f )
+            aw = 1.0f;
+        s_ratio = 1.0f - ratio;
+        
+        
+        pos_in->x = pos_a_start.x * s_ratio + pos_a_end.x * ratio;
+        pos_in->y = pos_a_start.y * s_ratio + pos_a_end.y * ratio;
+        pos_in->z = pos_a_start.z * s_ratio + pos_a_end.z * ratio;
+        
+        norm_in->x = norm_a_start.x * s_ratio + norm_a_end.x * ratio;
+        norm_in->y = norm_a_start.y * s_ratio + norm_a_end.y * ratio;
+        norm_in->z = norm_a_start.z * s_ratio + norm_a_end.z * ratio;
+        
+        pos_in->x /= aw;
+        pos_in->y /= aw;
+        pos_in->z /= aw;
+    }
+    
+    //transform vertex
+    void model_instance_joint_cache::transform( dpxyz_f *in, dpxyz_f *out_start, dpxyz_f *out_end, int16_t i )
+    {
+        model_vector v;
+        model_instance_joint_cache_element *e;
+        
+        e = this->getElement( i );
+        if( !e )
+            return;
+        
+        v.setPosition( in );
+        *( m.getData() ) = e->start.bones;
+        m.inverse_transform( &v );
+        *( m.getData() ) = e->start.animation;
+        m.transform( &v );
+        v.getPosition( out_start );
+        
+        v.setPosition( in );
+        *( m.getData() ) = e->end.bones;
+        m.inverse_transform( &v );
+        *( m.getData() ) = e->end.animation;
+        m.transform( &v );
+        v.getPosition( out_end );
     }
     
     //auto resize
