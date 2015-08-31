@@ -68,17 +68,17 @@ namespace dragonpoop
         //remove component
         void removeComponent( model_component *c );
         //add group
-        renderer_model_instance_group *makeGroup( model_instance_writelock *ml, model_instance_group *g );
+        renderer_model_instance_group *makeGroup( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //find group
         renderer_model_instance_group *findGroup( dpid id );
         //get groups
         void getGroups( std::list<renderer_model_instance_group *> *l );
         //make groups
-        void makeGroups( model_instance_writelock *ml );
+        void makeGroups( model_instance_writelock *ml, dpthread_lock *thd );
         //sync groups
-        void syncGroups( model_instance_writelock *ml );
+        void syncGroups( model_instance_writelock *ml, dpthread_lock *thd );
         //animate groups
-        void animateGroups( model_instance_writelock *ml );
+        void animateGroups( model_instance_writelock *ml, dpthread_lock *thd );
         //sync
         void sync( void );
         //animate
@@ -88,7 +88,7 @@ namespace dragonpoop
         //handle sync
         virtual void onSync( dpthread_lock *thd, renderer_model_instance_writelock *g, model_instance_writelock *ml );
         //genertae group
-        virtual renderer_model_instance_group *genGroup( model_instance_writelock *ml, model_instance_group *g );
+        virtual renderer_model_instance_group *genGroup( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi );
         //returns joint cache

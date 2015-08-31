@@ -18,19 +18,23 @@ namespace dragonpoop
         
     private:
         
-        dpxyz_f pos, rot, apos, arot;
-        dpmatrix m, old_m;
+        dpxyz_f pos, rot, apos, arot, apos_old, arot_old;
+        dpmatrix m_in, old_m_in, m_out, old_m_out;
         dpid parent_id;
         int16_t index, p_index;
         std::atomic<bool> bIsChained;
-        
+        uint64_t old_start_time, old_end_time;
         
     protected:
         
         //redo matrix
+        void redoMatrixUpOld( model_instance_writelock *m, dpmatrix *t );
+        //redo matrix
         void redoMatrixUp( model_instance_writelock *m, dpmatrix *t );
         //redo matrix
         void redoMatrixDown( model_instance_writelock *m, dpmatrix *t );
+        //redo matrix
+        void redoMatrixDownOld( model_instance_writelock *m, dpmatrix *t );
 
     public:
         
@@ -60,6 +64,8 @@ namespace dragonpoop
         void redoMatrix( model_instance_writelock *m );
         //populate joint cache entity
         void fillCacheEntity( model_instance_joint_cache_element *e );
+        //carry over old animation
+        void carryOver( uint64_t t_start, uint64_t t_end );
 
     };
     

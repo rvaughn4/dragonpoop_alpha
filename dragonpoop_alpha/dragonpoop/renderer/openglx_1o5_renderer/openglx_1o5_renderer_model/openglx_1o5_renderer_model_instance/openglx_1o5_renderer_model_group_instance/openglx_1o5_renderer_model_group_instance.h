@@ -9,6 +9,7 @@ namespace dragonpoop
 {
     
     class openglx_1o5_model_instance_group;
+    class dpthread_lock;
     
     class openglx_1o5_renderer_model_instance_group : public renderer_model_instance_group
     {
@@ -25,11 +26,11 @@ namespace dragonpoop
     public:
         
         //ctor
-        openglx_1o5_renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g );
+        openglx_1o5_renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //dtor
         virtual ~openglx_1o5_renderer_model_instance_group( void );
         //sync with group
-        virtual void sync( model_instance_writelock *ml, model_instance_group *g );
+        virtual void sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //returns vertex buffer
         dpvertexindex_buffer *getVertexBuffer( void );
         //returns smoothing buffer

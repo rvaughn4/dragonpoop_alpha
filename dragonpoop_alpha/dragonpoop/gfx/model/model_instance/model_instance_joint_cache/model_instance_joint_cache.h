@@ -15,7 +15,7 @@ namespace dragonpoop
     struct model_instance_joint_cache_element
     {
         int16_t id, pid;
-        dpmatrix start, end;
+        dpmatrix start, end, bone_start, bone_end;
     };
     
     class model_instance_joint_cache
@@ -30,12 +30,6 @@ namespace dragonpoop
         void autoResize( unsigned int ncnt );
         //transform vertex
         void transform( dpxyz_f *in, dpxyz_f *out_start, dpxyz_f *out_end, int16_t i );
-        //transform vertex by bone
-        void transformBone( dpxyz_f *out_start, dpxyz_f *out_end, model_instance_joint_cache_element *e );
-        //transform vertex by undo bone
-        void transformUndoBone( dpxyz_f *out_start, dpxyz_f *out_end, model_instance_joint_cache_element *e );
-        //transform vertex by animation
-        void transformAnimation( dpxyz_f *out_start, dpxyz_f *out_end, model_instance_joint_cache_element *e );
         
     protected:
         
@@ -53,6 +47,8 @@ namespace dragonpoop
         void transform( dpvertex *v, float ratio );
         //get pointer to location
         model_instance_joint_cache_element *getElement( int16_t i );
+        //return count
+        uint16_t getCount( void );
         
     };
     

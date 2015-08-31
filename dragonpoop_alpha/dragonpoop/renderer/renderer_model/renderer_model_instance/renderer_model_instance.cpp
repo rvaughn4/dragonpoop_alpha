@@ -159,13 +159,13 @@ namespace dragonpoop
     }
     
     //add group
-    renderer_model_instance_group *renderer_model_instance::makeGroup( model_instance_writelock *ml, model_instance_group *g )
+    renderer_model_instance_group *renderer_model_instance::makeGroup( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd )
     {
         renderer_model_instance_group *c;
         
-        c = this->genGroup( ml, g );
+        c = this->genGroup( ml, g, thd );
         this->addComponent( c );
-        c->sync( ml, g );
+        c->sync( ml, g, thd );
         
         return c;
     }
@@ -183,7 +183,7 @@ namespace dragonpoop
     }
     
     //make groups
-    void renderer_model_instance::makeGroups( model_instance_writelock *ml )
+    void renderer_model_instance::makeGroups( model_instance_writelock *ml, dpthread_lock *thd )
     {
         std::list<renderer_model_instance_group *> li, d;
         std::list<renderer_model_instance_group *>::iterator ii;
@@ -209,11 +209,11 @@ namespace dragonpoop
             pi = (renderer_model_instance_group *)t.findLeaf( p->getId() );
             if( pi )
             {
-                pi->sync( ml, p );
+                pi->sync( ml, p, thd );
                 t.removeLeaf( pi );
                 continue;
             }
-            this->makeGroup( ml, p );
+            this->makeGroup( ml, p, thd );
         }
         
         //find leaves in index not paired with a model_instance
@@ -234,7 +234,7 @@ namespace dragonpoop
     }
     
     //animate groups
-    void renderer_model_instance::syncGroups( model_instance_writelock *ml )
+    void renderer_model_instance::syncGroups( model_instance_writelock *ml, dpthread_lock *thd )
     {
         std::list<renderer_model_instance_group *> l;
         std::list<renderer_model_instance_group *>::iterator i;
@@ -257,12 +257,12 @@ namespace dragonpoop
             p = *i;
             pg = (model_instance_group *)t.findLeaf( p->getId() );
             if( pg )
-                p->sync( ml, pg );
+                p->sync( ml, pg, thd );
         }
     }
     
     //animate groups
-    void renderer_model_instance::animateGroups( model_instance_writelock *ml )
+    void renderer_model_instance::animateGroups( model_instance_writelock *ml, dpthread_lock *thd )
     {
         std::list<renderer_model_instance_group *> l;
         std::list<renderer_model_instance_group *>::iterator i;
@@ -285,7 +285,7 @@ namespace dragonpoop
             p = *i;
             pg = (model_instance_group *)t.findLeaf( p->getId() );
             if( pg )
-                p->animate( ml, pg );
+                p->animate( ml, pg, thd );
         }
     }
     
@@ -300,10 +300,10 @@ namespace dragonpoop
             ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300 );
             if( ml )
             {
-                this->makeGroups( ml );
+                this->makeGroups( ml, thd );
                 this->bIsSynced = 1;
                 this->onSync( thd, g, ml );
-                this->syncGroups( ml );
+                this->syncGroups( ml, thd );
                 this->syncJoints( ml );
             }
         }
@@ -314,7 +314,7 @@ namespace dragonpoop
             if( ml )
             {
                 this->syncJoints( ml );
-                this->animateGroups( ml );
+                this->animateGroups( ml, thd );
                 this->bIsAnimated = 1;
             }
         }
@@ -339,9 +339,9 @@ namespace dragonpoop
     }
     
     //genertae group
-    renderer_model_instance_group *renderer_model_instance::genGroup( model_instance_writelock *ml, model_instance_group *g )
+    renderer_model_instance_group *renderer_model_instance::genGroup( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd )
     {
-        return new renderer_model_instance_group( ml, g );
+        return new renderer_model_instance_group( ml, g, thd );
     }
 
     //render model

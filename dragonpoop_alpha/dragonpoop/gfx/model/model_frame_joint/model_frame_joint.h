@@ -36,6 +36,8 @@ namespace dragonpoop
         void setTranslation( dpxyz_f *x );
         //get translation
         void getTranslation( dpxyz_f *x );
+        //returns true if has parent
+        virtual bool hasParent( dpid id );
         
     };
     

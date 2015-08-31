@@ -7,7 +7,7 @@ namespace dragonpoop
 {
     
     //ctor
-    openglx_1o5_renderer_model_instance_group::openglx_1o5_renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g ) : renderer_model_instance_group( ml, g )
+    openglx_1o5_renderer_model_instance_group::openglx_1o5_renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd ) : renderer_model_instance_group( ml, g, thd )
     {
         this->vb = new dpvertexindex_buffer();
         this->vbsmooth = new dpvertex_buffer();
@@ -22,11 +22,11 @@ namespace dragonpoop
     }
     
     //sync with group
-    void openglx_1o5_renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g )
+    void openglx_1o5_renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd )
     {
         dpvertex *b;
         unsigned int sn, so;
-        this->renderer_model_instance_group::sync( ml, g );
+        this->renderer_model_instance_group::sync( ml, g, thd );
         this->vb->clear();
         ml->fillVertexBuffer( g->getId(), this->vb );
         

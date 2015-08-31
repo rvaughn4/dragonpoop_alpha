@@ -46,9 +46,10 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 1000;
+        this->t_frame_time = 200;
         this->bIsSynced = 1;
         this->j_ctr = 0;
+        this->t_start = this->t_end = 0;
         
         l = (model_instance_writelock *)g.tryWriteLock( this, 400 );
         if( !l )
@@ -288,7 +289,7 @@ namespace dragonpoop
     void model_instance::dosync( model_instance_writelock *mi, model_writelock *ml )
     {
         shared_obj_guard o;
-        renderer_model_instance_readlock *rl;
+        renderer_model_instance_writelock *rl;
 
         this->makeAnimations( ml );
         this->makeJoints( ml );
@@ -297,7 +298,7 @@ namespace dragonpoop
         
         if( !this->r )
             return;
-        rl = (renderer_model_instance_readlock *)o.tryReadLock( this->r, 400 );
+        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 400 );
         if( !rl )
             return;
         rl->sync();
@@ -307,15 +308,19 @@ namespace dragonpoop
     void model_instance::animate( model_instance_writelock *mi, model_writelock *ml, uint64_t tms )
     {
         shared_obj_guard o;
-        renderer_model_instance_readlock *rl;
+        renderer_model_instance_writelock *rl;
         
+        if( this->t_start )
+            this->t_start = this->t_end;
+        else
+            this->t_start = tms;
         this->t_end = tms + this->t_frame_time;
-        this->t_start = tms;
+        
         this->redoAnim( mi, ml );
         
         if( !this->r )
             return;
-        rl = (renderer_model_instance_readlock *)o.tryReadLock( this->r, 400 );
+        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 400 );
         if( !rl )
             return;
         rl->animate();
@@ -673,6 +678,7 @@ namespace dragonpoop
             arot.z += rot.z;
         }
         
+        j->carryOver( this->t_start, this->t_end );
         j->setAnimationPosition( &atrans );
         j->setAnimationRotation( &arot );
     }
@@ -683,27 +689,16 @@ namespace dragonpoop
         std::list<model_frame_joint *> l;
         std::list<model_frame_joint *>::iterator i;
         model_frame_joint *p;
-        dpid id, idd;
         dpxyz_f trans, rot;
         
-        m->getFrameJoints( &l, a->getEndFrame() );
+        m->getFrameJoints( &l, a->getEndFrame(), j->getId() );
         memset( atrans, 0, sizeof( trans ) );
         memset( arot, 0, sizeof( rot ) );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            
-            id = p->getJointId();
-            idd = j->getId();
-            if( !dpid_compare( &id, &idd ) )
-                continue;
-            
-            id = p->getFrameId();
-            idd = a->getEndFrame();
-            if( !dpid_compare( &id, &idd ) )
-                continue;
-            
+           
             p->getRotation( &rot );
             p->getTranslation( &trans );
             

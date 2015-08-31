@@ -9,6 +9,7 @@ namespace dragonpoop
  
     class model_instance_group;
     class model_instance_writelock;
+    class dpthread_lock;
     
     class renderer_model_instance_group : public model_component
     {
@@ -23,7 +24,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g );
+        renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //dtor
         virtual ~renderer_model_instance_group( void );
         //set material id
@@ -31,9 +32,9 @@ namespace dragonpoop
         //get material id
         dpid getMaterialId( void );
         //sync with group
-        virtual void sync( model_instance_writelock *ml, model_instance_group *g );
+        virtual void sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //sync with group
-        virtual void animate( model_instance_writelock *ml, model_instance_group *g );
+        virtual void animate( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //get start time
         uint64_t getStartTime( void );
         //get end time

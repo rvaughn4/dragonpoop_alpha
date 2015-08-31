@@ -41,7 +41,7 @@ namespace dragonpoop
         this->id = id;
         this->r = 0;
         this->gtsk = new model_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 20, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 100, 1 );
         tp->addTask( this->tsk );
     }
 
@@ -727,6 +727,12 @@ namespace dragonpoop
     void model::getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id )
     {
         this->getComponentsByParent( model_component_type_frame_joint, parent_id, (std::list<model_component *> *)l );
+    }
+    
+    //get FrameJoints by frame and animation id
+    void model::getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid parent_id_2 )
+    {
+        this->getComponentsByParents( model_component_type_frame_joint, parent_id_1, parent_id_2, (std::list<model_component *> *)l );
     }
     
 };

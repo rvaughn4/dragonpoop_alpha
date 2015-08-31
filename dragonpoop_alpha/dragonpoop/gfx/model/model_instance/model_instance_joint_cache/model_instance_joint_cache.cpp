@@ -165,7 +165,9 @@ namespace dragonpoop
         *out_end = *in;
 
         e->start.transform( out_start );
+        e->bone_start.transform( out_start );
         e->end.transform( out_end );
+        e->bone_end.transform( out_end );
     }
     
     //auto resize
@@ -216,6 +218,12 @@ namespace dragonpoop
             return 0;
         
         return &b[ (unsigned int)i ];
+    }
+    
+    //return count
+    uint16_t model_instance_joint_cache::getCount( void )
+    {
+        return (uint16_t)this->cnt;
     }
     
 };

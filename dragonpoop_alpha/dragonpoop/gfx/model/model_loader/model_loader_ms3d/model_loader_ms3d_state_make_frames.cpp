@@ -234,6 +234,7 @@ namespace dragonpoop
         re = tt / td;
         if( re > 1 )
             re = 1;
+        re = 0;
         rb = 1.0f - re;
         
         x->x = rb * kb->x + re * ke->x;

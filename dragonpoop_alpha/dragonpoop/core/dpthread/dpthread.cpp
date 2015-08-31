@@ -430,7 +430,7 @@ namespace dragonpoop
                 if( !tl )
                     continue;
                 if( lowest_delay < 2000 )
-                    lowest_delay += 16 + lowest_delay;
+                    lowest_delay += 1;
                 if( lowest_delay > 2000 )
                     lowest_delay = 2000;
                 t->getTaskFromPool();

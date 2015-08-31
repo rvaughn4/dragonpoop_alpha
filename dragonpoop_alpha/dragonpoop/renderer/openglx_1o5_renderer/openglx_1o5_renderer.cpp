@@ -332,7 +332,8 @@ namespace dragonpoop
     {
         return new openglx_1o5_renderer_model( ml );
     }
-    
+    void render_joints( model_instance_joint_cache *c, float r );
+
     //render model instance group
     void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
     {
@@ -344,10 +345,12 @@ namespace dragonpoop
         unsigned int ii, is, vi, vs, ss;
         openglx_1o5_renderer_model_instance_group *og;
         openglx_1o5_renderer_model_material *gmat;
-        float r_end, td, tt;
+        float r_end;
         std::vector<uint16_t> indicies;
-        uint64_t t;
+        uint64_t t, td, tt;
+        
         model_instance_joint_cache *jnts;
+        model_instance_joint_cache_element *e;
 
         jnts = mi->getJointCache();
         t = thd->getTicks();
@@ -366,16 +369,24 @@ namespace dragonpoop
         if( tt > td )
             tt = td;
         if( td > 0 )
-            r_end = tt / td;
+            r_end = (float)tt / (float)td;
         else
             r_end = 0;
         
-        dpmatrix p, u;
         static float rr;
         rr += 0.1f;
 
-        p.rotateY( rr );
-        u.rotateY( -rr );
+        glLoadMatrixf( this->world_m.getRaw4by4() );
+        
+        glRotatef( rr, 0, 1, 0 );
+        GLfloat LightPosition[]= { 0.0f, 0.0f, 8.0f, 0.0f };
+        glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
+        glLoadMatrixf( this->world_m.getRaw4by4() );
+        glTranslatef( 0, 0, -4 );
+        glRotatef( rr, 0, 1, 0 );
+        
+        glBindTexture( GL_TEXTURE_2D, 0 );
+        glDisable( GL_LIGHTING );
         
         for( vi = 0 ; vi < vs && vi < ss; vi++ )
         {
@@ -384,7 +395,8 @@ namespace dragonpoop
             s = &sp[ vi ];
 
             jnts->transform( &b, r_end );
-/*
+
+            /*
             s->pos.x += ( b.pos.x - s->pos.x ) * 0.125f;
             s->pos.y += ( b.pos.y - s->pos.y ) * 0.125f;
             s->pos.z += ( b.pos.z - s->pos.z ) * 0.125f;
@@ -395,7 +407,7 @@ namespace dragonpoop
             //b.pos = s->pos;
             //b.normal = s->normal;
             
-            p.transform( &b.pos );
+            //p.transform( &b.pos );
             //u.transform( &b.pos );
             nvb.addVertex( &b );
         }
@@ -411,23 +423,103 @@ namespace dragonpoop
             indicies.push_back( ix->i );
         }
 
-        glLoadMatrixf( this->world_m.getRaw4by4() );
-
-        glRotatef( rr, 0, 1, 0 );
-        GLfloat LightPosition[]= { 0.0f, 0.0f, 8.0f, 0.0f };
-        glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
-
-        glLoadMatrixf( this->world_m.getRaw4by4() );
-        glTranslatef( 0, 0, -4 );
-        //glRotatef( rr * 0.2f, 0, 1, 0 );
-
+        glEnable( GL_LIGHTING );
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
 
         glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
         glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
+ 
+        glBindTexture( GL_TEXTURE_2D, 0 );
+        glDisable( GL_LIGHTING );
+        glClear( GL_DEPTH_BUFFER_BIT );
+        
+        render_joints( jnts, r_end );
     }
 
+    void render_joints( model_instance_joint_cache *c, model_instance_joint_cache_element *e, float r );
+    
+    void render_joints( model_instance_joint_cache *c, float r )
+    {
+        unsigned int i, e;
+        model_instance_joint_cache_element *p;
+        
+        e = c->getCount();
+        for( i = 0; i < e; i++ )
+        {
+            p = c->getElement( i );
+            render_joints( c, p, r );
+        }
+    }
+    
+    void render_joints( model_instance_joint_cache *c, model_instance_joint_cache_element *e, float r )
+    {
+        model_instance_joint_cache_element *p;
+        float rs = 1.0f - r;
+        int ci;
+        dpxyz_f xs, xe;
+        
+        p = c->getElement( e->pid );
+        
+        glBegin( GL_LINES );
+        
+        xs.x = xs.y = xs.z = 0;
+        xe = xs;
+        
+        e->start.transform( &xs );
+        e->end.transform( &xe );
+        
+        ci = e->id;
+        while( ci >= 6 )
+            ci -= 6;
+        if( ci == 0 )
+            glColor4f( r, r, r, 1.0f );
+        if( ci == 1 )
+            glColor4f( r, 0.0f, 0.0f, 1.0f );
+        if( ci == 2 )
+            glColor4f( r, r, 0.0f, 1.0f );
+        if( ci == 3 )
+            glColor4f( 0.0f, r, 0.0f, 1.0f );
+        if( ci == 4 )
+            glColor4f( 0.0f, r, r, 1.0f );
+        if( ci == 5 )
+            glColor4f( 0.0f, 0.0f, r, 1.0f );
+        
+        glVertex3f( xs.x * rs + xe.x * r,
+                   xs.y * rs + xe.y * r,
+                   xs.z * rs + xe.z * r );
+        
+        if( p )
+        {
+            xs.x = xs.y = xs.z = 0;
+            xe = xs;
+
+            p->start.transform( &xs );
+            p->end.transform( &xe );
+
+            ci = p->id;
+            while( ci >= 6 )
+                ci -= 6;
+            if( ci == 0 )
+                glColor4f( r, r, r, 1.0f );
+            if( ci == 1 )
+                glColor4f( r, 0.0f, 0.0f, 1.0f );
+            if( ci == 2 )
+                glColor4f( r, r, 0.0f, 1.0f );
+            if( ci == 3 )
+                glColor4f( 0.0f, r, 0.0f, 1.0f );
+            if( ci == 4 )
+                glColor4f( 0.0f, r, r, 1.0f );
+            if( ci == 5 )
+                glColor4f( 0.0f, 0.0f, r, 1.0f );
+        }
+            
+        glVertex3f( xs.x * rs + xe.x * r,
+                   xs.y * rs + xe.y * r,
+                   xs.z * rs + xe.z * r );
+
+        glEnd();
+    }
 
 };

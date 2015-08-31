@@ -44,9 +44,9 @@ namespace dragonpoop
     }
     
     //genertae group
-    renderer_model_instance_group *openglx_1o5_renderer_model_instance::genGroup( model_instance_writelock *ml, model_instance_group *g )
+    renderer_model_instance_group *openglx_1o5_renderer_model_instance::genGroup( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd )
     {
-        return new openglx_1o5_renderer_model_instance_group( ml, g );
+        return new openglx_1o5_renderer_model_instance_group( ml, g, thd );
     }
     
 };

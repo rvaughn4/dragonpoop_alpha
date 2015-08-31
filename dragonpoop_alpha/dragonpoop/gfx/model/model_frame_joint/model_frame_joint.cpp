@@ -52,5 +52,11 @@ namespace dragonpoop
     {
         *x = this->trans;
     }
+    
+    //returns true if has parent
+    bool model_frame_joint::hasParent( dpid id )
+    {
+        return dpid_compare( &id, &this->joint_id ) || dpid_compare( &id, &this->frame_id );
+    }
 
 };

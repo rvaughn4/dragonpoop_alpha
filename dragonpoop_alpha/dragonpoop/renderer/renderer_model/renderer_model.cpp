@@ -296,7 +296,7 @@ namespace dragonpoop
             this->bIsSynced = 1;
         }
         
-        if( t - this->t_last_i_ran > 1000 )
+        if( t - this->t_last_i_ran > 50 )
         {
             this->t_last_i_ran = t;
             this->runInstances( thd );

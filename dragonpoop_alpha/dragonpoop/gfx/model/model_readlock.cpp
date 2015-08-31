@@ -269,4 +269,10 @@ namespace dragonpoop
         this->t->getFrameJoints( l, parent_id );
     }
     
+    //get FrameJoints by frame and animation id
+    void model_readlock::getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid parent_id_2 )
+    {
+        this->t->getFrameJoints( l, parent_id_1, parent_id_2 );
+    }
+    
 };

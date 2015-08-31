@@ -178,6 +178,8 @@ namespace dragonpoop
         void getFrameJoints( std::list<model_frame_joint *> *l );
         //get FrameJoints by frame or animation id
         void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id );
+        //get FrameJoints by frame and animation id
+        void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid partent_id_2 );
 
         friend class model;
     };

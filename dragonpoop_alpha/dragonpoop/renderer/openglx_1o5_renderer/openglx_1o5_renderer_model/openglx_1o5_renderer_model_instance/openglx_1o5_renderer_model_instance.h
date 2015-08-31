@@ -6,6 +6,8 @@
 
 namespace dragonpoop
 {
+ 
+    class dpthread_lock;
     
     class openglx_1o5_renderer_model_instance : public renderer_model_instance
     {
@@ -23,7 +25,7 @@ namespace dragonpoop
         //handle sync
         virtual void onSync( dpthread_lock *thd, renderer_model_instance_writelock *g, model_instance_writelock *ml );
         //genertae group
-        virtual renderer_model_instance_group *genGroup( model_instance_writelock *ml, model_instance_group *g );
+        virtual renderer_model_instance_group *genGroup( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         
     public:
         

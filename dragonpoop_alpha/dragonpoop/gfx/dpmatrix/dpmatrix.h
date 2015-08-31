@@ -7,10 +7,17 @@
 namespace dragonpoop
 {
 
+    class model_instance_joint_cache;
+    struct model_instance_joint_cache_element;
+    
     class dpmatrix
     {
 
     private:
+
+    protected:
+
+    public:
 
         union
         {
@@ -23,10 +30,6 @@ namespace dragonpoop
                 } c1, c2, c3, c4;
             };
         } values;
-
-    protected:
-
-    public:
 
         //ctor
         dpmatrix( void );
