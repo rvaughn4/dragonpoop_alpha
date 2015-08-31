@@ -18,7 +18,6 @@ namespace dragonpoop
         j->getRotation( &this->rot );
         this->parent_id = j->getParent();
         this->p_index = -1;
-        this->old_start_time = this->old_end_time = 0;
         
         j->getName( &s );
         this->setName( &s );
@@ -59,56 +58,29 @@ namespace dragonpoop
     }
     
     //set animation position
-    void model_instance_joint::setAnimationPosition( dpxyz_f *x )
+    void model_instance_joint::setStartPosition( dpxyz_f *x )
+    {
+        this->arot_old = *x;
+    }
+    
+    //set animation rotation
+    void model_instance_joint::setStartRotation( dpxyz_f *x )
+    {
+        this->apos_old = *x;
+    }
+    
+    //set animation position
+    void model_instance_joint::setStopPosition( dpxyz_f *x )
     {
         this->arot = *x;
     }
     
     //set animation rotation
-    void model_instance_joint::setAnimationRotation( dpxyz_f *x )
+    void model_instance_joint::setStopRotation( dpxyz_f *x )
     {
         this->apos = *x;
     }
-    
-    //reset matrix
-    void model_instance_joint::reset( void )
-    {
-        //this->isChained = 0;
-    }
-    
-    //carry over old animation
-    void model_instance_joint::carryOver( uint64_t t_start, uint64_t t_end )
-    {
-        uint64_t td, tt;
-        float re, rs;
-        
-        if( t_start == this->old_start_time )
-            return;
-        if( t_end == this->old_end_time )
-            return;
-        
-        tt = t_start - this->old_start_time;
-        td = this->old_end_time - this->old_start_time;
-        if( !td )
-            re = 1;
-        else
-            re = (float)tt / (float)td;
-        if( re > 1 )
-            re = 1;
-        rs = 1.0f - re;
-        
-        this->apos_old.x = this->apos_old.x * rs + this->apos.x * re;
-        this->apos_old.y = this->apos_old.y * rs + this->apos.y * re;
-        this->apos_old.z = this->apos_old.z * rs + this->apos.z * re;
-        
-        this->arot_old.x = this->arot_old.x * rs + this->arot.x * re;
-        this->arot_old.y = this->arot_old.y * rs + this->arot.y * re;
-        this->arot_old.z = this->arot_old.z * rs + this->arot.z * re;
-        
-        this->old_start_time = t_start;
-        this->old_end_time = t_end;
-    }
-    
+   
     //redo matrix
     void model_instance_joint::redoMatrix( model_instance_writelock *m )
     {
@@ -147,10 +119,11 @@ namespace dragonpoop
         t->rotateYrad( this->rot.y );
         t->rotateXrad( this->rot.x );
         
+        t->translate( -this->apos_old.x, -this->apos_old.y, -this->apos_old.z );
         t->rotateZrad( this->arot_old.z );
         t->rotateYrad( this->arot_old.y );
         t->rotateXrad( this->arot_old.x );
-        //t->translate( this->apos_old.x, this->apos_old.y, this->apos_old.z );
+        t->translate( this->apos_old.x, this->apos_old.y, this->apos_old.z );
     }
     
     //redo matrix
@@ -170,10 +143,11 @@ namespace dragonpoop
         t->rotateYrad( this->rot.y );
         t->rotateXrad( this->rot.x );
         
+        t->translate( -this->apos.x, -this->apos.y, -this->apos.z );
         t->rotateZrad( this->arot.z );
         t->rotateYrad( this->arot.y );
         t->rotateXrad( this->arot.x );
-        //t->translate( this->apos.x, this->apos.y, this->apos.z );
+        t->translate( this->apos.x, this->apos.y, this->apos.z );
     }
 
     //redo matrix

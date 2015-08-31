@@ -630,17 +630,14 @@ namespace dragonpoop
         uint64_t ts, te, pt;
         
         if( !a->isPlaying() && a->isAutoPlay() )
-            a->start( this->t_end, m );
+            a->start( this->t_start, m );
         
-        pt = a->getPlayTime( this->t_end );
+        pt = a->getPlayTime( this->t_start );
         if( !a->isPlaying() )
             return;
         
-        f = a->findFrameBeforeTime( m, pt, &ts );
-        if( f )
-            a->setStartFrame( f->getId() );
-
-        f = a->findFrameAtTime( m, pt, &te );
+        a->setStartFrame( a->getEndFrame() );
+        f = a->findFrameBeforeTime( m, pt, &te );
         if( f )
             a->setEndFrame( f->getId() );
         
@@ -654,11 +651,12 @@ namespace dragonpoop
         std::list<model_instance_animation *>::iterator i;
         model_instance_animation *p;
         dpxyz_f atrans, arot, trans, rot;
+        dpxyz_f atrans_e, arot_e, trans_e, rot_e;
         
         this->getAnimations( &l );
         
         memset( &atrans, 0, sizeof( atrans ) );
-        memset( &arot, 0, sizeof( arot ) );
+        arot = atrans_e = arot_e = atrans;
         
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -667,7 +665,7 @@ namespace dragonpoop
             if( !p->isPlaying() )
                 continue;
             
-            this->redoAnim( m, j, p, &trans, &rot );
+            this->redoAnim( m, j, p, &trans, &rot, &trans_e, &rot_e );
             
             atrans.x += trans.x;
             atrans.y += trans.y;
@@ -676,22 +674,31 @@ namespace dragonpoop
             arot.x += rot.x;
             arot.y += rot.y;
             arot.z += rot.z;
+
+            atrans_e.x += trans_e.x;
+            atrans_e.y += trans_e.y;
+            atrans_e.z += trans_e.z;
+            
+            arot_e.x += rot_e.x;
+            arot_e.y += rot_e.y;
+            arot_e.z += rot_e.z;
         }
         
-        j->carryOver( this->t_start, this->t_end );
-        j->setAnimationPosition( &atrans );
-        j->setAnimationRotation( &arot );
+        j->setStartPosition( &atrans );
+        j->setStartRotation( &arot );
+        j->setStopPosition( &atrans_e );
+        j->setStopRotation( &arot_e );
     }
     
     //redo animation, compound joint transforms for a given animation
-    void model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyz_f *atrans, dpxyz_f *arot )
+    void model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyz_f *atrans, dpxyz_f *arot, dpxyz_f *atrans_e, dpxyz_f *arot_e )
     {
         std::list<model_frame_joint *> l;
         std::list<model_frame_joint *>::iterator i;
         model_frame_joint *p;
         dpxyz_f trans, rot;
         
-        m->getFrameJoints( &l, a->getEndFrame(), j->getId() );
+        m->getFrameJoints( &l, a->getStartFrame(), j->getId() );
         memset( atrans, 0, sizeof( trans ) );
         memset( arot, 0, sizeof( rot ) );
         
@@ -709,6 +716,27 @@ namespace dragonpoop
             arot->x += rot.x;
             arot->y += rot.y;
             arot->z += rot.z;
+        }
+        
+        l.clear();
+        m->getFrameJoints( &l, a->getEndFrame(), j->getId() );
+        memset( atrans_e, 0, sizeof( trans ) );
+        memset( arot_e, 0, sizeof( rot ) );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            
+            p->getRotation( &rot );
+            p->getTranslation( &trans );
+            
+            atrans_e->x += trans.x;
+            atrans_e->y += trans.y;
+            atrans_e->z += trans.z;
+            
+            arot_e->x += rot.x;
+            arot_e->y += rot.y;
+            arot_e->z += rot.z;
         }
     }
     

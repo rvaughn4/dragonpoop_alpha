@@ -22,8 +22,6 @@ namespace dragonpoop
         dpmatrix m_in, old_m_in, m_out, old_m_out;
         dpid parent_id;
         int16_t index, p_index;
-        std::atomic<bool> bIsChained;
-        uint64_t old_start_time, old_end_time;
         
     protected:
         
@@ -51,11 +49,13 @@ namespace dragonpoop
         //get rotation
         void getRotation( dpxyz_f *x );
         //set animation position
-        void setAnimationPosition( dpxyz_f *x );
+        void setStartPosition( dpxyz_f *x );
         //set animation rotation
-        void setAnimationRotation( dpxyz_f *x );
-        //reset matrix
-        void reset( void );
+        void setStartRotation( dpxyz_f *x );
+        //set animation position
+        void setStopPosition( dpxyz_f *x );
+        //set animation rotation
+        void setStopRotation( dpxyz_f *x );
         //set joint index
         void setIndex( int16_t i );
         //get joint index
@@ -64,8 +64,6 @@ namespace dragonpoop
         void redoMatrix( model_instance_writelock *m );
         //populate joint cache entity
         void fillCacheEntity( model_instance_joint_cache_element *e );
-        //carry over old animation
-        void carryOver( uint64_t t_start, uint64_t t_end );
 
     };
     
