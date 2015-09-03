@@ -91,99 +91,6 @@ namespace dragonpoop
             j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
         if( j )
             this->p_index = j->getIndex();
-        
-        this->old_m_in.setIdentity();
-        this->old_m_out.setIdentity();
-        this->m_in.setIdentity();
-        this->m_out.setIdentity();
-        this->redoMatrixUpOld( m, &this->old_m_in );
-        this->redoMatrixUp( m, &this->m_in );
-        this->redoMatrixDownOld( m, &this->old_m_out );
-        this->redoMatrixDown( m, &this->m_out );
-    }
-    
-    //redo matrix
-    void model_instance_joint::redoMatrixUpOld( model_instance_writelock *m, dpmatrix *t )
-    {
-        model_instance_joint *j;
-        
-        j = 0;
-        if( !dpid_isZero( &this->parent_id ) )
-            j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
-        
-        if( j )
-            j->redoMatrixUpOld( m, t );
-        
-        t->translate( this->pos.x, this->pos.y, this->pos.z );
-        t->rotateZrad( this->rot.z );
-        t->rotateYrad( this->rot.y );
-        t->rotateXrad( this->rot.x );
-        
-        t->translate( -this->apos_old.x, -this->apos_old.y, -this->apos_old.z );
-        t->rotateZrad( this->arot_old.z );
-        t->rotateYrad( this->arot_old.y );
-        t->rotateXrad( this->arot_old.x );
-        t->translate( this->apos_old.x, this->apos_old.y, this->apos_old.z );
-    }
-    
-    //redo matrix
-    void model_instance_joint::redoMatrixUp( model_instance_writelock *m, dpmatrix *t )
-    {
-        model_instance_joint *j;
-        
-        j = 0;
-        if( !dpid_isZero( &this->parent_id ) )
-            j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
-        
-        if( j )
-            j->redoMatrixUp( m, t );
-        
-        t->translate( this->pos.x, this->pos.y, this->pos.z );
-        t->rotateZrad( this->rot.z );
-        t->rotateYrad( this->rot.y );
-        t->rotateXrad( this->rot.x );
-        
-        t->translate( -this->apos.x, -this->apos.y, -this->apos.z );
-        t->rotateZrad( this->arot.z );
-        t->rotateYrad( this->arot.y );
-        t->rotateXrad( this->arot.x );
-        t->translate( this->apos.x, this->apos.y, this->apos.z );
-    }
-
-    //redo matrix
-    void model_instance_joint::redoMatrixDownOld( model_instance_writelock *m, dpmatrix *t )
-    {
-        model_instance_joint *j;
-        
-        j = 0;
-        if( !dpid_isZero( &this->parent_id ) )
-            j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
-        
-        t->rotateXrad( -this->rot.x );
-        t->rotateYrad( -this->rot.y );
-        t->rotateZrad( -this->rot.z );
-        t->translate( -this->pos.x, -this->pos.y, -this->pos.z );
-        
-        if( j )
-            j->redoMatrixDownOld( m, t );
-    }
-    
-    //redo matrix
-    void model_instance_joint::redoMatrixDown( model_instance_writelock *m, dpmatrix *t )
-    {
-        model_instance_joint *j;
-        
-        j = 0;
-        if( !dpid_isZero( &this->parent_id ) )
-            j = (model_instance_joint *)m->findComponent( model_component_type_joint, this->parent_id );
-
-        t->rotateXrad( -this->rot.x );
-        t->rotateYrad( -this->rot.y );
-        t->rotateZrad( -this->rot.z );
-        t->translate( -this->pos.x, -this->pos.y, -this->pos.z );
-
-        if( j )
-            j->redoMatrixDown( m, t );
     }
     
     //set joint index
@@ -205,10 +112,13 @@ namespace dragonpoop
             this->p_index = -1;
         e->id = this->index;
         e->pid = this->p_index;
-        e->end.copy( &this->m_in );
-        e->start.copy( &this->old_m_in );
-        e->bone_end.copy( &this->m_out );
-        e->bone_start.copy( &this->old_m_out );
+
+        e->bone_pos = this->pos;
+        e->bone_rot = this->rot;
+        e->rot_start = this->arot_old;
+        e->rot_end = this->arot;
+        e->pos_start = this->apos_old;
+        e->pos_end = this->apos;
     }
     
 };

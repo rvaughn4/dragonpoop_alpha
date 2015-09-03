@@ -56,25 +56,15 @@ namespace dragonpoop
     }
     
     //transform vertex
-    void model_instance_joint_cache::transform( dpvertex *v, float ratio )
+    void model_instance_joint_cache::transform( dpvertex *v )
     {
-        dpxyz_f outps, outns, outpe, outne;
-        float s_ratio;
-        
-        this->transform( &v->pos, &outps, &outpe, v->bones[ 0 ].id );
-        this->transform( &v->normal, &outns, &outne, v->bones[ 0 ].id );
-        
-        if( ratio > 1 )
-            ratio = 1;
-        s_ratio = 1.0f - ratio;
 
-        v->pos.x = outps.x * s_ratio + outpe.x * ratio;
-        v->pos.y = outps.y * s_ratio + outpe.y * ratio;
-        v->pos.z = outps.z * s_ratio + outpe.z * ratio;
-        
-        v->normal.x = outns.x * s_ratio + outne.x * ratio;
-        v->normal.y = outns.y * s_ratio + outne.y * ratio;
-        v->normal.z = outns.z * s_ratio + outne.z * ratio;
+        model_instance_joint_cache_element *e;
+        e = this->getElement( v->bones[ 0 ].id );
+        if( !e )
+            return;
+        e->up.transform( &v->pos );
+        e->down.transform( &v->pos );
         
         /*
         dpxyz_f *pos_in, pos_a_start, pos_a_end, pos_out_start, pos_out_end;
@@ -152,24 +142,6 @@ namespace dragonpoop
          */
     }
     
-    //transform vertex
-    void model_instance_joint_cache::transform( dpxyz_f *in, dpxyz_f *out_start, dpxyz_f *out_end, int16_t i )
-    {
-        model_instance_joint_cache_element *e;
-        
-        e = this->getElement( i );
-        if( !e )
-            return;
-
-        *out_start = *in;
-        *out_end = *in;
-
-        e->start.transform( out_start );
-        e->bone_start.transform( out_start );
-        e->end.transform( out_end );
-        e->bone_end.transform( out_end );
-    }
-    
     //auto resize
     void model_instance_joint_cache::autoResize( unsigned int ncnt )
     {
@@ -224,6 +196,106 @@ namespace dragonpoop
     uint16_t model_instance_joint_cache::getCount( void )
     {
         return (uint16_t)this->cnt;
+    }
+    
+    //compute matrixes
+    void model_instance_joint_cache::updateMaticies( float r )
+    {
+        unsigned int i, e;
+        model_instance_joint_cache_element *p;
+        
+        e = this->getCount();
+        for( i = 0; i < e; i++ )
+        {
+            p = this->getElement( i );
+            if( !p )
+                continue;
+            p->wasUpdated = 0;
+        }
+
+        for( i = 0; i < e; i++ )
+        {
+            p = this->getElement( i );
+            if( !p )
+                continue;
+            this->computeMatrix( p, r );
+        }
+    }
+  
+    //compute matrix for element, computing all parents first
+    void model_instance_joint_cache::computeMatrix( model_instance_joint_cache_element *e, float r )
+    {
+        float rs, re;
+        
+        re = r;
+        if( re > 1 )
+            re = 1;
+        if( re < 0 )
+            re = 0;
+        rs = 1.0f - re;
+        
+        e->up.setIdentity();
+        this->doUpMatrix( e, &e->up, rs, re );
+        
+        e->down.setIdentity();
+        this->doDownMatrix( e, &e->down );
+    }
+    
+    //do matrix up
+    void model_instance_joint_cache::doUpMatrix( model_instance_joint_cache_element *e, dpmatrix *m, float rs, float re )
+    {
+        model_instance_joint_cache_element *p;
+
+        p = this->getElement( e->pid );
+
+        if( p )
+            this->doUpMatrix( p, m, rs, re );
+        
+        //bone up
+        m->translate( -e->bone_pos.x, -e->bone_pos.y, -e->bone_pos.z );
+        //todo rotation
+        
+        m->rotateYrad( this->angleLerp( e->rot_start.x, e->rot_end.x, rs, re ) );
+        m->rotateZrad( this->angleLerp( e->rot_start.y, e->rot_end.y, rs, re ) );
+        m->rotateXrad( this->angleLerp( e->rot_start.z, e->rot_end.z, rs, re ) );
+        
+        //animation
+        m->translate( e->pos_start.x * rs + e->pos_end.x * re, e->pos_start.y * rs + e->pos_end.y * re, e->pos_start.z * rs + e->pos_end.z * re );
+    }
+    
+    //do matrix down
+    void model_instance_joint_cache::doDownMatrix( model_instance_joint_cache_element *e, dpmatrix *m )
+    {
+        model_instance_joint_cache_element *p;
+
+        p = this->getElement( e->pid );
+
+        //bone up
+        m->translate( e->bone_pos.x, e->bone_pos.y, e->bone_pos.z );
+        //todo rotation
+
+        if( p )
+            this->doDownMatrix( p, m );
+    }
+    
+    //do angle lerp
+    float model_instance_joint_cache::angleLerp( float a, float b, float rs, float re )
+    {
+        if( re >= 1 )
+            return b;
+        if( rs >= 1 )
+            return a;
+        
+        if( a > 180 )
+            a -= 360;
+        if( a < -180 )
+            a += 360;
+        if( b > 180 )
+            b -= 360;
+        if( b < -180 )
+            b += 360;
+        
+        return a * rs + b * re;
     }
     
 };

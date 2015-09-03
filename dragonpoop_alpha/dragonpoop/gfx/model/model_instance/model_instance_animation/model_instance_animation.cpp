@@ -111,7 +111,7 @@ namespace dragonpoop
         {
             if( !this->bIsRepeat )
             {
-                this->stop();
+                //this->stop();
                 return 0;
             }
             this->start_time = t + this->repeat_delay_ms - ( td - this->end_time );

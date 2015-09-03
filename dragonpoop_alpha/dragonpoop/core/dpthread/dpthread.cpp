@@ -429,10 +429,10 @@ namespace dragonpoop
                 tl = t->lock();
                 if( !tl )
                     continue;
-                if( lowest_delay < 2000 )
+                if( lowest_delay < 200 )
                     lowest_delay += 1;
-                if( lowest_delay > 2000 )
-                    lowest_delay = 2000;
+                if( lowest_delay > 200 )
+                    lowest_delay = 200;
                 t->getTaskFromPool();
                 delete tl;
                 
@@ -460,15 +460,19 @@ namespace dragonpoop
                 td = 16;
             if( lowest_delay > td )
                 lowest_delay = td;
-            td = t->ticks - rl->getLastTime();
-            if( td < rl->getDelay() )
+            td = rl->getLastTime();
+            if( t->ticks > td )
+                td = t->ticks - rl->getLastTime();
+            else
+                td = rl->getDelay();
+     /*       if( td < rl->getDelay() )
             {
                 t->pushBeenRan( r );
                 delete tl;
                 g.unlock();
                 continue;
             }
-
+*/
             if( !rl->isAlive() )
             {
                 delete tl;

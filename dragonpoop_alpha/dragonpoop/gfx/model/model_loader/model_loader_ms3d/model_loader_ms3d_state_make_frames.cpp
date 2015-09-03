@@ -204,41 +204,91 @@ namespace dragonpoop
     //find xyz keyframe before and after time and interpolate
     void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x )
     {
-        ms3d_model_joint_keyframe *kb, *ke, *k;
-        unsigned int i, e;
+        ms3d_model_joint_keyframe kb, ke;
         float td, tt, rb, re;
         
-        kb = 0; ke = 0;
-        e = (unsigned int)l->size();
-        if( l->empty() )
-            return;
+        this->getKeyframeBefore( t, l, &kb );
+        this->getKeyframeAfter( t, l, &ke );
         
-        for( i = 0; i < e; i++ )
-        {
-            k = &( *l )[ i ];
-            if( !kb || ( k->time <= t && k->time >= kb->time ) )
-                kb = k;
-            if( !ke || ( k->time >= t && k->time <= ke->time ) || ( ke->time <= t && ke->time <= k->time ) )
-                ke = k;
-        }
-        
-        if( !kb || !ke )
-            return;
-        if( t > ke->time )
-            t = ke->time;
-        if( t < kb->time )
-            t = kb->time;
-        
-        td = ke->time - kb->time;
-        tt = t - kb->time;
-        re = tt / td;
+        td = ke.time - kb.time;
+        tt = t - kb.time;
+        if( td <= 0 )
+            re = 0;
+        else
+            re = tt / td;
         if( re > 1 )
             re = 1;
         rb = 1.0f - re;
         
-        x->x = rb * kb->x + re * ke->x;
-        x->y = rb * kb->y + re * ke->y;
-        x->z = rb * kb->z + re * ke->z;
+        x->x = rb * kb.x + re * ke.x;
+        x->y = rb * kb.y + re * ke.y;
+        x->z = rb * kb.z + re * ke.z;
+    }
+    
+    //find xyz keyframe before time
+    void model_loader_ms3d_state_make_frames::getKeyframeBefore( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x )
+    {
+        unsigned int i, e;
+        bool f;
+        ms3d_model_joint_keyframe *p;
+        
+        x->time = 0;
+        f = 0;
+        
+        e = (unsigned int)l->size();
+        for( i = 0; i < e; i++ )
+        {
+            p = &( *l )[ i ];
+            
+            if( p->time > t )
+                continue;
+            if( p->time >= x->time )
+            {
+                *x = *p;
+                f = 1;
+            }
+        }
+    
+        if( !f )
+        {
+            x->time = t;
+            x->x = 0;
+            x->y = 0;
+            x->z = 0;
+        }
+    }
+    
+    //find xyz keyframe after time
+    void model_loader_ms3d_state_make_frames::getKeyframeAfter( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x )
+    {
+        unsigned int i, e;
+        bool f;
+        ms3d_model_joint_keyframe *p;
+        
+        x->time = 0;
+        f = 0;
+        
+        e = (unsigned int)l->size();
+        for( i = 0; i < e; i++ )
+        {
+            p = &( *l )[ i ];
+            
+            if( p->time < t )
+                continue;
+            if( p->time <= x->time )
+            {
+                *x = *p;
+                f = 1;
+            }
+        }
+        
+        if( !f )
+        {
+            x->time = t;
+            x->x = 0;
+            x->y = 0;
+            x->z = 0;
+        }
     }
     
 };

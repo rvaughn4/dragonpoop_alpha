@@ -309,12 +309,16 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         renderer_model_instance_writelock *rl;
-        
+        uint64_t td = this->t_frame_time;
+
         if( this->t_start )
+        {
+            td = tms - this->t_start;
             this->t_start = this->t_end;
+        }
         else
             this->t_start = tms;
-        this->t_end = tms + this->t_frame_time;
+        this->t_end = tms + td;
         
         this->redoAnim( mi, ml );
         

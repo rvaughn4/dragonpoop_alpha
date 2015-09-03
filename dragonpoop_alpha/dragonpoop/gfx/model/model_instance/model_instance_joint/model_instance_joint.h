@@ -19,21 +19,11 @@ namespace dragonpoop
     private:
         
         dpxyz_f pos, rot, apos, arot, apos_old, arot_old;
-        dpmatrix m_in, old_m_in, m_out, old_m_out;
         dpid parent_id;
         int16_t index, p_index;
         
     protected:
         
-        //redo matrix
-        void redoMatrixUpOld( model_instance_writelock *m, dpmatrix *t );
-        //redo matrix
-        void redoMatrixUp( model_instance_writelock *m, dpmatrix *t );
-        //redo matrix
-        void redoMatrixDown( model_instance_writelock *m, dpmatrix *t );
-        //redo matrix
-        void redoMatrixDownOld( model_instance_writelock *m, dpmatrix *t );
-
     public:
         
         //ctor

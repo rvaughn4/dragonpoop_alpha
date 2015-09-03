@@ -40,6 +40,11 @@ namespace dragonpoop
         void makeFrameJoints( dpthread_lock *thd, model_loader_writelock *ml );
         //find xyz keyframe before and after time and interpolate
         void getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x );
+
+        //find xyz keyframe before time
+        void getKeyframeBefore( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x );
+        //find xyz keyframe after time
+        void getKeyframeAfter( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x );
         
     public:
         

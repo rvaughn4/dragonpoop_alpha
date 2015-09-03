@@ -372,6 +372,8 @@ namespace dragonpoop
         else
             r_end = 0;
         
+        jnts->updateMaticies( r_end );
+        
         static float rr;
         rr += 0.1f;
 
@@ -394,7 +396,7 @@ namespace dragonpoop
             b = *v;
             s = &sp[ vi ];
 
-            jnts->transform( &b, r_end );
+            jnts->transform( &b );
 
             /*
             s->pos.x += ( b.pos.x - s->pos.x ) * 0.125f;
@@ -435,6 +437,39 @@ namespace dragonpoop
         glDisable( GL_LIGHTING );
         glClear( GL_DEPTH_BUFFER_BIT );
         
+        glBegin( GL_TRIANGLES );
+        for( ii = 0; ii < is; ii++ )
+        {
+            ix = &ip[ ii ];
+            vi = ix->i;
+            if( vi >= vs )
+                continue;
+            v = &vp[ vi ];
+            
+            float r = 0.5f;//r_end;
+            unsigned int ci = v->bones[ 0 ].id;
+            while( ci >= 6 )
+                ci -= 6;
+            if( ci == 0 )
+                glColor4f( r, r, r, 1.0f );
+            if( ci == 1 )
+                glColor4f( r, 0.0f, 0.0f, 1.0f );
+            if( ci == 2 )
+                glColor4f( r, r, 0.0f, 1.0f );
+            if( ci == 3 )
+                glColor4f( 0.0f, r, 0.0f, 1.0f );
+            if( ci == 4 )
+                glColor4f( 0.0f, r, r, 1.0f );
+            if( ci == 5 )
+                glColor4f( 0.0f, 0.0f, r, 1.0f );
+            
+            glNormal3f( v->normal.x, v->normal.y, v->normal.z );
+            glVertex3f( v->pos.x, v->pos.y, v->pos.z );
+        }
+        glEnd();
+        
+        glClear( GL_DEPTH_BUFFER_BIT );
+
         render_joints( jnts, r_end );
     }
 
@@ -456,20 +491,17 @@ namespace dragonpoop
     void render_joints( model_instance_joint_cache *c, model_instance_joint_cache_element *e, float r )
     {
         model_instance_joint_cache_element *p;
-        float rs = 1.0f - r;
         int ci;
-        dpxyz_f xs, xe;
+        dpxyz_f xs;
         
         p = c->getElement( e->pid );
         
         glBegin( GL_LINES );
         
         xs.x = xs.y = xs.z = 0;
-        xe = xs;
         
-        e->start.transform( &xs );
-        e->end.transform( &xe );
-        
+        e->up.transform( &xs );
+
         ci = e->id;
         while( ci >= 6 )
             ci -= 6;
@@ -486,17 +518,13 @@ namespace dragonpoop
         if( ci == 5 )
             glColor4f( 0.0f, 0.0f, r, 1.0f );
         
-        glVertex3f( xs.x * rs + xe.x * r,
-                   xs.y * rs + xe.y * r,
-                   xs.z * rs + xe.z * r );
+        glVertex3f( xs.x, xs.y, xs.z );
         
         if( p )
         {
             xs.x = xs.y = xs.z = 0;
-            xe = xs;
 
-            p->start.transform( &xs );
-            p->end.transform( &xe );
+            p->up.transform( &xs );
 
             ci = p->id;
             while( ci >= 6 )
@@ -515,9 +543,7 @@ namespace dragonpoop
                 glColor4f( 0.0f, 0.0f, r, 1.0f );
         }
             
-        glVertex3f( xs.x * rs + xe.x * r,
-                   xs.y * rs + xe.y * r,
-                   xs.z * rs + xe.z * r );
+        glVertex3f( xs.x, xs.y, xs.z );
 
         glEnd();
     }

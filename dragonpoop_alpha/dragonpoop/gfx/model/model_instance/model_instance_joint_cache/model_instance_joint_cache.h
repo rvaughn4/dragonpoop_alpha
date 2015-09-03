@@ -15,7 +15,10 @@ namespace dragonpoop
     struct model_instance_joint_cache_element
     {
         int16_t id, pid;
-        dpmatrix start, end, bone_start, bone_end;
+        dpmatrix up, down;
+        dpxyz_f bone_pos, bone_rot, pos_start;
+        dpxyz_f pos_end, rot_start, rot_end;
+        bool wasUpdated;
     };
     
     class model_instance_joint_cache
@@ -28,10 +31,17 @@ namespace dragonpoop
         
         //auto resize
         void autoResize( unsigned int ncnt );
-        //transform vertex
-        void transform( dpxyz_f *in, dpxyz_f *out_start, dpxyz_f *out_end, int16_t i );
         
     protected:
+        
+        //compute matrix for element, computing all parents first
+        void computeMatrix( model_instance_joint_cache_element *e, float r );
+        //do matrix up
+        void doUpMatrix( model_instance_joint_cache_element *e, dpmatrix *m, float rs, float re );
+        //do matrix down
+        void doDownMatrix( model_instance_joint_cache_element *e, dpmatrix *m );
+        //do angle lerp
+        float angleLerp( float a, float b, float rs, float re );
         
     public:
         
@@ -44,11 +54,13 @@ namespace dragonpoop
         //add joint
         void addJoint( model_instance_joint *j );
         //transform vertex
-        void transform( dpvertex *v, float ratio );
+        void transform( dpvertex *v );
         //get pointer to location
         model_instance_joint_cache_element *getElement( int16_t i );
         //return count
         uint16_t getCount( void );
+        //compute matrixes
+        void updateMaticies( float r );
         
     };
     

@@ -88,9 +88,11 @@ namespace dragonpoop
     //multiply translation to matrix
     void dpmatrix::translate( float x, float y, float z )
     {
-        dpmatrix m;
-        m.setTranslation( x, y, z );
-        this->multiply( &m );
+        dpmatrix m0, m1;
+        m0.copy( this );
+        m1.setTranslation( x, y, z );
+        m1.multiply( &m0 );
+        this->copy( &m1 );
     }
 
     //multiply rotation to matrix
@@ -120,25 +122,31 @@ namespace dragonpoop
     //multiply rotation to matrix
     void dpmatrix::rotateXrad( float rad )
     {
-        dpmatrix m;
-        m.setRotationXrad( rad );
-        this->multiply( &m );
+        dpmatrix m0, m1;
+        m0.copy( this );
+        m1.setRotationXrad( rad );
+        m1.multiply( &m0 );
+        this->copy( &m1 );
     }
     
     //multiply rotation to matrix
     void dpmatrix::rotateYrad( float rad )
     {
-        dpmatrix m;
-        m.setRotationYrad( rad );
-        this->multiply( &m );
+        dpmatrix m0, m1;
+        m0.copy( this );
+        m1.setRotationYrad( rad );
+        m1.multiply( &m0 );
+        this->copy( &m1 );
     }
     
     //multiply rotation to matrix
     void dpmatrix::rotateZrad( float rad )
     {
-        dpmatrix m;
-        m.setRotationZrad( rad );
-        this->multiply( &m );
+        dpmatrix m0, m1;
+        m0.copy( this );
+        m1.setRotationZrad( rad );
+        m1.multiply( &m0 );
+        this->copy( &m1 );
     }
 
     //multiply scaling to matrix
