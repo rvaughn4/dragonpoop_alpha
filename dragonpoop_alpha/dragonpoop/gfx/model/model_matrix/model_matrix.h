@@ -22,6 +22,7 @@ namespace dragonpoop
     
     class model_vector;
     class model_quaternion;
+    struct dpxyz_f;
     
     class model_matrix
     {
@@ -58,6 +59,8 @@ namespace dragonpoop
         void inverse_rotate( model_vector *v );
         //concatinate
         void concat( model_matrix *a, model_matrix *b );
+        //find angles
+        void getAngles( dpxyz_f *o );
         
     };
     

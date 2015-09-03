@@ -46,7 +46,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 200;
+        this->t_frame_time = 300;
         this->bIsSynced = 1;
         this->j_ctr = 0;
         this->t_start = this->t_end = 0;

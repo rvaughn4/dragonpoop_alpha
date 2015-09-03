@@ -398,19 +398,17 @@ namespace dragonpoop
 
             jnts->transform( &b );
 
-            /*
-            s->pos.x += ( b.pos.x - s->pos.x ) * 0.125f;
-            s->pos.y += ( b.pos.y - s->pos.y ) * 0.125f;
-            s->pos.z += ( b.pos.z - s->pos.z ) * 0.125f;
-            s->normal.x += ( b.normal.x - s->normal.x ) * 0.125f;
-            s->normal.y += ( b.normal.y - s->normal.y ) * 0.125f;
-            s->normal.z += ( b.normal.z - s->normal.z ) * 0.125f;
-*/
-            //b.pos = s->pos;
-            //b.normal = s->normal;
             
-            //p.transform( &b.pos );
-            //u.transform( &b.pos );
+            s->pos.x += ( b.pos.x - s->pos.x ) * 0.5f;
+            s->pos.y += ( b.pos.y - s->pos.y ) * 0.5f;
+            s->pos.z += ( b.pos.z - s->pos.z ) * 0.5f;
+            s->normal.x += ( b.normal.x - s->normal.x ) * 0.5f;
+            s->normal.y += ( b.normal.y - s->normal.y ) * 0.5f;
+            s->normal.z += ( b.normal.z - s->normal.z ) * 0.5f;
+
+            b.pos = s->pos;
+            b.normal = s->normal;
+            
             nvb.addVertex( &b );
         }
         vp = nvb.getBuffer();
@@ -427,50 +425,11 @@ namespace dragonpoop
 
         glEnable( GL_LIGHTING );
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
-/*
+
         glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
         glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
- */
-        glBindTexture( GL_TEXTURE_2D, 0 );
-        glDisable( GL_LIGHTING );
-        glClear( GL_DEPTH_BUFFER_BIT );
-        
-        glBegin( GL_TRIANGLES );
-        for( ii = 0; ii < is; ii++ )
-        {
-            ix = &ip[ ii ];
-            vi = ix->i;
-            if( vi >= vs )
-                continue;
-            v = &vp[ vi ];
-            
-            float r = 0.5f;//r_end;
-            unsigned int ci = v->bones[ 0 ].id;
-            while( ci >= 6 )
-                ci -= 6;
-            if( ci == 0 )
-                glColor4f( r, r, r, 1.0f );
-            if( ci == 1 )
-                glColor4f( r, 0.0f, 0.0f, 1.0f );
-            if( ci == 2 )
-                glColor4f( r, r, 0.0f, 1.0f );
-            if( ci == 3 )
-                glColor4f( 0.0f, r, 0.0f, 1.0f );
-            if( ci == 4 )
-                glColor4f( 0.0f, r, r, 1.0f );
-            if( ci == 5 )
-                glColor4f( 0.0f, 0.0f, r, 1.0f );
-            
-            glNormal3f( v->normal.x, v->normal.y, v->normal.z );
-            glVertex3f( v->pos.x, v->pos.y, v->pos.z );
-        }
-        glEnd();
-        
-        glClear( GL_DEPTH_BUFFER_BIT );
-
-        render_joints( jnts, r_end );
     }
 
     void render_joints( model_instance_joint_cache *c, model_instance_joint_cache_element *e, float r );

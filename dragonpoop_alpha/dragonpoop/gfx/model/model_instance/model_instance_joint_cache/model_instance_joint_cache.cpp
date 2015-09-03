@@ -2,6 +2,10 @@
 #include "model_instance_joint_cache.h"
 #include "../model_instance_joint/model_instance_joint.h"
 #include "../../../dpvertex/dpvertex.h"
+#include <math.h>
+#include "../../model_matrix/model_vector.h"
+#include "../../model_matrix/model_quaternion.h"
+#include "../../model_matrix/model_matrix.h"
 
 namespace dragonpoop
 {
@@ -245,7 +249,8 @@ namespace dragonpoop
     void model_instance_joint_cache::doUpMatrix( model_instance_joint_cache_element *e, dpmatrix *m, float rs, float re )
     {
         model_instance_joint_cache_element *p;
-
+        dpxyz_f o, t;
+        
         p = this->getElement( e->pid );
 
         if( p )
@@ -253,14 +258,20 @@ namespace dragonpoop
         
         //bone up
         m->translate( -e->bone_pos.x, -e->bone_pos.y, -e->bone_pos.z );
-        //todo rotation
-        
-        m->rotateYrad( this->angleLerp( e->rot_start.x, e->rot_end.x, rs, re ) );
-        m->rotateZrad( this->angleLerp( e->rot_start.y, e->rot_end.y, rs, re ) );
-        m->rotateXrad( this->angleLerp( e->rot_start.z, e->rot_end.z, rs, re ) );
+      //  m->rotateXrad( -e->bone_rot.x );
+       // m->rotateYrad( -e->bone_rot.y );
+       // m->rotateZrad( -e->bone_rot.z );
         
         //animation
-        m->translate( e->pos_start.x * rs + e->pos_end.x * re, e->pos_start.y * rs + e->pos_end.y * re, e->pos_start.z * rs + e->pos_end.z * re );
+        this->angleLerp( &e->rot_start, &e->rot_end, &o, rs, re );
+        t.x = e->pos_start.x * rs + e->pos_end.x * re;
+        t.y = e->pos_start.y * rs + e->pos_end.y * re;
+        t.z = e->pos_start.z * rs + e->pos_end.z * re;
+        
+        m->rotateZrad( o.z );
+        m->rotateYrad( o.y );
+        m->rotateXrad( o.x );
+        m->translate( t.x, t.y, t.z );
     }
     
     //do matrix down
@@ -270,32 +281,31 @@ namespace dragonpoop
 
         p = this->getElement( e->pid );
 
-        //bone up
+       // m->rotateZrad( e->bone_rot.z );
+       // m->rotateYrad( e->bone_rot.y );
+//m->rotateXrad( e->bone_rot.x );
         m->translate( e->bone_pos.x, e->bone_pos.y, e->bone_pos.z );
-        //todo rotation
 
         if( p )
             this->doDownMatrix( p, m );
     }
     
     //do angle lerp
-    float model_instance_joint_cache::angleLerp( float a, float b, float rs, float re )
+    void model_instance_joint_cache::angleLerp( dpxyz_f *a, dpxyz_f *b, dpxyz_f *o, float rs, float re )
     {
-        if( re >= 1 )
-            return b;
-        if( rs >= 1 )
-            return a;
+        model_quaternion q, qa, qb;
+        model_matrix mx;
+        model_vector v;
         
-        if( a > 180 )
-            a -= 360;
-        if( a < -180 )
-            a += 360;
-        if( b > 180 )
-            b -= 360;
-        if( b < -180 )
-            b += 360;
+        qa.setAngle( a );
+        qb.setAngle( b );
+        q.slerp( &qa, &qb, re );
         
-        return a * rs + b * re;
+        mx.setQuat( &q );
+        v.setIdentity();
+        mx.setPosition( &v );
+
+        mx.getAngles( o );
     }
     
 };

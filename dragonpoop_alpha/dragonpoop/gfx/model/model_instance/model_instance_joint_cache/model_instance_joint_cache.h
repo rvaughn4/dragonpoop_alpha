@@ -41,7 +41,9 @@ namespace dragonpoop
         //do matrix down
         void doDownMatrix( model_instance_joint_cache_element *e, dpmatrix *m );
         //do angle lerp
-        float angleLerp( float a, float b, float rs, float re );
+        static void angleLerp( dpxyz_f *a, dpxyz_f *b, dpxyz_f *o, float rs, float re );
+        //find angles
+        static float getAngle( float x0, float y0, float x1, float y1 );
         
     public:
         

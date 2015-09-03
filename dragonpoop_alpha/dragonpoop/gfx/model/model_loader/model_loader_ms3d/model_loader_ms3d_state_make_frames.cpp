@@ -173,7 +173,7 @@ namespace dragonpoop
         ms3d_model_frame *f;
         ms3d_model_joint_m *j;
         model_frame_joint *fjnt;
-        dpxyz_f x;
+        dpxyz_f x, ax;
         model_vector v;
         model_quaternion q;
         model_matrix mx;
@@ -202,25 +202,15 @@ namespace dragonpoop
 
                 mx.setQuat( &q );
                 mx.setPosition( &v );
+                mx.getAngles( &ax );
                 
-                v.setIdentity();
-                
-                mx.transform( &v );
                 v.getPosition( &x );
                 fjnt->setTranslation( &x );
-
-                atan2f(<#float#>, <#float#>)
-                
-                
-                
-                fjnt->setRotation( &x );
+                fjnt->setRotation( &ax );
             }
         }
         
     }
-    
-    //finds angle between two lines
-    
     
     //find xyz keyframe before and after time and interpolate
     void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, model_vector *x )

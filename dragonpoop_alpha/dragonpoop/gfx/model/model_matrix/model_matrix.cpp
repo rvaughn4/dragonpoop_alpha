@@ -206,4 +206,18 @@ namespace dragonpoop
         in1->fv[2][2] * in2->fv[2][3] + in1->fv[2][3];
     }
     
+    //find angles
+    void model_matrix::getAngles( dpxyz_f *o )
+    {
+        float a;
+        
+        o->x = atan2f( this->f.fv[ 2 ][ 1 ], this->f.fv[ 2 ][ 2 ] );
+        
+        a = this->f.fv[ 2 ][ 1 ] * this->f.fv[ 2 ][ 1 ];
+        a += this->f.fv[ 2 ][ 2 ] * this->f.fv[ 2 ][ 2 ];
+        o->y = atan2f( -this->f.fv[ 2 ][ 0 ], sqrtf( a ) );
+        
+        o->z = atan2f( this->f.fv[ 1 ][ 0 ], this->f.fv[ 0 ][ 0 ] );
+    }
+    
 };
