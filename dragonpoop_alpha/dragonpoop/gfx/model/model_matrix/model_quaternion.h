@@ -46,6 +46,8 @@ namespace dragonpoop
         void setAngle( float x, float y, float z );
         //set angle
         void setAngle( dpxyz_f *x );
+        //slerp
+        void slerp( model_quaternion *a, model_quaternion *b, float r );
         
     };
     

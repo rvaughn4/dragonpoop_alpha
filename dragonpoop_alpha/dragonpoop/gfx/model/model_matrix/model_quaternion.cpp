@@ -74,4 +74,59 @@ namespace dragonpoop
         this->setAngle( x->x, x->y, x->z );
     }
     
+    void model_quaternion::slerp( model_quaternion *p, model_quaternion *q, float t )
+    {
+        int i;
+        float omega, cosom, sinom, sclp, sclq, a ,b;
+        
+        // decide if one of the quaternions is backwards
+        a = b = 0;
+        for( i = 0; i < 4; i++ )
+        {
+            a += ( p->f.fv[i] - q->f.fv[i] ) * ( p->f.fv[i] - q->f.fv[i] );
+            b += ( p->f.fv[i] + q->f.fv[i] ) * ( p->f.fv[i] + q->f.fv[i] );
+        }
+        if( a > b )
+        {
+            for( i = 0; i < 4; i++ )
+            {
+                q->f.fv[i] = -q->f.fv[i];
+            }
+        }
+        
+        cosom = p->f.fv[0] * q->f.fv[0] + p->f.fv[1] * q->f.fv[1] + p->f.fv[2] * q->f.fv[2] + p->f.fv[3] * q->f.fv[3];
+        
+        if( ( 1.0 + cosom ) > 0.00000001 )
+        {
+            if( ( 1.0 - cosom ) > 0.00000001 )
+            {
+                omega = acos( cosom );
+                sinom = sin( omega );
+                sclp = sin( ( 1.0 - t ) * omega ) / sinom;
+                sclq = sin( t * omega ) / sinom;
+            }
+            else
+            {
+                sclp = 1.0 - t;
+                sclq = t;
+            }
+            for( i = 0; i < 4; i++ )
+            {
+                this->f.fv[i] = sclp * p->f.fv[i] + sclq * q->f.fv[i];
+            }
+        }
+        else
+        {
+            this->f.fv[0] = -p->f.fv[1];
+            this->f.fv[1] = p->f.fv[0];
+            this->f.fv[2] = -p->f.fv[3];
+            this->f.fv[3] = p->f.fv[2];
+            sclp = sin( ( 1.0 - t ) * 0.5 * 3.14f );
+            sclq = sin( t * 0.5 * 3.14f );
+            for( i = 0; i < 3; i++ )
+            {
+                this->f.fv[i] = sclp * p->f.fv[i] + sclq * this->f.fv[i];
+            }
+        }
+    }
 };
