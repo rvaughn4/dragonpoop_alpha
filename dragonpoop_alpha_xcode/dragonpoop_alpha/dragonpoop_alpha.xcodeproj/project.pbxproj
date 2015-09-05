@@ -151,6 +151,7 @@
 		79EC802A1B9877E90090D2D6 /* model_saver_state_sucess.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79EC801E1B9877E90090D2D6 /* model_saver_state_sucess.cpp */; };
 		79EC802B1B9877E90090D2D6 /* model_saver_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79EC80201B9877E90090D2D6 /* model_saver_task.cpp */; };
 		79EC802C1B9877E90090D2D6 /* model_saver_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79EC80221B9877E90090D2D6 /* model_saver_writelock.cpp */; };
+		79EC802F1B9878CB0090D2D6 /* model_saver_state_begin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79EC802D1B9878CB0090D2D6 /* model_saver_state_begin.cpp */; };
 		79F1071F1B6ED076000723E4 /* model_instance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F107021B6ED076000723E4 /* model_instance.cpp */; };
 		79F107201B6ED076000723E4 /* model_instance_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F107051B6ED076000723E4 /* model_instance_animation.cpp */; };
 		79F107211B6ED076000723E4 /* model_instance_group.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F107091B6ED076000723E4 /* model_instance_group.cpp */; };
@@ -531,6 +532,8 @@
 		79EC80221B9877E90090D2D6 /* model_saver_writelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_writelock.cpp; sourceTree = "<group>"; };
 		79EC80231B9877E90090D2D6 /* model_saver_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_writelock.h; sourceTree = "<group>"; };
 		79EC80241B9877E90090D2D6 /* model_savers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_savers.h; sourceTree = "<group>"; };
+		79EC802D1B9878CB0090D2D6 /* model_saver_state_begin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_state_begin.cpp; sourceTree = "<group>"; };
+		79EC802E1B9878CB0090D2D6 /* model_saver_state_begin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_state_begin.h; sourceTree = "<group>"; };
 		79F107021B6ED076000723E4 /* model_instance.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_instance.cpp; sourceTree = "<group>"; };
 		79F107031B6ED076000723E4 /* model_instance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instance.h; sourceTree = "<group>"; };
 		79F107051B6ED076000723E4 /* model_instance_animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_instance_animation.cpp; sourceTree = "<group>"; };
@@ -1281,6 +1284,8 @@
 		79EC80131B9877E90090D2D6 /* model_saver */ = {
 			isa = PBXGroup;
 			children = (
+				79EC802D1B9878CB0090D2D6 /* model_saver_state_begin.cpp */,
+				79EC802E1B9878CB0090D2D6 /* model_saver_state_begin.h */,
 				79EC80141B9877E90090D2D6 /* model_saver.cpp */,
 				79EC80151B9877E90090D2D6 /* model_saver.h */,
 				79EC80161B9877E90090D2D6 /* model_saver_readlock.cpp */,
@@ -1470,6 +1475,7 @@
 				7970E9761B64F26E008E8328 /* shared_obj_guard.cpp in Sources */,
 				790A78861B68DBA40046C55C /* model_animation_frame.cpp in Sources */,
 				793699471B678A9600A725B1 /* model_frame.cpp in Sources */,
+				79EC802F1B9878CB0090D2D6 /* model_saver_state_begin.cpp in Sources */,
 				7900090E1B7F7FC400F7CBF9 /* model_loader_ms3d_state_make_vertex_joints.cpp in Sources */,
 				7970E9871B64F26E008E8328 /* gfx_ref.cpp in Sources */,
 				7970E99A1B64F26E008E8328 /* renderer_readlock.cpp in Sources */,
