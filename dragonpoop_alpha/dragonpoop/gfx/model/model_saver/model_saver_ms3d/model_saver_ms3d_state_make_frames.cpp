@@ -80,22 +80,15 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
+
+            f.t = p->getTime();
+            f.ot = (float)f.t * t->anim.fps / 1000.0f;
+            f.id = p->getFrameId();
+            f.afid = p->getId();
             
-            l.clear();
-            m->getAnimationFrames( &l, a->id );
-            
-            for( i = l.begin(); i != l.end(); ++i )
-            {
-                p = *i;
-                f.t = p->getTime();
-                f.ot = (float)f.t * t->anim.fps / 1000.0f;
-                f.id = p->getFrameId();
-                f.afid = p->getId();
-                
-                lf->push_back( f );
-            }
+            lf->push_back( f );
         }
-        
+    
     }
     
 };
