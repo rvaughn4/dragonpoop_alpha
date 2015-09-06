@@ -21,11 +21,21 @@ int main( int argc, const char * argv[] )
         i++;
     }
  
-    gl->loadModel( "test", "beast.ms3d", 0, 0 );
+    gl->loadModel( "test", "", "beast.ms3d", 0, 0 );
     m = gl->makeModelInstance( "test" );
 
-    o.unlock();
+    i = 0;
+    while( c->isRunning() && i < 5 )
+    {
+        std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+        i++;
+    }
 
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
+    gl->saveModel( "test", "", "out_beast.ms3d", 0 );
+    
+    o.unlock();
+    
     while( c->isRunning() )
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 

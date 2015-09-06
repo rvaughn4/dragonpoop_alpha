@@ -18,6 +18,8 @@
 #include "model/model_readlock.h"
 #include "model/model_loader/model_loader.h"
 #include "model/model_loader/model_loader_readlock.h"
+#include "model/model_saver/model_saver.h"
+#include "model/model_saver/model_saver_readlock.h"
 
 namespace dragonpoop
 {
@@ -45,6 +47,7 @@ namespace dragonpoop
         this->kill();
         
         this->deleteLoaders();
+        this->deleteSavers();
         this->deleteModels();
         
         delete this->r;
@@ -106,6 +109,7 @@ namespace dragonpoop
     void gfx::run( dpthread_lock *thd, gfx_writelock *g )
     {
         this->runLoaders();
+        this->runSavers();
         this->runModels();
     }
 
@@ -140,6 +144,29 @@ namespace dragonpoop
         model_loader *p;
         
         l = &this->loaders;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    
+    //delete all savers
+    void gfx::deleteSavers( void )
+    {
+        std::list<model_saver *> *l, d;
+        std::list<model_saver *>::iterator i;
+        model_saver *p;
+        
+        l = &this->savers;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -211,7 +238,35 @@ namespace dragonpoop
             this->loaders.remove( p );
             delete p;
         }
+    }
+    
+    //delete old savers
+    void gfx::runSavers( void )
+    {
+        std::list<model_saver *> *l, d;
+        std::list<model_saver *>::iterator i;
+        model_saver *p;
+        model_saver_readlock *pl;
+        shared_obj_guard o;
         
+        l = &this->savers;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (model_saver_readlock *)o.tryReadLock( p, 100 );
+            if( !pl || pl->isRunning() )
+                continue;
+            d.push_back( p );
+        }
+        o.unlock();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->savers.remove( p );
+            delete p;
+        }
     }
     
     //create model using name (if not exists, reuses if does), returns ref in pointer arg
@@ -254,7 +309,7 @@ namespace dragonpoop
     }
     
     //create model and load model file into it
-    bool gfx::loadModel( const char *mname, const char *file_name, model_ref **r, model_loader **mldr )
+    bool gfx::loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader **mldr )
     {
         model_ref *pr;
         model_loader *l;
@@ -281,6 +336,37 @@ namespace dragonpoop
             *mldr = l;
         else
             this->loaders.push_back( l );
+        
+        return 1;
+    }
+    
+    //find model and save model file
+    bool gfx::saveModel( const char *mname, const char *path_name, const char *file_name, model_saver **msvr )
+    {
+        model_ref *pr;
+        model_saver *l;
+        shared_obj_guard o, otp;
+        dptaskpool_writelock *tp;
+        
+        
+        tp = (dptaskpool_writelock *)otp.tryWriteLock( this->tpr, 1000 );
+        if( !tp )
+            return 0;
+        
+        pr = this->findModel( mname );
+        if( !pr )
+            return 0;
+
+        l = model_saver::saveFile( this->c, tp, pr, file_name );
+        if( !l )
+            return 0;
+        
+        delete pr;
+        
+        if( msvr )
+            *msvr = l;
+        else
+            this->savers.push_back( l );
         
         return 1;
     }

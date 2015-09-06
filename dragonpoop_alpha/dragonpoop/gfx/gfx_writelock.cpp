@@ -48,9 +48,15 @@ namespace dragonpoop
     }
     
     //create model and load model file into it
-    bool gfx_writelock::loadModel( const char *mname, const char *file_name, model_ref **r, model_loader **mldr )
+    bool gfx_writelock::loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader **mldr )
     {
-        return this->t->loadModel( mname, file_name, r, mldr );
+        return this->t->loadModel( mname, path_name, file_name, r, mldr );
+    }
+    
+    //find model and save model file
+    bool gfx_writelock::saveModel( const char *mname, const char *path_name, const char *file_name, model_saver **msvr )
+    {
+        return this->t->saveModel( mname, path_name, file_name, msvr );
     }
     
     //find model by name

@@ -10,6 +10,22 @@
 		7900090E1B7F7FC400F7CBF9 /* model_loader_ms3d_state_make_vertex_joints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7900090C1B7F7FC400F7CBF9 /* model_loader_ms3d_state_make_vertex_joints.cpp */; };
 		79020BCC1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79020BCA1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp */; };
 		79020BCF1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79020BCD1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp */; };
+		7906ABAD1B9B5773002C26A2 /* model_saver_ms3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906AB851B9B5773002C26A2 /* model_saver_ms3d.cpp */; };
+		7906ABD81B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABBC1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.cpp */; };
+		7906ABD91B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABBE1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.cpp */; };
+		7906ABDA1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_groups.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABC01B9B5AA1002C26A2 /* model_saver_ms3d_state_make_groups.cpp */; };
+		7906ABDB1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_joints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABC21B9B5AA1002C26A2 /* model_saver_ms3d_state_make_joints.cpp */; };
+		7906ABDC1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_materials.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABC41B9B5AA1002C26A2 /* model_saver_ms3d_state_make_materials.cpp */; };
+		7906ABDD1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_triangles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABC61B9B5AA1002C26A2 /* model_saver_ms3d_state_make_triangles.cpp */; };
+		7906ABDE1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_verts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABC81B9B5AA1002C26A2 /* model_saver_ms3d_state_make_verts.cpp */; };
+		7906ABDF1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABCA1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_animation.cpp */; };
+		7906ABE01B9B5AA1002C26A2 /* model_saver_ms3d_state_write_extras.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABCC1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_extras.cpp */; };
+		7906ABE11B9B5AA1002C26A2 /* model_saver_ms3d_state_write_groups.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABCE1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_groups.cpp */; };
+		7906ABE21B9B5AA1002C26A2 /* model_saver_ms3d_state_write_joints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABD01B9B5AA1002C26A2 /* model_saver_ms3d_state_write_joints.cpp */; };
+		7906ABE31B9B5AA1002C26A2 /* model_saver_ms3d_state_write_materials.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABD21B9B5AA1002C26A2 /* model_saver_ms3d_state_write_materials.cpp */; };
+		7906ABE41B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABD41B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.cpp */; };
+		7906ABE51B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABD61B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.cpp */; };
+		7906ABE81B9B5B29002C26A2 /* model_saver_ms3d_state_cleanup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABE61B9B5B29002C26A2 /* model_saver_ms3d_state_cleanup.cpp */; };
 		790A78861B68DBA40046C55C /* model_animation_frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A78831B68DBA40046C55C /* model_animation_frame.cpp */; };
 		790A788B1B68E3EA0046C55C /* model_frame_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A78881B68E3EA0046C55C /* model_frame_joint.cpp */; };
 		7910B9891B92793A00D72A06 /* model_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9821B92793A00D72A06 /* model_matrix.cpp */; };
@@ -185,6 +201,47 @@
 		79020BCB1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_animation.h; sourceTree = "<group>"; };
 		79020BCD1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_joints.cpp; sourceTree = "<group>"; };
 		79020BCE1B7E059200B3318C /* model_loader_ms3d_state_make_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_joints.h; sourceTree = "<group>"; };
+		7906AB851B9B5773002C26A2 /* model_saver_ms3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d.cpp; sourceTree = "<group>"; };
+		7906AB861B9B5773002C26A2 /* model_saver_ms3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d.h; sourceTree = "<group>"; };
+		7906AB871B9B5773002C26A2 /* model_saver_ms3d_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_animation.h; sourceTree = "<group>"; };
+		7906AB881B9B5773002C26A2 /* model_saver_ms3d_comment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_comment.h; sourceTree = "<group>"; };
+		7906AB891B9B5773002C26A2 /* model_saver_ms3d_group.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_group.h; sourceTree = "<group>"; };
+		7906AB8A1B9B5773002C26A2 /* model_saver_ms3d_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_header.h; sourceTree = "<group>"; };
+		7906AB8B1B9B5773002C26A2 /* model_saver_ms3d_joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_joint.h; sourceTree = "<group>"; };
+		7906AB8C1B9B5773002C26A2 /* model_saver_ms3d_material.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_material.h; sourceTree = "<group>"; };
+		7906AB8D1B9B5773002C26A2 /* model_saver_ms3d_triangle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_triangle.h; sourceTree = "<group>"; };
+		7906AB8E1B9B5773002C26A2 /* model_saver_ms3d_vertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_vertex.h; sourceTree = "<group>"; };
+		7906AB8F1B9B5773002C26A2 /* model_saver_ms3ds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3ds.h; sourceTree = "<group>"; };
+		7906ABBC1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_make_animation.cpp; sourceTree = "<group>"; };
+		7906ABBD1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_make_animation.h; sourceTree = "<group>"; };
+		7906ABBE1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_make_frames.cpp; sourceTree = "<group>"; };
+		7906ABBF1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_make_frames.h; sourceTree = "<group>"; };
+		7906ABC01B9B5AA1002C26A2 /* model_saver_ms3d_state_make_groups.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_make_groups.cpp; sourceTree = "<group>"; };
+		7906ABC11B9B5AA1002C26A2 /* model_saver_ms3d_state_make_groups.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_make_groups.h; sourceTree = "<group>"; };
+		7906ABC21B9B5AA1002C26A2 /* model_saver_ms3d_state_make_joints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_make_joints.cpp; sourceTree = "<group>"; };
+		7906ABC31B9B5AA1002C26A2 /* model_saver_ms3d_state_make_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_make_joints.h; sourceTree = "<group>"; };
+		7906ABC41B9B5AA1002C26A2 /* model_saver_ms3d_state_make_materials.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_make_materials.cpp; sourceTree = "<group>"; };
+		7906ABC51B9B5AA1002C26A2 /* model_saver_ms3d_state_make_materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_make_materials.h; sourceTree = "<group>"; };
+		7906ABC61B9B5AA1002C26A2 /* model_saver_ms3d_state_make_triangles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_make_triangles.cpp; sourceTree = "<group>"; };
+		7906ABC71B9B5AA1002C26A2 /* model_saver_ms3d_state_make_triangles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_make_triangles.h; sourceTree = "<group>"; };
+		7906ABC81B9B5AA1002C26A2 /* model_saver_ms3d_state_make_verts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_make_verts.cpp; sourceTree = "<group>"; };
+		7906ABC91B9B5AA1002C26A2 /* model_saver_ms3d_state_make_verts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_make_verts.h; sourceTree = "<group>"; };
+		7906ABCA1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_write_animation.cpp; sourceTree = "<group>"; };
+		7906ABCB1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_write_animation.h; sourceTree = "<group>"; };
+		7906ABCC1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_extras.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_write_extras.cpp; sourceTree = "<group>"; };
+		7906ABCD1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_write_extras.h; sourceTree = "<group>"; };
+		7906ABCE1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_groups.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_write_groups.cpp; sourceTree = "<group>"; };
+		7906ABCF1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_groups.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_write_groups.h; sourceTree = "<group>"; };
+		7906ABD01B9B5AA1002C26A2 /* model_saver_ms3d_state_write_joints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_write_joints.cpp; sourceTree = "<group>"; };
+		7906ABD11B9B5AA1002C26A2 /* model_saver_ms3d_state_write_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_write_joints.h; sourceTree = "<group>"; };
+		7906ABD21B9B5AA1002C26A2 /* model_saver_ms3d_state_write_materials.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_write_materials.cpp; sourceTree = "<group>"; };
+		7906ABD31B9B5AA1002C26A2 /* model_saver_ms3d_state_write_materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_write_materials.h; sourceTree = "<group>"; };
+		7906ABD41B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_write_triangles.cpp; sourceTree = "<group>"; };
+		7906ABD51B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_write_triangles.h; sourceTree = "<group>"; };
+		7906ABD61B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_write_verts.cpp; sourceTree = "<group>"; };
+		7906ABD71B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_write_verts.h; sourceTree = "<group>"; };
+		7906ABE61B9B5B29002C26A2 /* model_saver_ms3d_state_cleanup.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_cleanup.cpp; sourceTree = "<group>"; };
+		7906ABE71B9B5B29002C26A2 /* model_saver_ms3d_state_cleanup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_cleanup.h; sourceTree = "<group>"; };
 		790A78831B68DBA40046C55C /* model_animation_frame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_animation_frame.cpp; sourceTree = "<group>"; };
 		790A78841B68DBA40046C55C /* model_animation_frame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_animation_frame.h; sourceTree = "<group>"; };
 		790A78851B68DBA40046C55C /* model_animation_frames.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_animation_frames.h; sourceTree = "<group>"; };
@@ -577,6 +634,54 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7906AB841B9B5773002C26A2 /* model_saver_ms3d */ = {
+			isa = PBXGroup;
+			children = (
+				7906AB851B9B5773002C26A2 /* model_saver_ms3d.cpp */,
+				7906AB861B9B5773002C26A2 /* model_saver_ms3d.h */,
+				7906AB871B9B5773002C26A2 /* model_saver_ms3d_animation.h */,
+				7906AB881B9B5773002C26A2 /* model_saver_ms3d_comment.h */,
+				7906AB891B9B5773002C26A2 /* model_saver_ms3d_group.h */,
+				7906AB8A1B9B5773002C26A2 /* model_saver_ms3d_header.h */,
+				7906AB8B1B9B5773002C26A2 /* model_saver_ms3d_joint.h */,
+				7906AB8C1B9B5773002C26A2 /* model_saver_ms3d_material.h */,
+				7906AB8D1B9B5773002C26A2 /* model_saver_ms3d_triangle.h */,
+				7906AB8E1B9B5773002C26A2 /* model_saver_ms3d_vertex.h */,
+				7906ABE61B9B5B29002C26A2 /* model_saver_ms3d_state_cleanup.cpp */,
+				7906ABE71B9B5B29002C26A2 /* model_saver_ms3d_state_cleanup.h */,
+				7906ABBC1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.cpp */,
+				7906ABBD1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.h */,
+				7906ABBE1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.cpp */,
+				7906ABBF1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.h */,
+				7906ABC01B9B5AA1002C26A2 /* model_saver_ms3d_state_make_groups.cpp */,
+				7906ABC11B9B5AA1002C26A2 /* model_saver_ms3d_state_make_groups.h */,
+				7906ABC21B9B5AA1002C26A2 /* model_saver_ms3d_state_make_joints.cpp */,
+				7906ABC31B9B5AA1002C26A2 /* model_saver_ms3d_state_make_joints.h */,
+				7906ABC41B9B5AA1002C26A2 /* model_saver_ms3d_state_make_materials.cpp */,
+				7906ABC51B9B5AA1002C26A2 /* model_saver_ms3d_state_make_materials.h */,
+				7906ABC61B9B5AA1002C26A2 /* model_saver_ms3d_state_make_triangles.cpp */,
+				7906ABC71B9B5AA1002C26A2 /* model_saver_ms3d_state_make_triangles.h */,
+				7906ABC81B9B5AA1002C26A2 /* model_saver_ms3d_state_make_verts.cpp */,
+				7906ABC91B9B5AA1002C26A2 /* model_saver_ms3d_state_make_verts.h */,
+				7906ABCA1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_animation.cpp */,
+				7906ABCB1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_animation.h */,
+				7906ABCC1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_extras.cpp */,
+				7906ABCD1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_extras.h */,
+				7906ABCE1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_groups.cpp */,
+				7906ABCF1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_groups.h */,
+				7906ABD01B9B5AA1002C26A2 /* model_saver_ms3d_state_write_joints.cpp */,
+				7906ABD11B9B5AA1002C26A2 /* model_saver_ms3d_state_write_joints.h */,
+				7906ABD21B9B5AA1002C26A2 /* model_saver_ms3d_state_write_materials.cpp */,
+				7906ABD31B9B5AA1002C26A2 /* model_saver_ms3d_state_write_materials.h */,
+				7906ABD41B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.cpp */,
+				7906ABD51B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.h */,
+				7906ABD61B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.cpp */,
+				7906ABD71B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.h */,
+				7906AB8F1B9B5773002C26A2 /* model_saver_ms3ds.h */,
+			);
+			path = model_saver_ms3d;
+			sourceTree = "<group>";
+		};
 		790A78821B68DBA40046C55C /* model_animation_frame */ = {
 			isa = PBXGroup;
 			children = (
@@ -1284,6 +1389,7 @@
 		79EC80131B9877E90090D2D6 /* model_saver */ = {
 			isa = PBXGroup;
 			children = (
+				7906AB841B9B5773002C26A2 /* model_saver_ms3d */,
 				79EC802D1B9878CB0090D2D6 /* model_saver_state_begin.cpp */,
 				79EC802E1B9878CB0090D2D6 /* model_saver_state_begin.h */,
 				79EC80141B9877E90090D2D6 /* model_saver.cpp */,
@@ -1435,8 +1541,10 @@
 			files = (
 				7970E96E1B64F26E008E8328 /* dptaskpool.cpp in Sources */,
 				7970E9721B64F26E008E8328 /* dpthread.cpp in Sources */,
+				7906ABD81B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.cpp in Sources */,
 				79E0A2C91B93154E00CC1D91 /* model_instance_joint_cache.cpp in Sources */,
 				79BF2CBE1B8A3E82007C9BA2 /* dpmultibtree.cpp in Sources */,
+				7906ABDA1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_groups.cpp in Sources */,
 				79F5632D1B6B746D006E5C78 /* model_component_tree_bytypeid.cpp in Sources */,
 				79E744541B6CD650005BFDE0 /* dpbuffer_dynamic.cpp in Sources */,
 				7970E9921B64F26E008E8328 /* model_triangle_vertex.cpp in Sources */,
@@ -1466,17 +1574,21 @@
 				7970E9841B64F26E008E8328 /* dpvertexindex_buffer.cpp in Sources */,
 				7970E9751B64F26E008E8328 /* shared_obj.cpp in Sources */,
 				799F07A51B76CFA80084E9CC /* openglx_1o5_renderer_model_readlock.cpp in Sources */,
+				7906ABDB1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_joints.cpp in Sources */,
 				79E744731B6CE622005BFDE0 /* model_loader_writelock.cpp in Sources */,
+				7906ABDF1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_animation.cpp in Sources */,
 				799FC16C1B756F6F00E1A212 /* renderer_model_group_instance.cpp in Sources */,
 				79B931651B6E9C570054295B /* model_loader_ms3d_state_make_groups.cpp in Sources */,
 				79E744661B6CE52A005BFDE0 /* model_loader.cpp in Sources */,
 				799FC16B1B756F6F00E1A212 /* renderer_model.cpp in Sources */,
+				7906ABE41B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.cpp in Sources */,
 				799F07AC1B76EBF00084E9CC /* openglx_1o5_renderer_model_group_instance.cpp in Sources */,
 				7970E9761B64F26E008E8328 /* shared_obj_guard.cpp in Sources */,
 				790A78861B68DBA40046C55C /* model_animation_frame.cpp in Sources */,
 				793699471B678A9600A725B1 /* model_frame.cpp in Sources */,
 				79EC802F1B9878CB0090D2D6 /* model_saver_state_begin.cpp in Sources */,
 				7900090E1B7F7FC400F7CBF9 /* model_loader_ms3d_state_make_vertex_joints.cpp in Sources */,
+				7906ABE01B9B5AA1002C26A2 /* model_saver_ms3d_state_write_extras.cpp in Sources */,
 				7970E9871B64F26E008E8328 /* gfx_ref.cpp in Sources */,
 				7970E99A1B64F26E008E8328 /* renderer_readlock.cpp in Sources */,
 				799FC1701B756F6F00E1A212 /* renderer_model_instance_writelock.cpp in Sources */,
@@ -1486,8 +1598,10 @@
 				7970E8981B64EFB2008E8328 /* main.cpp in Sources */,
 				7970E9981B64F26E008E8328 /* openglx_1o5_renderer_writelock.cpp in Sources */,
 				79020BCC1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp in Sources */,
+				7906ABE51B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.cpp in Sources */,
 				7970E9691B64F26E008E8328 /* dptask.cpp in Sources */,
 				7970E96F1B64F26E008E8328 /* dptaskpool_readlock.cpp in Sources */,
+				7906ABD91B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.cpp in Sources */,
 				7970E9741B64F26E008E8328 /* dpthread_lock.cpp in Sources */,
 				7970E9851B64F26E008E8328 /* gfx.cpp in Sources */,
 				7910B9891B92793A00D72A06 /* model_matrix.cpp in Sources */,
@@ -1498,13 +1612,16 @@
 				7970E96C1B64F26E008E8328 /* dptask_ref.cpp in Sources */,
 				79E7446F1B6CE616005BFDE0 /* model_loader_task.cpp in Sources */,
 				79EC802A1B9877E90090D2D6 /* model_saver_state_sucess.cpp in Sources */,
+				7906ABE21B9B5AA1002C26A2 /* model_saver_ms3d_state_write_joints.cpp in Sources */,
 				7970E9811B64F26E008E8328 /* dpvertex.cpp in Sources */,
 				79F49A791B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp in Sources */,
 				7970E95D1B64F26E008E8328 /* bytetree.cpp in Sources */,
 				79F49A831B79785400CDF8A7 /* openglx_1o5_renderer_model_material.cpp in Sources */,
 				79E744671B6CE52A005BFDE0 /* model_loader_ms3d.cpp in Sources */,
+				7906ABDD1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_triangles.cpp in Sources */,
 				79F1071F1B6ED076000723E4 /* model_instance.cpp in Sources */,
 				7970E9951B64F26E008E8328 /* openglx_1o5_renderer.cpp in Sources */,
+				7906ABDE1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_verts.cpp in Sources */,
 				7970E98C1B64F26E008E8328 /* model_group.cpp in Sources */,
 				794610F41B6D42CE00311E86 /* model_loader_ms3d_state_parse_joint_extras.cpp in Sources */,
 				794610F61B6D42CE00311E86 /* model_loader_ms3d_state_parse_materials.cpp in Sources */,
@@ -1537,6 +1654,7 @@
 				7970E97E1B64F26E008E8328 /* dpbitmap_bitmap_loader.cpp in Sources */,
 				799F07A21B76CFA80084E9CC /* openglx_1o5_renderer_model_instance_readlock.cpp in Sources */,
 				7970E9911B64F26E008E8328 /* model_triangle.cpp in Sources */,
+				7906ABE31B9B5AA1002C26A2 /* model_saver_ms3d_state_write_materials.cpp in Sources */,
 				79E7444F1B6CD5F3005BFDE0 /* dpbuffer.cpp in Sources */,
 				79F107231B6ED076000723E4 /* model_instance_readlock.cpp in Sources */,
 				79E744551B6CD650005BFDE0 /* dpbuffer_static.cpp in Sources */,
@@ -1545,8 +1663,10 @@
 				79BF2CC21B8A3ECB007C9BA2 /* dpid_tree_wrapper.cpp in Sources */,
 				7970E9611B64F26E008E8328 /* core.cpp in Sources */,
 				7970E9931B64F26E008E8328 /* model_vertex.cpp in Sources */,
+				7906ABE11B9B5AA1002C26A2 /* model_saver_ms3d_state_write_groups.cpp in Sources */,
 				794610F71B6D42CE00311E86 /* model_loader_ms3d_state_parse_model_extras.cpp in Sources */,
 				7970E9801B64F26E008E8328 /* dpindex_buffer.cpp in Sources */,
+				7906ABDC1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_materials.cpp in Sources */,
 				7970E9671B64F26E008E8328 /* dpmutex_writelock.cpp in Sources */,
 				7970E9681B64F26E008E8328 /* dpsponlock.cpp in Sources */,
 				79E7446D1B6CE616005BFDE0 /* model_loader_readlock.cpp in Sources */,
@@ -1571,11 +1691,13 @@
 				799FC1711B756F6F00E1A212 /* renderer_model_readlock.cpp in Sources */,
 				7970E98B1B64F26E008E8328 /* model_component.cpp in Sources */,
 				79E7447A1B6D02D9005BFDE0 /* model_loader_state_close.cpp in Sources */,
+				7906ABAD1B9B5773002C26A2 /* model_saver_ms3d.cpp in Sources */,
 				7970E97F1B64F26E008E8328 /* dpmatrix.cpp in Sources */,
 				7970E9861B64F26E008E8328 /* gfx_readlock.cpp in Sources */,
 				794610F11B6D42CE00311E86 /* model_loader_ms3d_state_parse_extras.cpp in Sources */,
 				7970E96A1B64F26E008E8328 /* dptask_owner.cpp in Sources */,
 				7970E95E1B64F26E008E8328 /* dpid_bytetree.cpp in Sources */,
+				7906ABE81B9B5B29002C26A2 /* model_saver_ms3d_state_cleanup.cpp in Sources */,
 				7970E9891B64F26E008E8328 /* gfx_writelock.cpp in Sources */,
 				7970E9A21B64F664008E8328 /* model_material.cpp in Sources */,
 				79EC802B1B9877E90090D2D6 /* model_saver_task.cpp in Sources */,

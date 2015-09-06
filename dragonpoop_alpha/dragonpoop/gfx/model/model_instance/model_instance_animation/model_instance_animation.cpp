@@ -71,7 +71,7 @@ namespace dragonpoop
         this->start_time = t;
         this->end_time = 0;
         
-        ml->getAnimationFrames( &l );
+        ml->getAnimationFrames( &l, this->getId() );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -131,7 +131,7 @@ namespace dragonpoop
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
         
-        ml->getAnimationFrames( &l );
+        ml->getAnimationFrames( &l, this->getId() );
         
         f = 0;
         for( i = l.begin(); i != l.end(); ++i )
@@ -164,7 +164,7 @@ namespace dragonpoop
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
         
-        ml->getAnimationFrames( &l );
+        ml->getAnimationFrames( &l, this->getId() );
         
         f = 0;
         for( i = l.begin(); i != l.end(); ++i )

@@ -14,6 +14,7 @@ namespace dragonpoop
         this->materials = 0;
         this->joints = 0;
         this->frames = 0;
+        dpid_zero( &this->anim_id );
     }
     
     //dtor

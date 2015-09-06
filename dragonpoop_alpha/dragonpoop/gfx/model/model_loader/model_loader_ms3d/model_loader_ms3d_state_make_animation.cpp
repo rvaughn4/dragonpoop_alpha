@@ -48,7 +48,7 @@ namespace dragonpoop
         ma->setAutoPlay( 1 );
         ma->setRepeatDelay( 0 );
         ma->setRepeated( 1 );
-        t->anim_id = m->getId();
+        t->anim_id = ma->getId();
         
         return new model_loader_ms3d_state_make_frames( this->b, this->m );
     }

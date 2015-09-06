@@ -20,6 +20,7 @@ namespace dragonpoop
     class dptaskpool_ref;
     class model_loader;
     class model_instance_ref;
+    class model_saver;
 
     class gfx : public shared_obj
     {
@@ -34,15 +35,20 @@ namespace dragonpoop
         
         std::list<model *> models;
         std::list<model_loader *> loaders;
+        std::list<model_saver *> savers;
         
         //delete all models
         void deleteModels( void );
         //delete all loaders
         void deleteLoaders( void );
+        //delete all savers
+        void deleteSavers( void );
         //delete old models
         void runModels( void );
         //delete old loaders
         void runLoaders( void );
+        //delete old savers
+        void runSavers( void );
 
     protected:
 
@@ -59,7 +65,9 @@ namespace dragonpoop
         //create model using name (if not exists, reuses if does), returns ref in pointer arg
         bool createModel( const char *mname, model_ref **r );
         //create model and load model file into it
-        bool loadModel( const char *mname, const char *file_name, model_ref **r, model_loader **mldr );
+        bool loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader **mldr );
+        //find model and save model file
+        bool saveModel( const char *mname, const char *path_name, const char *file_name, model_saver **msvr );
         //find model by name
         model_ref *findModel( const char *cname );
         //find model by id
