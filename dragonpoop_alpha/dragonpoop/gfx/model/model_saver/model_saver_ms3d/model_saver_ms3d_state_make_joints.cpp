@@ -1,5 +1,6 @@
 
 #include "model_saver_ms3d_state_make_joints.h"
+#include "model_saver_ms3d_state_make_verts.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_saver_ms3d_joint.h"
 #include "model_saver_ms3d_state_cleanup.h"
@@ -57,7 +58,7 @@ namespace dragonpoop
             this->makeJoint( t, p, m );
         }
         
-        return new model_saver_ms3d_state_cleanup( this->b, this->m, 1 );
+        return new model_saver_ms3d_state_make_verts( this->b, this->m );
     }
     
     //makes joints for animation
