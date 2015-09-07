@@ -220,6 +220,26 @@ namespace dragonpoop
         return c;
     }
 
+    //find component by type and name
+    model_component *model::findComponent( uint16_t mtype, std::string *s )
+    {
+        std::list<model_component *> *l;
+        std::list<model_component *>::iterator i;
+        model_component *c;
+        
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            if( c->getType() != mtype )
+                continue;
+            if( c->compareName( s ) )
+                return c;
+        }
+        
+        return 0;
+    }
+    
     //find components by type
     void model::getComponents( uint16_t mtype, std::list<model_component *> *l )
     {

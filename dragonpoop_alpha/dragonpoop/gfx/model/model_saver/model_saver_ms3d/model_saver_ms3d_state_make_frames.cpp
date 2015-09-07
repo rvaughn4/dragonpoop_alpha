@@ -1,5 +1,6 @@
 
 #include "model_saver_ms3d_state_make_frames.h"
+#include "model_saver_ms3d_state_make_joints.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_saver_ms3d_animation.h"
 #include "model_saver_ms3d_state_cleanup.h"
@@ -61,9 +62,7 @@ namespace dragonpoop
             this->makeFrames( t, ma, m );
         }
 
-        la->clear();
-        lf->clear();
-        return new model_saver_ms3d_state_cleanup( this->b, this->m, 1 );
+        return new model_saver_ms3d_state_make_joints( this->b, this->m );
     }
 
     //makes frames for animation

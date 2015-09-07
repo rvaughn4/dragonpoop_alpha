@@ -59,6 +59,12 @@ namespace dragonpoop
         return this->t->findComponent( mtype, id );
     }
     
+    //find component by type and name
+    model_component *model_readlock::findComponent( uint16_t mtype, std::string *s )
+    {
+        return this->t->findComponent( mtype, s );
+    }
+    
     //find components by type
     void model_readlock::getComponents( uint16_t mtype, std::list<model_component *> *l )
     {

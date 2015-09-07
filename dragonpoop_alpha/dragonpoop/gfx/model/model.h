@@ -104,6 +104,8 @@ namespace dragonpoop
         void addComponent( model_component *c, dpid p1, dpid p2 );
         //find component by type and id
         model_component *findComponent( uint16_t mtype, dpid id );
+        //find component by type and name
+        model_component *findComponent( uint16_t mtype, std::string *s );
         //find components by type
         void getComponents( uint16_t mtype, std::list<model_component *> *l );
         //find components by type and 1 parent
