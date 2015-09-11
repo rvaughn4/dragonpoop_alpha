@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		790006491BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790006471BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.cpp */; };
 		7900090E1B7F7FC400F7CBF9 /* model_loader_ms3d_state_make_vertex_joints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7900090C1B7F7FC400F7CBF9 /* model_loader_ms3d_state_make_vertex_joints.cpp */; };
 		79020BCC1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79020BCA1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp */; };
 		79020BCF1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79020BCD1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp */; };
@@ -195,6 +196,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		790006471BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d_state_write_header.cpp; sourceTree = "<group>"; };
+		790006481BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_state_write_header.h; sourceTree = "<group>"; };
 		7900090C1B7F7FC400F7CBF9 /* model_loader_ms3d_state_make_vertex_joints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_vertex_joints.cpp; sourceTree = "<group>"; };
 		7900090D1B7F7FC400F7CBF9 /* model_loader_ms3d_state_make_vertex_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_vertex_joints.h; sourceTree = "<group>"; };
 		79020BCA1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_animation.cpp; sourceTree = "<group>"; };
@@ -677,6 +680,8 @@
 				7906ABD51B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.h */,
 				7906ABD61B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.cpp */,
 				7906ABD71B9B5AA1002C26A2 /* model_saver_ms3d_state_write_verts.h */,
+				790006471BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.cpp */,
+				790006481BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.h */,
 				7906AB8F1B9B5773002C26A2 /* model_saver_ms3ds.h */,
 			);
 			path = model_saver_ms3d;
@@ -1568,6 +1573,7 @@
 				79EC80271B9877E90090D2D6 /* model_saver_ref.cpp in Sources */,
 				79E7447C1B6D02D9005BFDE0 /* model_loader_state.cpp in Sources */,
 				79B931621B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp in Sources */,
+				790006491BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.cpp in Sources */,
 				79F107221B6ED076000723E4 /* model_instance_joint.cpp in Sources */,
 				794610F01B6D42CE00311E86 /* model_loader_ms3d_state_parse_comments.cpp in Sources */,
 				79BF2CC51B8A43EC007C9BA2 /* dpid_multibtree.cpp in Sources */,

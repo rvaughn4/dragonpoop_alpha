@@ -35,7 +35,6 @@ namespace dragonpoop
         if( this->b->readBytes( (uint8_t *)&sh, sizeof( sh ) ) < sizeof( sh ) )
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
         m->anim = sh;
-        m->anim.fps = 5;
         
         return new model_loader_ms3d_state_parse_joints( this->b, this->m );
     }

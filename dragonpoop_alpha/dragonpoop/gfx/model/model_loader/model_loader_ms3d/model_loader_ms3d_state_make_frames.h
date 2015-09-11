@@ -27,7 +27,7 @@ namespace dragonpoop
         
         dpbuffer *b;
         model_ref *m;
-        std::vector<int> frame_times;
+        std::vector<float> frame_times;
         
     protected:
         

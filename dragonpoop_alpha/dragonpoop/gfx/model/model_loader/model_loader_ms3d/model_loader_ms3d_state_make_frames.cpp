@@ -70,7 +70,6 @@ namespace dragonpoop
         model_loader_ms3d *ldr;
         unsigned int i, e, ii, ee;
         bool f;
-        int ft;
         float fft;
         
         ldr = (model_loader_ms3d *)ml->getLoader();
@@ -79,15 +78,14 @@ namespace dragonpoop
         {
             k = &( *l )[ i ];
             fft = k->time * ldr->anim.fps;
-            ft = fft;
             ee = (unsigned int)this->frame_times.size();
             for( f = 0, ii = 0; !f && ii < ee; ii++ )
             {
-               if( ft == this->frame_times[ ii ] )
+               if( fft == this->frame_times[ ii ] )
                    f = 1;
             }
             if( !f )
-                this->frame_times.push_back( ft );
+                this->frame_times.push_back( fft );
         }
     }
   
@@ -121,11 +119,10 @@ namespace dragonpoop
             std::stringstream ss;
             f.t = this->frame_times[ i ];
             
-            ss << "MS3D Frame #" << f.t << "";
+            f.ot = f.t;
+            f.t = f.t * 1000.0f / ldr->anim.fps;
+            ss << "MS3D Frame #" << f.ot << "";
             s = ss.str();
-            
-            f.ot = (float)f.t / ldr->anim.fps;
-            f.t = f.t * 1000 / (int)ldr->anim.fps;
             
             frm = m->makeFrame( thd->genId() );
             frm->setName( &s );
@@ -197,15 +194,17 @@ namespace dragonpoop
                 
                 fjnt = m->makeFrameJoint( thd->genId(), f->id, j->id );
                 
-                this->getKeyframeQuat( f->ot, &j->rotate_frames, &q );
                 this->getKeyframe( f->ot, &j->translate_frames, &v );
-
-                mx.setQuat( &q );
-                mx.setPosition( &v );
-                mx.getAngles( &ax );
-                
                 v.getPosition( &x );
                 fjnt->setTranslation( &x );
+//
+  //              this->getKeyframeQuat( f->ot, &j->rotate_frames, &q );
+    //            mx.setQuat( &q );
+      //          mx.setPosition( &v );
+        //        mx.getAngles( &ax );
+                
+                this->getKeyframe( f->ot, &j->rotate_frames, &v );
+                v.getPosition( &ax );
                 fjnt->setRotation( &ax );
             }
         }
@@ -244,7 +243,6 @@ namespace dragonpoop
     {
         ms3d_model_joint_keyframe kb, ke;
         float td, tt, rb, re;
-        dpxyz_f y;
         model_quaternion qb, qe;
         
         this->getKeyframeBefore( t, l, &kb );
@@ -258,14 +256,11 @@ namespace dragonpoop
             re = tt / td;
         if( re > 1 )
             re = 1;
+        re = 1;
         rb = 1.0f - re;
         
         qb.setAngle( kb.x, kb.y, kb.z );
         qe.setAngle( ke.x, ke.y, ke.z );
-        
-        y.x = rb * kb.x + re * ke.x;
-        y.y = rb * kb.y + re * ke.y;
-        y.z = rb * kb.z + re * ke.z;
         
         x->slerp( &qb, &qe, t );
     }
@@ -328,12 +323,7 @@ namespace dragonpoop
         }
         
         if( !f )
-        {
-            x->time = t;
-            x->x = 0;
-            x->y = 0;
-            x->z = 0;
-        }
+            this->getKeyframeBefore( t, l, x );
     }
     
 };

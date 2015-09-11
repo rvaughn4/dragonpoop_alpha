@@ -98,6 +98,8 @@ namespace dragonpoop
             v.f.normals[ c ].x = w.x;
             v.f.normals[ c ].y = w.y;
             v.f.normals[ c ].z = w.z;
+            
+            c++;
         }
         
         lf->push_back( v );

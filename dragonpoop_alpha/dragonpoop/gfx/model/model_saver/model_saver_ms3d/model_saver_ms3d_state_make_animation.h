@@ -24,7 +24,7 @@ namespace dragonpoop
     protected:
         
         //handle each animation
-        unsigned int makeAnimation( model_animation *a, model_saver_ms3d *t, model_readlock *m, unsigned int *start_frame );
+        float makeAnimation( model_animation *a, model_saver_ms3d *t, model_readlock *m, unsigned int *start_frame );
         
     public:
         

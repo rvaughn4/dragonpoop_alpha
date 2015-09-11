@@ -104,11 +104,11 @@ namespace dragonpoop
         tv->setTexCoord1( &s );
         
         if( vid == 0 )
-            tr->setVertex0( tv->getId() );
+            tr->setVertex0( v->id );
         if( vid == 1 )
-            tr->setVertex1( tv->getId() );
+            tr->setVertex1( v->id );
         if( vid == 2 )
-            tr->setVertex2( tv->getId() );
+            tr->setVertex2( v->id );
     }
     
 };

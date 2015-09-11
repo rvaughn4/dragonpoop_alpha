@@ -81,7 +81,7 @@ namespace dragonpoop
             p = *i;
 
             f.t = p->getTime();
-            f.ot = (float)f.t * t->anim.fps / 1000.0f;
+            f.ot = f.t * t->anim.fps / 1000.0f;
             f.id = p->getFrameId();
             f.afid = p->getId();
             

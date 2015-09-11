@@ -1,6 +1,6 @@
 
 #include "model_saver_ms3d_state_make_groups.h"
-#include "model_saver_ms3d_state_make_groups.h"
+#include "model_saver_ms3d_state_write_header.h"
 #include "../../../../core/dpbuffer/dpbuffer.h"
 #include "model_saver_ms3d_group.h"
 #include "model_saver_ms3d_state_cleanup.h"
@@ -58,7 +58,7 @@ namespace dragonpoop
             this->makeGroup( t, m, p );
         }
         
-        return new model_saver_ms3d_state_cleanup( this->b, this->m, 1 );
+        return new model_saver_ms3d_state_write_header( this->b, this->m );
     }
     
     //makes joints for animation

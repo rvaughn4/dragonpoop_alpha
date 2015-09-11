@@ -1,6 +1,6 @@
 
-#ifndef dragonpoop_model_saver_ms3d_state_write_triangles_h
-#define dragonpoop_model_saver_ms3d_state_write_triangles_h
+#ifndef dragonpoop_model_saver_ms3d_state_write_header_h
+#define dragonpoop_model_saver_ms3d_state_write_header_h
 
 #include "../model_saver_state.h"
 
@@ -11,7 +11,7 @@ namespace dragonpoop
     class model_ref;
     class model_saver_ms3d;
     
-    class model_saver_ms3d_state_write_triangles : public model_saver_state
+    class model_saver_ms3d_state_write_header : public model_saver_state
     {
         
     private:
@@ -24,9 +24,9 @@ namespace dragonpoop
     public:
         
         //ctor
-        model_saver_ms3d_state_write_triangles( dpbuffer *b, model_ref *m );
+        model_saver_ms3d_state_write_header( dpbuffer *b, model_ref *m );
         //dtor
-        virtual ~model_saver_ms3d_state_write_triangles( void );
+        virtual ~model_saver_ms3d_state_write_header( void );
         //run state, returns next state
         virtual model_saver_state *run( dpthread_lock *thd, model_saver_writelock *ml );
         

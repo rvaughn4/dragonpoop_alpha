@@ -18,7 +18,7 @@ namespace dragonpoop
     
     struct ms3d_model_frame
     {
-        unsigned int t;
+        float t;
         float ot;
         dpid id, afid;
     };
@@ -27,6 +27,7 @@ namespace dragonpoop
     {
         int32_t cnt_frames;
         unsigned int start, length, skip;
+        float highest_time;
         dpid id;
     };
     
