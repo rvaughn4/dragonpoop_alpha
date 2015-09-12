@@ -135,7 +135,7 @@ namespace dragonpoop
             p = *i;
             
             p->getTranslation( &x );
-            kf.time = f->ot;
+            kf.time = f->t / t->anim.fps;
             kf.x = x.x;
             kf.y = x.y;
             kf.z = x.z;
@@ -143,7 +143,7 @@ namespace dragonpoop
             j->f.cnt_pos_frames++;
             
             p->getRotation( &x );
-            kf.time = f->ot;
+            kf.time = f->t / t->anim.fps;
             kf.x = x.x;
             kf.y = x.y;
             kf.z = x.z;

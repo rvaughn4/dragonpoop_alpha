@@ -19,7 +19,8 @@ namespace dragonpoop
     private:
         
         bool bIsRepeat, bIsAutplay;
-        unsigned int repeat_delay_ms;
+        unsigned int repeat_delay_f, cnt_frames, len_Frames;
+        float fps;
         uint64_t start_time, end_time;
         dpid start_frame, end_frame;
         
@@ -39,10 +40,14 @@ namespace dragonpoop
         void setAutoPlay( bool b );
         //get autoplay mode
         bool isAutoPlay( void );
-        //set delay between repeats
-        void setRepeatDelay( unsigned int ms );
         //get delay between repeats
         unsigned int getRepeatDelay( void );
+        //get frame count
+        unsigned int getFrameCount( void );
+        //get fps
+        float getFps( void );
+        //get length of animation in frames
+        unsigned int getLength( void );
         //start animation
         void start( uint64_t t, model_writelock *ml );
         //stop animation
@@ -51,6 +56,10 @@ namespace dragonpoop
         bool isPlaying( void );
         //return ms played
         uint64_t getPlayTime( uint64_t tm );
+        //convert time into frame number
+        unsigned int getFrameFromTime( uint64_t tm );
+        //convert frame number into time
+        unsigned int getTimeFromFrame( uint64_t tm );
         //return closest frame after time
         model_frame *findFrameAtTime( model_writelock *ml, uint64_t t, uint64_t *p_time );
         //return closest frame before time

@@ -13,6 +13,7 @@
 #include "../../model_animation_frame/model_animation_frame.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <sstream>
+#include <iostream>
 
 #include <math.h>
 
@@ -118,10 +119,7 @@ namespace dragonpoop
         {
             std::stringstream ss;
             f.t = this->frame_times[ i ];
-            
-            f.ot = f.t;
-            f.t = f.t * 1000.0f / ldr->anim.fps;
-            ss << "MS3D Frame #" << f.ot << "";
+            ss << "MS3D Frame #" << f.t << "";
             s = ss.str();
             
             frm = m->makeFrame( thd->genId() );
@@ -187,14 +185,14 @@ namespace dragonpoop
         for( i_f = 0; i_f < e_f; i_f++ )
         {
             f = &( *fl )[ i_f ];
-            
+                        
             for( i_j = 0; i_j < e_j; i_j++ )
             {
                 j = &( *jl )[ i_j ];
                 
                 fjnt = m->makeFrameJoint( thd->genId(), f->id, j->id );
                 
-                this->getKeyframe( f->ot, &j->translate_frames, &v );
+                this->getKeyframe( f->t / ldr->anim.fps, &j->translate_frames, &v );
                 v.getPosition( &x );
                 fjnt->setTranslation( &x );
 //
@@ -203,7 +201,7 @@ namespace dragonpoop
       //          mx.setPosition( &v );
         //        mx.getAngles( &ax );
                 
-                this->getKeyframe( f->ot, &j->rotate_frames, &v );
+                this->getKeyframe( f->t / ldr->anim.fps, &j->rotate_frames, &v );
                 v.getPosition( &ax );
                 fjnt->setRotation( &ax );
             }

@@ -46,10 +46,11 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 300;
+        this->t_frame_time = 100;
         this->bIsSynced = 1;
         this->j_ctr = 0;
         this->t_start = this->t_end = 0;
+        this->t_play = 0;
         
         l = (model_instance_writelock *)g.tryWriteLock( this, 400 );
         if( !l )
@@ -309,16 +310,9 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         renderer_model_instance_writelock *rl;
-        uint64_t td = this->t_frame_time;
 
-        if( this->t_start )
-        {
-            td = tms - this->t_start;
-            this->t_start = this->t_end;
-        }
-        else
-            this->t_start = tms;
-        this->t_end = tms + td;
+        this->t_start = tms;
+        this->t_end = this->t_start + this->t_frame_time;
         
         this->redoAnim( mi, ml );
         
@@ -631,7 +625,7 @@ namespace dragonpoop
     void model_instance::redoAnim( model_writelock *m, model_instance_animation *a )
     {
         model_frame *f;
-        uint64_t ts, te, pt;
+        uint64_t te, pt;
         
         if( !a->isPlaying() && a->isAutoPlay() )
             a->start( this->t_start, m );
@@ -639,13 +633,14 @@ namespace dragonpoop
         pt = a->getPlayTime( this->t_start );
         if( !a->isPlaying() )
             return;
+        this->t_play = pt;
         
         a->setStartFrame( a->getEndFrame() );
-        f = a->findFrameBeforeTime( m, pt, &te );
+        f = a->findFrameAtTime( m, pt, &te );
         if( f )
             a->setEndFrame( f->getId() );
         
-        std::cout << " " << this->t_end << " " << pt << " " << ts << " " << te << "\r\n";
+        std::cout << " " << this->t_end << " " << pt << " " << te << "\r\n";
     }
     
     //redo animation, compound joint transforms

@@ -256,6 +256,9 @@ namespace dragonpoop
         if( p )
             this->doUpMatrix( p, m, rs, re );
         
+        re = 1;
+        rs = 0;
+        
         //bone up
         m->translate( -e->bone_pos.x, -e->bone_pos.y, -e->bone_pos.z );
       //  m->rotateXrad( -e->bone_rot.x );
@@ -267,6 +270,8 @@ namespace dragonpoop
         t.x = e->pos_start.x * rs + e->pos_end.x * re;
         t.y = e->pos_start.y * rs + e->pos_end.y * re;
         t.z = e->pos_start.z * rs + e->pos_end.z * re;
+        
+        o = e->rot_end;
         
         m->rotateZrad( o.z );
         m->rotateYrad( o.y );

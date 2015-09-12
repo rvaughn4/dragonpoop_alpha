@@ -15,7 +15,11 @@ namespace dragonpoop
     {
         this->bIsRepeat = m->isRepeated();
         this->bIsAutplay = m->isAutoPlay();
-        this->repeat_delay_ms = m->getRepeatDelay();
+        this->repeat_delay_f = m->getRepeatDelay();
+        this->len_Frames = m->getLength();
+        this->cnt_frames = m->getFrameCount();
+        this->fps = m->getFps();
+        
         this->start_time = this->end_time = 0;
     }
     
@@ -49,36 +53,38 @@ namespace dragonpoop
         return this->bIsAutplay;
     }
     
-    //set delay between repeats
-    void model_instance_animation::setRepeatDelay( unsigned int ms )
-    {
-        this->repeat_delay_ms = ms;
-    }
-    
     //get delay between repeats
     unsigned int model_instance_animation::getRepeatDelay( void )
     {
-        return this->repeat_delay_ms;
+        return this->repeat_delay_f;
     }
+    
+    //get frame count
+    unsigned int model_instance_animation::getFrameCount( void )
+    {
+        return this->cnt_frames;
+    }
+    
+    //get fps
+    float model_instance_animation::getFps( void )
+    {
+        return this->fps;
+    }
+    
+    //get length of animation in frames
+    unsigned int model_instance_animation::getLength( void )
+    {
+        return this->len_Frames;
+    }
+    
     
     //start animation
     void model_instance_animation::start( uint64_t t, model_writelock *ml )
     {
-        std::list<model_animation_frame *> l;
-        std::list<model_animation_frame *>::iterator i;
-        model_animation_frame *p;
-        
+        float f;
+        f = this->len_Frames * 1000.0f / this->fps;
         this->start_time = t;
-        this->end_time = 0;
-        
-        ml->getAnimationFrames( &l, this->getId() );
-        
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            if( p->getTime() > this->end_time )
-                this->end_time = p->getTime();
-        }
+        this->end_time = t + (unsigned int)f;
     }
     
     //stop animation
@@ -98,6 +104,7 @@ namespace dragonpoop
     uint64_t model_instance_animation::getPlayTime( uint64_t t )
     {
         uint64_t td;
+        float f;
         
         if( !this->start_time || !this->end_time )
             return 0;
@@ -107,21 +114,43 @@ namespace dragonpoop
         else
             td = 0;
         
-        if( td > this->end_time )
+        if( t > this->end_time )
         {
             if( !this->bIsRepeat )
             {
-                //this->stop();
+                this->stop();
                 return 0;
             }
-            this->start_time = t + this->repeat_delay_ms - ( td - this->end_time );
-            if( t > this->start_time )
-                td = t - this->start_time;
-            else
-                td = 0;
+            this->start_time = this->end_time;
+            f = this->len_Frames * 1000.0f / this->fps;
+            this->end_time += (unsigned int)f;
+            
+            return this->getPlayTime( t );
         }
         
         return td;
+    }
+    
+    //convert time into frame number
+    unsigned int model_instance_animation::getFrameFromTime( uint64_t tm )
+    {
+        float f;
+        
+        f = (float)tm / 1000.0f;
+        f *= this->fps;
+        
+        return (unsigned int)f;
+    }
+    
+    //convert frame number into time
+    unsigned int model_instance_animation::getTimeFromFrame( uint64_t tm )
+    {
+        float f;
+        
+        f = (float)tm / this->fps;
+        f *= 1000.0f;
+        
+        return (unsigned int)f;
     }
     
     //return closest frame after time
@@ -130,6 +159,8 @@ namespace dragonpoop
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
+        
+        t = this->getFrameFromTime( t );
         
         ml->getAnimationFrames( &l, this->getId() );
         
@@ -153,7 +184,7 @@ namespace dragonpoop
         if( !f )
             return 0;
         
-        *p_time = f->getTime();
+        *p_time = this->getTimeFromFrame( f->getTime() );
         return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
     }
 
@@ -163,6 +194,8 @@ namespace dragonpoop
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
+        
+        t = this->getFrameFromTime( t );
         
         ml->getAnimationFrames( &l, this->getId() );
         
@@ -186,7 +219,7 @@ namespace dragonpoop
         if( !f )
             return 0;
         
-        *p_time = f->getTime();
+        *p_time = this->getTimeFromFrame( f->getTime() );
         return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
     }
     

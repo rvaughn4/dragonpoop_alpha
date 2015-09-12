@@ -61,6 +61,8 @@ namespace dragonpoop
             ma = &( *la )[ i ];
             this->makeFrames( t, ma, m );
         }
+        
+        o.unlock();
 
         return new model_saver_ms3d_state_make_joints( this->b, this->m );
     }
@@ -73,6 +75,9 @@ namespace dragonpoop
         model_animation_frame *p;
         ms3d_model_frame f;
         std::vector<ms3d_model_frame> *lf;
+        std::vector<ms3d_model_frame> llf;
+        std::vector<float> lt;
+        unsigned int j, k, r, d;
         
         lf = t->frames;
         m->getAnimationFrames( &l, a->id );
@@ -81,11 +86,27 @@ namespace dragonpoop
             p = *i;
 
             f.t = p->getTime();
-            f.ot = f.t * t->anim.fps / 1000.0f;
             f.id = p->getFrameId();
             f.afid = p->getId();
             
-            lf->push_back( f );
+            lt.push_back( f.t );
+            llf.push_back( f );
+        }
+        
+        std::sort( lt.begin(), lt.end() );
+        
+        k = (unsigned int)lt.size();
+        d = (unsigned int)llf.size();
+        for( j = 0; j < k; j++ )
+        {
+            for( r = 0; r < d; r++ )
+            {
+                if( llf[ r ].t == lt[ j ] )
+                {
+                    lf->push_back( llf[ r ] );
+                    r = d;
+                }
+            }
         }
     
     }

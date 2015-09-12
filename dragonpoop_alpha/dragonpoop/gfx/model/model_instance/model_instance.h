@@ -55,7 +55,7 @@ namespace dragonpoop
             dpid_multibtree byowner;
         } comps;
         renderer_model_instance_ref *r;
-        uint64_t t_start, t_end, t_last_animate, t_frame_time;
+        uint64_t t_start, t_end, t_last_animate, t_frame_time, t_play;
         std::atomic<bool> bIsSynced;
         int16_t j_ctr;
         

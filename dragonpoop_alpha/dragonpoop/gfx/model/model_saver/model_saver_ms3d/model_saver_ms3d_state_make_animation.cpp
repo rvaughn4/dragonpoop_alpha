@@ -72,46 +72,19 @@ namespace dragonpoop
     
     float model_saver_ms3d_state_make_animation::makeAnimation( model_animation *a, model_saver_ms3d *t, model_readlock *m, unsigned int *start_frame )
     {
-        unsigned int highest_frame, tm, c;
-        std::list<model_animation_frame *> l;
-        std::list<model_animation_frame *>::iterator i;
-        model_animation_frame *p;
         ms3d_model_animation_m s;
         std::vector<ms3d_model_animation_m> *la;
-        float ftm, fhighest_frame;
 
-        m->getAnimationFrames( &l, a->getId() );
-        c = highest_frame = 0;
-        fhighest_frame = 0;
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            tm = p->getTime();
-            if( tm > highest_frame )
-                highest_frame = tm;
-            ftm = tm * t->anim.fps / 1000.0f;
-            if( ftm > fhighest_frame )
-                fhighest_frame = ftm;
-            c++;
-        }
+        la = t->anims;
         
         s.id = a->getId();
-        s.cnt_frames = c;
-        s.length = highest_frame;
-        s.highest_time = fhighest_frame;
-        if( c )
-            s.skip = highest_frame / c;
-        else
-            s.skip = 1;
-        fhighest_frame += (float)s.skip * t->anim.fps / 1000.0f;
+        s.cnt_frames = a->getLength();
+        s.highest_time = a->getFrameCount();
+        s.skip = a->getRepeatDelay();
         
-        s.start = *start_frame;
-        *start_frame += highest_frame + s.skip;
-        
-        la = t->anims;
         la->push_back( s );
         
-        return fhighest_frame;
+        return s.cnt_frames;
     }
     
 };
