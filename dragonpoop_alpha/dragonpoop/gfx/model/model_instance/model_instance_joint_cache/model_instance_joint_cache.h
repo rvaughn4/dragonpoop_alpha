@@ -15,6 +15,7 @@ namespace dragonpoop
     struct model_instance_joint_cache_element
     {
         int16_t id, pid;
+        dpmatrix bone_local, bone_global, anim_local, anim_global, inv_bone_global;
         dpmatrix up, down;
         dpxyz_f bone_pos, bone_rot, pos_start;
         dpxyz_f pos_end, rot_start, rot_end;
@@ -40,10 +41,12 @@ namespace dragonpoop
         void doUpMatrix( model_instance_joint_cache_element *e, dpmatrix *m, float rs, float re );
         //do matrix down
         void doDownMatrix( model_instance_joint_cache_element *e, dpmatrix *m );
+
         //do angle lerp
         static void angleLerp( dpxyz_f *a, dpxyz_f *b, dpxyz_f *o, float rs, float re );
-        //find angles
-        static float getAngle( float x0, float y0, float x1, float y1 );
+        //do position lerp
+        static void posLerp( dpxyz_f *a, dpxyz_f *b, dpxyz_f *o, float rs, float re );
+        
         
     public:
         

@@ -22,6 +22,7 @@ namespace dragonpoop
         union
         {
             float fv[ 16 ];
+            float f4v[ 4 ][ 4 ];
             struct
             {
                 struct
@@ -101,6 +102,14 @@ namespace dragonpoop
         void rotateRad( float x, float y, float z );
         //rotate ( Z * Y ) * X
         void rotate( float x, float y, float z );
+        //set angle (radians) and position
+        void setAngleRadAndPosition( dpxyz_f *angles, dpxyz_f *pos );
+        //set this to inverse of matrix
+        void inverse( dpmatrix *m );
+        //returns position
+        void getPosition( dpxyz_f *p );        
+        //sets position
+        void setPosition( dpxyz_f *p );
 
     };
 

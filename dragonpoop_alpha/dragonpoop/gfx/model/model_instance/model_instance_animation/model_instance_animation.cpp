@@ -18,7 +18,8 @@ namespace dragonpoop
         this->repeat_delay_f = m->getRepeatDelay();
         this->len_Frames = m->getLength();
         this->cnt_frames = m->getFrameCount();
-        this->fps = m->getFps();
+        this->fps = 5;//m->getFps();
+        
         
         this->start_time = this->end_time = 0;
     }

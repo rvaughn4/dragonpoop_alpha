@@ -67,8 +67,11 @@ namespace dragonpoop
         e = this->getElement( v->bones[ 0 ].id );
         if( !e )
             return;
-        e->up.transform( &v->pos );
-        e->down.transform( &v->pos );
+
+        e->inv_bone_global.transform( &v->pos );
+        e->inv_bone_global.transform( &v->normal );
+        e->anim_global.transform( &v->pos );
+        e->anim_global.transform( &v->normal );
         
         /*
         dpxyz_f *pos_in, pos_a_start, pos_a_end, pos_out_start, pos_out_end;
@@ -230,6 +233,15 @@ namespace dragonpoop
     void model_instance_joint_cache::computeMatrix( model_instance_joint_cache_element *e, float r )
     {
         float rs, re;
+        model_instance_joint_cache_element *p;
+        dpxyz_f pos, rot;
+        
+        if( e->wasUpdated )
+            return;
+        
+        p = this->getElement( e->pid );
+        if( p )
+            this->computeMatrix( p, r );
         
         re = r;
         if( re > 1 )
@@ -238,11 +250,41 @@ namespace dragonpoop
             re = 0;
         rs = 1.0f - re;
         
-        e->up.setIdentity();
-        this->doUpMatrix( e, &e->up, rs, re );
+        this->angleLerp( &e->rot_start, &e->rot_end, &rot, rs, re );
+        this->posLerp( &e->pos_start, &e->pos_end, &pos, rs, re );
         
-        e->down.setIdentity();
-        this->doDownMatrix( e, &e->down );
+        rot = e->rot_end;
+        pos = e->pos_end;
+        
+        e->bone_local.setAngleRadAndPosition( &e->bone_rot, &e->bone_pos );
+        e->anim_local.setAngleRadAndPosition( &rot, &pos );
+        
+        if( p )
+        {
+            e->bone_global.setIdentity();
+            e->bone_global.multiply( &p->bone_global );
+            e->bone_global.multiply( &e->bone_local );
+        }
+        else
+            e->bone_global.copy( &e->bone_local );
+        e->inv_bone_global.inverse( &e->bone_global );
+        
+        if( p )
+        {
+            e->anim_global.setIdentity();
+            e->anim_global.multiply( &p->anim_global );
+            e->anim_global.multiply( &e->anim_local );
+            e->anim_global.multiply( &e->bone_local );
+        }
+        else
+        {
+            e->anim_global.setIdentity();
+            e->anim_global.multiply( &e->anim_local );
+            e->anim_global.multiply( &e->bone_local );
+        }
+        e->anim_global.copy( &e->bone_global );
+        
+        e->wasUpdated = 1;
     }
     
     //do matrix up
@@ -256,14 +298,11 @@ namespace dragonpoop
         if( p )
             this->doUpMatrix( p, m, rs, re );
         
-        re = 1;
-        rs = 0;
-        
         //bone up
-        m->translate( -e->bone_pos.x, -e->bone_pos.y, -e->bone_pos.z );
       //  m->rotateXrad( -e->bone_rot.x );
        // m->rotateYrad( -e->bone_rot.y );
-       // m->rotateZrad( -e->bone_rot.z );
+        //m->rotateZrad( -e->bone_rot.z );
+        m->translate( e->bone_pos.x, e->bone_pos.y, e->bone_pos.z );
         
         //animation
         this->angleLerp( &e->rot_start, &e->rot_end, &o, rs, re );
@@ -271,12 +310,13 @@ namespace dragonpoop
         t.y = e->pos_start.y * rs + e->pos_end.y * re;
         t.z = e->pos_start.z * rs + e->pos_end.z * re;
         
-        o = e->rot_end;
+//        t = e->pos_start;
+  //      o = e->rot_start;
         
+        //m->translate( t.x, t.y, t.z );
         m->rotateZrad( o.z );
         m->rotateYrad( o.y );
         m->rotateXrad( o.x );
-        m->translate( t.x, t.y, t.z );
     }
     
     //do matrix down
@@ -286,10 +326,10 @@ namespace dragonpoop
 
         p = this->getElement( e->pid );
 
-       // m->rotateZrad( e->bone_rot.z );
-       // m->rotateYrad( e->bone_rot.y );
-//m->rotateXrad( e->bone_rot.x );
-        m->translate( e->bone_pos.x, e->bone_pos.y, e->bone_pos.z );
+        m->translate( -e->bone_pos.x, -e->bone_pos.y, -e->bone_pos.z );
+  //      m->rotateZrad( e->bone_rot.z );
+    //    m->rotateYrad( e->bone_rot.y );
+      //  m->rotateXrad( e->bone_rot.x );
 
         if( p )
             this->doDownMatrix( p, m );
@@ -312,5 +352,14 @@ namespace dragonpoop
 
         mx.getAngles( o );
     }
+    
+    //do position lerp
+    void model_instance_joint_cache::posLerp( dpxyz_f *a, dpxyz_f *b, dpxyz_f *o, float rs, float re )
+    {
+        o->x = a->x * rs + b->x * re;
+        o->y = a->y * rs + b->y * re;
+        o->z = a->z * rs + b->z * re;
+    }
+    
     
 };

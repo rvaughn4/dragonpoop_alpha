@@ -195,14 +195,14 @@ namespace dragonpoop
                 this->getKeyframe( f->t / ldr->anim.fps, &j->translate_frames, &v );
                 v.getPosition( &x );
                 fjnt->setTranslation( &x );
-//
-  //              this->getKeyframeQuat( f->ot, &j->rotate_frames, &q );
-    //            mx.setQuat( &q );
-      //          mx.setPosition( &v );
-        //        mx.getAngles( &ax );
+
+                this->getKeyframeQuat( f->t / ldr->anim.fps, &j->rotate_frames, &q );
+                mx.setQuat( &q );
+                mx.setPosition( &v );
+                mx.getAngles( &ax );
                 
-                this->getKeyframe( f->t / ldr->anim.fps, &j->rotate_frames, &v );
-                v.getPosition( &ax );
+//                this->getKeyframe( f->t / ldr->anim.fps, &j->rotate_frames, &v );
+  //              v.getPosition( &ax );
                 fjnt->setRotation( &ax );
             }
         }

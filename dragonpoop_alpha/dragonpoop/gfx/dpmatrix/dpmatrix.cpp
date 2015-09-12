@@ -91,8 +91,8 @@ namespace dragonpoop
         dpmatrix m0, m1;
         m0.copy( this );
         m1.setTranslation( x, y, z );
-        m1.multiply( &m0 );
-        this->copy( &m1 );
+        m0.multiply( &m1 );
+        this->copy( &m0 );
     }
 
     //multiply rotation to matrix
@@ -125,8 +125,8 @@ namespace dragonpoop
         dpmatrix m0, m1;
         m0.copy( this );
         m1.setRotationXrad( rad );
-        m1.multiply( &m0 );
-        this->copy( &m1 );
+        m0.multiply( &m1 );
+        this->copy( &m0 );
     }
     
     //multiply rotation to matrix
@@ -135,8 +135,8 @@ namespace dragonpoop
         dpmatrix m0, m1;
         m0.copy( this );
         m1.setRotationYrad( rad );
-        m1.multiply( &m0 );
-        this->copy( &m1 );
+        m0.multiply( &m1 );
+        this->copy( &m0 );
     }
     
     //multiply rotation to matrix
@@ -145,8 +145,8 @@ namespace dragonpoop
         dpmatrix m0, m1;
         m0.copy( this );
         m1.setRotationZrad( rad );
-        m1.multiply( &m0 );
-        this->copy( &m1 );
+        m0.multiply( &m1 );
+        this->copy( &m0 );
     }
 
     //multiply scaling to matrix
@@ -418,4 +418,106 @@ namespace dragonpoop
         this->multiply( &zm );
     }
 
+    //set angle (radians) and position
+    void dpmatrix::setAngleRadAndPosition( dpxyz_f *angles, dpxyz_f *pos )
+    {
+        unsigned int i;
+        float sr, sp, sy, cr, cp, cy;
+
+        for( i = 0; i < 16; i++ )
+            this->values.fv[ i ] = 0;
+        
+        sy = sin( angles->z );
+        cy = cos( angles->z );
+        
+        sp = sin( angles->y );
+        cp = cos( angles->y );
+        
+        sr = sin( angles->x );
+        cr = cos( angles->x );
+        
+        this->values.c1.r1 = cp * cy;
+        this->values.c1.r2 = cp * sy;
+        this->values.c1.r3 = -sp;
+
+        this->values.c2.r1 = sr * sp * cy + cr * -sy;
+        this->values.c2.r2 = sr * sp * sy + cr * cy;
+        this->values.c2.r3 = sr * cp;
+
+        this->values.c3.r1 = ( cr * sp * cy + -sr * -sy );
+        this->values.c3.r2 = ( cr * sp * sy + -sr * cy );
+        this->values.c3.r3 = cr * cp;
+
+        this->values.c4.r1 = pos->x;
+        this->values.c4.r2 = pos->y;
+        this->values.c4.r3 = pos->z;
+        this->values.c4.r4 = 1;
+    }
+    
+    //set this to inverse of matrix
+    void dpmatrix::inverse( dpmatrix *m )
+    {
+        float s0, s1, s2, s3, s4, s5;
+        float c0, c1, c2, c3, c4, c5;
+        float det, invdet;
+        
+        s0 = m->values.c1.r1 * m->values.c2.r2 - m->values.c2.r1 * m->values.c1.r2;
+        s1 = m->values.c1.r1 * m->values.c2.r3 - m->values.c2.r1 * m->values.c1.r3;
+        s2 = m->values.c1.r1 * m->values.c2.r4 - m->values.c2.r1 * m->values.c1.r4;
+        s3 = m->values.c1.r2 * m->values.c2.r3 - m->values.c2.r2 * m->values.c1.r3;
+        s4 = m->values.c1.r2 * m->values.c2.r4 - m->values.c2.r2 * m->values.c1.r4;
+        s5 = m->values.c1.r3 * m->values.c2.r4 - m->values.c2.r3 * m->values.c1.r4;
+        
+        c5 = m->values.c3.r3 * m->values.c4.r4 - m->values.c4.r3 * m->values.c3.r4;
+        c4 = m->values.c3.r2 * m->values.c4.r4 - m->values.c4.r2 * m->values.c3.r4;
+        c3 = m->values.c3.r2 * m->values.c4.r3 - m->values.c4.r2 * m->values.c3.r3;
+        c2 = m->values.c3.r1 * m->values.c4.r4 - m->values.c4.r1 * m->values.c3.r4;
+        c1 = m->values.c3.r1 * m->values.c4.r3 - m->values.c4.r1 * m->values.c3.r3;
+        c0 = m->values.c3.r1 * m->values.c4.r2 - m->values.c4.r1 * m->values.c3.r2;
+    
+    // Should check for 0 determinant
+        det = ( s0 * c5 - s1 * c4 + s2 * c3 + s3 * c2 - s4 * c1 + s5 * c0 );
+        if( det )
+            invdet = 1.0 / det;
+        else
+            invdet = 0;
+        
+        this->values.c1.r1 = ( m->values.c2.r2 * c5 - m->values.c2.r3 * c4 + m->values.c2.r4 * c3) * invdet;
+        this->values.c1.r2 = (-m->values.c1.r2 * c5 + m->values.c1.r3 * c4 - m->values.c1.r4 * c3) * invdet;
+        this->values.c1.r3 = ( m->values.c4.r2 * s5 - m->values.c4.r3 * s4 + m->values.c4.r4 * s3) * invdet;
+        this->values.c1.r4 = (-m->values.c3.r2 * s5 + m->values.c3.r3 * s4 - m->values.c3.r4 * s3) * invdet;
+        
+        this->values.c2.r1 = (-m->values.c2.r1 * c5 + m->values.c2.r3 * c2 - m->values.c2.r4 * c1) * invdet;
+        this->values.c2.r2 = ( m->values.c1.r1 * c5 - m->values.c1.r3 * c2 + m->values.c1.r4 * c1) * invdet;
+        this->values.c2.r3 = (-m->values.c4.r1 * s5 + m->values.c4.r3 * s2 - m->values.c4.r4 * s1) * invdet;
+        this->values.c2.r4 = ( m->values.c3.r1 * s5 - m->values.c3.r3 * s2 + m->values.c3.r4 * s1) * invdet;
+        
+        this->values.c3.r1 = ( m->values.c2.r1 * c4 - m->values.c2.r2 * c2 + m->values.c2.r4 * c0) * invdet;
+        this->values.c3.r2 = (-m->values.c1.r1 * c4 + m->values.c1.r2 * c2 - m->values.c1.r4 * c0) * invdet;
+        this->values.c3.r3 = ( m->values.c4.r1 * s4 - m->values.c4.r2 * s2 + m->values.c4.r4 * s0) * invdet;
+        this->values.c3.r4 = (-m->values.c3.r1 * s4 + m->values.c3.r2 * s2 - m->values.c3.r4 * s0) * invdet;
+        
+        this->values.c4.r1 = (-m->values.c2.r1 * c3 + m->values.c2.r2 * c1 - m->values.c2.r3 * c0) * invdet;
+        this->values.c4.r2 = ( m->values.c1.r1 * c3 - m->values.c1.r2 * c1 + m->values.c1.r3 * c0) * invdet;
+        this->values.c4.r3 = (-m->values.c4.r1 * s3 + m->values.c4.r2 * s1 - m->values.c4.r3 * s0) * invdet;
+        this->values.c4.r4 = ( m->values.c3.r1 * s3 - m->values.c3.r2 * s1 + m->values.c3.r3 * s0) * invdet;
+    
+    }
+
+    //returns position
+    void dpmatrix::getPosition( dpxyz_f *p )
+    {
+        p->x = this->values.c4.r1;
+        p->y = this->values.c4.r2;
+        p->z = this->values.c4.r3;
+    }
+
+    //sets position
+    void dpmatrix::setPosition( dpxyz_f *p )
+    {
+        this->values.c4.r1 = p->x;
+        this->values.c4.r2 = p->y;
+        this->values.c4.r3 = p->z;
+    }
+    
 };
