@@ -11,8 +11,6 @@
 #include "../../model_joint/model_joint.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
     
@@ -35,7 +33,7 @@ namespace dragonpoop
         ms3d_model_joint_m *v;
         std::vector<ms3d_model_joint_m> *l;
         unsigned int i, e;
-        std::string s0, s1, sdeb;
+        std::string s0, s1;
         
         s0.assign( cname, sz );
         
@@ -48,13 +46,8 @@ namespace dragonpoop
             s1.assign( (char *)v->f.name, sizeof( v->f.name ) );
             if( s0.compare( s1 ) == 0 )
                 return v;
-            sdeb.append( s0 );
-            sdeb.append( " != " );
-            sdeb.append( s1 );
-            sdeb.append( "\r\n" );
         }
         
-        std::cout << sdeb;
         return 0;
     }
     

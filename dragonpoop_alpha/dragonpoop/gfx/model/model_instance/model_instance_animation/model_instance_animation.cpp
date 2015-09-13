@@ -9,8 +9,6 @@
 #include "../../model_animation_frame/model_animation_frame.h"
 #include "../../model_frame/model_frame.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
     
@@ -262,8 +260,6 @@ namespace dragonpoop
         frm = this->findFrameAtTime( m, this->current_frame_time + frame_time, &this->end_frame_time );
         if( frm )
             this->end_frame = frm->getId();
-        
-        //std::cout << "" << this->current_frame_time << " is between " << this->start_frame_time << " and " << this->end_frame_time << "\r\n";
     }
     
     //return end frame time

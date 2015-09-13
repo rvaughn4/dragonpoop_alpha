@@ -50,10 +50,9 @@ namespace dragonpoop
     }
   
     //run animation
-    void model_instance_joint::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd, std::stringstream *ss )
+    void model_instance_joint::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd )
     {
         uint64_t t, te;
-        //std::string s;
         
         t = thd->getTicks();
         this->blendStart( t );
@@ -64,11 +63,6 @@ namespace dragonpoop
         
         this->combineAllTransforms( te, mi, m, &this->end.pos, &this->end.rot );
         this->end.t = te;
-        
-       // this->getName( &s );
-     //   *ss << "\t" << s;
-       // *ss << " T(" << this->end.pos.x << "," << this->end.pos.y << "," << this->end.pos.z << ")";
-        //*ss << " R(" << this->end.rot.x << "," << this->end.rot.y << "," << this->end.rot.z << ")\r\n";
     }
     
     //blend end into start
@@ -81,7 +75,7 @@ namespace dragonpoop
         //not yet started
         if( !this->start.t )
         {
-            this->start = this->orig;
+            memset( &this->start, 0, sizeof( this->start ) );
             this->end = this->start;
             this->start.t = t;
             this->end.t = t;
@@ -100,6 +94,7 @@ namespace dragonpoop
             else
                 re = (float)tt / (float)td;
         }
+        //re = 0.5f + 0.5f * re;
         rs = 1.0f - re;
         
         //lerp the pos
@@ -261,6 +256,12 @@ namespace dragonpoop
     int16_t model_instance_joint::getIndex( void )
     {
         return this->index;
+    }
+    
+    //return parent id
+    dpid model_instance_joint::getParentId( void )
+    {
+        return this->parent_id;
     }
     
 };

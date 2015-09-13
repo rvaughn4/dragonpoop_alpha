@@ -30,8 +30,6 @@
 #include "../model_triangle_vertex/model_triangle_vertex.h"
 #include "../model_vertex/model_vertex.h"
 #include "../../dpmatrix/dpmatrix.h"
-#include <random>
-#include <iostream>
 
 namespace dragonpoop
 {
@@ -46,7 +44,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 30;
+        this->t_frame_time = 10;
         this->bIsSynced = 1;
         this->j_ctr = 0;
         this->t_start = this->t_end = 0;
@@ -343,16 +341,13 @@ namespace dragonpoop
         std::list<model_instance_joint *> l;
         std::list<model_instance_joint *>::iterator i;
         model_instance_joint *p;
-        std::stringstream ss;
         
         this->getJoints( &l );
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            p->run( mi, ml, thd, &ss );
+            p->run( mi, ml, thd );
         }
-        
-        //std::cout << ss.str();
     }
     
     //set renderer model

@@ -53,6 +53,10 @@ namespace dragonpoop
         void transform( dpvertex *v );
         //return index
         int16_t getIndex( void );
+        //get joint position
+        void getTransformedPosition( dpxyz_f *x );
+        //return parent id
+        dpid getParentId( void );
         
     };
     

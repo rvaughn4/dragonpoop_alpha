@@ -4,8 +4,6 @@
 
 #include "../../model_joint/model_joint.h"
 #include "../../../dpmatrix/dpmatrix.h"
-#include <atomic>
-#include <sstream>
 
 namespace dragonpoop
 {
@@ -53,13 +51,15 @@ namespace dragonpoop
         //get rotation
         void getRotation( dpxyz_f *x );
         //run animation
-        void run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd, std::stringstream *ss );
+        void run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd );
         //get start position, rotation, and time
         uint64_t getStartData( dpxyz_f *pos, dpxyz_f *rot );
         //get end position, rotation, and time
         uint64_t getEndData( dpxyz_f *pos, dpxyz_f *rot );
         //return index
         int16_t getIndex( void );
+        //return parent id
+        dpid getParentId( void );
 
     };
     
