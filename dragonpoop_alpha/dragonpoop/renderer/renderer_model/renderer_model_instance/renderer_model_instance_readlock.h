@@ -16,6 +16,8 @@ namespace dragonpoop
     class renderer_model_instance_readlock;
     class dpthread_lock;
     class model_instance_joint_cache;
+    class renderer_model_instance_joint;
+    struct dpvertex;
     
     class renderer_model_instance_readlock : public shared_obj_readlock
     {
@@ -45,8 +47,12 @@ namespace dragonpoop
         void getComponentsByParents( uint16_t mtype, dpid p1, dpid p2, std::list<model_component *> *l );
         //find group
         renderer_model_instance_group *findGroup( dpid id );
+        //find joint
+        renderer_model_instance_joint *findJoint( dpid id );
         //get groups
         void getGroups( std::list<renderer_model_instance_group *> *l );
+        //get joints
+        void getJoints( std::list<renderer_model_instance_joint *> *l );
         //sync
         void sync( void );
         //animate
@@ -55,7 +61,11 @@ namespace dragonpoop
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m );
         //returns joint cache
         model_instance_joint_cache *getJointCache( void );
-        
+        //transform vertex using joints
+        void transform( dpvertex *v );
+        //recompute animation joint matrixes
+        void redoMatrixes( uint64_t t );
+
         friend class renderer_model_instance;
     };
     

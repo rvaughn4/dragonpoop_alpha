@@ -83,6 +83,12 @@ namespace dragonpoop
         this->t->getAnimations( l );
     }
     
+    //get joints
+    void model_instance_readlock::getJoints( std::list<model_instance_joint *> *l )
+    {
+        this->t->getJoints( l );
+    }
+    
     //sync
     void model_instance_readlock::sync( void )
     {

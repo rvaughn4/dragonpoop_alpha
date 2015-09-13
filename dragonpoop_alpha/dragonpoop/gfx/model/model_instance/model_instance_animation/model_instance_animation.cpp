@@ -206,7 +206,7 @@ namespace dragonpoop
     }
     
     //run animation
-    void model_instance_animation::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd )
+    void model_instance_animation::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd, unsigned int frame_time )
     {
         float f;
         model_frame *frm;
@@ -259,11 +259,27 @@ namespace dragonpoop
             this->start_frame = frm->getId();
         
         //find end frame
-        frm = this->findFrameAtTime( m, this->current_frame_time, &this->end_frame_time );
+        frm = this->findFrameAtTime( m, this->current_frame_time + frame_time, &this->end_frame_time );
         if( frm )
             this->end_frame = frm->getId();
         
-        std::cout << "" << this->current_frame_time << " is between " << this->start_frame_time << " and " << this->end_frame_time << "\r\n";
+        //std::cout << "" << this->current_frame_time << " is between " << this->start_frame_time << " and " << this->end_frame_time << "\r\n";
+    }
+    
+    //return end frame time
+    uint64_t model_instance_animation::getEndTime( void )
+    {
+        float f;
+        f = (float)this->end_frame_time * 1000.0f / this->fps;
+        return this->start_time + (uint64_t)f;
+    }
+    
+    //return start frame time
+    uint64_t model_instance_animation::getStartTime( void )
+    {
+        float f;
+        f = (float)this->start_frame_time * 1000.0f / this->fps;
+        return this->start_time + (uint64_t)f;
     }
     
 };

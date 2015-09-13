@@ -101,6 +101,12 @@ namespace dragonpoop
         this->t->getAnimations( l );
     }
     
+    //get joints
+    void model_instance_writelock::getJoints( std::list<model_instance_joint *> *l )
+    {
+        this->t->getJoints( l );
+    }
+    
     //get start time
     uint64_t model_instance_writelock::getStartTime( void )
     {

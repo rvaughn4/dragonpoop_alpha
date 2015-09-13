@@ -69,7 +69,11 @@ namespace dragonpoop
         //get end frame id
         dpid getEndFrame( void );
         //run animation
-        void run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd );
+        void run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd, unsigned int frame_time );
+        //return end frame time
+        uint64_t getEndTime( void );
+        //return start frame time
+        uint64_t getStartTime( void );
 
     };
     

@@ -53,10 +53,22 @@ namespace dragonpoop
         return this->t->findGroup( id );
     }
     
+    //find joint
+    renderer_model_instance_joint *renderer_model_instance_writelock::findJoint( dpid id )
+    {
+        return this->t->findJoint( id );
+    }
+    
     //get groups
     void renderer_model_instance_writelock::getGroups( std::list<renderer_model_instance_group *> *l )
     {
         this->t->getGroups( l );
+    }
+    
+    //get joints
+    void renderer_model_instance_writelock::getJoints( std::list<renderer_model_instance_joint *> *l )
+    {
+        this->t->getJoints( l );
     }
     
     //sync
@@ -81,6 +93,18 @@ namespace dragonpoop
     model_instance_joint_cache *renderer_model_instance_writelock::getJointCache( void )
     {
         return this->t->getJointCache();
+    }
+    
+    //transform vertex using joints
+    void renderer_model_instance_writelock::transform( dpvertex *v )
+    {
+        this->t->transform( v );
+    }
+    
+    //recompute animation joint matrixes
+    void renderer_model_instance_writelock::redoMatrixes( uint64_t t )
+    {
+        this->t->redoMatrixes( this, t );
     }
     
 };

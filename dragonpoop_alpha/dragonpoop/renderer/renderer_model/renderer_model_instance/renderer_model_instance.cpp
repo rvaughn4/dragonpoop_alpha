@@ -9,7 +9,9 @@
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../gfx/model/model_instance/model_instance_group/model_instance_group.h"
+#include "../../../gfx/model/model_instance/model_instance_joint/model_instance_joint.h"
 #include "renderer_model_group_instance/renderer_model_group_instance.h"
+#include "renderer_model_joint_instance/renderer_model_joint_instance.h"
 #include "../../renderer_writelock.h"
 #include "../renderer_model_material/renderer_model_material.h"
 #include "../renderer_model_readlock.h"
@@ -68,6 +70,7 @@ namespace dragonpoop
         this->comps.byid.clear();
         this->comps.byowner.clear();
         this->comps.bytype.clear();
+        //this->jnts.clear(); ///HEAP PROBLEMS!!!
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
@@ -87,10 +90,17 @@ namespace dragonpoop
     void renderer_model_instance::addComponent( model_component *c )
     {
         uint16_t k;
+        
+        if( !c )
+            return;
+        
         this->comps.lst.push_back( c );
         this->comps.byid.addLeaf( c->getId(), c );
         k = c->getType();
         this->comps.bytype.addLeaf( (char *)&k, sizeof( k ), c );
+        
+        if( c->getType() == model_component_type_joint )
+            this->jnts.addJoint( c, ((renderer_model_instance_joint *)c )->getIndex() );
     }
     
     //find component by type and id
@@ -156,6 +166,8 @@ namespace dragonpoop
         this->comps.byid.removeLeaf( c );
         this->comps.byowner.removeLeaf( c );
         this->comps.bytype.removeLeaf( c );
+        if( c->getType() == model_component_type_joint )
+            this->jnts.remove( c );
     }
     
     //add group
@@ -174,6 +186,24 @@ namespace dragonpoop
     renderer_model_instance_group *renderer_model_instance::findGroup( dpid id )
     {
         return (renderer_model_instance_group *)this->findComponent( model_component_type_group, id );
+    }
+    
+    //add joint
+    renderer_model_instance_joint *renderer_model_instance::makeJoint( model_instance_writelock *ml, model_instance_joint *g, dpthread_lock *thd )
+    {
+        renderer_model_instance_joint *c;
+        
+        c = this->genJoint( ml, g, thd );
+        this->addComponent( c );
+        c->sync( ml, g, thd );
+        
+        return c;
+    }
+    
+    //find joint
+    renderer_model_instance_joint *renderer_model_instance::findJoint( dpid id )
+    {
+        return (renderer_model_instance_joint *)this->findComponent( model_component_type_joint, id );
     }
     
     //get groups
@@ -300,11 +330,12 @@ namespace dragonpoop
             ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300 );
             if( ml )
             {
+                this->makeJoints( ml, thd );
                 this->makeGroups( ml, thd );
                 this->bIsSynced = 1;
                 this->onSync( thd, g, ml );
+                this->syncJoints( ml, thd );
                 this->syncGroups( ml, thd );
-                this->syncJoints( ml );
             }
         }
 
@@ -313,7 +344,7 @@ namespace dragonpoop
             ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300 );
             if( ml )
             {
-                this->syncJoints( ml );
+                this->syncJoints( ml, thd );
                 this->animateGroups( ml, thd );
                 this->bIsAnimated = 1;
             }
@@ -343,6 +374,12 @@ namespace dragonpoop
     {
         return new renderer_model_instance_group( ml, g, thd );
     }
+    
+    //genertae joint
+    renderer_model_instance_joint *renderer_model_instance::genJoint( model_instance_writelock *ml, model_instance_joint *g, dpthread_lock *thd )
+    {
+        return new renderer_model_instance_joint( ml, g, thd );
+    }
 
     //render model
     void renderer_model_instance::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi )
@@ -368,19 +405,171 @@ namespace dragonpoop
         return &this->jnts;
     }
     
-    //sync joint cache
-    void renderer_model_instance::syncJoints( model_instance_writelock *ml )
+    //get joints
+    void renderer_model_instance::getJoints( std::list<renderer_model_instance_joint *> *l )
     {
+        this->getComponents( model_component_type_joint, (std::list<model_component *> *)l );
+    }
+    
+    //make joints
+    void renderer_model_instance::makeJoints( model_instance_writelock *ml, dpthread_lock *thd )
+    {
+        std::list<renderer_model_instance_joint *> li, d;
+        std::list<renderer_model_instance_joint *>::iterator ii;
         std::list<model_instance_joint *> l;
         std::list<model_instance_joint *>::iterator i;
-        model_instance_joint *g;
+        renderer_model_instance_joint *pi;
+        model_instance_joint *p;
+        dpid_btree t;
         
-        ml->getComponents( model_component_type_joint, (std::list<model_component *> *)&l );
+        //build index
+        this->getJoints( &li );
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            t.addLeaf( pi->getId(), pi );
+        }
         
+        //pair intances and sync them (or make them)
+        ml->getJoints( &l );
         for( i = l.begin(); i != l.end(); ++i )
         {
-            g = *i;
-            this->jnts.addJoint( g );
+            p = *i;
+            pi = (renderer_model_instance_joint *)t.findLeaf( p->getId() );
+            if( pi )
+            {
+                pi->sync( ml, p, thd );
+                t.removeLeaf( pi );
+                continue;
+            }
+            this->makeJoint( ml, p, thd );
+        }
+        
+        //find leaves in index not paired with a model_instance
+        for( ii = li.begin(); ii != li.end(); ++ii )
+        {
+            pi = *ii;
+            if( t.findLeaf( pi->getId() ) )
+                d.push_back( pi );
+        }
+        
+        //delete them
+        for( ii = d.begin(); ii != d.end(); ++ii )
+        {
+            pi = *ii;
+            this->removeComponent( pi );
+            delete pi;
+        }
+    }
+    
+    //sync joints
+    void renderer_model_instance::syncJoints( model_instance_writelock *ml, dpthread_lock *thd )
+    {
+        std::list<renderer_model_instance_joint *> l;
+        std::list<renderer_model_instance_joint *>::iterator i;
+        renderer_model_instance_joint *p;
+        std::list<model_instance_joint *> lg;
+        std::list<model_instance_joint *>::iterator ig;
+        model_instance_joint *pg;
+        dpid_btree t;
+        
+        ml->getJoints( &lg );
+        for( ig = lg.begin(); ig != lg.end(); ++ig )
+        {
+            pg = *ig;
+            t.addLeaf( pg->getId(), pg );
+        }
+        
+        this->getJoints( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pg = (model_instance_joint *)t.findLeaf( p->getId() );
+            if( pg )
+                p->sync( ml, pg, thd );
+        }
+    }
+    
+    //transform vertex using joints
+    void renderer_model_instance::transform( dpvertex *v )
+    {
+        renderer_model_instance_joint *j;
+        model_instance_joint_cache_element *je;
+        dpvertex o, vc;
+        unsigned int i, e, c;
+        float w, cw;
+        
+        o.normal.x = o.normal.y = o.normal.z = 0;
+        o.pos.x = o.pos.y = o.pos.z = 0;
+        cw = 0.0f;
+
+        e = dpvertex_bones_size;
+        for( c = i = 0; i < e; i++ )
+        {
+            w = v->bones[ i ].w;
+            if( w <= 0 || v->bones[ 0 ].index < 0 )
+                continue;
+            je = this->jnts.getElement( v->bones[ i ].index );
+            if( !je )
+                continue;
+            j = (renderer_model_instance_joint *)je->p;
+            if( !j )
+                continue;
+            
+            vc.normal = v->normal;
+            vc.pos = v->pos;
+            j->transform( &vc );
+            
+            o.pos.x += vc.pos.x * w;
+            o.pos.y += vc.pos.y * w;
+            o.pos.z += vc.pos.z * w;
+            
+            o.normal.x += vc.normal.x * w;
+            o.normal.y += vc.normal.y * w;
+            o.normal.z += vc.normal.z * w;
+            
+            cw += w;
+            c++;
+        }
+        if( !c || cw <= 0.0f )
+            return;
+
+        v->pos.x = o.pos.x / cw;
+        v->pos.y = o.pos.y / cw;
+        v->pos.z = o.pos.z / cw;
+        
+        v->normal.x = o.normal.x / cw;
+        v->normal.y = o.normal.y / cw;
+        v->normal.z = o.normal.z / cw;
+    }
+
+    //recompute animation joint matrixes
+    void renderer_model_instance::redoMatrixes( renderer_model_instance_readlock *m, uint64_t t )
+    {
+        std::list<renderer_model_instance_joint *> l;
+        std::list<renderer_model_instance_joint *>::iterator i;
+        renderer_model_instance_joint *p;
+        
+        this->getJoints( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->redoMatrix( m, t );
+        }
+    }
+    
+    //recompute animation joint matrixes
+    void renderer_model_instance::redoMatrixes( renderer_model_instance_writelock *m, uint64_t t )
+    {
+        std::list<renderer_model_instance_joint *> l;
+        std::list<renderer_model_instance_joint *>::iterator i;
+        renderer_model_instance_joint *p;
+        
+        this->getJoints( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->redoMatrix( m, t );
         }
     }
     

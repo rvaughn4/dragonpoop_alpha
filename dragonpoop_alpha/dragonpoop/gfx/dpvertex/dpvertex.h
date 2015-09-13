@@ -19,7 +19,7 @@ namespace dragonpoop
         dpst_f texcoords[ 2 ];
         struct
         {
-            int16_t id;
+            int16_t index;
             float w;
         } bones[ dpvertex_bones_size ];
     };

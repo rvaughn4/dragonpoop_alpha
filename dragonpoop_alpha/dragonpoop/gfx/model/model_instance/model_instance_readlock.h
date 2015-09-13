@@ -14,6 +14,7 @@ namespace dragonpoop
     class model_instance_group;
     class dpvertexindex_buffer;
     class model_instance_animation;
+    class model_instance_joint;
     
     class model_instance_readlock : public shared_obj_readlock
     {
@@ -53,6 +54,8 @@ namespace dragonpoop
         model_instance_animation *findAnimation( dpid id );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
+        //get joints
+        void getJoints( std::list<model_instance_joint *> *l );
         //sync
         void sync( void );
         //get start time

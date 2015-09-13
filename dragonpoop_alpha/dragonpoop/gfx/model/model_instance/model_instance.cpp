@@ -46,7 +46,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 100;
+        this->t_frame_time = 30;
         this->bIsSynced = 1;
         this->j_ctr = 0;
         this->t_start = this->t_end = 0;
@@ -310,16 +310,9 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         renderer_model_instance_writelock *rl;
-        std::list<model_instance_animation *> l;
-        std::list<model_instance_animation *>::iterator i;
-        model_instance_animation *p;
         
-        this->getAnimations( &l );
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            p->run( mi, ml, thd );
-        }
+        this->runAnimations( mi, ml, thd );
+        this->runJoints( mi, ml, thd );
         
         if( !this->r )
             return;
@@ -329,6 +322,39 @@ namespace dragonpoop
         rl->animate();
     }
  
+    //run animations
+    void model_instance::runAnimations( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd )
+    {
+        std::list<model_instance_animation *> l;
+        std::list<model_instance_animation *>::iterator i;
+        model_instance_animation *p;
+        
+        this->getAnimations( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->run( mi, ml, thd, (unsigned int)this->t_frame_time );
+        }
+    }
+    
+    //run joints
+    void model_instance::runJoints( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd )
+    {
+        std::list<model_instance_joint *> l;
+        std::list<model_instance_joint *>::iterator i;
+        model_instance_joint *p;
+        std::stringstream ss;
+        
+        this->getJoints( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->run( mi, ml, thd, &ss );
+        }
+        
+        //std::cout << ss.str();
+    }
+    
     //set renderer model
     void model_instance::setRenderer( renderer_model_instance *r )
     {
@@ -402,9 +428,8 @@ namespace dragonpoop
     model_instance_joint *model_instance::makeJoint( model_joint *g )
     {
         model_instance_joint *c;
-        c = new model_instance_joint( g );
-        c->setIndex( this->j_ctr );
         this->j_ctr++;
+        c = new model_instance_joint( g, this->j_ctr );
         this->addComponent( c );
         return c;
     }
@@ -554,7 +579,7 @@ namespace dragonpoop
         vs = dpvertex_bones_size;
         for( vi = 0; vi < vs; vi++ )
         {
-            v->bones[ vi ].id = -1;
+            v->bones[ vi ].index = -1;
         }
         
         m->getVertexJoints( &l, tv->getVertexId() );
@@ -591,7 +616,7 @@ namespace dragonpoop
         
         if( jcnt >= dpvertex_bones_size )
             return;
-        v->bones[ jcnt ].id = j->getIndex();
+        v->bones[ jcnt ].index = j->getIndex();
         v->bones[ jcnt ].w = vj->getWeight();
     }
     

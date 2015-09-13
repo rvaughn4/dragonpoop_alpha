@@ -80,6 +80,10 @@ namespace dragonpoop
         void dosync( model_instance_writelock *mi, model_writelock *ml );
         //do animation
         void animate( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd );
+        //run animations
+        void runAnimations( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd );
+        //run joints
+        void runJoints( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd );
 
     protected:
         

@@ -372,7 +372,7 @@ namespace dragonpoop
         else
             r_end = 0;
         
-        jnts->updateMaticies( r_end );
+        mi->redoMatrixes( t );
         
         static float rr;
         rr += 0.1f;
@@ -396,8 +396,7 @@ namespace dragonpoop
             b = *v;
             s = &sp[ vi ];
 
-            jnts->transform( &b );
-
+            mi->transform( &b );
             
             s->pos.x += ( b.pos.x - s->pos.x ) * 0.5f;
             s->pos.y += ( b.pos.y - s->pos.y ) * 0.5f;
@@ -435,7 +434,7 @@ namespace dragonpoop
         glDisable( GL_LIGHTING );
         glClear( GL_DEPTH_BUFFER_BIT );
         
-        render_joints( jnts, r_end );
+        //render_joints( jnts, r_end );
     }
 
     void render_joints( model_instance_joint_cache *c, model_instance_joint_cache_element *e, float r );
@@ -466,8 +465,8 @@ namespace dragonpoop
         
         xs.x = xs.y = xs.z = 0;
         
-        e->anim_global.getPosition( &xs );
-        glColor4f( e->rot_end.x / 3.14f, e->rot_end.y / 3.14f, e->rot_end.z / 3.14f, 1.0f );
+       // e->anim_global.getPosition( &xs );
+        //glColor4f( e->rot_end.x / 3.14f, e->rot_end.y / 3.14f, e->rot_end.z / 3.14f, 1.0f );
 /*
         ci = e->id;
         while( ci >= 6 )
@@ -491,8 +490,8 @@ namespace dragonpoop
         {
             xs.x = xs.y = xs.z = 0;
 
-            p->anim_global.getPosition( &xs );
-            glColor4f( p->rot_end.x / 3.14f, p->rot_end.y / 3.14f, p->rot_end.z / 3.14f, 1.0f );
+            //p->anim_global.getPosition( &xs );
+            //glColor4f( p->rot_end.x / 3.14f, p->rot_end.y / 3.14f, p->rot_end.z / 3.14f, 1.0f );
 /*
             ci = p->id;
             while( ci >= 6 )

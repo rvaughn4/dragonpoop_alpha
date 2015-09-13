@@ -9,6 +9,7 @@
 #include "../../../core/dpbtree/dpid_btree.h"
 #include "../../../core/dpbtree/dpid_multibtree.h"
 #include "../../../core/dpbtree/dpmultibtree.h"
+#include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.h"
 
 namespace dragonpoop
@@ -26,6 +27,8 @@ namespace dragonpoop
     class renderer_model_readlock;
     class renderer_writelock;
     class renderer_model_instance_readlock;
+    class renderer_model_instance_joint;
+    struct dpvertex;
     
     class renderer_model_instance : public shared_obj
     {
@@ -71,6 +74,10 @@ namespace dragonpoop
         renderer_model_instance_group *makeGroup( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //find group
         renderer_model_instance_group *findGroup( dpid id );
+        //add joint
+        renderer_model_instance_joint *makeJoint( model_instance_writelock *ml, model_instance_joint *g, dpthread_lock *thd );
+        //find joint
+        renderer_model_instance_joint *findJoint( dpid id );
         //get groups
         void getGroups( std::list<renderer_model_instance_group *> *l );
         //make groups
@@ -89,13 +96,25 @@ namespace dragonpoop
         virtual void onSync( dpthread_lock *thd, renderer_model_instance_writelock *g, model_instance_writelock *ml );
         //genertae group
         virtual renderer_model_instance_group *genGroup( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
+        //genertae joint
+        virtual renderer_model_instance_joint *genJoint( model_instance_writelock *ml, model_instance_joint *g, dpthread_lock *thd );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi );
         //returns joint cache
         model_instance_joint_cache *getJointCache( void );
-        //sync joint cache
-        void syncJoints( model_instance_writelock *ml );
-        
+        //get joints
+        void getJoints( std::list<renderer_model_instance_joint *> *l );
+        //make joints
+        void makeJoints( model_instance_writelock *ml, dpthread_lock *thd );
+        //sync joints
+        void syncJoints( model_instance_writelock *ml, dpthread_lock *thd );
+        //transform vertex using joints
+        void transform( dpvertex *v );
+        //recompute animation joint matrixes
+        void redoMatrixes( renderer_model_instance_readlock *m, uint64_t t );
+        //recompute animation joint matrixes
+        void redoMatrixes( renderer_model_instance_writelock *m, uint64_t t );
+
     public:
         
         //ctor
