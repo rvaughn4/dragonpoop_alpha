@@ -9,16 +9,10 @@ namespace dragonpoop
 
     class model_instance_joint_cache;
     struct model_instance_joint_cache_element;
+    class dpquaternion;
     
-    class dpmatrix
+    struct dpmatrix_f
     {
-
-    private:
-
-    protected:
-
-    public:
-
         union
         {
             float fv[ 16 ];
@@ -30,7 +24,19 @@ namespace dragonpoop
                     float r1, r2, r3, r4;
                 } c1, c2, c3, c4;
             };
-        } values;
+        };
+    };
+    
+    class dpmatrix
+    {
+
+    private:
+
+        dpmatrix_f values;
+
+    protected:
+
+    public:
 
         //ctor
         dpmatrix( void );
@@ -110,6 +116,10 @@ namespace dragonpoop
         void getPosition( dpxyz_f *p );        
         //sets position
         void setPosition( dpxyz_f *p );
+        //create matrix from quaternion
+        void setQuat( dpquaternion *q );
+        //find angles
+        void getAngles( dpxyz_f *o );
 
     };
 

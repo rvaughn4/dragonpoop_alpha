@@ -4,7 +4,7 @@
 
 #include <atomic>
 #include "../../../dpvertex/dpxyz_f.h"
-#include "../../../dpmatrix/dpmatrix.h"
+#include "../../../dpmatrix/dpmatrixes.h"
 
 namespace dragonpoop
 {

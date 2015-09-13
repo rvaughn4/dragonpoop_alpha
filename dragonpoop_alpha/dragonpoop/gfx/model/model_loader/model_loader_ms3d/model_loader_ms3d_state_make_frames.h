@@ -5,9 +5,7 @@
 #include "../model_loader_state.h"
 #include <string>
 #include <vector>
-#include "../../model_matrix/model_quaternion.h"
-#include "../../model_matrix/model_matrix.h"
-#include "../../model_matrix/model_vector.h"
+#include "../../../dpmatrix/dpmatrixes.h"
 
 namespace dragonpoop
 {
@@ -41,12 +39,10 @@ namespace dragonpoop
         void makeAnimationFrames( dpthread_lock *thd, model_loader_writelock *ml );
         //make frame joints
         void makeFrameJoints( dpthread_lock *thd, model_loader_writelock *ml );
-        
         //find xyz keyframe before and after time and interpolate
-        void getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, model_vector *x );
+        void getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x );
         //find quaternion before and after time and interpolate
-        void getKeyframeQuat( float t, std::vector<ms3d_model_joint_keyframe> *l, model_quaternion *x );
-
+        void getKeyframeQuat( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x );
         //find xyz keyframe before time
         void getKeyframeBefore( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x );
         //find xyz keyframe after time

@@ -21,8 +21,8 @@ int main( int argc, const char * argv[] )
         i++;
     }
  
-    gl->loadModel( "test", "", "felhound_hi_milkshape.ms3d", 0, 0 );//felhound_hi_milkshape.ms3d
-    //best.ms3d
+    gl->loadModel( "test", "", "beast.ms3d", 0, 0 );//felhound_hi_milkshape.ms3d
+    //beast.ms3d
     m = gl->makeModelInstance( "test" );
 
     i = 0;

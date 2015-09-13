@@ -9,13 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer.cpp"
-            timestampString = "463762464.213554"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
+            timestampString = "463794940.193006"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "403"
-            endingLineNumber = "403"
-            landmarkName = "openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )"
+            startingLineNumber = "704"
+            endingLineNumber = "704"
+            landmarkName = "model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyz_f *atrans, dpxyz_f *arot, dpxyz_f *atrans_e, dpxyz_f *arot_e )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer.cpp"
-            timestampString = "463762527.624588"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
+            timestampString = "463795021.089554"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "411"
-            endingLineNumber = "411"
-            landmarkName = "openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )"
+            startingLineNumber = "660"
+            endingLineNumber = "660"
+            landmarkName = "model_instance::redoAnim( model_writelock *m, model_instance_joint *j )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,13 +41,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.cpp"
-            timestampString = "463784137.372819"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
+            timestampString = "463795034.439639"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "287"
-            endingLineNumber = "287"
-            landmarkName = "model_instance_joint_cache::computeMatrix( model_instance_joint_cache_element *e, float r )"
+            startingLineNumber = "617"
+            endingLineNumber = "617"
+            landmarkName = "model_instance::redoAnim( model_instance_writelock *mi, model_writelock *m )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -57,13 +57,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.cpp"
-            timestampString = "463780431.618375"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model_instance/renderer_model_instance.cpp"
+            timestampString = "463795158.356512"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "240"
-            endingLineNumber = "240"
-            landmarkName = "model_instance_joint_cache::computeMatrix( model_instance_joint_cache_element *e, float r )"
+            startingLineNumber = "283"
+            endingLineNumber = "283"
+            landmarkName = "renderer_model_instance::animateGroups( model_instance_writelock *ml, dpthread_lock *thd )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -73,13 +73,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.cpp"
-            timestampString = "463786062.072527"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
+            timestampString = "463795389.938493"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "259"
-            endingLineNumber = "259"
-            landmarkName = "model_instance_joint_cache::computeMatrix( model_instance_joint_cache_element *e, float r )"
+            startingLineNumber = "689"
+            endingLineNumber = "689"
+            landmarkName = "model_instance::redoAnim( model_writelock *m, model_instance_joint *j )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

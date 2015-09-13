@@ -384,7 +384,7 @@ namespace dragonpoop
         glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
         glLoadMatrixf( this->world_m.getRaw4by4() );
         glTranslatef( 0, 0, -5 );
-        //glScalef( 0.02f, 0.02f, 0.02f );
+        glScalef( 0.02f, 0.02f, 0.02f );
         glRotatef( rr, 0, 1, 0 );
         
         glBindTexture( GL_TEXTURE_2D, 0 );
@@ -422,7 +422,7 @@ namespace dragonpoop
                 continue;
             indicies.push_back( ix->i );
         }
-/*
+
         glEnable( GL_LIGHTING );
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
 
@@ -430,7 +430,7 @@ namespace dragonpoop
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
         glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
-*/
+
         glBindTexture( GL_TEXTURE_2D, 0 );
         glDisable( GL_LIGHTING );
         glClear( GL_DEPTH_BUFFER_BIT );
@@ -444,6 +444,7 @@ namespace dragonpoop
     {
         unsigned int i, e;
         model_instance_joint_cache_element *p;
+        r = 1;
         
         e = c->getCount();
         for( i = 0; i < e; i++ )
@@ -466,7 +467,8 @@ namespace dragonpoop
         xs.x = xs.y = xs.z = 0;
         
         e->anim_global.getPosition( &xs );
-
+        glColor4f( e->rot_end.x / 3.14f, e->rot_end.y / 3.14f, e->rot_end.z / 3.14f, 1.0f );
+/*
         ci = e->id;
         while( ci >= 6 )
             ci -= 6;
@@ -482,7 +484,7 @@ namespace dragonpoop
             glColor4f( 0.0f, r, r, 1.0f );
         if( ci == 5 )
             glColor4f( 0.0f, 0.0f, r, 1.0f );
-        
+  */
         glVertex3f( xs.x, xs.y, xs.z );
         
         if( p )
@@ -490,7 +492,8 @@ namespace dragonpoop
             xs.x = xs.y = xs.z = 0;
 
             p->anim_global.getPosition( &xs );
-
+            glColor4f( p->rot_end.x / 3.14f, p->rot_end.y / 3.14f, p->rot_end.z / 3.14f, 1.0f );
+/*
             ci = p->id;
             while( ci >= 6 )
                 ci -= 6;
@@ -506,7 +509,7 @@ namespace dragonpoop
                 glColor4f( 0.0f, r, r, 1.0f );
             if( ci == 5 )
                 glColor4f( 0.0f, 0.0f, r, 1.0f );
-        }
+  */      }
             
         glVertex3f( xs.x, xs.y, xs.z );
 

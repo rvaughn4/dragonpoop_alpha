@@ -168,10 +168,7 @@ namespace dragonpoop
         ms3d_model_frame *f;
         ms3d_model_joint_m *j;
         model_frame_joint *fjnt;
-        dpxyz_f x, ax;
-        model_vector v;
-        model_quaternion q;
-        model_matrix mx;
+        dpxyz_f x;
         
         m = (model_writelock *)o.tryWriteLock( this->m, 1000 );
         if( !m )
@@ -192,29 +189,20 @@ namespace dragonpoop
                 
                 fjnt = m->makeFrameJoint( thd->genId(), f->id, j->id );
                 
-                this->getKeyframe( f->t / ldr->anim.fps, &j->translate_frames, &v );
-                v.getPosition( &x );
+                this->getKeyframe( f->t / ldr->anim.fps, &j->translate_frames, &x );
                 fjnt->setTranslation( &x );
-
-                this->getKeyframeQuat( f->t / ldr->anim.fps, &j->rotate_frames, &q );
-                mx.setQuat( &q );
-                mx.setPosition( &v );
-                mx.getAngles( &ax );
-                
-//                this->getKeyframe( f->t / ldr->anim.fps, &j->rotate_frames, &v );
-  //              v.getPosition( &ax );
-                fjnt->setRotation( &ax );
+                this->getKeyframeQuat( f->t / ldr->anim.fps, &j->rotate_frames, &x );
+                fjnt->setRotation( &x );
             }
         }
         
     }
     
     //find xyz keyframe before and after time and interpolate
-    void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, model_vector *x )
+    void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x )
     {
         ms3d_model_joint_keyframe kb, ke;
         float td, tt, rb, re;
-        dpxyz_f y;
         
         this->getKeyframeBefore( t, l, &kb );
         this->getKeyframeAfter( t, l, &ke );
@@ -229,19 +217,17 @@ namespace dragonpoop
             re = 1;
         rb = 1.0f - re;
         
-        y.x = rb * kb.x + re * ke.x;
-        y.y = rb * kb.y + re * ke.y;
-        y.z = rb * kb.z + re * ke.z;
-        
-        x->setPosition( &y );
+        x->x = rb * kb.x + re * ke.x;
+        x->y = rb * kb.y + re * ke.y;
+        x->z = rb * kb.z + re * ke.z;
     }
-
+    
     //find xyz keyframe before and after time and interpolate
-    void model_loader_ms3d_state_make_frames::getKeyframeQuat( float t, std::vector<ms3d_model_joint_keyframe> *l, model_quaternion *x )
+    void model_loader_ms3d_state_make_frames::getKeyframeQuat( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x )
     {
         ms3d_model_joint_keyframe kb, ke;
         float td, tt, rb, re;
-        model_quaternion qb, qe;
+        dpquaternion qb, qe, q;
         
         this->getKeyframeBefore( t, l, &kb );
         this->getKeyframeAfter( t, l, &ke );
@@ -260,7 +246,8 @@ namespace dragonpoop
         qb.setAngle( kb.x, kb.y, kb.z );
         qe.setAngle( ke.x, ke.y, ke.z );
         
-        x->slerp( &qb, &qe, t );
+        q.slerp( &qb, &qe, t );
+        q.getAngle( x );
     }
     
     //find xyz keyframe before time

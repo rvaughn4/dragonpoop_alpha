@@ -1,11 +1,11 @@
 
-#ifndef dragonpoop_model_quaternion_h
-#define dragonpoop_model_quaternion_h
+#ifndef dragonpoop_dpquaternion_h
+#define dragonpoop_dpquaternion_h
 
 namespace dragonpoop
 {
     
-    struct model_quaternion_f
+    struct dpquaternion_f
     {
         union
         {
@@ -17,27 +17,25 @@ namespace dragonpoop
         };
     };
     
-    class model_matrix;
-    class model_vector;
     struct dpxyz_f;
     
-    class model_quaternion
+    class dpquaternion
     {
         
     private:
         
-        model_quaternion_f f;
+        dpquaternion_f f;
         
     protected:
         
     public:
         
         //ctor
-        model_quaternion( void );
+        dpquaternion( void );
         //dtor
-        virtual ~model_quaternion( void );
+        virtual ~dpquaternion( void );
         //get raw data
-        model_quaternion_f *getData( void );
+        dpquaternion_f *getData( void );
         //set identity
         void setIdentity( void );
         //set position
@@ -49,7 +47,7 @@ namespace dragonpoop
         //get angle
         void getAngle( dpxyz_f *x );
         //slerp
-        void slerp( model_quaternion *a, model_quaternion *b, float r );
+        void slerp( dpquaternion *a, dpquaternion *b, float r );
         
     };
     

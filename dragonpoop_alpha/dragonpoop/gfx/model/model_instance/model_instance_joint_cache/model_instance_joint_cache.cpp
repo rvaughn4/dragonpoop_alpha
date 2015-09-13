@@ -73,6 +73,9 @@ namespace dragonpoop
         e->anim_global.transform( &v->pos );
         e->anim_global.transform( &v->normal );
         
+        //e->up.transform( &v->pos );
+        //e->down.transform( &v->pos );
+        
         /*
         dpxyz_f *pos_in, pos_a_start, pos_a_end, pos_out_start, pos_out_end;
         dpxyz_f *norm_in, norm_a_start, norm_a_end, norm_out_start, norm_out_end;
@@ -253,9 +256,6 @@ namespace dragonpoop
         this->angleLerp( &e->rot_start, &e->rot_end, &rot, rs, re );
         this->posLerp( &e->pos_start, &e->pos_end, &pos, rs, re );
         
-        rot = e->rot_end;
-        pos = e->pos_end;
-        
         e->bone_local.setAngleRadAndPosition( &e->bone_rot, &e->bone_pos );
         e->anim_local.setAngleRadAndPosition( &rot, &pos );
         
@@ -269,20 +269,23 @@ namespace dragonpoop
             e->bone_global.copy( &e->bone_local );
         e->inv_bone_global.inverse( &e->bone_global );
         
+        dpmatrix m;
+        m.setIdentity();
+        m.multiply( &e->anim_local );
+        m.multiply( &e->bone_local );
+        
         if( p )
         {
             e->anim_global.setIdentity();
             e->anim_global.multiply( &p->anim_global );
-            e->anim_global.multiply( &e->anim_local );
-            e->anim_global.multiply( &e->bone_local );
+            e->anim_global.multiply( &m );
         }
         else
         {
             e->anim_global.setIdentity();
-            e->anim_global.multiply( &e->anim_local );
-            e->anim_global.multiply( &e->bone_local );
+            e->anim_global.multiply( &m );
         }
-        e->anim_global.copy( &e->bone_global );
+        //e->anim_global.copy( &e->bone_global );
         
         e->wasUpdated = 1;
     }
@@ -338,19 +341,13 @@ namespace dragonpoop
     //do angle lerp
     void model_instance_joint_cache::angleLerp( dpxyz_f *a, dpxyz_f *b, dpxyz_f *o, float rs, float re )
     {
-        model_quaternion q, qa, qb;
-        model_matrix mx;
-        model_vector v;
+        dpquaternion q, qa, qb;
         
         qa.setAngle( a );
         qb.setAngle( b );
         q.slerp( &qa, &qb, re );
         
-        mx.setQuat( &q );
-        v.setIdentity();
-        mx.setPosition( &v );
-
-        mx.getAngles( o );
+        q.getAngle( o );
     }
     
     //do position lerp

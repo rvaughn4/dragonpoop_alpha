@@ -1,5 +1,6 @@
 
 #include "dpmatrix.h"
+#include "dpquaternion.h"
 #include <math.h>
 
 namespace dragonpoop
@@ -518,6 +519,43 @@ namespace dragonpoop
         this->values.c4.r1 = p->x;
         this->values.c4.r2 = p->y;
         this->values.c4.r3 = p->z;
+    }
+    
+    
+    //create matrix from quaternion
+    void dpmatrix::setQuat( dpquaternion *q )
+    {
+        dpmatrix_f *matrix;
+        dpquaternion_f *quaternion;
+        
+        matrix = &this->values;
+        quaternion = q->getData();
+        
+        matrix->f4v[0][0] = 1.0 - 2.0 * quaternion->fv[1] * quaternion->fv[1] - 2.0 * quaternion->fv[2] * quaternion->fv[2];
+        matrix->f4v[0][1] = 2.0 * quaternion->fv[0] * quaternion->fv[1] + 2.0 * quaternion->fv[3] * quaternion->fv[2];
+        matrix->f4v[0][2] = 2.0 * quaternion->fv[0] * quaternion->fv[2] - 2.0 * quaternion->fv[3] * quaternion->fv[1];
+        
+        matrix->f4v[1][0] = 2.0 * quaternion->fv[0] * quaternion->fv[1] - 2.0 * quaternion->fv[3] * quaternion->fv[2];
+        matrix->f4v[1][1] = 1.0 - 2.0 * quaternion->fv[0] * quaternion->fv[0] - 2.0 * quaternion->fv[2] * quaternion->fv[2];
+        matrix->f4v[1][2] = 2.0 * quaternion->fv[1] * quaternion->fv[2] + 2.0 * quaternion->fv[3] * quaternion->fv[0];
+        
+        matrix->f4v[2][0] = 2.0 * quaternion->fv[0] * quaternion->fv[2] + 2.0 * quaternion->fv[3] * quaternion->fv[1];
+        matrix->f4v[2][1] = 2.0 * quaternion->fv[1] * quaternion->fv[2] - 2.0 * quaternion->fv[3] * quaternion->fv[0];
+        matrix->f4v[2][2] = 1.0 - 2.0 * quaternion->fv[0] * quaternion->fv[0] - 2.0 * quaternion->fv[1] * quaternion->fv[1];
+    }
+
+    //find angles
+    void dpmatrix::getAngles( dpxyz_f *o )
+    {
+        float a;
+        
+        o->x = atan2f( this->values.f4v[ 1 ][ 2 ], this->values.f4v[ 2 ][ 2 ] );
+        
+        a = this->values.f4v[ 1 ][ 2 ] * this->values.f4v[ 1 ][ 2 ];
+        a += this->values.f4v[ 2 ][ 2 ] * this->values.f4v[ 2 ][ 2 ];
+        o->y = atan2f( -this->values.f4v[ 0 ][ 2 ], sqrtf( a ) );
+        
+        o->z = atan2f( this->values.f4v[ 0 ][ 1 ], this->values.f4v[ 0 ][ 0 ] );
     }
     
 };
