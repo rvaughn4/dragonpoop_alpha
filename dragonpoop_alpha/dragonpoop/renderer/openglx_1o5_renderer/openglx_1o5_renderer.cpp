@@ -384,7 +384,7 @@ namespace dragonpoop
         glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
         glLoadMatrixf( this->world_m.getRaw4by4() );
         glTranslatef( 0, 0, -5 );
-        glScalef( 0.02f, 0.02f, 0.02f );
+        //glScalef( 0.02f, 0.02f, 0.02f );
         glRotatef( rr, 0, 1, 0 );
         
         glBindTexture( GL_TEXTURE_2D, 0 );
@@ -457,7 +457,7 @@ namespace dragonpoop
     void render_joints( model_instance_joint_cache *c, model_instance_joint_cache_element *e, float r )
     {
         model_instance_joint_cache_element *p;
-        int ci;
+        //int ci;
         dpxyz_f xs;
         
         p = c->getElement( e->pid );

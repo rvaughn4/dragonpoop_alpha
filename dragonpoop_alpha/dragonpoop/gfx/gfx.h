@@ -18,9 +18,11 @@ namespace dragonpoop
     class model_ref;
     class model;
     class dptaskpool_ref;
+    class model_loader_ref;
     class model_loader;
     class model_instance_ref;
     class model_saver;
+    class model_saver_ref;
 
     class gfx : public shared_obj
     {
@@ -44,11 +46,11 @@ namespace dragonpoop
         //delete all savers
         void deleteSavers( void );
         //delete old models
-        void runModels( void );
+        void runModels( dpthread_lock *thd );
         //delete old loaders
-        void runLoaders( void );
+        void runLoaders( dpthread_lock *thd );
         //delete old savers
-        void runSavers( void );
+        void runSavers( dpthread_lock *thd );
 
     protected:
 
@@ -65,9 +67,9 @@ namespace dragonpoop
         //create model using name (if not exists, reuses if does), returns ref in pointer arg
         bool createModel( const char *mname, model_ref **r );
         //create model and load model file into it
-        bool loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader **mldr );
+        bool loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader_ref **mldr );
         //find model and save model file
-        bool saveModel( const char *mname, const char *path_name, const char *file_name, model_saver **msvr );
+        bool saveModel( const char *mname, const char *path_name, const char *file_name, model_saver_ref **msvr );
         //find model by name
         model_ref *findModel( const char *cname );
         //find model by id

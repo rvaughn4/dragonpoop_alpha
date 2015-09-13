@@ -20,20 +20,18 @@ namespace dragonpoop
         
     private:
         
-        dptask *tsk;
-        model_saver_task *gtsk;
         model_ref *m;
         model_saver_state *cs;
         std::atomic<bool> bIsRun, bWasOpen;
         
-        std::string fname;
+        std::string fname, pname;
         char *buffer;
         unsigned int size;
         
     protected:
         
         //ctor
-        model_saver( core *c, dptaskpool_writelock *tp, model_ref *m, std::string *fname );
+        model_saver( core *c, model_ref *m, std::string *pname, std::string *fname );
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -57,7 +55,7 @@ namespace dragonpoop
         //returns true if running
         bool isRunning( void );
         //save model to file
-        static model_saver *saveFile( core *c, dptaskpool_writelock *tp, model_ref *m, const char *fname );
+        static model_saver *saveFile( core *c, model_ref *m, const char *path_name, const char *fname );
         
         friend class model_saver_readlock;
         friend class model_saver_writelock;

@@ -9,7 +9,6 @@
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../../../core/dptask/dptask.h"
 #include "../../../core/dptaskpool/dptaskpool_writelock.h"
-#include "model_saver_task.h"
 #include "model_saver_state.h"
 #include "model_saver_state_fail.h"
 #include "model_saver_state_begin.h"
@@ -21,7 +20,7 @@ namespace dragonpoop
 {
     
     //ctor
-    model_saver::model_saver( core *c, dptaskpool_writelock *tp, model_ref *m, std::string *fname ) : shared_obj( c->getMutexMaster() )
+    model_saver::model_saver( core *c,  model_ref *m, std::string *pname, std::string *fname ) : shared_obj( c->getMutexMaster() )
     {
         shared_obj_guard o;
         model_writelock *ml;
@@ -31,21 +30,16 @@ namespace dragonpoop
         
         this->buffer = 0;
         this->fname.assign( *fname );
+        this->pname.assign( *pname );
         this->cs = new model_saver_state_begin();
         
         ml = (model_writelock *)o.writeLock( m );
         this->m = (model_ref *)ml->getRef();
-        
-        this->gtsk = new model_saver_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 10, 1 );
-        tp->addTask( this->tsk );
     }
     
     //dtor
     model_saver::~model_saver( void )
     {
-        delete this->gtsk;
-        delete this->tsk;
         if( this->cs )
             delete this->cs;
         if( this->buffer )
@@ -55,13 +49,14 @@ namespace dragonpoop
     }
     
     //load model from file
-    model_saver *model_saver::saveFile( core *c, dptaskpool_writelock *tp, model_ref *m, const char *fname )
+    model_saver *model_saver::saveFile( core *c, model_ref *m, const char *pname, const char *fname )
     {
-        std::string sname, sext;
+        std::string sname, sext, spath;
         model_saver *l;
         unsigned int l_dot, l_end;
         
         sname.assign( fname );
+        spath.assign( pname );
         
         l_end = (unsigned int)sname.size();
         l_dot = (unsigned int)sname.rfind( "." );
@@ -73,7 +68,7 @@ namespace dragonpoop
         l = 0;
         
         if( sext.compare( "ms3d" ) == 0 )
-            l = new model_saver_ms3d( c, tp, m, &sname );
+            l = new model_saver_ms3d( c, m, &spath, &sname );
         
         return l;
     }

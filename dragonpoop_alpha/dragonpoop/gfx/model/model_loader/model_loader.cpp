@@ -9,7 +9,6 @@
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../../../core/dptask/dptask.h"
 #include "../../../core/dptaskpool/dptaskpool_writelock.h"
-#include "model_loader_task.h"
 #include "model_loader_state.h"
 #include "model_loader_state_fail.h"
 #include "model_loader_state_openfile.h"
@@ -21,7 +20,7 @@ namespace dragonpoop
 {
 
     //ctor
-    model_loader::model_loader( core *c, dptaskpool_writelock *tp, model_ref *m, std::string *fname ) : shared_obj( c->getMutexMaster() )
+    model_loader::model_loader( core *c, model_ref *m, std::string *pname, std::string *fname ) : shared_obj( c->getMutexMaster() )
     {
         shared_obj_guard o;
         model_writelock *ml;
@@ -31,21 +30,16 @@ namespace dragonpoop
 
         this->buffer = 0;
         this->fname.assign( *fname );
+        this->pname.assign( *pname );
         this->cs = new model_loader_state_openfile();
 
         ml = (model_writelock *)o.writeLock( m );
         this->m = (model_ref *)ml->getRef();
-
-        this->gtsk = new model_loader_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 10, 1 );
-        tp->addTask( this->tsk );
     }
 
     //dtor
     model_loader::~model_loader( void )
     {
-        delete this->gtsk;
-        delete this->tsk;
         if( this->cs )
             delete this->cs;
         if( this->buffer )
@@ -55,12 +49,13 @@ namespace dragonpoop
     }
 
     //load model from file
-    model_loader *model_loader::loadFile( core *c, dptaskpool_writelock *tp, model_ref *m, const char *fname )
+    model_loader *model_loader::loadFile( core *c, model_ref *m, const char *path_name, const char *fname )
     {
-        std::string sname, sext;
+        std::string sname, sext, spath;
         model_loader *l;
         unsigned int l_dot, l_end;
 
+        spath.assign( path_name );
         sname.assign( fname );
 
         l_end = (unsigned int)sname.size();
@@ -73,7 +68,7 @@ namespace dragonpoop
         l = 0;
 
         if( sext.compare( "ms3d" ) == 0 )
-            l = new model_loader_ms3d( c, tp, m, &sname );
+            l = new model_loader_ms3d( c, m, &spath, &sname );
 
         return l;
     }
@@ -103,6 +98,7 @@ namespace dragonpoop
 
         if( !this->cs )
             return;
+        
         ns = this->cs->run( thd, g );
         if( ns )
         {

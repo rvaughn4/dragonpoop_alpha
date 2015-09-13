@@ -41,8 +41,6 @@ namespace dragonpoop
 
     private:
 
-        dptask *tsk;
-        model_task *gtsk;
         core *c;
         std::string sname, scmmt;
         dpid id;
@@ -74,9 +72,7 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
-        //stop model task
-        void kill( void );
-        //run model from task
+        //run model
         void run( dpthread_lock *thd, model_writelock *g );
         //set name
         void setName( std::string *sname );
@@ -216,7 +212,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        model( core *c, dptaskpool_writelock *tp, dpid id );
+        model( core *c, dpid id );
         //dtor
         virtual ~model( void );
         //return core

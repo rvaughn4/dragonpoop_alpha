@@ -17,9 +17,11 @@
 #include "model/model_writelock.h"
 #include "model/model_readlock.h"
 #include "model/model_loader/model_loader.h"
+#include "model/model_loader/model_loader_writelock.h"
 #include "model/model_loader/model_loader_readlock.h"
 #include "model/model_saver/model_saver.h"
 #include "model/model_saver/model_saver_readlock.h"
+#include "model/model_saver/model_saver_writelock.h"
 
 namespace dragonpoop
 {
@@ -33,7 +35,7 @@ namespace dragonpoop
         this->c = c;
         this->r = 0;
         this->gtsk = new gfx_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 500, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 50, 1 );
         tp->addTask( this->tsk );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 
@@ -108,9 +110,9 @@ namespace dragonpoop
     //run gfx from task
     void gfx::run( dpthread_lock *thd, gfx_writelock *g )
     {
-        this->runLoaders();
-        this->runSavers();
-        this->runModels();
+        this->runLoaders( thd );
+        this->runSavers( thd );
+        this->runModels( thd );
     }
 
     //delete all models
@@ -183,21 +185,22 @@ namespace dragonpoop
     }
     
     //delete old models
-    void gfx::runModels( void )
+    void gfx::runModels( dpthread_lock *thd )
     {
         std::list<model *> *l, d;
         std::list<model *>::iterator i;
         model *p;
-        model_readlock *pl;
+        model_writelock *pl;
         shared_obj_guard o;
         
         l = &this->models;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_readlock *)o.tryReadLock( p, 10 );
+            pl = (model_writelock *)o.tryReadLock( p, 10 );
             if( !pl )
                 continue;
+            pl->run( thd );
 //            d.push_back( p );
         }
         o.unlock();
@@ -212,20 +215,23 @@ namespace dragonpoop
     }
     
     //delete old loaders
-    void gfx::runLoaders( void )
+    void gfx::runLoaders( dpthread_lock *thd )
     {
         std::list<model_loader *> *l, d;
         std::list<model_loader *>::iterator i;
         model_loader *p;
-        model_loader_readlock *pl;
+        model_loader_writelock *pl;
         shared_obj_guard o;
         
         l = &this->loaders;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_loader_readlock *)o.tryReadLock( p, 100 );
-            if( !pl || pl->isRunning() )
+            pl = (model_loader_writelock *)o.tryWriteLock( p, 100 );
+            if( !pl )
+                continue;
+            pl->run( thd );
+            if( pl->isRunning() )
                 continue;
             d.push_back( p );
         }
@@ -241,20 +247,23 @@ namespace dragonpoop
     }
     
     //delete old savers
-    void gfx::runSavers( void )
+    void gfx::runSavers( dpthread_lock *thd )
     {
         std::list<model_saver *> *l, d;
         std::list<model_saver *>::iterator i;
         model_saver *p;
-        model_saver_readlock *pl;
+        model_saver_writelock *pl;
         shared_obj_guard o;
         
         l = &this->savers;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_saver_readlock *)o.tryReadLock( p, 100 );
-            if( !pl || pl->isRunning() )
+            pl = (model_saver_writelock *)o.tryWriteLock( p, 100 );
+            if( !pl )
+                continue;
+            pl->run( thd );
+            if( pl->isRunning() )
                 continue;
             d.push_back( p );
         }
@@ -276,9 +285,10 @@ namespace dragonpoop
         model *p;
         model_writelock *pl;
         shared_obj_guard o, otp;
-        dptaskpool_writelock *tp;
         std::string s;
-        
+        dpid nid;
+        dptaskpool_writelock *tp;
+
         pr = this->findModel( mname );
         if( pr )
         {
@@ -292,8 +302,10 @@ namespace dragonpoop
         tp = (dptaskpool_writelock *)otp.tryWriteLock( this->tpr, 1000 );
         if( !tp )
             return 0;
+        nid = tp->genId();
+        otp.unlock();
         
-        p = new model( this->c, tp, tp->genId() );
+        p = new model( this->c, nid );
         this->models.push_back( p );
         
         pl = (model_writelock *)o.writeLock( p );
@@ -309,21 +321,17 @@ namespace dragonpoop
     }
     
     //create model and load model file into it
-    bool gfx::loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader **mldr )
+    bool gfx::loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader_ref **mldr )
     {
         model_ref *pr;
         model_loader *l;
-        shared_obj_guard o, otp;
-        dptaskpool_writelock *tp;
+        model_loader_writelock *lw;
+        shared_obj_guard o;
 
         if( !this->createModel( mname, &pr ) )
             return 0;
         
-        tp = (dptaskpool_writelock *)otp.tryWriteLock( this->tpr, 1000 );
-        if( !tp )
-            return 0;
-        
-        l = model_loader::loadFile( this->c, tp, pr, file_name );
+        l = model_loader::loadFile( this->c, pr, path_name, file_name );
         if( !l )
             return 0;
         
@@ -333,40 +341,45 @@ namespace dragonpoop
             delete pr;
         
         if( mldr )
-            *mldr = l;
-        else
-            this->loaders.push_back( l );
+        {
+            lw = (model_loader_writelock *)o.tryWriteLock( l, 100 );
+            if( lw )
+                *mldr = (model_loader_ref *)lw->getRef();
+            o.unlock();
+        }
+        
+        this->loaders.push_back( l );
         
         return 1;
     }
     
     //find model and save model file
-    bool gfx::saveModel( const char *mname, const char *path_name, const char *file_name, model_saver **msvr )
+    bool gfx::saveModel( const char *mname, const char *path_name, const char *file_name, model_saver_ref **msvr )
     {
         model_ref *pr;
         model_saver *l;
-        shared_obj_guard o, otp;
-        dptaskpool_writelock *tp;
-        
-        
-        tp = (dptaskpool_writelock *)otp.tryWriteLock( this->tpr, 1000 );
-        if( !tp )
-            return 0;
+        model_saver_writelock *lw;
+        shared_obj_guard o;
         
         pr = this->findModel( mname );
         if( !pr )
             return 0;
 
-        l = model_saver::saveFile( this->c, tp, pr, file_name );
+        l = model_saver::saveFile( this->c, pr, path_name, file_name );
         if( !l )
             return 0;
         
         delete pr;
         
         if( msvr )
-            *msvr = l;
-        else
-            this->savers.push_back( l );
+        {
+            lw = (model_saver_writelock *)o.tryWriteLock( l, 100 );
+            if( lw )
+                *msvr = (model_saver_ref *)lw->getRef();
+            o.unlock();
+        }
+        
+        this->savers.push_back( l );
         
         return 1;
     }

@@ -6,7 +6,7 @@ namespace dragonpoop
 {
     
     //ctor
-    model_saver_ms3d::model_saver_ms3d( core *c, dptaskpool_writelock *tp, model_ref *m, std::string *fname ) : model_saver( c, tp, m, fname )
+    model_saver_ms3d::model_saver_ms3d( core *c, model_ref *m, std::string *pname, std::string *fname ) : model_saver( c, m, pname, fname )
     {
         this->verts = 0;
         this->tris = 0;

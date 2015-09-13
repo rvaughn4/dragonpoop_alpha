@@ -76,20 +76,10 @@ namespace dragonpoop
         void redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, dpvertex *v );
         //redo vertex mesh, transform using joints
         void redoMesh( model_instance_writelock *mi, model_writelock *m, model_triangle_vertex *tv, model_vertex_joint *vj, dpvertex *v, unsigned int jcnt );
-        
-        //redo animation
-        void redoAnim( model_instance_writelock *mi, model_writelock *m );
-        //redo animation, compute current frame
-        void redoAnim( model_writelock *m, model_instance_animation *a );
-        //redo animation, compound joint transforms
-        void redoAnim( model_writelock *m, model_instance_joint *j );
-        //redo animation, compound joint transforms for a given animation
-        void redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyz_f *trans, dpxyz_f *rot, dpxyz_f *trans_e, dpxyz_f *rot_e );
-
         //sync
         void dosync( model_instance_writelock *mi, model_writelock *ml );
         //do animation
-        void animate( model_instance_writelock *mi, model_writelock *ml, uint64_t tms );
+        void animate( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd );
 
     protected:
         

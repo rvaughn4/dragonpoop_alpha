@@ -128,7 +128,7 @@ namespace dragonpoop
         t = thd->getTicks();
         if( t - this->t_last_animate > this->t_frame_time )
         {
-            this->animate( g, m, t );
+            this->animate( g, m, thd );
             this->t_last_animate = t;
         }
     }
@@ -306,19 +306,24 @@ namespace dragonpoop
     }
     
     //do animation
-    void model_instance::animate( model_instance_writelock *mi, model_writelock *ml, uint64_t tms )
+    void model_instance::animate( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd )
     {
         shared_obj_guard o;
         renderer_model_instance_writelock *rl;
-
-        this->t_start = tms;
-        this->t_end = this->t_start + this->t_frame_time;
+        std::list<model_instance_animation *> l;
+        std::list<model_instance_animation *>::iterator i;
+        model_instance_animation *p;
         
-        this->redoAnim( mi, ml );
+        this->getAnimations( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->run( mi, ml, thd );
+        }
         
         if( !this->r )
             return;
-        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 400 );
+        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 30 );
         if( !rl )
             return;
         rl->animate();
@@ -588,155 +593,6 @@ namespace dragonpoop
             return;
         v->bones[ jcnt ].id = j->getIndex();
         v->bones[ jcnt ].w = vj->getWeight();
-    }
-    
-    //redo animation
-    void model_instance::redoAnim( model_instance_writelock *mi, model_writelock *m )
-    {
-        std::list<model_component *> l;
-        std::list<model_component *>::iterator i;
-        model_component *p;
-        
-        this->getAnimations( (std::list<model_instance_animation *> *)&l );
-        
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            this->redoAnim( m, (model_instance_animation *)p );
-        }
-        
-        l.clear();
-        this->getJoints( (std::list<model_instance_joint *> *)&l );
-
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            this->redoAnim( m, (model_instance_joint *)p );
-        }
-
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            ( (model_instance_joint *)p )->redoMatrix( mi );
-        }
-    }
-
-    //redo animation, compute current frame
-    void model_instance::redoAnim( model_writelock *m, model_instance_animation *a )
-    {
-        model_frame *f;
-        uint64_t te, pt;
-        
-        if( !a->isPlaying() && a->isAutoPlay() )
-            a->start( this->t_start, m );
-        
-        pt = a->getPlayTime( this->t_start );
-        if( !a->isPlaying() )
-            return;
-        this->t_play = pt;
-        
-        a->setStartFrame( a->getEndFrame() );
-        f = a->findFrameAtTime( m, pt, &te );
-        if( f )
-            a->setEndFrame( f->getId() );
-        
-        std::cout << " " << this->t_end << " " << pt << " " << te << "\r\n";
-    }
-    
-    //redo animation, compound joint transforms
-    void model_instance::redoAnim( model_writelock *m, model_instance_joint *j )
-    {
-        std::list<model_instance_animation *> l;
-        std::list<model_instance_animation *>::iterator i;
-        model_instance_animation *p;
-        dpxyz_f atrans, arot, trans, rot;
-        dpxyz_f atrans_e, arot_e, trans_e, rot_e;
-        
-        this->getAnimations( &l );
-        
-        memset( &atrans, 0, sizeof( atrans ) );
-        arot = atrans_e = arot_e = atrans;
-        
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            
-            if( !p->isPlaying() )
-                continue;
-            
-            this->redoAnim( m, j, p, &trans, &rot, &trans_e, &rot_e );
-            
-            atrans.x += trans.x;
-            atrans.y += trans.y;
-            atrans.z += trans.z;
-            
-            arot.x += rot.x;
-            arot.y += rot.y;
-            arot.z += rot.z;
-
-            atrans_e.x += trans_e.x;
-            atrans_e.y += trans_e.y;
-            atrans_e.z += trans_e.z;
-            
-            arot_e.x += rot_e.x;
-            arot_e.y += rot_e.y;
-            arot_e.z += rot_e.z;
-        }
-        
-        j->setStartPosition( &atrans );
-        j->setStartRotation( &arot );
-        j->setStopPosition( &atrans_e );
-        j->setStopRotation( &arot_e );
-    }
-    
-    //redo animation, compound joint transforms for a given animation
-    void model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyz_f *atrans, dpxyz_f *arot, dpxyz_f *atrans_e, dpxyz_f *arot_e )
-    {
-        std::list<model_frame_joint *> l;
-        std::list<model_frame_joint *>::iterator i;
-        model_frame_joint *p;
-        dpxyz_f trans, rot;
-        
-        m->getFrameJoints( &l, a->getStartFrame(), j->getId() );
-        memset( atrans, 0, sizeof( trans ) );
-        memset( arot, 0, sizeof( rot ) );
-        
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-           
-            p->getRotation( &rot );
-            p->getTranslation( &trans );
-            
-            atrans->x += trans.x;
-            atrans->y += trans.y;
-            atrans->z += trans.z;
-            
-            arot->x += rot.x;
-            arot->y += rot.y;
-            arot->z += rot.z;
-        }
-        
-        l.clear();
-        m->getFrameJoints( &l, a->getEndFrame(), j->getId() );
-        memset( atrans_e, 0, sizeof( trans ) );
-        memset( arot_e, 0, sizeof( rot ) );
-        
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            
-            p->getRotation( &rot );
-            p->getTranslation( &trans );
-            
-            atrans_e->x += trans.x;
-            atrans_e->y += trans.y;
-            atrans_e->z += trans.z;
-            
-            arot_e->x += rot.x;
-            arot_e->y += rot.y;
-            arot_e->z += rot.z;
-        }
     }
     
     //get start time

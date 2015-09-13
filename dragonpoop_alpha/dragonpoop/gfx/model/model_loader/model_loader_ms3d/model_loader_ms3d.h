@@ -38,7 +38,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        model_loader_ms3d( core *c, dptaskpool_writelock *tp, model_ref *m, std::string *fname );
+        model_loader_ms3d( core *c, model_ref *m, std::string *path_name, std::string *fname );
         //dtor
         virtual ~model_loader_ms3d( void );
         

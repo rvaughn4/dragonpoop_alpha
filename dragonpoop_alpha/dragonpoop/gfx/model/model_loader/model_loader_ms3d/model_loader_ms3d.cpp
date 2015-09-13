@@ -6,7 +6,7 @@ namespace dragonpoop
 {
     
     //ctor
-    model_loader_ms3d::model_loader_ms3d( core *c, dptaskpool_writelock *tp, model_ref *m, std::string *fname ) : model_loader( c, tp, m, fname )
+    model_loader_ms3d::model_loader_ms3d( core *c, model_ref *m, std::string *path_name, std::string *fname ) : model_loader( c, m, path_name, fname )
     {
         this->verts = 0;
         this->tris = 0;

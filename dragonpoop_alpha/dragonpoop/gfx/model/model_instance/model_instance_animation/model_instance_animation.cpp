@@ -3,9 +3,13 @@
 #include "../../model_animation/model_animation.h"
 #include "../../model_readlock.h"
 #include "../../model_writelock.h"
+#include "../model_instance_writelock.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <list>
 #include "../../model_animation_frame/model_animation_frame.h"
+#include "../../model_frame/model_frame.h"
+
+#include <iostream>
 
 namespace dragonpoop
 {
@@ -18,10 +22,13 @@ namespace dragonpoop
         this->repeat_delay_f = m->getRepeatDelay();
         this->len_Frames = m->getLength();
         this->cnt_frames = m->getFrameCount();
-        this->fps = 5;//m->getFps();
-        
-        
+        this->fps = m->getFps();
+        this->bIsPlay = 0;
+        this->bDoPlay = this->bIsAutplay;
         this->start_time = this->end_time = 0;
+        this->end_frame_time = this->start_frame_time = 0;
+        dpid_zero( &this->start_frame );
+        dpid_zero( &this->end_frame );
     }
     
     //dtor
@@ -77,59 +84,23 @@ namespace dragonpoop
     {
         return this->len_Frames;
     }
-    
-    
+
     //start animation
-    void model_instance_animation::start( uint64_t t, model_writelock *ml )
+    void model_instance_animation::start( void )
     {
-        float f;
-        f = this->len_Frames * 1000.0f / this->fps;
-        this->start_time = t;
-        this->end_time = t + (unsigned int)f;
+        this->bDoPlay = 1;
     }
     
     //stop animation
     void model_instance_animation::stop( void )
     {
-        this->start_time = this->end_time = 0;
-        this->bIsAutplay = 0;
+        this->bDoPlay = 0;
     }
     
     //returns true if playing
     bool model_instance_animation::isPlaying( void )
     {
-        return this->start_time != 0;
-    }
-    
-    //return ms played
-    uint64_t model_instance_animation::getPlayTime( uint64_t t )
-    {
-        uint64_t td;
-        float f;
-        
-        if( !this->start_time || !this->end_time )
-            return 0;
-            
-        if( t > this->start_time )
-            td = t - this->start_time;
-        else
-            td = 0;
-        
-        if( t > this->end_time )
-        {
-            if( !this->bIsRepeat )
-            {
-                this->stop();
-                return 0;
-            }
-            this->start_time = this->end_time;
-            f = this->len_Frames * 1000.0f / this->fps;
-            this->end_time += (unsigned int)f;
-            
-            return this->getPlayTime( t );
-        }
-        
-        return td;
+        return this->bIsPlay;
     }
     
     //convert time into frame number
@@ -155,13 +126,11 @@ namespace dragonpoop
     }
     
     //return closest frame after time
-    model_frame *model_instance_animation::findFrameAtTime( model_writelock *ml, uint64_t t, uint64_t *p_time )
+    model_frame *model_instance_animation::findFrameAtTime( model_writelock *ml, unsigned int t, unsigned int *p_time )
     {
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
-        
-        t = this->getFrameFromTime( t );
         
         ml->getAnimationFrames( &l, this->getId() );
         
@@ -185,18 +154,17 @@ namespace dragonpoop
         if( !f )
             return 0;
         
-        *p_time = this->getTimeFromFrame( f->getTime() );
+        if( p_time )
+            *p_time = f->getTime();
         return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
     }
 
     //return closest frame before time
-    model_frame *model_instance_animation::findFrameBeforeTime( model_writelock *ml, uint64_t t, uint64_t *p_time )
+    model_frame *model_instance_animation::findFrameBeforeTime( model_writelock *ml, unsigned int t, unsigned int *p_time )
     {
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
-        
-        t = this->getFrameFromTime( t );
         
         ml->getAnimationFrames( &l, this->getId() );
         
@@ -220,14 +188,9 @@ namespace dragonpoop
         if( !f )
             return 0;
         
-        *p_time = this->getTimeFromFrame( f->getTime() );
+        if( p_time )
+            *p_time = f->getTime();
         return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
-    }
-    
-    //set start frame id
-    void model_instance_animation::setStartFrame( dpid id )
-    {
-        this->start_frame = id;
     }
     
     //get start frame id
@@ -236,16 +199,71 @@ namespace dragonpoop
         return this->start_frame;
     }
     
-    //set end frame id
-    void model_instance_animation::setEndFrame( dpid id )
-    {
-        this->end_frame = id;
-    }
-    
     //get end frame id
     dpid model_instance_animation::getEndFrame( void )
     {
         return this->end_frame;
+    }
+    
+    //run animation
+    void model_instance_animation::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd )
+    {
+        float f;
+        model_frame *frm;
+        
+        //stop playing
+        if( !this->bDoPlay )
+        {
+            this->bIsPlay = 0;
+            return;
+        }
+        
+        //is animation done?
+        this->current_time = thd->getTicks();
+        if( this->bIsPlay && this->current_time > this->end_time )
+        {
+            this->bDoPlay = this->bIsRepeat;
+            this->bIsPlay = 0;
+            if( this->bIsRepeat )
+            {
+                this->start_frame_time = this->end_frame_time;
+                this->start_frame = this->end_frame;
+            }
+            else
+            {
+                dpid_zero( &this->start_frame );
+                this->start_frame_time = 0;
+            }
+            if( !this->bDoPlay )
+                return;
+        }
+        
+        //start playing
+        if( !this->bIsPlay )
+        {
+            this->start_time = this->current_time;
+            this->current_frame_time = 0;
+            f = (float)this->len_Frames * 1000.0f / this->fps;
+            this->end_time = this->start_time + (uint64_t)f;
+            this->bIsPlay = 1;
+        }
+        
+        //calc current animation frame
+        f = (float)this->current_time - (float)this->start_time;
+        f = f *this->fps / 1000.0f;
+        this->current_frame_time = (unsigned int)f;
+        
+        //find start frame
+        frm = this->findFrameBeforeTime( m, this->current_frame_time, &this->start_frame_time );
+        if( frm )
+            this->start_frame = frm->getId();
+        
+        //find end frame
+        frm = this->findFrameAtTime( m, this->current_frame_time, &this->end_frame_time );
+        if( frm )
+            this->end_frame = frm->getId();
+        
+        std::cout << "" << this->current_frame_time << " is between " << this->start_frame_time << " and " << this->end_frame_time << "\r\n";
     }
     
 };

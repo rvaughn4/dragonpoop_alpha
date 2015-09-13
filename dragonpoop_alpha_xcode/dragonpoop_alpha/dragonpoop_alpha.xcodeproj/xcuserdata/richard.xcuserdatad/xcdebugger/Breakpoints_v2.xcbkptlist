@@ -9,54 +9,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "463794940.193006"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "704"
-            endingLineNumber = "704"
-            landmarkName = "model_instance::redoAnim( model_writelock *m, model_instance_joint *j, model_instance_animation *a, dpxyz_f *atrans, dpxyz_f *arot, dpxyz_f *atrans_e, dpxyz_f *arot_e )"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "463795021.089554"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "660"
-            endingLineNumber = "660"
-            landmarkName = "model_instance::redoAnim( model_writelock *m, model_instance_joint *j )"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "463795034.439639"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "617"
-            endingLineNumber = "617"
-            landmarkName = "model_instance::redoAnim( model_instance_writelock *mi, model_writelock *m )"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model_instance/renderer_model_instance.cpp"
             timestampString = "463795158.356512"
             startingColumnNumber = "9223372036854775807"
@@ -73,13 +25,77 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance.cpp"
-            timestampString = "463795389.938493"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_animation/model_instance_animation.cpp"
+            timestampString = "463836439.907952"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "689"
-            endingLineNumber = "689"
-            landmarkName = "model_instance::redoAnim( model_writelock *m, model_instance_joint *j )"
+            startingLineNumber = "229"
+            endingLineNumber = "229"
+            landmarkName = "model_instance_animation::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd )"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_animation/model_instance_animation.cpp"
+            timestampString = "463836439.907952"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "246"
+            endingLineNumber = "246"
+            landmarkName = "model_instance_animation::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd )"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_animation/model_instance_animation.cpp"
+            timestampString = "463836439.907952"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
+            landmarkName = "model_instance_animation::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd )"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_animation/model_instance_animation.cpp"
+            timestampString = "463836439.907952"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "249"
+            endingLineNumber = "249"
+            landmarkName = "model_instance_animation::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd )"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_animation/model_instance_animation.cpp"
+            timestampString = "463836439.907952"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "248"
+            endingLineNumber = "248"
+            landmarkName = "model_instance_animation::run( model_instance_writelock *mi, model_writelock *m, dpthread_lock *thd )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
