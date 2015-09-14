@@ -1,5 +1,6 @@
 
 #include "model_vertex_joint.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -39,6 +40,20 @@ namespace dragonpoop
     void model_vertex_joint::setWeight( float w )
     {
         this->w = w;
+    }
+    
+    //write data to disk/memory
+    bool model_vertex_joint::writeData( dpbuffer *b )
+    {
+        model_vertex_joint_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.joint_id = this->joint_id;
+        h.vertex_id = this->vertex_id;
+        h.w = this->w;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
 
 };

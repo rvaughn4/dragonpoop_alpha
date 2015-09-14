@@ -1,5 +1,6 @@
 
 #include "model_frame_joint.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -57,6 +58,21 @@ namespace dragonpoop
     bool model_frame_joint::hasParent( dpid id )
     {
         return dpid_compare( &id, &this->joint_id ) || dpid_compare( &id, &this->frame_id );
+    }
+    
+    //write data to disk/memory
+    bool model_frame_joint::writeData( dpbuffer *b )
+    {
+        model_frame_joint_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.frame_id = this->frame_id;
+        h.joint_id = this->joint_id;
+        h.rot = this->rot;
+        h.trans = this->trans;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
 
 };

@@ -7,6 +7,23 @@
 namespace dragonpoop
 {
     
+#pragma pack( 0 )
+    struct model_vertex_joint_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
+    
+#pragma pack( 0 )
+    struct model_vertex_joint_header_v1
+    {
+        model_vertex_joint_header_hdr h;
+        dpid vertex_id, joint_id;
+        float w;
+    };
+#pragma pack()
+
     class model_vertex_joint : public model_component
     {
         
@@ -17,6 +34,9 @@ namespace dragonpoop
         
     protected:
         
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
+
     public:
         
         //ctor
