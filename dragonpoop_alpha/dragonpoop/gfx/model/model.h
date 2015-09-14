@@ -49,6 +49,7 @@ namespace dragonpoop
     struct model_header_v1
     {
         model_header_hdr h;
+        uint32_t cnt_components;
         uint16_t name_size;
         uint32_t cmt_size;
     };
@@ -230,6 +231,10 @@ namespace dragonpoop
         void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid partent_id_2 );
         //write model header to file/memory
         bool writeHeader( dpbuffer *b );
+        //read model header from file/memory
+        bool readHeader( dpbuffer *b, unsigned int *cnt_components );
+        //read and create model component from file/memory
+        bool readComponent( dpbuffer *b, model_component **c );
         
     public:
 

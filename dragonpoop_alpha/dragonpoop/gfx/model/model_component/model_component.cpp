@@ -119,6 +119,12 @@ namespace dragonpoop
         return 1;
     }
     
+    //read data from disk/memory
+    bool model_component::readData( dpbuffer *b )
+    {
+        return 1;
+    }
+    
     //write component to file/memory
     bool model_component::write( dpbuffer *b )
     {
@@ -152,4 +158,65 @@ namespace dragonpoop
         return 1;
     }
 
+    //read component type from file/memory
+    bool model_component::readType( dpbuffer *b, uint16_t *mtype )
+    {
+        unsigned int rc;
+        model_component_header_v1 h;
+
+        rc = b->getReadCursor();
+        
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        if( h.h.hdr_size < sizeof( h ) || h.h.version < 1 )
+            return 0;
+        
+        b->setReadCursor( rc );
+        *mtype = h.ctype;
+        return 1;
+    }
+    
+    //read component from file/memory
+    bool model_component::read( dpbuffer *b )
+    {
+        model_component_header_v1 h;
+        unsigned int i;
+        dpbuffer_dynamic nb;
+        uint8_t v;
+        std::string *s;
+        
+        i = b->getReadCursor();
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        i += h.h.hdr_size;
+        b->setReadCursor( i );
+        this->id = h.id;
+        
+        nb.clear();
+        for( i = 0; i < h.name_size; i++ )
+        {
+            if( !b->readByte( &v ) )
+                return 0;
+            nb.writeByte( &v );
+        }
+        s = this->sname;
+        if( !s || nb.getSize() != h.name_size )
+            return 0;
+        s->copy( (char *)nb.getBuffer(), nb.getSize() );
+
+        nb.clear();
+        for( i = 0; i < h.cmt_size; i++ )
+        {
+            if( !b->readByte( &v ) )
+                return 0;
+            nb.writeByte( &v );
+        }
+        s = this->scmmt;
+        if( !s || nb.getSize() != h.cmt_size )
+            return 0;
+        s->copy( (char *)nb.getBuffer(), nb.getSize() );
+        
+        return this->readData( b );
+    }
+    
 };

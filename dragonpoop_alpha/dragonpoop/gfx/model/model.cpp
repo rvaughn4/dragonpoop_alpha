@@ -30,6 +30,7 @@
 #include "model_frame_joint/model_frame_joint.h"
 #include "../../core/dpthread/dpthread_lock.h"
 #include "../../core/dpbuffer/dpbuffer.h"
+#include "../../core/dpbuffer/dpbuffer_dynamic.h"
 
 namespace dragonpoop
 {
@@ -755,6 +756,7 @@ namespace dragonpoop
         
         h.h.version = 1;
         h.h.size = sizeof( h );
+        h.cnt_components = (unsigned int)this->comps.lst.size();
         h.name_size = (unsigned int)this->sname.size();
         h.cmt_size = (unsigned int)this->scmmt.size();
         
@@ -766,6 +768,55 @@ namespace dragonpoop
             return 0;
         
         return 1;
+    }
+    
+    //read model header from file/memory
+    bool model::readHeader( dpbuffer *b, unsigned int *cnt_components )
+    {
+        model_header_v1 h;
+        int i;
+        dpbuffer_dynamic nb;
+        uint8_t v;
+        
+        i = b->getReadCursor();
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        if( h.h.size < sizeof( h ) || h.h.version < 1 )
+            return 0;
+        i += h.h.size;
+        b->setReadCursor( i );
+        if( cnt_components )
+            *cnt_components = h.cnt_components;
+        
+        nb.clear();
+        for( i = 0; i < h.name_size; i++ )
+        {
+            if( !b->readByte( &v ) )
+                return 0;
+            nb.writeByte( &v );
+        }
+        if( nb.getSize() != h.name_size )
+            return 0;
+        this->sname.copy( nb.getBuffer(), nb.getSize() );
+
+        nb.clear();
+        for( i = 0; i < h.cmt_size; i++ )
+        {
+            if( !b->readByte( &v ) )
+                return 0;
+            nb.writeByte( &v );
+        }
+        if( nb.getSize() != h.cmt_size )
+            return 0;
+        this->scmmt.copy( nb.getBuffer(), nb.getSize() );
+        
+        return 1;
+    }
+    
+    //read and create model component from file/memory
+    bool model::readComponent( dpbuffer *b, model_component **c )
+    {
+        return 0;
     }
     
 };

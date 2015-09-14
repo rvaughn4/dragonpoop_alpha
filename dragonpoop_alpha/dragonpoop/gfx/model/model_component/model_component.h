@@ -46,6 +46,8 @@ namespace dragonpoop
         model_component( dpid id, uint16_t mtype );
         //write data to disk/memory
         virtual bool writeData( dpbuffer *b );
+        //read data from disk/memory
+        virtual bool readData( dpbuffer *b );
 
     public:
 
@@ -75,6 +77,10 @@ namespace dragonpoop
         virtual bool hasParent( dpid id );
         //write component to file/memory
         virtual bool write( dpbuffer *b );
+        //read component type from file/memory
+        static bool readType( dpbuffer *b, uint16_t *mtype );
+        //read component from file/memory
+        virtual bool read( dpbuffer *b );
 
     };
 
