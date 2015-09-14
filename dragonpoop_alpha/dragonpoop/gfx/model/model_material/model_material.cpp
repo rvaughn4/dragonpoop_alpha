@@ -1,5 +1,6 @@
 
 #include "model_material.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -110,6 +111,53 @@ namespace dragonpoop
     float model_material::getOpacity( void )
     {
         return this->opacity;
+    }
+    
+    //write data to disk/memory
+    bool model_material::writeData( dpbuffer *b )
+    {
+        model_material_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        
+        h.colors = this->colors;
+        h.opacity = this->opacity;
+        h.shine = this->shine;
+        
+        h.tex.diffuse.size = this->tex.diffuse.getSize();
+        h.tex.diffuse.w = this->tex.diffuse.getWidth();
+        h.tex.diffuse.h = this->tex.diffuse.getHeight();
+        h.tex.diffuse.bits = this->tex.diffuse.getBitsPerPixel();
+        
+        h.tex.alphamask.size = this->tex.alphamask.getSize();
+        h.tex.alphamask.w = this->tex.alphamask.getWidth();
+        h.tex.alphamask.h = this->tex.alphamask.getHeight();
+        h.tex.alphamask.bits = this->tex.alphamask.getBitsPerPixel();
+        
+        h.tex.bumpmap.size = this->tex.bumpmap.getSize();
+        h.tex.bumpmap.w = this->tex.bumpmap.getWidth();
+        h.tex.bumpmap.h = this->tex.bumpmap.getHeight();
+        h.tex.bumpmap.bits = this->tex.bumpmap.getBitsPerPixel();
+        
+        h.tex.specularmap.size = this->tex.specularmap.getSize();
+        h.tex.specularmap.w = this->tex.specularmap.getWidth();
+        h.tex.specularmap.h = this->tex.specularmap.getHeight();
+        h.tex.specularmap.bits = this->tex.specularmap.getBitsPerPixel();
+        
+        if( !b->writeBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        
+        if( h.tex.diffuse.size && !b->writeBytes( (uint8_t *)this->tex.diffuse.getBuffer(), h.tex.diffuse.size ) )
+            return 0;
+        if( h.tex.alphamask.size && !b->writeBytes( (uint8_t *)this->tex.alphamask.getBuffer(), h.tex.alphamask.size ) )
+            return 0;
+        if( h.tex.bumpmap.size && !b->writeBytes( (uint8_t *)this->tex.bumpmap.getBuffer(), h.tex.bumpmap.size ) )
+            return 0;
+        if( h.tex.specularmap.size && !b->writeBytes( (uint8_t *)this->tex.specularmap.getBuffer(), h.tex.specularmap.size ) )
+            return 0;
+        
+        return 1;
     }
 
 };

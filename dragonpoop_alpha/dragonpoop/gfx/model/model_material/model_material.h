@@ -9,6 +9,40 @@
 namespace dragonpoop
 {
     
+#pragma pack( 1 )
+    struct model_material_colors
+    {
+        dprgba diffuse, specular, ambient, emissive;
+    };
+#pragma pack()
+
+#pragma pack( 1 )
+    struct model_material_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
+    
+#pragma pack( 1 )
+    struct model_material_header_v1
+    {
+        model_material_header_hdr h;
+        struct
+        {
+            struct
+            {
+                uint16_t w, h;
+                uint8_t bits;
+                uint32_t size;
+            } diffuse, alphamask, bumpmap, specularmap;
+        } tex;
+        model_material_colors colors;
+        float shine, opacity;
+
+    };
+#pragma pack()
+
     class model_material : public model_component
     {
         
@@ -18,14 +52,14 @@ namespace dragonpoop
         {
             dpbitmap diffuse, alphamask, bumpmap, specularmap;
         } tex;
-        struct
-        {
-            dprgba diffuse, specular, ambient, emissive;
-        } colors;
+        model_material_colors colors;
         float shine, opacity;
         
     protected:
         
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
+
     public:
         
         //ctor
