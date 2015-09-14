@@ -1,5 +1,6 @@
 
 #include "model_group.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -26,6 +27,18 @@ namespace dragonpoop
     dpid model_group::getMaterialId( void )
     {
         return this->m_id;
+    }
+    
+    //write data to disk/memory
+    bool model_group::writeData( dpbuffer *b )
+    {
+        model_group_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.m_id = this->m_id;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
 
 };

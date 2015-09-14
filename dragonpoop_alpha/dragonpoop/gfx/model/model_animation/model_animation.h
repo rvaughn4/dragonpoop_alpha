@@ -10,6 +10,24 @@ namespace dragonpoop
     class model_readlock;
     class model_writelock;
     
+#pragma pack( 0 )
+    struct model_animation_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
+    
+#pragma pack( 0 )
+    struct model_animation_header_v1
+    {
+        model_animation_header_hdr h;
+        bool bIsRepeat, bIsAutplay;
+        unsigned int repeat_delay_f, cnt_frames, len_frames;
+        float speed;
+    };
+#pragma pack()
+    
     class model_animation : public model_component
     {
         
@@ -21,6 +39,9 @@ namespace dragonpoop
         
     protected:
         
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
+
     public:
         
         //ctor

@@ -1,5 +1,6 @@
 
 #include "model_triangle_vertex.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -87,4 +88,20 @@ namespace dragonpoop
         return 0;
     }
 
+    //write data to disk/memory
+    bool model_triangle_vertex::writeData( dpbuffer *b )
+    {
+        model_triangle_vertex_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.v_id = this->v_id;
+        h.t_id = this->t_id;
+        h.norm = this->norm;
+        h.texcoords0 = this->texcoords0;
+        h.texcoords1 = this->texcoords1;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
+    }
+    
 };

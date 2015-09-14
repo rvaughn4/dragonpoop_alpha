@@ -104,8 +104,8 @@ namespace dragonpoop
         mv->setShine( t->f.shininess );
         
         s.assign( (char *)t->f.tex_filename, sizeof( t->f.tex_filename ) );
-        //s.assign( "fhnd-01.jpg" );
-        s.assign( "beast1.jpg" );
+        s.assign( "fhnd-01.jpg" );
+        //s.assign( "beast1.jpg" );
         if( s.size() > 0 )
             this->loadBitmap( mv->getDiffuseTexture(), &s );
 

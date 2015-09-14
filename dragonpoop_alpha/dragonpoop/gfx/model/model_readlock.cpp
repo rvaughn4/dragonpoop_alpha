@@ -65,6 +65,12 @@ namespace dragonpoop
         return this->t->findComponent( mtype, s );
     }
     
+    //find components
+    void model_readlock::getComponents( std::list<model_component *> *l )
+    {
+        this->t->getComponents( l );
+    }
+    
     //find components by type
     void model_readlock::getComponents( uint16_t mtype, std::list<model_component *> *l )
     {
@@ -279,6 +285,12 @@ namespace dragonpoop
     void model_readlock::getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid parent_id_2 )
     {
         this->t->getFrameJoints( l, parent_id_1, parent_id_2 );
+    }
+    
+    //write model header to file/memory
+    bool model_readlock::writeHeader( dpbuffer *b )
+    {
+        return this->t->writeHeader( b );
     }
     
 };

@@ -13,6 +13,7 @@
 #include "model_saver_state_fail.h"
 #include "model_saver_state_begin.h"
 #include "model_saver_ms3d/model_saver_ms3d.h"
+#include "model_saver_dpmodel/model_saver_dpmodel.h"
 
 #include <stdlib.h>
 
@@ -69,6 +70,8 @@ namespace dragonpoop
         
         if( sext.compare( "ms3d" ) == 0 )
             l = new model_saver_ms3d( c, m, &spath, &sname );
+        if( sext.compare( "dpmodel" ) == 0 )
+            l = new model_saver_dpmodel( c, m, &spath, &sname );
         
         return l;
     }

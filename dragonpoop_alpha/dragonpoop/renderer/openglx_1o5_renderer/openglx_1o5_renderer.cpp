@@ -385,7 +385,7 @@ namespace dragonpoop
         glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
         glLoadMatrixf( this->world_m.getRaw4by4() );
         glTranslatef( 0, 0, -5 );
-        glScalef( 0.02f, 0.02f, 0.02f );
+        //glScalef( 0.02f, 0.02f, 0.02f );
         glRotatef( rr, 0, 1, 0 );
         
         glBindTexture( GL_TEXTURE_2D, 0 );
@@ -430,13 +430,13 @@ namespace dragonpoop
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
         glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
-
+/*
         glBindTexture( GL_TEXTURE_2D, 0 );
         glDisable( GL_LIGHTING );
         glClear( GL_DEPTH_BUFFER_BIT );
         
         render_joints( jnts, mi );
-    }
+  */  }
 
     void render_joints( model_instance_joint_cache *c, model_instance_joint_cache_element *e, renderer_model_instance_readlock *m );
     

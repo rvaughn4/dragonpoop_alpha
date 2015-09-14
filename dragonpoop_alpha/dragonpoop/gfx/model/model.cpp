@@ -29,6 +29,7 @@
 #include "model_animation_frame/model_animation_frame.h"
 #include "model_frame_joint/model_frame_joint.h"
 #include "../../core/dpthread/dpthread_lock.h"
+#include "../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -217,6 +218,21 @@ namespace dragonpoop
         return 0;
     }
     
+    //find components
+    void model::getComponents( std::list<model_component *> *ll )
+    {
+        std::list<model_component *> *l;
+        std::list<model_component *>::iterator i;
+        model_component *c;
+        
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            c = *i;
+            ll->push_back( c );
+        }
+    }
+
     //find components by type
     void model::getComponents( uint16_t mtype, std::list<model_component *> *l )
     {
@@ -730,6 +746,26 @@ namespace dragonpoop
     void model::getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid parent_id_2 )
     {
         this->getComponentsByParents( model_component_type_frame_joint, parent_id_1, parent_id_2, (std::list<model_component *> *)l );
+    }
+    
+    //write model header to file/memory
+    bool model::writeHeader( dpbuffer *b )
+    {
+        model_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.name_size = (unsigned int)this->sname.size();
+        h.cmt_size = (unsigned int)this->scmmt.size();
+        
+        if( !b->writeBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        if( h.name_size && !b->writeBytes( (uint8_t *)this->sname.c_str(), h.name_size ) )
+            return 0;
+        if( h.cmt_size && !b->writeBytes( (uint8_t *)this->scmmt.c_str(), h.cmt_size ) )
+            return 0;
+        
+        return 1;
     }
     
 };

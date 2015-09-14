@@ -24,6 +24,7 @@ namespace dragonpoop
     class model_frame;
     class model_animation_frame;
     class model_frame_joint;
+    class dpbuffer;
 
     class model_readlock : public shared_obj_readlock
     {
@@ -57,6 +58,8 @@ namespace dragonpoop
         model_component *findComponent( uint16_t mtype, dpid id );
         //find component by type and name
         model_component *findComponent( uint16_t mtype, std::string *s );
+        //find components
+        void getComponents( std::list<model_component *> *l );
         //find components by type
         void getComponents( uint16_t mtype, std::list<model_component *> *l );
         //find components by type and 1 parent
@@ -129,6 +132,8 @@ namespace dragonpoop
         void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id );
         //get FrameJoints by frame and animation id
         void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid partent_id_2 );
+        //write model header to file/memory
+        bool writeHeader( dpbuffer *b );
 
         friend class model;
     };

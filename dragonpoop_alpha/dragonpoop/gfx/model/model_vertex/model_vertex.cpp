@@ -1,5 +1,6 @@
 
 #include "model_vertex.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -38,6 +39,18 @@ namespace dragonpoop
     void model_vertex::getPosition( model_vector *v )
     {
         v->setPosition( &this->x );
+    }
+    
+    //write data to disk/memory
+    bool model_vertex::writeData( dpbuffer *b )
+    {
+        model_vertex_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.pos = this->x;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
     
 };

@@ -28,7 +28,6 @@ namespace dragonpoop
     //sync with joint
     void renderer_model_instance_joint::sync( model_instance_writelock *ml, model_instance_joint *g, dpthread_lock *thd )
     {
-        dpxyz_f pos, rot;
         dpquaternion q, qs, qe;
         float rs, re;
         uint64_t tt, td, t;

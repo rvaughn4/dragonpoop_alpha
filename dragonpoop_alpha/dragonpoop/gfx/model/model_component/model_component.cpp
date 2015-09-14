@@ -1,5 +1,7 @@
 
 #include "model_component.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
+#include "../../../core/dpbuffer/dpbuffer_dynamic.h"
 
 namespace dragonpoop
 {
@@ -111,4 +113,43 @@ namespace dragonpoop
         return 0;
     }
     
+    //write data to disk/memory
+    bool model_component::writeData( dpbuffer *b )
+    {
+        return 1;
+    }
+    
+    //write component to file/memory
+    bool model_component::write( dpbuffer *b )
+    {
+        model_component_header_v1 h;
+        dpbuffer_dynamic d;
+        std::string sname, scmt;
+        
+        if( !this->writeData( &d ) )
+            return 0;
+        
+        this->getName( &sname );
+        this->getComment( &scmt );
+        
+        h.h.version = 1;
+        h.h.hdr_size = sizeof( h );
+        h.id = this->id;
+        h.ctype = this->mtype;
+        h.name_size = (unsigned int)sname.size();
+        h.cmt_size = (unsigned int)scmt.size();
+        h.h.total_size = h.h.hdr_size + h.name_size + h.cmt_size + d.getSize();
+        
+        if( !b->writeBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        if( h.name_size && !b->writeBytes( (uint8_t *)sname.c_str(), h.name_size ) )
+            return 0;
+        if( h.cmt_size && !b->writeBytes( (uint8_t *)scmt.c_str(), h.cmt_size ) )
+            return 0;
+        if( d.getSize() && !b->writeBytes( (uint8_t *)d.getBuffer(), d.getSize() ) )
+            return 0;
+        
+        return 1;
+    }
+
 };

@@ -1,5 +1,6 @@
 
 #include "model_joint.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -50,6 +51,20 @@ namespace dragonpoop
     dpid model_joint::getParent( void )
     {
         return this->parent_id;
+    }
+    
+    //write data to disk/memory
+    bool model_joint::writeData( dpbuffer *b )
+    {
+        model_joint_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.parent_id = this->parent_id;
+        h.pos = this->pos;
+        h.rot = this->rot;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
     
 };

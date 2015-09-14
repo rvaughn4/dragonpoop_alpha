@@ -345,6 +345,8 @@ namespace dragonpoop
             lw = (model_loader_writelock *)o.tryWriteLock( l, 100 );
             if( lw )
                 *mldr = (model_loader_ref *)lw->getRef();
+            else
+                *mldr = 0;
             o.unlock();
         }
         

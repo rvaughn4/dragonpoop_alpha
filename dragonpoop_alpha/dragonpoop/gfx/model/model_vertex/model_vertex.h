@@ -8,6 +8,22 @@
 
 namespace dragonpoop
 {
+    
+#pragma pack( 0 )
+    struct model_vertex_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
+    
+#pragma pack( 0 )
+    struct model_vertex_header_v1
+    {
+        model_vertex_header_hdr h;
+        dpxyz_f pos;
+    };
+#pragma pack()
 
     class model_vertex : public model_component
     {
@@ -17,6 +33,9 @@ namespace dragonpoop
         dpxyz_f x;
 
     protected:
+
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
 
     public:
 

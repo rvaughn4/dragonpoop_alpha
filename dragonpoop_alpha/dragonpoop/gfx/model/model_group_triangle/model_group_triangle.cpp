@@ -1,5 +1,6 @@
 
 #include "model_group_triangle.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -27,6 +28,19 @@ namespace dragonpoop
     dpid model_group_triangle::getGroupId( void )
     {
         return this->g_id;
+    }
+    
+    //write data to disk/memory
+    bool model_group_triangle::writeData( dpbuffer *b )
+    {
+        model_group_triangle_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.g_id = this->g_id;
+        h.t_id = this->t_id;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
 
 };

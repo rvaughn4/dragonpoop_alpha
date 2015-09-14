@@ -2,6 +2,7 @@
 #include "model_animation.h"
 #include "../model_readlock.h"
 #include "../model_writelock.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -108,4 +109,21 @@ namespace dragonpoop
         return this->len_frames;
     }
     
+    //write data to disk/memory
+    bool model_animation::writeData( dpbuffer *b )
+    {
+        model_animation_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.bIsAutplay = this->bIsAutplay;
+        h.bIsRepeat = this->bIsRepeat;
+        h.cnt_frames = this->cnt_frames;
+        h.len_frames = this->len_frames;
+        h.speed = this->speed;
+        h.repeat_delay_f = this->repeat_delay_f;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
+    }
+
 };

@@ -8,7 +8,29 @@
 
 namespace dragonpoop
 {
+    
+    class dpbuffer;
+    
+#pragma pack( 0 )
+    struct model_component_header_hdr
+    {
+        uint8_t version;
+        uint8_t hdr_size;
+        uint32_t total_size;
+    };
+#pragma pack()
 
+#pragma pack( 0 )
+    struct model_component_header_v1
+    {
+        model_component_header_hdr h;
+        uint16_t ctype;
+        dpid id;
+        uint16_t name_size;
+        uint16_t cmt_size;
+    };
+#pragma pack()
+    
     class model_component
     {
 
@@ -22,6 +44,8 @@ namespace dragonpoop
 
         //ctor
         model_component( dpid id, uint16_t mtype );
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
 
     public:
 
@@ -49,6 +73,8 @@ namespace dragonpoop
         uint16_t getType( void );
         //returns true if has parent
         virtual bool hasParent( dpid id );
+        //write component to file/memory
+        virtual bool write( dpbuffer *b );
 
     };
 

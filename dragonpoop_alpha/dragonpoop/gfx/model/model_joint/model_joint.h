@@ -8,6 +8,23 @@
 namespace dragonpoop
 {
     
+#pragma pack( 0 )
+    struct model_joint_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
+    
+#pragma pack( 0 )
+    struct model_joint_header_v1
+    {
+        model_joint_header_hdr h;
+        dpid parent_id;
+        dpxyz_f pos, rot;
+    };
+#pragma pack()
+
     class model_joint : public model_component
     {
         
@@ -18,6 +35,9 @@ namespace dragonpoop
         
     protected:
         
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
+
     public:
         
         //ctor

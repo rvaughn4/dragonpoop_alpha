@@ -35,7 +35,25 @@ namespace dragonpoop
     class model_frame;
     class model_animation_frame;
     class model_frame_joint;
+    class dpbuffer;
+    
+#pragma pack( 1 )
+    struct model_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
 
+#pragma pack( 1 )
+    struct model_header_v1
+    {
+        model_header_hdr h;
+        uint16_t name_size;
+        uint32_t cmt_size;
+    };
+#pragma pack()
+    
     class model : public shared_obj
     {
 
@@ -102,6 +120,8 @@ namespace dragonpoop
         model_component *findComponent( uint16_t mtype, dpid id );
         //find component by type and name
         model_component *findComponent( uint16_t mtype, std::string *s );
+        //find components
+        void getComponents( std::list<model_component *> *l );
         //find components by type
         void getComponents( uint16_t mtype, std::list<model_component *> *l );
         //find components by type and 1 parent
@@ -208,6 +228,8 @@ namespace dragonpoop
         void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id );
         //get FrameJoints by frame and animation id
         void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid partent_id_2 );
+        //write model header to file/memory
+        bool writeHeader( dpbuffer *b );
         
     public:
 

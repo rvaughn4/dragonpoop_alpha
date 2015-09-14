@@ -10,6 +10,24 @@
 namespace dragonpoop
 {
 
+#pragma pack( 0 )
+    struct model_triangle_vertex_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
+    
+#pragma pack( 0 )
+    struct model_triangle_vertex_header_v1
+    {
+        model_triangle_vertex_header_hdr h;
+        dpid v_id, t_id;
+        dpxyz_f norm;
+        dpst_f texcoords0, texcoords1;
+    };
+#pragma pack()
+    
     class model_triangle_vertex : public model_component
     {
 
@@ -20,6 +38,9 @@ namespace dragonpoop
         dpst_f texcoords0, texcoords1;
 
     protected:
+
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
 
     public:
 

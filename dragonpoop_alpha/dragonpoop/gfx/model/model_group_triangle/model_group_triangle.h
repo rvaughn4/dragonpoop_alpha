@@ -7,6 +7,22 @@
 namespace dragonpoop
 {
 
+#pragma pack( 0 )
+    struct model_group_triangle_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
+    
+#pragma pack( 0 )
+    struct model_group_triangle_header_v1
+    {
+        model_group_triangle_header_hdr h;
+        dpid g_id, t_id;
+    };
+#pragma pack()
+    
     class model_group_triangle : public model_component
     {
 
@@ -15,6 +31,9 @@ namespace dragonpoop
         dpid g_id, t_id;
 
     protected:
+        
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
 
     public:
 

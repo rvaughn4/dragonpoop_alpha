@@ -4,7 +4,5 @@
 
 #include "model_component_types.h"
 #include "model_component.h"
-#include "model_component_tree_bytype.h"
-#include "model_component_tree_bytypeid.h"
 
 #endif
