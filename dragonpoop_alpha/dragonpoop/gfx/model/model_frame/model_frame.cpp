@@ -1,5 +1,6 @@
 
 #include "model_frame.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -16,4 +17,15 @@ namespace dragonpoop
         
     }
     
+    //write data to disk/memory
+    bool model_frame::writeData( dpbuffer *b )
+    {
+        model_frame_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
+    }
+
 };

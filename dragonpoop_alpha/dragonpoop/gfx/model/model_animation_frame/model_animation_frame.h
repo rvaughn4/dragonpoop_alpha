@@ -7,6 +7,23 @@
 namespace dragonpoop
 {
     
+#pragma pack( 0 )
+    struct model_animation_frame_header_hdr
+    {
+        uint8_t version;
+        uint8_t size;
+    };
+#pragma pack()
+    
+#pragma pack( 0 )
+    struct model_animation_frame_header_v1
+    {
+        model_animation_frame_header_hdr h;
+        dpid animation_id, frame_id;
+        uint32_t time_ms;
+    };
+#pragma pack()
+
     class model_animation_frame : public model_component
     {
         
@@ -17,6 +34,9 @@ namespace dragonpoop
         
     protected:
         
+        //write data to disk/memory
+        virtual bool writeData( dpbuffer *b );
+
     public:
         
         //ctor

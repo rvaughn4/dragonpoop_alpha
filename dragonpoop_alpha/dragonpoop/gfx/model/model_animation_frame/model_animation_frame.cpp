@@ -1,5 +1,6 @@
 
 #include "model_animation_frame.h"
+#include "../../../core/dpbuffer/dpbuffer.h"
 
 namespace dragonpoop
 {
@@ -45,6 +46,20 @@ namespace dragonpoop
     bool model_animation_frame::hasParent( dpid id )
     {
         return dpid_compare( &this->frame_id, &id ) || dpid_compare( &this->animation_id, &id );
+    }
+    
+    //write data to disk/memory
+    bool model_animation_frame::writeData( dpbuffer *b )
+    {
+        model_animation_frame_header_v1 h;
+        
+        h.h.version = 1;
+        h.h.size = sizeof( h );
+        h.animation_id = this->animation_id;
+        h.frame_id = this->frame_id;
+        h.time_ms = this->time_ms;
+        
+        return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
 
 };
