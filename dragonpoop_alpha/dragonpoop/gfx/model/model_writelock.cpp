@@ -444,4 +444,16 @@ namespace dragonpoop
         return this->t->writeHeader( b );
     }
     
+    //read model header from file/memory
+    bool model_writelock::readHeader( dpbuffer *b, unsigned int *cnt_components )
+    {
+        return this->t->readHeader( b, cnt_components );
+    }
+    
+    //read and create model component from file/memory
+    bool model_writelock::readComponent( dpbuffer *b, model_component **c )
+    {
+        return this->t->readComponent( b, c );
+    }
+    
 };

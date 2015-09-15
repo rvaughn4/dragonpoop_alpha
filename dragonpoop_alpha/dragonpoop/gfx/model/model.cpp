@@ -816,7 +816,85 @@ namespace dragonpoop
     //read and create model component from file/memory
     bool model::readComponent( dpbuffer *b, model_component **c )
     {
-        return 0;
+        model_component *p;
+        uint16_t mtype;
+        dpid id;
+        
+        model_component::readType( b, &mtype );
+        
+        switch( mtype )
+        {
+            case model_component_type_vertex:
+                p = new model_vertex( id );
+                break;
+            case model_component_type_triangle_vertex:
+                p = new model_triangle_vertex( id, id, id );
+                break;
+            case model_component_type_triangle:
+                p = new model_triangle( id );
+                break;
+            case model_component_type_group:
+                p = new model_group( id );
+                break;
+            case model_component_type_group_triangle:
+                p = new model_group_triangle( id, id, id );
+                break;
+            case model_component_type_material:
+                p = new model_material( id );
+                break;
+            case model_component_type_joint:
+                p = new model_joint( id );
+                break;
+            case model_component_type_frame:
+                p = new model_frame( id );
+                break;
+            case model_component_type_animation:
+                p = new model_animation( id );
+                break;
+            case model_component_type_vertex_joint:
+                p = new model_vertex_joint( id, id, id );
+                break;
+            case model_component_type_frame_joint:
+                p = new model_frame_joint( id, id, id );
+                break;
+            case model_component_type_animation_frame:
+                p = new model_animation_frame( id, id, id );
+                break;
+            default:
+                p = 0;
+        }
+        
+        if( !p )
+            return 0;
+        if( !p->read( b ) )
+        {
+            delete p;
+            return 0;
+        }
+        
+        switch( mtype )
+        {
+            case model_component_type_triangle_vertex:
+                this->addComponent( p, ((model_triangle_vertex *)p )->getTriangleId(), ((model_triangle_vertex *)p )->getVertexId() );
+                break;
+            case model_component_type_group_triangle:
+                this->addComponent( p, ((model_group_triangle *)p )->getGroupId(), ((model_group_triangle *)p )->getTriangleId() );
+                break;
+            case model_component_type_vertex_joint:
+                this->addComponent( p, ((model_vertex_joint *)p )->getVertexId(), ((model_vertex_joint *)p )->getJointId() );
+                break;
+            case model_component_type_frame_joint:
+                this->addComponent( p, ((model_frame_joint *)p )->getFrameId(), ((model_frame_joint *)p )->getJointId() );
+                break;
+            case model_component_type_animation_frame:
+                this->addComponent( p, ((model_animation_frame *)p )->getAnimationId(), ((model_animation_frame *)p )->getFrameId() );
+                break;
+            default:
+                this->addComponent( p );
+        }
+
+        *c = p;
+        return 1;
     }
     
 };
