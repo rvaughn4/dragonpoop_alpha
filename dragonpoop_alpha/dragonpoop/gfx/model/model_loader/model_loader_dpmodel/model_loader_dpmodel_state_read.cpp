@@ -47,6 +47,7 @@ namespace dragonpoop
                 return new model_loader_state_fail( this->b );
         }
         
+        m->sync( thd );
         o.unlock();
         return new model_loader_state_sucess( this->b );
     }

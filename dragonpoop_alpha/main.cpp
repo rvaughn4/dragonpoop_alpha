@@ -17,8 +17,10 @@ int main( int argc, const char * argv[] )
     gr = c->getGfx();
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
 
-    gl->loadModel( "test", "", "felhound_hi_milkshape.ms3d", 0, &lr );//felhound_hi_milkshape.ms3d
+    //gl->loadModel( "test", "", "felhound_hi_milkshape.ms3d", 0, &lr );//felhound_hi_milkshape.ms3d
     //beast.ms3d
+    gl->loadModel( "test", "", "felhound_hi_milkshape.dpmodel", 0, &lr );
+    
     m = gl->makeModelInstance( "test" );
     o.unlock();
 
@@ -37,8 +39,8 @@ int main( int argc, const char * argv[] )
     }
 
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
-    gl->saveModel( "test", "", "out_beast.ms3d", 0 );
-    gl->saveModel( "test", "", "out_beast.dpmodel", 0 );
+    //gl->saveModel( "test", "", "out_beast.ms3d", 0 );
+    //gl->saveModel( "test", "", "felhound_hi_milkshape.dpmodel", 0 );
     
     o.unlock();
     

@@ -183,7 +183,7 @@ namespace dragonpoop
         unsigned int i;
         dpbuffer_dynamic nb;
         uint8_t v;
-        std::string *s;
+        std::string s;
         
         i = b->getReadCursor();
         if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
@@ -199,11 +199,9 @@ namespace dragonpoop
                 return 0;
             nb.writeByte( &v );
         }
-        s = this->sname;
-        if( !s || nb.getSize() != h.name_size )
-            return 0;
-        s->copy( (char *)nb.getBuffer(), nb.getSize() );
-
+        s.assign( nb.getBuffer(), nb.getWriteCursor() );
+        this->setName( &s );
+        
         nb.clear();
         for( i = 0; i < h.cmt_size; i++ )
         {
@@ -211,12 +209,13 @@ namespace dragonpoop
                 return 0;
             nb.writeByte( &v );
         }
-        s = this->scmmt;
-        if( !s || nb.getSize() != h.cmt_size )
-            return 0;
-        s->copy( (char *)nb.getBuffer(), nb.getSize() );
+        s.assign( nb.getBuffer(), nb.getWriteCursor() );
+        this->setComment( &s );
         
-        return this->readData( b );
+        if( !this->readData( b ) )
+            return 0;
+        
+        return 1;
     }
     
 };

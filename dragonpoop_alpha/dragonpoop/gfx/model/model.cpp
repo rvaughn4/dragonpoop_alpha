@@ -893,7 +893,8 @@ namespace dragonpoop
                 this->addComponent( p );
         }
 
-        *c = p;
+        if( c )
+            *c = p;
         return 1;
     }
     
