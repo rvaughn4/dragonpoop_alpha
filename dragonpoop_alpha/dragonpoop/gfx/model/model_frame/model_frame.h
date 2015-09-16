@@ -31,6 +31,8 @@ namespace dragonpoop
         
         //write data to disk/memory
         virtual bool writeData( dpbuffer *b );
+        //read data from disk/memory
+        virtual bool readData( dpbuffer *b );
 
     public:
         

@@ -125,5 +125,32 @@ namespace dragonpoop
         
         return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
+    
+    //read data from disk/memory
+    bool model_animation::readData( dpbuffer *b )
+    {
+        model_animation_header_v1 h;
+        unsigned int rc;
+        
+        rc = b->getReadCursor();
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h.h ) ) )
+            return 0;
+        b->setReadCursor( rc );
+        
+        if( h.h.version < 1 || h.h.size < sizeof( h ) )
+            return 0;
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        b->setReadCursor( rc + h.h.size );
+        
+        this->bIsAutplay = h.bIsAutplay;
+        this->bIsRepeat = h.bIsRepeat;
+        this->cnt_frames = h.cnt_frames;
+        this->len_frames = h.len_frames;
+        this->speed = h.speed;
+        this->repeat_delay_f = h.repeat_delay_f;
+        
+        return 1;
+    }
 
 };

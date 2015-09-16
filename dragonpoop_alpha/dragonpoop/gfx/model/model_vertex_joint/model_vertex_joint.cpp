@@ -55,5 +55,29 @@ namespace dragonpoop
         
         return b->writeBytes( (uint8_t *)&h, sizeof( h ) );
     }
+    
+    //read data from disk/memory
+    bool model_vertex_joint::readData( dpbuffer *b )
+    {
+        model_vertex_joint_header_v1 h;
+        unsigned int rc;
+        
+        rc = b->getReadCursor();
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h.h ) ) )
+            return 0;
+        b->setReadCursor( rc );
+        
+        if( h.h.version < 1 || h.h.size < sizeof( h ) )
+            return 0;
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        b->setReadCursor( rc + h.h.size );
+        
+        this->joint_id = h.joint_id;
+        this->vertex_id = h.vertex_id;
+        this->w = h.w;
+        
+        return 1;
+    }
 
 };

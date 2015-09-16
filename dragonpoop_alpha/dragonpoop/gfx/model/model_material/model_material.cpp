@@ -160,4 +160,53 @@ namespace dragonpoop
         return 1;
     }
 
+    //read data from disk/memory
+    bool model_material::readData( dpbuffer *b )
+    {
+        model_material_header_v1 h;
+        unsigned int rc;
+        
+        rc = b->getReadCursor();
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h.h ) ) )
+            return 0;
+        b->setReadCursor( rc );
+        
+        if( h.h.version < 1 || h.h.size < sizeof( h ) )
+            return 0;
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
+            return 0;
+        
+        this->colors = h.colors;
+        this->opacity = h.opacity;
+        this->shine = h.shine;
+        
+        if( h.tex.diffuse.size )
+        {
+            this->tex.diffuse.resize( h.tex.diffuse.w, h.tex.diffuse.h );
+            if( h.tex.diffuse.size == this->tex.diffuse.getSize() )
+                b->readBytes( (uint8_t *)this->tex.diffuse.getBuffer(), h.tex.diffuse.size );
+        }
+        if( h.tex.alphamask.size )
+        {
+            this->tex.alphamask.resize( h.tex.alphamask.w, h.tex.alphamask.h );
+            if( h.tex.alphamask.size == this->tex.alphamask.getSize() )
+                b->readBytes( (uint8_t *)this->tex.alphamask.getBuffer(), h.tex.alphamask.size );
+        }
+        if( h.tex.diffuse.size )
+        {
+            this->tex.bumpmap.resize( h.tex.bumpmap.w, h.tex.bumpmap.h );
+            if( h.tex.bumpmap.size == this->tex.bumpmap.getSize() )
+                b->readBytes( (uint8_t *)this->tex.bumpmap.getBuffer(), h.tex.bumpmap.size );
+        }
+        if( h.tex.specularmap.size )
+        {
+            this->tex.specularmap.resize( h.tex.specularmap.w, h.tex.specularmap.h );
+            if( h.tex.specularmap.size == this->tex.specularmap.getSize() )
+                b->readBytes( (uint8_t *)this->tex.specularmap.getBuffer(), h.tex.specularmap.size );
+        }
+        
+        b->setReadCursor( rc + h.h.size );
+        return 1;
+    }
+    
 };
