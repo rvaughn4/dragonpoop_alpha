@@ -17,9 +17,6 @@ namespace dragonpoop
     private:
         
         dpvertexindex_buffer *vb;
-        dpvertex_buffer *vbsmooth;
-        uint64_t last_smooth_time;
-        float f_ratio;
         
     protected:
         
@@ -33,16 +30,6 @@ namespace dragonpoop
         virtual void sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //returns vertex buffer
         dpvertexindex_buffer *getVertexBuffer( void );
-        //returns smoothing buffer
-        dpvertex_buffer *getSmoothBuffer( void );
-        //returns smooth time
-        uint64_t getSmoothTime( void );
-        //sets smooth time
-        void setSmoothTime( uint64_t t );
-        //sets smooth ratio
-        void setSmoothRatio( float f );
-        //gets smooth ratio
-        float getSmoothRatio( void );
         
     };
     

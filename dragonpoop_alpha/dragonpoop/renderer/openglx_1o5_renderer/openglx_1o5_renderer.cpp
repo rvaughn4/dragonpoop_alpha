@@ -339,11 +339,10 @@ namespace dragonpoop
     void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
     {
         dpvertexindex_buffer *vb;
-        dpvertex_buffer *vbsmooth;
         dpvertex_buffer nvb;
         dpindex *ix, *ip;
-        dpvertex *v, *vp, b, *s, *sp;
-        unsigned int ii, is, vi, vs, ss;
+        dpvertex *v, *vp, b;
+        unsigned int ii, is, vi, vs;
         openglx_1o5_renderer_model_instance_group *og;
         openglx_1o5_renderer_model_material *gmat;
         float r_end;
@@ -357,12 +356,9 @@ namespace dragonpoop
         og = (openglx_1o5_renderer_model_instance_group *)g;
         gmat = (openglx_1o5_renderer_model_material *)mat;
         vb = og->getVertexBuffer();
-        vbsmooth = og->getSmoothBuffer();
         
         ip = vb->getIndexBuffer( &is );
         vp = vb->getVertexBuffer( &vs );
-        ss = vbsmooth->getSize();
-        sp = vbsmooth->getBuffer();
 
         td = og->getEndTime() - og->getStartTime();
         tt = t - og->getStartTime();
@@ -391,24 +387,11 @@ namespace dragonpoop
         glBindTexture( GL_TEXTURE_2D, 0 );
         glDisable( GL_LIGHTING );
         
-        for( vi = 0 ; vi < vs && vi < ss; vi++ )
+        for( vi = 0 ; vi < vs; vi++ )
         {
             v = &vp[ vi ];
             b = *v;
-            s = &sp[ vi ];
-
             mi->transform( &b );
-            
-            s->pos.x += ( b.pos.x - s->pos.x ) * 0.25f;
-            s->pos.y += ( b.pos.y - s->pos.y ) * 0.25f;
-            s->pos.z += ( b.pos.z - s->pos.z ) * 0.25f;
-            s->normal.x += ( b.normal.x - s->normal.x ) * 0.25f;
-            s->normal.y += ( b.normal.y - s->normal.y ) * 0.25f;
-            s->normal.z += ( b.normal.z - s->normal.z ) * 0.25f;
-
-            b.pos = s->pos;
-            b.normal = s->normal;
-            
             nvb.addVertex( &b );
         }
         vp = nvb.getBuffer();
