@@ -506,15 +506,25 @@ namespace dragonpoop
     {
         model_instance *p;
         model_instance_writelock *pl;
-        shared_obj_guard o;
+        shared_obj_guard o, o2;
+        renderer_model_readlock *rl;
 
         p = new model_instance( id, ml );
         if( !p )
             return 0;
+        
         this->instances.push_back( p );
         pl = (model_instance_writelock *)o.writeLock( p );
         if( !pl )
             return 0;
+        
+        if( this->r )
+        {
+            rl = (renderer_model_readlock *)o2.tryReadLock( this->r, 400 );
+            if( rl )
+                rl->sync();
+        }
+        
         return (model_instance_ref *)pl->getRef();
     }
 

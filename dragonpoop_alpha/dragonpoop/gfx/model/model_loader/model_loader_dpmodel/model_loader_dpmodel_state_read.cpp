@@ -42,12 +42,8 @@ namespace dragonpoop
             return new model_loader_state_fail( this->b );
         
         for( i = 0; i < e; i++ )
-        {
-            if( !m->readComponent( this->b, 0 ) )
-                return new model_loader_state_fail( this->b );
-        }
+            m->readComponent( this->b, 0 );
         
-        m->sync( thd );
         o.unlock();
         return new model_loader_state_sucess( this->b );
     }

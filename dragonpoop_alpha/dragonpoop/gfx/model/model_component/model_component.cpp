@@ -131,6 +131,7 @@ namespace dragonpoop
         model_component_header_v1 h;
         dpbuffer_dynamic d;
         std::string sname, scmt;
+        unsigned int wc;
         
         if( !this->writeData( &d ) )
             return 0;
@@ -138,6 +139,7 @@ namespace dragonpoop
         this->getName( &sname );
         this->getComment( &scmt );
         
+        wc = b->getWriteCursor();
         h.h.version = 1;
         h.h.hdr_size = sizeof( h );
         h.id = this->id;
@@ -155,6 +157,7 @@ namespace dragonpoop
         if( d.getSize() && !b->writeBytes( (uint8_t *)d.getBuffer(), d.getSize() ) )
             return 0;
         
+        b->setWriteCursor( wc + h.h.total_size );
         return 1;
     }
 
@@ -180,12 +183,13 @@ namespace dragonpoop
     bool model_component::read( dpbuffer *b )
     {
         model_component_header_v1 h;
-        unsigned int i;
+        unsigned int i, rc;
         dpbuffer_dynamic nb;
         uint8_t v;
         std::string s;
+        bool r;
         
-        i = b->getReadCursor();
+        rc = i = b->getReadCursor();
         if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
             return 0;
         i += h.h.hdr_size;
@@ -212,10 +216,10 @@ namespace dragonpoop
         s.assign( nb.getBuffer(), nb.getWriteCursor() );
         this->setComment( &s );
         
-        if( !this->readData( b ) )
-            return 0;
+        r = this->readData( b );
         
-        return 1;
+        b->setReadCursor( rc + h.h.total_size );
+        return r;
     }
     
 };
