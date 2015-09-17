@@ -17,6 +17,7 @@ namespace dragonpoop
     class dpthread_lock;
     class model_writelock;
     class renderer_model_material;
+    struct dpxyz_f;
     
     class renderer_model_writelock : public shared_obj_writelock
     {
@@ -58,7 +59,9 @@ namespace dragonpoop
         renderer_model_material *findMaterial( dpid id );
         //get materials
         void getMaterials( std::list<renderer_model_material *> *l );
-        
+        //get size
+        void getSize( dpxyz_f *x );
+
         friend class renderer_model;
     };
     

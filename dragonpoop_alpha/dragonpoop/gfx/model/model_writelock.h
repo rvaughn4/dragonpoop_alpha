@@ -28,6 +28,7 @@ namespace dragonpoop
     class model_animation_frame;
     class model_frame_joint;
     class dpbuffer;
+    struct dpxyz_f;
 
     class model_writelock : public shared_obj_writelock
     {
@@ -191,6 +192,8 @@ namespace dragonpoop
         bool readHeader( dpbuffer *b, unsigned int *cnt_components );
         //read and create model component from file/memory
         bool readComponent( dpbuffer *b, model_component **c );
+        //get model dimensions
+        void getSize( dpxyz_f *x );
 
         friend class model;
     };

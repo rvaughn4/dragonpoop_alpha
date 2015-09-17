@@ -9,6 +9,7 @@
 #include "model_component/model_components.h"
 #include "../../core/dpbtree/dpid_multibtree.h"
 #include "../../core/dpbtree/dpid_btree.h"
+#include "../dpvertex/dpxyz_f.h"
 
 namespace dragonpoop
 {
@@ -54,6 +55,16 @@ namespace dragonpoop
         uint32_t cmt_size;
     };
 #pragma pack()
+
+#pragma pack( 1 )
+    struct model_header_v2
+    {
+        model_header_v1 h;
+        dpxyz_f size;
+        uint32_t cnt_verts;
+        uint32_t cnt_triangles;
+    };
+#pragma pack()
     
     class model : public shared_obj
     {
@@ -73,7 +84,10 @@ namespace dragonpoop
         std::list<model_instance *> instances;
         renderer_model_ref *r;
         uint64_t ran_time;
-        
+        dpxyz_f size;
+        uint32_t cnt_verts;
+        uint32_t cnt_triangles;
+
         //delete all components
         void deleteComponents( void );
         //delete instances
@@ -82,6 +96,8 @@ namespace dragonpoop
         void runInstances( dpthread_lock *thd, model_writelock *g );
         //sync instances
         void syncInstances( dpthread_lock *thd, model_writelock *g );
+        //find the maximum size of the model
+        void findSize( void );
         
     protected:
 
@@ -235,6 +251,8 @@ namespace dragonpoop
         bool readHeader( dpbuffer *b, unsigned int *cnt_components );
         //read and create model component from file/memory
         bool readComponent( dpbuffer *b, model_component **c );
+        //get model dimensions
+        void getSize( dpxyz_f *x );
         
     public:
 

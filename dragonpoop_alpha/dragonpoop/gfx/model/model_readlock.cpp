@@ -293,4 +293,9 @@ namespace dragonpoop
         return this->t->writeHeader( b );
     }
     
+    //get model dimensions
+    void model_readlock::getSize( dpxyz_f *x )
+    {
+        return this->t->getSize( x );
+    }
 };

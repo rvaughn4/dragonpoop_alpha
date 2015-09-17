@@ -25,6 +25,7 @@ namespace dragonpoop
     class model_animation_frame;
     class model_frame_joint;
     class dpbuffer;
+    struct dpxyz_f;
 
     class model_readlock : public shared_obj_readlock
     {
@@ -134,6 +135,8 @@ namespace dragonpoop
         void getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid partent_id_2 );
         //write model header to file/memory
         bool writeHeader( dpbuffer *b );
+        //get model dimensions
+        void getSize( dpxyz_f *x );
 
         friend class model;
     };

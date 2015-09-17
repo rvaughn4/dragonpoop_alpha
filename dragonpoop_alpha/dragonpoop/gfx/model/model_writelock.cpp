@@ -455,5 +455,11 @@ namespace dragonpoop
     {
         return this->t->readComponent( b, c );
     }
-    
+
+    //get model dimensions
+    void model_writelock::getSize( dpxyz_f *x )
+    {
+        return this->t->getSize( x );
+    }
+
 };

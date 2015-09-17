@@ -89,4 +89,10 @@ namespace dragonpoop
         this->t->getMaterials( l );
     }
     
+    //get size
+    void renderer_model_writelock::getSize( dpxyz_f *x )
+    {
+        this->t->getSize( x );
+    }
+
 };

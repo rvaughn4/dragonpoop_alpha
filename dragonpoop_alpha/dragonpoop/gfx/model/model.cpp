@@ -554,6 +554,7 @@ namespace dragonpoop
         shared_obj_guard o;
         renderer_model_readlock *rl;
 
+        this->findSize();
         this->syncInstances( thd, ml );
 
         if( !this->r )
@@ -762,19 +763,22 @@ namespace dragonpoop
     //write model header to file/memory
     bool model::writeHeader( dpbuffer *b )
     {
-        model_header_v1 h;
+        model_header_v2 h;
         
-        h.h.version = 1;
-        h.h.size = sizeof( h );
-        h.cnt_components = (unsigned int)this->comps.lst.size();
-        h.name_size = (unsigned int)this->sname.size();
-        h.cmt_size = (unsigned int)this->scmmt.size();
+        h.h.h.version = 1;
+        h.h.h.size = sizeof( h );
+        h.h.cnt_components = (unsigned int)this->comps.lst.size();
+        h.h.name_size = (unsigned int)this->sname.size();
+        h.h.cmt_size = (unsigned int)this->scmmt.size();
+        h.size = this->size;
+        h.cnt_triangles = this->cnt_triangles;
+        h.cnt_verts = this->cnt_verts;
         
         if( !b->writeBytes( (uint8_t *)&h, sizeof( h ) ) )
             return 0;
-        if( h.name_size && !b->writeBytes( (uint8_t *)this->sname.c_str(), h.name_size ) )
+        if( h.h.name_size && !b->writeBytes( (uint8_t *)this->sname.c_str(), h.h.name_size ) )
             return 0;
-        if( h.cmt_size && !b->writeBytes( (uint8_t *)this->scmmt.c_str(), h.cmt_size ) )
+        if( h.h.cmt_size && !b->writeBytes( (uint8_t *)this->scmmt.c_str(), h.h.cmt_size ) )
             return 0;
         
         return 1;
@@ -783,40 +787,55 @@ namespace dragonpoop
     //read model header from file/memory
     bool model::readHeader( dpbuffer *b, unsigned int *cnt_components )
     {
-        model_header_v1 h;
+        model_header_v2 h;
         int i;
         dpbuffer_dynamic nb;
         uint8_t v;
         
         i = b->getReadCursor();
-        if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
+        if( !b->readBytes( (uint8_t *)&h, sizeof( h.h.h ) ) )
             return 0;
-        if( h.h.size < sizeof( h ) || h.h.version < 1 )
+        b->setReadCursor( i );
+        if( h.h.h.size < sizeof( h.h ) || h.h.h.version < 1 )
             return 0;
-        i += h.h.size;
+        if( h.h.h.size == sizeof( h.h ) && h.h.h.version == 1 )
+            if( !b->readBytes( (uint8_t *)&h, sizeof( h.h ) ) )
+                return 0;
+        if( h.h.h.size >= sizeof( h ) && h.h.h.version >= 2 )
+            if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
+                return 0;
+        
+        if( h.h.h.version >= 2 )
+        {
+            this->size = h.size;
+            this->cnt_triangles = h.cnt_triangles;
+            this->cnt_verts = h.cnt_verts;
+        }
+        
+        i += h.h.h.size;
         b->setReadCursor( i );
         if( cnt_components )
-            *cnt_components = h.cnt_components;
+            *cnt_components = h.h.cnt_components;
         
         nb.clear();
-        for( i = 0; i < h.name_size; i++ )
+        for( i = 0; i < h.h.name_size; i++ )
         {
             if( !b->readByte( &v ) )
                 return 0;
             nb.writeByte( &v );
         }
-        if( nb.getSize() != h.name_size )
+        if( nb.getSize() != h.h.name_size )
             return 0;
         this->sname.copy( nb.getBuffer(), nb.getSize() );
 
         nb.clear();
-        for( i = 0; i < h.cmt_size; i++ )
+        for( i = 0; i < h.h.cmt_size; i++ )
         {
             if( !b->readByte( &v ) )
                 return 0;
             nb.writeByte( &v );
         }
-        if( nb.getSize() != h.cmt_size )
+        if( nb.getSize() != h.h.cmt_size )
             return 0;
         this->scmmt.copy( nb.getBuffer(), nb.getSize() );
         
@@ -908,4 +927,50 @@ namespace dragonpoop
         return 1;
     }
     
+    //find the maximum size of the model
+    void model::findSize( void )
+    {
+        std::list<model_vertex *> l;
+        std::list<model_vertex *>::iterator i;
+        std::list<model_triangle *> lt;
+        model_vertex *p;
+        dpxyz_f x;
+        
+        this->size.x = 0;
+        this->size.y = 0;
+        this->size.z = 0;
+        
+        this->getVertexes( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->getPosition( &x );
+            
+            if( x.x < 0 )
+                x.x = -x.x;
+            if( x.y < 0 )
+                x.y = -x.y;
+            if( x.z < 0 )
+                x.z = -x.z;
+            
+            if( x.x > this->size.x )
+                this->size.x = x.x;
+            if( x.y > this->size.y )
+                this->size.y = x.y;
+            if( x.z > this->size.z )
+                this->size.z = x.z;
+        }
+        
+        this->getTriangles( &lt );
+        
+        this->cnt_verts = (unsigned int)l.size();
+        this->cnt_triangles = (unsigned int)lt.size();
+    }
+    
+    //get model dimensions
+    void model::getSize( dpxyz_f *x )
+    {
+        *x = this->size;
+    }
+
 };

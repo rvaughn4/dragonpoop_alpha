@@ -10,6 +10,7 @@
 #include "../../core//dpbtree/dpid_btree.h"
 #include "../../core//dpbtree/dpid_multibtree.h"
 #include "../../core//dpbtree/dpmultibtree.h"
+#include "../../gfx/dpvertex/dpxyz_f.h"
 
 namespace dragonpoop
 {
@@ -45,6 +46,7 @@ namespace dragonpoop
         std::atomic<bool> bIsSynced;
         model_ref *m;
         uint64_t t_last_i_ran;
+        dpxyz_f size;
         
         //delete all components
         void deleteComponents( void );
@@ -97,6 +99,8 @@ namespace dragonpoop
         void getMaterials( std::list<renderer_model_material *> *l );
         //generate material
         virtual renderer_model_material *genMaterial( model_writelock *ml, model_material *m );
+        //get size
+        void getSize( dpxyz_f *x );
         
     public:
         

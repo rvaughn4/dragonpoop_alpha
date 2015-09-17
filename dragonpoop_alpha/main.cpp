@@ -12,48 +12,24 @@ int main( int argc, const char * argv[] )
     dragonpoop::model_instance_ref *m;
    // dragonpoop::model_loader_ref *lr;
    // dragonpoop::model_loader_readlock *lw;
-    int i;
+//    int i;
     
     gr = c->getGfx();
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
 
-    gl->loadModel( "test", "", "beast.dpmodel", 0, 0/*&lr*/ );
+    gl->loadModel( "test1", "", "beast.dpmodel", 0, 0/*&lr*/ );
     gl->loadModel( "test2", "", "felhound_hi_milkshape.dpmodel", 0, 0/*&lr*/ );
     
-    m = gl->makeModelInstance( "test2" );
+    m = gl->makeModelInstance( "test1" );
     delete m;
-
-    o.unlock();
-    
-    i = 0;
-    while( c->isRunning() && i < 2 )
-    {
-        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-        i++;
-    }
-    
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
     m = gl->makeModelInstance( "test2" );
     delete m;
     o.unlock();
-    
-    i = 0;
-    while( c->isRunning() && i < 2 )
-    {
-        std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
-        i++;
-    }
-    
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
-    m = gl->makeModelInstance( "test2" );
-    delete m;
 
-    o.unlock();
-
-    i = 0;
-    while( c->isRunning() && i < 500 )
-    {
-        std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
+    //i = 0;
+   // while( c->isRunning() && i < 500 )
+    //{
+      //  std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
         //if( !lr->isLinked() )
           //  i = 5000;
         //lw = (dragonpoop::model_loader_readlock *)o.tryReadLock( lr, 100 );
@@ -61,8 +37,8 @@ int main( int argc, const char * argv[] )
           // if( !lw->isRunning() )
             //    i = 5000;
         //o.unlock();
-        i++;
-    }
+        //i++;
+   // }
 
     //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
     //gl->saveModel( "test", "", "out_beast.ms3d", 0 );

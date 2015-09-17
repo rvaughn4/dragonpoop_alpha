@@ -290,6 +290,7 @@ namespace dragonpoop
         
         if( !this->bIsSynced )
         {
+            ml->getSize( &this->size );
             this->syncMaterials( ml );
             this->syncInstances( ml );
             this->onSync( thd, g, ml );
@@ -415,4 +416,10 @@ namespace dragonpoop
         this->getComponents( model_component_type_material, (std::list<model_component *> *)l );
     }
     
+    //get size
+    void renderer_model::getSize( dpxyz_f *x )
+    {
+        *x = this->size;
+    }
+
 };
