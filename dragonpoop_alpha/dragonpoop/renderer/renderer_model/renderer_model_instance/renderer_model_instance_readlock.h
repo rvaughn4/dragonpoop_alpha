@@ -18,6 +18,7 @@ namespace dragonpoop
     class model_instance_joint_cache;
     class renderer_model_instance_joint;
     struct dpvertex;
+    class dpmatrix;
     
     class renderer_model_instance_readlock : public shared_obj_readlock
     {
@@ -65,6 +66,8 @@ namespace dragonpoop
         void transform( dpvertex *v );
         //recompute animation joint matrixes
         void redoMatrixes( uint64_t t );
+        //get model view matrix
+        void getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix );
 
         friend class renderer_model_instance;
     };

@@ -114,6 +114,8 @@ namespace dragonpoop
         void redoMatrixes( renderer_model_instance_readlock *m, uint64_t t );
         //recompute animation joint matrixes
         void redoMatrixes( renderer_model_instance_writelock *m, uint64_t t );
+        //get model view matrix
+        void getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix );
 
     public:
         

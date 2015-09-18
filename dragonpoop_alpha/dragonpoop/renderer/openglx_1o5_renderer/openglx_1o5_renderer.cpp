@@ -340,78 +340,32 @@ namespace dragonpoop
     //render model instance group
     void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
     {
-        dpvertexindex_buffer *vb;
-        dpvertex_buffer nvb;
-        dpindex *ix, *ip;
-        dpvertex *v, *vp, b;
-        unsigned int ii, is, vi, vs;
-        openglx_1o5_renderer_model_instance_group *og;
         openglx_1o5_renderer_model_material *gmat;
-        std::vector<uint16_t> indicies;
-        uint64_t t;
-        model_instance_joint_cache *jnts;
-        dpxyz_f sz;
-        float f;
+        dpvertex_buffer *vb;
+        dpvertex *vp;
+        std::vector<uint16_t> *indicies;
+        dpmatrix wmat;
 
-        jnts = mi->getJointCache();
-        t = thd->getTicks();
-        og = (openglx_1o5_renderer_model_instance_group *)g;
-        gmat = (openglx_1o5_renderer_model_material *)mat;
-        vb = og->getVertexBuffer();
+        mi->redoMatrixes( thd->getTicks() );
+        mi->getModelViewMatrix( r, m, &this->world_m, &wmat );
+        glLoadMatrixf( wmat.getRaw4by4() );
         
-        ip = vb->getIndexBuffer( &is );
-        vp = vb->getVertexBuffer( &vs );
-        
-        mi->redoMatrixes( t );
-        
-        static float rr;
-        rr += 0.1f;
-
-        glLoadMatrixf( this->world_m.getRaw4by4() );
-        
-        glRotatef( rr, 0, 1, 0 );
         GLfloat LightPosition[]= { 0.0f, 0.0f, 8.0f, 0.0f };
         glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
-        glLoadMatrixf( this->world_m.getRaw4by4() );
         
-        m->getSize( &sz );
-        f = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
-        f = sqrtf( f );
-        f = 1.0f / f;
         
-        glTranslatef( 0, -0.5f * f * sz.y, -( f * sz.z + 2 ) );
-        glScalef( f, f, f );
-        glRotatef( rr, 0, 1, 0 );
-        
-        glBindTexture( GL_TEXTURE_2D, 0 );
-        glDisable( GL_LIGHTING );
-        
-        for( vi = 0 ; vi < vs; vi++ )
-        {
-            v = &vp[ vi ];
-            b = *v;
-            mi->transform( &b );
-            nvb.addVertex( &b );
-        }
-        vp = nvb.getBuffer();
-        vs = nvb.getSize();
-
-        for( ii = 0; ii < is; ii++ )
-        {
-            ix = &ip[ ii ];
-            vi = ix->i;
-            if( vi >= vs )
-                continue;
-            indicies.push_back( ix->i );
-        }
-
         glEnable( GL_LIGHTING );
+
+        gmat = (openglx_1o5_renderer_model_material *)mat;
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
+        
+        vb = g->getTransformedBuffer( mi, &indicies );
+        vp = vb->getBuffer();
 
         glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
-        glDrawElements( GL_TRIANGLES, (int)indicies.size(), GL_UNSIGNED_SHORT, &indicies[ 0 ] );
+        glDrawElements( GL_TRIANGLES, (int)indicies->size(), GL_UNSIGNED_SHORT, &( *indicies )[ 0 ] );
     }
 
 };

@@ -15,6 +15,7 @@
 #include "../../renderer_writelock.h"
 #include "../renderer_model_material/renderer_model_material.h"
 #include "../renderer_model_readlock.h"
+#include <math.h>
 
 namespace dragonpoop
 {
@@ -571,6 +572,25 @@ namespace dragonpoop
             p = *i;
             p->redoMatrix( m, t );
         }
+    }
+    
+    //get model view matrix
+    void renderer_model_instance::getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
+    {
+        dpxyz_f sz;
+        float f;
+        
+        m->getSize( &sz );
+        f = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
+        f = sqrtf( f );
+        f = 1.0f / f;
+        static float rr;
+        rr += 0.1f;
+
+        out_model_matrix->copy( in_world_matrix );
+        out_model_matrix->translate( 0, -0.5f * f * sz.y, -( f * sz.z + 2 ) );
+        out_model_matrix->scale( f, f, f );
+        out_model_matrix->rotateY( rr );
     }
     
 };

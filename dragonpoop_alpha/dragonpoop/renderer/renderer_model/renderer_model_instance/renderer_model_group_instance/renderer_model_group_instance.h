@@ -3,6 +3,8 @@
 #define dragonpoop_renderer_model_instance_group_h
 
 #include "../../../../gfx/model/model_component/model_components.h"
+#include "../../../../gfx/dpvertex/dpvertexindex_buffer.h"
+#include <vector>
 
 namespace dragonpoop
 {
@@ -10,6 +12,7 @@ namespace dragonpoop
     class model_instance_group;
     class model_instance_writelock;
     class dpthread_lock;
+    class renderer_model_instance_readlock;
     
     class renderer_model_instance_group : public model_component
     {
@@ -17,8 +20,10 @@ namespace dragonpoop
     private:
         
         dpid m_id;
-        uint64_t t_start, t_end;
-        
+        dpvertexindex_buffer vb;
+        dpvertex_buffer tvb;
+        std::vector<uint16_t> indicies;
+
     protected:
         
     public:
@@ -35,11 +40,11 @@ namespace dragonpoop
         virtual void sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
         //sync with group
         virtual void animate( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
-        //get start time
-        uint64_t getStartTime( void );
-        //get end time
-        uint64_t getEndTime( void );
-        
+        //returns vertex buffer
+        dpvertexindex_buffer *getVertexBuffer( void );
+        //returns transformed vertex buffer
+        dpvertex_buffer *getTransformedBuffer( renderer_model_instance_readlock *m, std::vector<uint16_t> **li );
+
     };
     
 };

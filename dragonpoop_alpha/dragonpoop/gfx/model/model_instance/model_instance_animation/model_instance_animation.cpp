@@ -8,6 +8,9 @@
 #include <list>
 #include "../../model_animation_frame/model_animation_frame.h"
 #include "../../model_frame/model_frame.h"
+#include "../../../dpvertex/dpxyz_f.h"
+#include "../../model_frame_joint/model_frame_joint.h"
+#include <math.h>
 
 namespace dragonpoop
 {
@@ -190,6 +193,61 @@ namespace dragonpoop
             *p_time = f->getTime();
         return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
     }
+
+    //returns frame with largest movement within a frame time range
+    model_frame *model_instance_animation::findBiggestFrame( model_writelock *ml, unsigned int t_start, unsigned int t_end )
+    {
+        float od, td, ad;
+        dpxyz_f x;
+        std::list<model_animation_frame *> l;
+        std::list<model_animation_frame *>::iterator i;
+        model_animation_frame *p, *f;
+        std::list<model_frame_joint *> lj;
+        std::list<model_frame_joint *>::iterator ij;
+        model_frame_joint *pj;
+        
+        ml->getAnimationFrames( &l, this->getId() );
+        
+        f = 0;
+        td = 0;
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+
+            if( p->getTime() > t_end || p->getTime() < t_start )
+                continue;
+            
+            ml->getFrameJoints( &lj, p->getFrameId() );
+            ad = 0;
+            
+            for( ij = lj.begin(); ij != lj.end(); ++ij )
+            {
+                pj = *ij;
+                
+                pj->getRotation( &x );
+                od = x.x * x.x + x.y * x.y + x.z * x.z;
+                if( od > 0 )
+                    od = sqrtf( od );
+                ad += od * 2;
+
+                pj->getTranslation( &x );
+                od = x.x * x.x + x.y * x.y + x.z * x.z;
+                if( od > 0 )
+                    od = sqrtf( od );
+                ad += od / 10.0f;
+            }
+            
+            if( ad < td && f )
+                continue;
+            
+            f = p;
+            td = ad;
+        }
+        
+        if( !f )
+            return 0;
+        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
+    }
     
     //get start frame id
     dpid model_instance_animation::getStartFrame( void )
@@ -208,6 +266,7 @@ namespace dragonpoop
     {
         float f;
         model_frame *frm;
+        unsigned int old_time;
         
         //stop playing
         if( !this->bDoPlay )
@@ -249,7 +308,10 @@ namespace dragonpoop
         //calc current animation frame
         f = (float)this->current_time - (float)this->start_time;
         f = f *this->fps / 1000.0f;
+        old_time = this->current_frame_time;
         this->current_frame_time = (unsigned int)f;
+        if( old_time > this->current_frame_time )
+            old_time = this->current_frame_time;
         
         //find start frame
         frm = this->findFrameBeforeTime( m, this->current_frame_time, &this->start_frame_time );
@@ -258,6 +320,11 @@ namespace dragonpoop
         
         //find end frame
         frm = this->findFrameAtTime( m, this->current_frame_time + frame_time, &this->end_frame_time );
+        if( frm )
+            this->end_frame = frm->getId();
+        
+        //find biggest frame
+        frm = this->findBiggestFrame( m, old_time, this->end_frame_time );
         if( frm )
             this->end_frame = frm->getId();
     }

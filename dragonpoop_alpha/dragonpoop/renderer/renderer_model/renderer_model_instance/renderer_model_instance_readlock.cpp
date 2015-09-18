@@ -107,4 +107,10 @@ namespace dragonpoop
         this->t->redoMatrixes( this, t );
     }
     
+    //get model view matrix
+    void renderer_model_instance_readlock::getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
+    {
+        this->t->getModelViewMatrix( r, m, in_world_matrix, out_model_matrix );
+    }
+
 };

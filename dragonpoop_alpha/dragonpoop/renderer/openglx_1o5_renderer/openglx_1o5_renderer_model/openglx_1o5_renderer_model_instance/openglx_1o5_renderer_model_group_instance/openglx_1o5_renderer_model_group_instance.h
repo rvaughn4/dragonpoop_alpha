@@ -3,7 +3,6 @@
 #define dragonpoop_openglx_1o5_renderer_model_instance_group_h
 
 #include "../../../../renderer_model/renderer_model_instance/renderer_model_group_instance/renderer_model_group_instance.h"
-#include "../../../../../gfx/dpvertex/dpvertexindex_buffer.h"
 
 namespace dragonpoop
 {
@@ -16,8 +15,6 @@ namespace dragonpoop
         
     private:
         
-        dpvertexindex_buffer *vb;
-        
     protected:
         
     public:
@@ -28,8 +25,6 @@ namespace dragonpoop
         virtual ~openglx_1o5_renderer_model_instance_group( void );
         //sync with group
         virtual void sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
-        //returns vertex buffer
-        dpvertexindex_buffer *getVertexBuffer( void );
         
     };
     

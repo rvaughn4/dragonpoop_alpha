@@ -9,27 +9,17 @@ namespace dragonpoop
     //ctor
     openglx_1o5_renderer_model_instance_group::openglx_1o5_renderer_model_instance_group( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd ) : renderer_model_instance_group( ml, g, thd )
     {
-        this->vb = new dpvertexindex_buffer();
     }
     
     //dtor
     openglx_1o5_renderer_model_instance_group::~openglx_1o5_renderer_model_instance_group( void )
     {
-        delete this->vb;
     }
     
     //sync with group
     void openglx_1o5_renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd )
     {
         this->renderer_model_instance_group::sync( ml, g, thd );
-        this->vb->clear();
-        ml->fillVertexBuffer( g->getId(), this->vb );
-    }
-
-    //returns vertex buffer
-    dpvertexindex_buffer *openglx_1o5_renderer_model_instance_group::getVertexBuffer( void )
-    {
-        return this->vb;
     }
     
 };

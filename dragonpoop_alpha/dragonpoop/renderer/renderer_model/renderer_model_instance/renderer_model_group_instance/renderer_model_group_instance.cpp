@@ -3,6 +3,7 @@
 #include "../../../../gfx/model/model_instance/model_instance_group/model_instance_group.h"
 #include "../../../../gfx/model/model_instance/model_instance_writelock.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
+#include "../renderer_model_instance_readlock.h"
 
 
 namespace dragonpoop
@@ -36,27 +37,58 @@ namespace dragonpoop
     void renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd )
     {
         this->m_id = g->getMaterialId();
-        this->t_start = thd->getTicks();
-        this->t_end = ml->getEndTime() - ml->getStartTime() + this->t_start;
+        
+        this->vb.clear();
+        ml->fillVertexBuffer( g->getId(), &this->vb );
+        
+        this->indicies.clear();
     }
     
     //sync with group
     void renderer_model_instance_group::animate( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd )
     {
-        this->t_start = thd->getTicks();
-        this->t_end = ml->getEndTime() - ml->getStartTime() + this->t_start;
     }
     
-    //get start time
-    uint64_t renderer_model_instance_group::getStartTime( void )
+    //returns vertex buffer
+    dpvertexindex_buffer *renderer_model_instance_group::getVertexBuffer( void )
     {
-        return this->t_start;
+        return &this->vb;
     }
     
-    //get end time
-    uint64_t renderer_model_instance_group::getEndTime( void )
+    //returns transformed vertex buffer
+    dpvertex_buffer *renderer_model_instance_group::getTransformedBuffer( renderer_model_instance_readlock *m, std::vector<uint16_t> **li )
     {
-        return this->t_end;
+        unsigned int i, e;
+        dpvertex *v, *bv, *av;
+        dpindex *ib, *b;
+        
+        av = this->vb.getVertexBuffer( &e );
+        i = this->tvb.getSize();
+        bv = this->tvb.getBuffer();
+        for( ; i < e && av; i++ )
+            this->tvb.addVertex( av );
+        
+        for( i = 0; i < e && av && bv; i++ )
+        {
+            v = &bv[ i ];
+            *v = av[ i ];
+            m->transform( v );
+        }
+        
+        ib = this->vb.getIndexBuffer( &e );
+        i = (unsigned int)this->indicies.size();
+        if( li && i != e )
+        {
+            for( i = 0; i < e; i++ )
+            {
+                b = &ib[ i ];
+                this->indicies.push_back( b->i );
+            }
+        }
+        if( li )
+            *li = &this->indicies;
+
+        return &this->tvb;
     }
     
 };
