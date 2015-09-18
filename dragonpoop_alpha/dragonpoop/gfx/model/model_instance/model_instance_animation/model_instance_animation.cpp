@@ -16,8 +16,9 @@ namespace dragonpoop
 {
     
     //ctor
-    model_instance_animation::model_instance_animation( model_animation *m ) : model_component( m->getId(), model_component_type_animation )
+    model_instance_animation::model_instance_animation( dpid id, model_animation *m ) : model_component( id, model_component_type_animation )
     {
+        this->anim_id = m->getId();
         this->bIsRepeat = m->isRepeated();
         this->bIsAutplay = m->isAutoPlay();
         this->repeat_delay_f = m->getRepeatDelay();
@@ -133,7 +134,7 @@ namespace dragonpoop
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
         
-        ml->getAnimationFrames( &l, this->getId() );
+        ml->getAnimationFrames( &l, this->getAnimationId() );
         
         f = 0;
         for( i = l.begin(); i != l.end(); ++i )
@@ -167,7 +168,7 @@ namespace dragonpoop
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
         
-        ml->getAnimationFrames( &l, this->getId() );
+        ml->getAnimationFrames( &l, this->getAnimationId() );
         
         f = 0;
         for( i = l.begin(); i != l.end(); ++i )
@@ -206,7 +207,7 @@ namespace dragonpoop
         std::list<model_frame_joint *>::iterator ij;
         model_frame_joint *pj;
         
-        ml->getAnimationFrames( &l, this->getId() );
+        ml->getAnimationFrames( &l, this->getAnimationId() );
         
         f = 0;
         td = 0;
@@ -343,6 +344,12 @@ namespace dragonpoop
         float f;
         f = (float)this->start_frame_time * 1000.0f / this->fps;
         return this->start_time + (uint64_t)f;
+    }
+  
+    //return animation id
+    dpid model_instance_animation::getAnimationId( void )
+    {
+        return this->anim_id;
     }
     
 };

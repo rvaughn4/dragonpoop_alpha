@@ -460,6 +460,8 @@ namespace dragonpoop
         model_writelock *ml;
         shared_obj_guard o, ot;
         dptaskpool_readlock *tpl;
+        dpthread_lock *tl;
+        model_instance_ref *r;
         
         m = this->findModel( cname );
         if( !m )
@@ -471,8 +473,18 @@ namespace dragonpoop
         tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100 );
         if( !tpl )
             return 0;
+        
+        tl = tpl->lockThread();
+        if( !tl )
+            return 0;
 
-        return ml->makeInstance( tpl->genId() );
+        r = ml->makeInstance( tl, tl->genId() );
+        ot.unlock();
+        o.unlock();
+        
+        delete tl;
+        
+        return r;
     }
     
     //get a model instance by id
@@ -482,7 +494,9 @@ namespace dragonpoop
         model_writelock *ml;
         shared_obj_guard o, ot;
         dptaskpool_readlock *tpl;
-
+        dpthread_lock *tl;
+        model_instance_ref *r;
+        
         m = this->findModel( id );
         if( !m )
             return 0;
@@ -494,7 +508,17 @@ namespace dragonpoop
         if( !tpl )
             return 0;
         
-        return ml->makeInstance( tpl->genId() );
+        tl = tpl->lockThread();
+        if( !tl )
+            return 0;
+        
+        r = ml->makeInstance( tl, tl->genId() );
+        ot.unlock();
+        o.unlock();
+        
+        delete tl;
+        
+        return r;
     }
 
     //get models

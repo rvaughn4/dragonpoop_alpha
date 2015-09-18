@@ -28,5 +28,10 @@ namespace dragonpoop
     {
         return this->p->genId();
     }
-    
+  
+    //lock a thread from pool
+    dpthread_lock *dptaskpool_readlock::lockThread( void )
+    {
+        return this->p->lockThread();
+    }
 };

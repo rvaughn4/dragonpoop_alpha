@@ -122,13 +122,13 @@ namespace dragonpoop
         //make groups
         void makeGroups( model_writelock *ml );
         //add animation
-        model_instance_animation *makeAnimation( model_animation *g );
+        model_instance_animation *makeAnimation( dpid id, model_animation *g );
         //find animation
         model_instance_animation *findAnimation( dpid id );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
         //make animations
-        void makeAnimations( model_writelock *ml );
+        void makeAnimations( dpthread_lock *thd, model_writelock *ml );
         //add joint
         model_instance_joint *makeJoint( model_joint *g );
         //find joint
@@ -151,7 +151,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        model_instance( dpid id, model_writelock *ml );
+        model_instance( dpthread_lock *thd, dpid id, model_writelock *ml );
         //dtor
         virtual ~model_instance( void );
         //return core

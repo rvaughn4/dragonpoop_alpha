@@ -24,6 +24,7 @@ namespace dragonpoop
         float fps;
         uint64_t start_time, end_time, current_time;
         dpid start_frame, end_frame;
+        dpid anim_id;
         
     protected:
         
@@ -37,7 +38,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        model_instance_animation( model_animation *m );
+        model_instance_animation( dpid id, model_animation *m );
         //dtor
         virtual ~model_instance_animation( void );
         //set repeat mode
@@ -76,6 +77,8 @@ namespace dragonpoop
         uint64_t getEndTime( void );
         //return start frame time
         uint64_t getStartTime( void );
+        //return animation id
+        dpid getAnimationId( void );
 
     };
     

@@ -259,9 +259,9 @@ namespace dragonpoop
     }
     
     //create instance
-    model_instance_ref *model_writelock::makeInstance( dpid id )
+    model_instance_ref *model_writelock::makeInstance( dpthread_lock *thd, dpid id )
     {
-        return this->t->makeInstance( id, this );
+        return this->t->makeInstance( thd, id, this );
     }
     
     //get instances

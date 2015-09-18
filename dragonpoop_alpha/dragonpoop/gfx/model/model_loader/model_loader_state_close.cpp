@@ -25,6 +25,7 @@ namespace dragonpoop
         if( this->b )
             delete b;
         this->b = 0;
+        ml->unlink();
         return 0;
     }
     

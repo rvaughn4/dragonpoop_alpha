@@ -265,19 +265,30 @@ namespace dragonpoop
     dpid dptaskpool::genId( void )
     {
         dpthread_lock *thd;
-        dpthread *t;
         dpid r;
-        
-        if( this->threads.cnt < 1 )
-            return r;
-        t = this->threads.buffer[ 0 ];
-        thd = t->lock();
+
+        thd = this->lockThread();
         if( !thd )
             return r;
         r = thd->genId();
         
         delete thd;
         return r;
+    }
+    
+    //lock a thread from pool
+    dpthread_lock *dptaskpool::lockThread( void )
+    {
+        dpthread_lock *thd;
+        dpthread *t;
+        
+        if( this->threads.cnt < 1 )
+            return 0;
+        
+        t = this->threads.buffer[ 0 ];
+        thd = t->lock();
+        
+        return thd;
     }
     
 };

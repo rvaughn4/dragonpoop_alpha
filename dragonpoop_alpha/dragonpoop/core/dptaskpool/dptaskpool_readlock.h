@@ -9,6 +9,7 @@ namespace dragonpoop
 {
 
     class dptaskpool;
+    class dpthread_lock;
 
     class dptaskpool_readlock : public shared_obj_readlock
     {
@@ -30,6 +31,8 @@ namespace dragonpoop
         unsigned int getThreadCount( void );
         //generate id
         dpid genId( void );
+        //lock a thread from pool
+        dpthread_lock *lockThread( void );
 
         friend class dptaskpool;
     };

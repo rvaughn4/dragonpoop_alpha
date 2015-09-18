@@ -35,7 +35,7 @@ namespace dragonpoop
 {
     
     //ctor
-    model_instance::model_instance( dpid id, model_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
+    model_instance::model_instance( dpthread_lock *thd, dpid id, model_writelock *ml ) : shared_obj( ml->getCore()->getMutexMaster() )
     {
         model_instance_writelock *l;
         shared_obj_guard g;
@@ -55,6 +55,7 @@ namespace dragonpoop
             return;
         this->bIsSynced = 1;
         this->dosync( l, ml );
+        this->makeAnimations( thd, ml );
     }
     
     //dtor
@@ -290,7 +291,6 @@ namespace dragonpoop
         shared_obj_guard o;
         renderer_model_instance_writelock *rl;
 
-        this->makeAnimations( ml );
         this->makeJoints( ml );
         this->makeGroups( ml );
         this->redoMesh( mi, ml );
@@ -369,11 +369,11 @@ namespace dragonpoop
     }
     
     //add animation
-    model_instance_animation *model_instance::makeAnimation( model_animation *g )
+    model_instance_animation *model_instance::makeAnimation( dpid id, model_animation *g )
     {
         model_instance_animation *c;
-        c = new model_instance_animation( g );
-        this->addComponent( c );
+        c = new model_instance_animation( id, g );
+        this->addComponent( c, g->getId() );
         return c;
     }
     
@@ -390,32 +390,19 @@ namespace dragonpoop
     }
     
     //make animations
-    void model_instance::makeAnimations( model_writelock *ml )
+    void model_instance::makeAnimations( dpthread_lock *thd, model_writelock *ml )
     {
         std::list<model_animation *> l;
         std::list<model_animation *>::iterator i;
         model_animation *p;
-        std::list<model_instance_animation *> li;
-        std::list<model_instance_animation *>::iterator ii;
-        model_instance_animation *pi;
-        dpid_btree t;
-        
-        this->getAnimations( &li );
-        
-        for( ii = li.begin(); ii != li.end(); ++ii )
-        {
-            pi = *ii;
-            t.addLeaf( pi->getId(), pi );
-        }
         
         ml->getAnimations( &l );
         
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            if( t.findLeaf( p->getId() ) )
-                continue;
-            this->makeAnimation( p );
+            if( p->isAutoPlay() )
+                this->makeAnimation( thd->genId(), p );
         }
     }
     

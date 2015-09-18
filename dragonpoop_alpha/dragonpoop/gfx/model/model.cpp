@@ -502,14 +502,14 @@ namespace dragonpoop
     }
 
     //create instance
-    model_instance_ref *model::makeInstance( dpid id, model_writelock *ml )
+    model_instance_ref *model::makeInstance( dpthread_lock *thd, dpid id, model_writelock *ml )
     {
         model_instance *p;
         model_instance_writelock *pl;
         shared_obj_guard o, o2;
         renderer_model_readlock *rl;
 
-        p = new model_instance( id, ml );
+        p = new model_instance( thd, id, ml );
         if( !p )
             return 0;
         

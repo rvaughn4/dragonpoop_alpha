@@ -127,7 +127,7 @@ namespace dragonpoop
         //get all group triangles belonging to a group or triangle id
         void getGroupTriangles( std::list<model_group_triangle *> *l, dpid pid );
         //create instance
-        model_instance_ref *makeInstance( dpid id );
+        model_instance_ref *makeInstance( dpthread_lock *thd, dpid id );
         //get instances
         void getInstances( std::list<model_instance_ref *> *l );
         //sync model instance with changes
