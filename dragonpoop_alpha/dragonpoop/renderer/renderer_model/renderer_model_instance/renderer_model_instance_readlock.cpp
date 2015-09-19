@@ -90,9 +90,9 @@ namespace dragonpoop
     }
     
     //render model
-    void renderer_model_instance_readlock::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m )
+    void renderer_model_instance_readlock::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *m_world )
     {
-        this->t->render( thd, r, m, this );
+        this->t->render( thd, r, m, this, m_world );
     }
     
     //transform vertex using joints

@@ -84,7 +84,7 @@ namespace dragonpoop
         std::list<model_instance *> instances;
         renderer_model_ref *r;
         uint64_t ran_time;
-        dpxyz_f size;
+        dpxyz_f size, center;
         uint32_t cnt_verts;
         uint32_t cnt_triangles;
 

@@ -335,7 +335,7 @@ namespace dragonpoop
     void render_joints( model_instance_joint_cache *c, renderer_model_instance_readlock *m );
 
     //render model instance group
-    void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
+    void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world )
     {
         openglx_1o5_renderer_model_material *gmat;
         dpvertex_buffer *vb;
@@ -344,7 +344,7 @@ namespace dragonpoop
         dpmatrix wmat;
 
         mi->redoMatrixes( thd->getTicks() );
-        mi->getModelViewMatrix( r, m, &this->world_m, &wmat );
+        mi->getModelViewMatrix( r, m, m_world, &wmat );
         glLoadMatrixf( wmat.getRaw4by4() );
         
         GLfloat LightPosition[]= { 0.0f, 0.0f, 8.0f, 0.0f };

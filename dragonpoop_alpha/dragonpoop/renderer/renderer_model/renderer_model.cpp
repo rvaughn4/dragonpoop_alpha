@@ -305,7 +305,7 @@ namespace dragonpoop
     }
     
     //render model
-    void renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui )
+    void renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui, dpmatrix *m_world )
     {
         std::list<renderer_model_instance *> *l;
         std::list<renderer_model_instance *>::iterator i;
@@ -321,7 +321,7 @@ namespace dragonpoop
             if( !pl )
                 continue;
             if( pl->isGui() == doGui )
-                pl->render( thd, r, m );
+                pl->render( thd, r, m, m_world );
         }
     }
     

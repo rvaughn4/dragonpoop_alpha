@@ -160,10 +160,10 @@ namespace dragonpoop
         this->setViewport( w, h );
         this->clearScreen( 0.5f, 0.5f, 1.0f );
         this->prepareWorldRender( w, h );
-        this->renderModels( thd, rl, 0 );
+        this->renderModels( thd, rl, 0, &this->m_world );
         
         this->prepareGuiRender( w, h );
-        this->renderModels( thd, rl, 1 );
+        this->renderModels( thd, rl, 1, &this->m_gui );
         
         this->flipBuffer();
         
@@ -229,7 +229,7 @@ namespace dragonpoop
     //prepare for rendering gui
     void renderer::prepareGuiRender( unsigned int w, unsigned int h )
     {
-        this->m_gui.setOrtho( -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 100.0f );
+        this->m_gui.setOrtho( -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 10.0f );
     }
 
     //flip backbuffer and present scene to screen
@@ -317,7 +317,7 @@ namespace dragonpoop
     }
     
     //render models
-    void renderer::renderModels( dpthread_lock *thd, renderer_writelock *rl, bool doGui )
+    void renderer::renderModels( dpthread_lock *thd, renderer_writelock *rl, bool doGui, dpmatrix *m_world )
     {
         std::list<renderer_model *> *l;
         std::list<renderer_model *>::iterator i;
@@ -333,7 +333,7 @@ namespace dragonpoop
             pl = (renderer_model_readlock *)o.tryReadLock( p, 10, "renderer::renderModels" );
             if( !pl )
                 continue;
-            pl->render( thd, rl, doGui );
+            pl->render( thd, rl, doGui, m_world );
         }
     }
     
@@ -376,12 +376,6 @@ namespace dragonpoop
     void renderer::setActiveState( bool b )
     {
         this->bActive = b;
-    }
-    
-    //render model instance group
-    void renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat )
-    {
-        
     }
     
 };

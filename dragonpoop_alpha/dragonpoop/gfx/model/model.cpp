@@ -934,11 +934,10 @@ namespace dragonpoop
         std::list<model_vertex *>::iterator i;
         std::list<model_triangle *> lt;
         model_vertex *p;
-        dpxyz_f x;
+        dpxyz_f x, low, hi;
         
-        this->size.x = 0;
-        this->size.y = 0;
-        this->size.z = 0;
+        low.x = low.y = low.z = 0;
+        hi.x = hi.y = hi.z = 0;
         
         this->getVertexes( &l );
         for( i = l.begin(); i != l.end(); ++i )
@@ -946,20 +945,28 @@ namespace dragonpoop
             p = *i;
             p->getPosition( &x );
             
-            if( x.x < 0 )
-                x.x = -x.x;
-            if( x.y < 0 )
-                x.y = -x.y;
-            if( x.z < 0 )
-                x.z = -x.z;
-            
-            if( x.x > this->size.x )
-                this->size.x = x.x;
-            if( x.y > this->size.y )
-                this->size.y = x.y;
-            if( x.z > this->size.z )
-                this->size.z = x.z;
+            if( x.x > hi.x )
+                hi.x = x.x;
+            if( x.y > hi.y )
+                hi.y = x.y;
+            if( x.z > hi.z )
+                hi.z = x.z;
+
+            if( x.x < low.x )
+                low.x = x.x;
+            if( x.y < low.y )
+                low.y = x.y;
+            if( x.z < low.z )
+                low.z = x.z;
         }
+        
+        this->size.x = hi.x - low.x;
+        this->size.y = hi.y - low.y;
+        this->size.z = hi.z - low.z;
+        
+        this->center.x = low.x + 0.5f * this->size.x;
+        this->center.y = low.y + 0.5f * this->size.y;
+        this->center.z = low.z + 0.5f * this->size.z;
         
         this->getTriangles( &lt );
         

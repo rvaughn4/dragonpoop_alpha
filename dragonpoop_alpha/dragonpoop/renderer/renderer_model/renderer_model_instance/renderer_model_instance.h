@@ -31,6 +31,7 @@ namespace dragonpoop
     class renderer_model_instance_joint;
     struct dpvertex;
     struct model_gui_pos;
+    class dpmatrix;
     
     class renderer_model_instance : public shared_obj
     {
@@ -102,7 +103,7 @@ namespace dragonpoop
         //genertae joint
         virtual renderer_model_instance_joint *genJoint( model_instance_writelock *ml, model_instance_joint *g, dpthread_lock *thd );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi );
+        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world );
         //returns joint cache
         model_instance_joint_cache *getJointCache( void );
         //get joints

@@ -54,9 +54,9 @@ namespace dragonpoop
     }
     
     //render model
-    void renderer_model_readlock::render( dpthread_lock *thd, renderer_writelock *r, bool doGui )
+    void renderer_model_readlock::render( dpthread_lock *thd, renderer_writelock *r, bool doGui, dpmatrix *m_world )
     {
-        this->t->render( thd, r, this, doGui );
+        this->t->render( thd, r, this, doGui, m_world );
     }
     
     //find material

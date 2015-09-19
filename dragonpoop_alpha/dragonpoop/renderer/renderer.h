@@ -48,7 +48,7 @@ namespace dragonpoop
         //render
         void render( dpthread_lock *thd, renderer_writelock *rl );
         //render models
-        void renderModels( dpthread_lock *thd, renderer_writelock *rl, bool doGui );
+        void renderModels( dpthread_lock *thd, renderer_writelock *rl, bool doGui, dpmatrix *m_world );
         
     protected:
 
@@ -91,7 +91,7 @@ namespace dragonpoop
         //set active state
         void setActiveState( bool b );
         //render model instance group
-        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world );
+        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world ) = 0;
 
     public:
 

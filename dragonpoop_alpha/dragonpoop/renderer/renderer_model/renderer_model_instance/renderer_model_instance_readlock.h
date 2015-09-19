@@ -60,7 +60,7 @@ namespace dragonpoop
         //animate
         void animate( void );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m );
+        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *m_world );
         //returns joint cache
         model_instance_joint_cache *getJointCache( void );
         //transform vertex using joints

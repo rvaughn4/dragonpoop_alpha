@@ -49,6 +49,7 @@ namespace dragonpoop
         this->j_ctr = 0;
         this->t_start = this->t_end = 0;
         this->t_play = 0;
+        this->bIsGui = 0;
         
         l = (model_instance_writelock *)g.tryWriteLock( this, 400, "model_instance::model_instance" );
         if( !l )

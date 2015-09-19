@@ -385,7 +385,7 @@ namespace dragonpoop
     }
 
     //render model
-    void renderer_model_instance::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi )
+    void renderer_model_instance::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world )
     {
         std::list<renderer_model_instance_group *> l;
         std::list<renderer_model_instance_group *>::iterator i;
@@ -398,7 +398,7 @@ namespace dragonpoop
         {
             g = *i;
             mat = m->findMaterial( g->getMaterialId() );
-            r->renderGroup( thd, m, mi, g, mat );
+            r->renderGroup( thd, m, mi, g, mat, m_world );
         }
     }
     
@@ -580,19 +580,56 @@ namespace dragonpoop
     void renderer_model_instance::getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
         dpxyz_f sz;
-        float f;
+        float f, sw, sh, x, y, z;
+
+        static float rr;
+        rr += 0.1f;
         
         m->getSize( &sz );
         f = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
         f = sqrtf( f );
         f = 1.0f / f;
-        static float rr;
-        rr += 0.1f;
 
         out_model_matrix->copy( in_world_matrix );
-        out_model_matrix->translate( 0, -0.5f * f * sz.y, -( f * sz.z + 2 ) );
-        out_model_matrix->scale( f, f, f );
+        
+        if( !this->isGui() )
+        {
+            out_model_matrix->translate( 0, -0.5f * f * sz.y, -( f * sz.z + 2 ) );
+            out_model_matrix->scale( f, f, f );
+            out_model_matrix->rotateY( rr );
+            return;
+        }
+        
+        sw = 1980;
+        sh = 1080;
+        
+        x = this->gui_pos.x;
+        y = this->gui_pos.y;
+        if( 1 )
+        {
+            x = ( sw - this->gui_pos.w ) / 2;
+            y = ( sh - this->gui_pos.h ) / 2;
+        }
+
+        x = ( x * 2.0f / sw ) - 1.0f;
+        y = ( y * 2.0f / sh ) - 1.0f;
+        z = ( 1.0f / sz.z ) + 1;
+        out_model_matrix->translate( x, -y, -z );
+        
+        x = this->gui_pos.w / sw;
+        y = this->gui_pos.h / sh;
+        out_model_matrix->translate( x, -y, 0 );
+        
+        
+        x = this->gui_pos.w / sw;
+        y = this->gui_pos.h / sh;
+        x *= 1.0f / sz.x;
+        y *= 1.0f / sz.y;
+        z = 1.0f / sz.z;
+        out_model_matrix->scale( x, y, z );
+        
         out_model_matrix->rotateY( rr );
+        
     }
     
     //get dimensions

@@ -46,6 +46,7 @@ int main( int argc, const char * argv[] )
     dragonpoop::gfx_writelock *gl;
     dragonpoop::shared_obj_guard o;
     dragonpoop::model_instance_ref *m;
+    dragonpoop::model_instance_writelock *ml;
     dragonpoop::model_loader_ref *lr;
     
     gr = c->getGfx();
@@ -67,14 +68,20 @@ int main( int argc, const char * argv[] )
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     m = gl->makeModelInstance( "test1" );
     o.unlock();
-    delete m;
-
-    main_pause( c, 2 );
     
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    m = gl->makeModelInstance( "test2" );
+    ml = (dragonpoop::model_instance_writelock *)o.writeLock( m, "main" );
+    ml->setGuiMode( 1 );
+    ml->setGuiPosition( 0, 0 );
+    ml->setGuiSize( 2000, 2000 );
     o.unlock();
     delete m;
+
+  //  main_pause( c, 2 );
+    
+   // gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+   // m = gl->makeModelInstance( "test2" );
+    //o.unlock();
+    //delete m;
 
 
     //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
