@@ -54,7 +54,7 @@ namespace dragonpoop
         dptask_writelock *tl;
         shared_obj_guard g;
 
-        tl = (dptask_writelock *)g.writeLock( t );
+        tl = (dptask_writelock *)g.writeLock( t, "dpthread::addTask" );
         if( !tl )
             return;
         at = (dptask_ref *)tl->getRef();
@@ -68,7 +68,7 @@ namespace dragonpoop
         dptask_writelock *tl;
         shared_obj_guard g;
 
-        tl = (dptask_writelock *)g.writeLock( t );
+        tl = (dptask_writelock *)g.writeLock( t, "dpthread::addTask" );
         if( !tl )
             return;
         at = (dptask_ref *)tl->getRef();
@@ -85,7 +85,7 @@ namespace dragonpoop
             delete this->tp;
         this->tp = 0;
 
-        tpl = (dptaskpool_writelock *)g.writeLock( tp );
+        tpl = (dptaskpool_writelock *)g.writeLock( tp, "dpthread::addPool" );
         if( !tpl )
             return;
         this->tp = (dptaskpool_ref *)tpl->getRef();
@@ -108,7 +108,7 @@ namespace dragonpoop
     {
         dpmutex_writelock *wl;
 
-        wl = this->l->tryWriteLock( 30 );
+        wl = this->l->tryWriteLock( "dpthread::lock", 30 );
         if( !wl )
             return 0;
 
@@ -254,7 +254,7 @@ namespace dragonpoop
 
         if( !this->tp )
             return;
-        tpl = (dptaskpool_writelock *)g.tryWriteLock( this->tp, 3 );
+        tpl = (dptaskpool_writelock *)g.tryWriteLock( this->tp, 3, "dpthread::getTaskFromPool" );
         if( !tpl )
             return;
 
@@ -272,7 +272,7 @@ namespace dragonpoop
 
         if( !this->tp )
             return;
-        tpl = (dptaskpool_writelock *)g.tryWriteLock( this->tp, 3 );
+        tpl = (dptaskpool_writelock *)g.tryWriteLock( this->tp, 3, "dpthread::dumpTaskToPool" );
         if( !tpl )
             return;
 
@@ -280,7 +280,7 @@ namespace dragonpoop
         if( !t )
             return;
 
-        tl = (dptask_readlock *)g0.tryReadLock( t, 3 );
+        tl = (dptask_readlock *)g0.tryReadLock( t, 3, "dpthread::dumpTaskToPool" );
         if( !tl )
         {
             tpl->p->pushTask( t );
@@ -446,7 +446,7 @@ namespace dragonpoop
                 continue;
             }
 
-            rl = (dptask_writelock *)g.tryWriteLock( r, 3 );
+            rl = (dptask_writelock *)g.tryWriteLock( r, 3, "dpthread_threadproc" );
             if( !rl )
             {
                 t->pushBeenRan( r );

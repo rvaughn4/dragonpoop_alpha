@@ -36,7 +36,7 @@ namespace dragonpoop
         
         if( !this->m )
             return new model_saver_state_fail( this->b );
-        m = (model_writelock *)o.tryWriteLock( this->m, 300 );
+        m = (model_writelock *)o.tryWriteLock( this->m, 300, "model_saver_dpmodel_state_write::run" );
         if( !m )
             return new model_saver_state_fail( this->b );
         

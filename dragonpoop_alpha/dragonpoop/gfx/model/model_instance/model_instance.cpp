@@ -50,7 +50,7 @@ namespace dragonpoop
         this->t_start = this->t_end = 0;
         this->t_play = 0;
         
-        l = (model_instance_writelock *)g.tryWriteLock( this, 400 );
+        l = (model_instance_writelock *)g.tryWriteLock( this, 400, "model_instance::model_instance" );
         if( !l )
             return;
         this->bIsSynced = 1;
@@ -297,7 +297,7 @@ namespace dragonpoop
         
         if( !this->r )
             return;
-        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 400 );
+        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 400, "model_instance::dosync" );
         if( !rl )
             return;
         rl->sync();
@@ -314,7 +314,7 @@ namespace dragonpoop
         
         if( !this->r )
             return;
-        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 30 );
+        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 30, "model_instance::animate" );
         if( !rl )
             return;
         rl->animate();
@@ -360,7 +360,7 @@ namespace dragonpoop
             delete this->r;
         this->r = 0;
         
-        rl = (renderer_model_instance_writelock *)o.tryWriteLock( r, 1000 );
+        rl = (renderer_model_instance_writelock *)o.tryWriteLock( r, 1000, "model_instance::setRenderer" );
         if( !rl )
             return;
         this->r = (renderer_model_instance_ref *)rl->getRef();

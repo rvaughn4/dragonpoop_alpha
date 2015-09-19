@@ -227,7 +227,7 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            pl = (model_instance_writelock *)o.tryWriteLock( p, 100 );
+            pl = (model_instance_writelock *)o.tryWriteLock( p, 100, "renderer_model::syncInstances" );
             delete p;
             if( !pl )
                 continue;
@@ -273,7 +273,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_model_instance_writelock *)o.tryWriteLock( p, 100 );
+            pl = (renderer_model_instance_writelock *)o.tryWriteLock( p, 100, "renderer_model::runInstances" );
             if( !pl )
                 continue;
             pl->run( thd );
@@ -317,7 +317,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_model_instance_readlock *)o.tryReadLock( p, 3 );
+            pl = (renderer_model_instance_readlock *)o.tryReadLock( p, 3, "renderer_model::render" );
             if( !pl )
                 continue;
             pl->render( thd, r, m );

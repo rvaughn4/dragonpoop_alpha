@@ -39,7 +39,7 @@ namespace dragonpoop
         model_material *p;
         std::vector<ms3d_model_material_m> *lf;
         
-        m = (model_readlock *)o.readLock( this->m );
+        m = (model_readlock *)o.readLock( this->m, "model_saver_ms3d_state_make_materials::run" );
         if( !m )
             return new model_saver_ms3d_state_cleanup( this->b, this->m, 0 );
         t = (model_saver_ms3d *)ml->getSaver();

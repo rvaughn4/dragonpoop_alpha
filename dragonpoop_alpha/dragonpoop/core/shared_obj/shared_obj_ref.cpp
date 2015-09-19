@@ -43,7 +43,7 @@ namespace dragonpoop
     }
 
     //blocking read lock
-    shared_obj_readlock *shared_obj_ref::readLock( void )
+    shared_obj_readlock *shared_obj_ref::readLock( const char *c_lock_location )
     {
         shared_obj_readlock *r;
 
@@ -57,13 +57,13 @@ namespace dragonpoop
             return 0;
         }
 
-        r = this->p->readLock();
+        r = this->p->readLock( c_lock_location );
         this->k->unlock();
         return r;
     }
 
     //blocking write lock
-    shared_obj_writelock *shared_obj_ref::writeLock( void )
+    shared_obj_writelock *shared_obj_ref::writeLock( const char *c_lock_location )
     {
         shared_obj_writelock *r;
 
@@ -77,13 +77,13 @@ namespace dragonpoop
             return 0;
         }
 
-        r = this->p->writeLock();
+        r = this->p->writeLock( c_lock_location );
         this->k->unlock();
         return r;
     }
 
     //read lock with timeout
-    shared_obj_readlock *shared_obj_ref::tryReadLock( uint64_t ms )
+    shared_obj_readlock *shared_obj_ref::tryReadLock( const char *c_lock_location, uint64_t ms )
     {
         shared_obj_readlock *r;
 
@@ -97,13 +97,13 @@ namespace dragonpoop
             return 0;
         }
 
-        r = this->p->tryReadLock( ms );
+        r = this->p->tryReadLock( c_lock_location, ms );
         this->k->unlock();
         return r;
     }
 
     //write lock with timeout
-    shared_obj_writelock *shared_obj_ref::tryWriteLock( uint64_t ms )
+    shared_obj_writelock *shared_obj_ref::tryWriteLock( const char *c_lock_location, uint64_t ms )
     {
         shared_obj_writelock *r;
 
@@ -117,13 +117,13 @@ namespace dragonpoop
             return 0;
         }
 
-        r = this->p->tryWriteLock( ms );
+        r = this->p->tryWriteLock( c_lock_location, ms );
         this->k->unlock();
         return r;
     }
 
     //attempt read lock
-    shared_obj_readlock *shared_obj_ref::tryReadLock( void )
+    shared_obj_readlock *shared_obj_ref::tryReadLock( const char *c_lock_location )
     {
         shared_obj_readlock *r;
 
@@ -137,13 +137,13 @@ namespace dragonpoop
             return 0;
         }
 
-        r = this->p->tryReadLock();
+        r = this->p->tryReadLock( c_lock_location );
         this->k->unlock();
         return r;
     }
 
     //attempt write lock
-    shared_obj_writelock *shared_obj_ref::tryWriteLock( void )
+    shared_obj_writelock *shared_obj_ref::tryWriteLock( const char *c_lock_location )
     {
         shared_obj_writelock *r;
 
@@ -157,7 +157,7 @@ namespace dragonpoop
             return 0;
         }
 
-        r = this->p->tryWriteLock();
+        r = this->p->tryWriteLock( c_lock_location );
         this->k->unlock();
         return r;
     }

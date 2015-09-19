@@ -16,7 +16,7 @@ namespace dragonpoop
         shared_obj_guard sg;
 
         this->g = 0;
-        gl = (gfx_writelock *)sg.writeLock( g );
+        gl = (gfx_writelock *)sg.writeLock( g, "gfx_task::gfx_task" );
         if( !gl )
             return;
         this->g = (gfx_ref *)gl->getRef();
@@ -40,7 +40,7 @@ namespace dragonpoop
             tl->kill();
             return;
         }
-        gl = (gfx_writelock *)g.tryWriteLock( this->g, 30 );
+        gl = (gfx_writelock *)g.tryWriteLock( this->g, 300, "gfx_task::run" );
         if( !gl )
             return;
 

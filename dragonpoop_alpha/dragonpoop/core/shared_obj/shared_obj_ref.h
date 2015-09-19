@@ -26,17 +26,17 @@ namespace dragonpoop
         //return a new ref
         virtual shared_obj_ref *getRef( void );
         //blocking read lock
-        virtual shared_obj_readlock *readLock( void );
+        virtual shared_obj_readlock *readLock( const char *c_lock_location );
         //blocking write lock
-        virtual shared_obj_writelock *writeLock( void );
+        virtual shared_obj_writelock *writeLock( const char *c_lock_location );
         //read lock with timeout
-        virtual shared_obj_readlock *tryReadLock( uint64_t ms );
+        virtual shared_obj_readlock *tryReadLock( const char *c_lock_location, uint64_t ms );
         //write lock with timeout
-        virtual shared_obj_writelock *tryWriteLock( uint64_t ms );
+        virtual shared_obj_writelock *tryWriteLock( const char *c_lock_location, uint64_t ms );
         //attempt read lock
-        virtual shared_obj_readlock *tryReadLock( void );
+        virtual shared_obj_readlock *tryReadLock( const char *c_lock_location );
         //attempt write lock
-        virtual shared_obj_writelock *tryWriteLock( void );
+        virtual shared_obj_writelock *tryWriteLock( const char *c_lock_location );
 
     public:
 

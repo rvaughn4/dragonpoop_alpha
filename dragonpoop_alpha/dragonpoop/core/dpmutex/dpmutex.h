@@ -28,6 +28,7 @@ namespace dragonpoop
 
         dpmutex_master *m;
         std::vector<dpmutex_thread> rids, wids;
+        const char *c_lock_loc;
 
     protected:
 
@@ -55,17 +56,17 @@ namespace dragonpoop
     public:
 
         //try read lock
-        dpmutex_readlock *tryReadLock( void );
+        dpmutex_readlock *tryReadLock( const char *clock_location );
         //try write lock
-        dpmutex_writelock *tryWriteLock( void );
+        dpmutex_writelock *tryWriteLock( const char *clock_location );
         //try read lock until timeout in ms
-        dpmutex_readlock *tryReadLock( uint64_t w );
+        dpmutex_readlock *tryReadLock( const char *clock_location, uint64_t w );
         //try write lock until timeout in ms
-        dpmutex_writelock *tryWriteLock( uint64_t w );
+        dpmutex_writelock *tryWriteLock( const char *clock_location, uint64_t w );
         //do not return until read locked
-        dpmutex_readlock *readLock( void );
+        dpmutex_readlock *readLock( const char *clock_location );
         //do not return until write locked
-        dpmutex_writelock *writeLock( void );
+        dpmutex_writelock *writeLock( const char *clock_location );
 
         friend class dpmutex_master;
         friend class dpmutex_lock;

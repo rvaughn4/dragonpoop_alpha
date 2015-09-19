@@ -25,37 +25,37 @@ namespace dragonpoop
     }
 
     //blocking read lock
-    shared_obj_readlock *shared_obj_lock::readLock( void )
+    shared_obj_readlock *shared_obj_lock::readLock( const char *c_lock_location )
     {
         return 0;
     }
 
     //blocking write lock
-    shared_obj_writelock *shared_obj_lock::writeLock( void )
+    shared_obj_writelock *shared_obj_lock::writeLock( const char *c_lock_location )
     {
         return 0;
     }
 
     //read lock with timeout
-    shared_obj_readlock *shared_obj_lock::tryReadLock( uint64_t ms )
+    shared_obj_readlock *shared_obj_lock::tryReadLock( const char *c_lock_location, uint64_t ms )
     {
         return 0;
     }
 
     //write lock with timeout
-    shared_obj_writelock *shared_obj_lock::tryWriteLock( uint64_t ms )
+    shared_obj_writelock *shared_obj_lock::tryWriteLock( const char *c_lock_location, uint64_t ms )
     {
         return 0;
     }
 
     //attempt read lock
-    shared_obj_readlock *shared_obj_lock::tryReadLock( void )
+    shared_obj_readlock *shared_obj_lock::tryReadLock( const char *c_lock_location )
     {
         return 0;
     }
 
     //attempt write lock
-    shared_obj_writelock *shared_obj_lock::tryWriteLock( void )
+    shared_obj_writelock *shared_obj_lock::tryWriteLock( const char *c_lock_location )
     {
         return 0;
     }

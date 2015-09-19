@@ -35,7 +35,7 @@ namespace dragonpoop
         dpthread *t;
         dptaskpool_writelock *wl;
 
-        wl = (dptaskpool_writelock *)this->writeLock();
+        wl = (dptaskpool_writelock *)this->writeLock( "dptaskpool::~dptaskpool 1" );
         delete wl;
 
         t = this->popThread();
@@ -46,7 +46,7 @@ namespace dragonpoop
             t = this->popThread();
         }
 
-        wl = (dptaskpool_writelock *)this->writeLock();
+        wl = (dptaskpool_writelock *)this->writeLock( "dptaskpool::~dptaskpool 2" );
         if( this->threads.buffer )
             free( this->threads.buffer );
 
@@ -89,7 +89,7 @@ namespace dragonpoop
         dptask_writelock *tl;
         shared_obj_guard g;
 
-        tl = (dptask_writelock *)g.writeLock( t );
+        tl = (dptask_writelock *)g.writeLock( t, "dptaskpool::addTask" );
         if( !tl )
             return;
         at = (dptask_ref *)tl->getRef();
@@ -103,7 +103,7 @@ namespace dragonpoop
         dptask_writelock *tl;
         shared_obj_guard g;
 
-        tl = (dptask_writelock *)g.writeLock( t );
+        tl = (dptask_writelock *)g.writeLock( t, "dptaskpool::addTask" );
         if( !tl )
             return;
         at = (dptask_ref *)tl->getRef();

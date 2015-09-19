@@ -18,39 +18,57 @@ namespace dragonpoop
     }
 
     //try read lock
-    dpmutex_readlock *dpmutex::tryReadLock( void )
+    dpmutex_readlock *dpmutex::tryReadLock( const char *clock_location )
     {
-        return this->m->genReadLock( this, 1 );
+        dpmutex_readlock *r = this->m->genReadLock( this, 1 );
+        if( r )
+            this->c_lock_loc = clock_location;
+        return r;
     }
 
     //try write lock
-    dpmutex_writelock *dpmutex::tryWriteLock( void )
+    dpmutex_writelock *dpmutex::tryWriteLock( const char *clock_location )
     {
-        return this->m->genWriteLock( this, 1 );
+        dpmutex_writelock *r = this->m->genWriteLock( this, 1 );
+        if( r )
+            this->c_lock_loc = clock_location;
+        return r;
     }
 
     //try read lock until timeout in ms
-    dpmutex_readlock *dpmutex::tryReadLock( uint64_t w )
+    dpmutex_readlock *dpmutex::tryReadLock( const char *clock_location, uint64_t w )
     {
-        return this->m->readLock( this, w );
+        dpmutex_readlock *r = this->m->readLock( this, w );
+        if( r )
+            this->c_lock_loc = clock_location;
+        return r;
     }
 
     //try write lock until timeout in ms
-    dpmutex_writelock *dpmutex::tryWriteLock( uint64_t w )
+    dpmutex_writelock *dpmutex::tryWriteLock( const char *clock_location, uint64_t w )
     {
-        return this->m->writeLock( this, w );
+        dpmutex_writelock *r = this->m->writeLock( this, w );
+        if( r )
+            this->c_lock_loc = clock_location;
+        return r;
     }
 
     //do not return until read locked
-    dpmutex_readlock *dpmutex::readLock( void )
+    dpmutex_readlock *dpmutex::readLock( const char *clock_location )
     {
-        return this->m->readLock( this );
+        dpmutex_readlock *r = this->m->readLock( this );
+        if( r )
+            this->c_lock_loc = clock_location;
+        return r;
     }
 
     //do not return until write locked
-    dpmutex_writelock *dpmutex::writeLock( void )
+    dpmutex_writelock *dpmutex::writeLock( const char *clock_location )
     {
-        return this->m->writeLock( this );
+        dpmutex_writelock *r = this->m->writeLock( this );
+        if( r )
+            this->c_lock_loc = clock_location;
+        return r;
     }
 
     //add thread id to readlock list

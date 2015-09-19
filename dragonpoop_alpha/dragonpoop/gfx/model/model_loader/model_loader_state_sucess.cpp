@@ -32,7 +32,7 @@ namespace dragonpoop
         mr = ml->getModel();
         if( mr )
         {
-            m = (model_writelock *)g.tryWriteLock( mr, 1000 );
+            m = (model_writelock *)g.tryWriteLock( mr, 1000, "model_loader_state_sucess::run" );
             if( m )
                 m->sync( thd );
             delete mr;

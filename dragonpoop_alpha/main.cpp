@@ -19,12 +19,12 @@ void main_wait_loader( dragonpoop::core *c, dragonpoop::model_loader_ref *lr )
     {
         std::this_thread::sleep_for( std::chrono::milliseconds( 500 ) );
 
-        if( !lr->isLinked() )
+        if( !lr || !lr->isLinked() )
         {
             b = 0;
             continue;
         }
-        lw = (dragonpoop::model_loader_readlock *)o.tryReadLock( lr, 100 );
+        lw = (dragonpoop::model_loader_readlock *)o.tryReadLock( lr, 100, "main_wait_loader" );
         if( !lw )
             continue;
         if( !lw->isRunning() )
@@ -49,26 +49,32 @@ int main( int argc, const char * argv[] )
     dragonpoop::model_loader_ref *lr;
     
     gr = c->getGfx();
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
-
-    gl->loadModel( "test1", "", "felhound_hi_milkshape.ms3d", 0, &lr );
-  //  main_wait_loader( c, lr );
-    delete lr;
     
-    gl->loadModel( "test2", "", "felhound_hi_milkshape.dpmodel", 0, &lr );
+    lr = 0;
+    
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    gl->loadModel( "test1", "", "felhound_hi_milkshape.ms3d", 0, &lr );
+    o.unlock();
     main_wait_loader( c, lr );
     delete lr;
+    
+   // gl->loadModel( "test2", "", "felhound_hi_milkshape.dpmodel", 0, 0 );//&lr );
+   // main_wait_loader( c, lr );
+    //delete lr;
 
     main_pause( c, 2 );
     
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     m = gl->makeModelInstance( "test1" );
+    o.unlock();
     delete m;
 
     main_pause( c, 2 );
     
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     m = gl->makeModelInstance( "test2" );
-    delete m;
     o.unlock();
+    delete m;
 
 
     //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );

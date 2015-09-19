@@ -34,7 +34,7 @@ namespace dragonpoop
         this->pname.assign( *pname );
         this->cs = new model_saver_state_begin();
         
-        ml = (model_writelock *)o.writeLock( m );
+        ml = (model_writelock *)o.writeLock( m, "model_saver::model_saver" );
         this->m = (model_ref *)ml->getRef();
     }
     
@@ -133,7 +133,7 @@ namespace dragonpoop
         model_writelock *l;
         shared_obj_guard o;
         
-        l = (model_writelock *)o.writeLock( this->m );
+        l = (model_writelock *)o.writeLock( this->m, "model_saver::getModel" );
         if( !l )
             return 0;
         return (model_ref *)l->getRef();

@@ -21,7 +21,7 @@ namespace dragonpoop
         this->mm = new dpmutex_master();
         this->tp = new dptaskpool( this->mm, 0 );
 
-        tpl = (dptaskpool_writelock *)g.writeLock( this->tp );
+        tpl = (dptaskpool_writelock *)g.writeLock( this->tp, "core::core" );
         this->g = new gfx( this, tpl );
     }
 
@@ -58,7 +58,7 @@ namespace dragonpoop
         dptaskpool_writelock *l;
         shared_obj_guard g;
 
-        l = (dptaskpool_writelock *)g.writeLock( this->tp );
+        l = (dptaskpool_writelock *)g.writeLock( this->tp, "core::getTaskpool" );
         r = (dptaskpool_ref *)l->getRef();
 
         return r;
@@ -70,7 +70,7 @@ namespace dragonpoop
         gfx_writelock *gl;
         shared_obj_guard o;
 
-        gl = (gfx_writelock *)o.writeLock( this->g );
+        gl = (gfx_writelock *)o.writeLock( this->g, "core::getGfx" );
         return (gfx_ref *)gl->getRef();
     }
 
@@ -79,7 +79,7 @@ namespace dragonpoop
     {
         dptaskpool_writelock *rl;
         shared_obj_guard o;
-        rl = (dptaskpool_writelock *)o.writeLock( this->tp );
+        rl = (dptaskpool_writelock *)o.writeLock( this->tp, "core::addTask" );
         rl->addTask( t );
     }
 
@@ -88,7 +88,7 @@ namespace dragonpoop
     {
         dptaskpool_writelock *rl;
         shared_obj_guard o;
-        rl = (dptaskpool_writelock *)o.writeLock( this->tp );
+        rl = (dptaskpool_writelock *)o.writeLock( this->tp, "core::addTask" );
         rl->addTask( t );
     }
 

@@ -36,7 +36,7 @@ namespace dragonpoop
         model_animation *ma;
         model_loader_ms3d *t;
         
-        m = (model_writelock *)o.writeLock( this->m );
+        m = (model_writelock *)o.writeLock( this->m, "model_loader_ms3d_state_make_animation::run" );
         if( !m )
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
         

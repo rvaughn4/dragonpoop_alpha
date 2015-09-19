@@ -23,17 +23,17 @@ namespace dragonpoop
         //ctor
         shared_obj_interface( void );
         //blocking read lock
-        virtual shared_obj_readlock *readLock( void ) = 0;
+        virtual shared_obj_readlock *readLock( const char *c_lock_location ) = 0;
         //blocking write lock
-        virtual shared_obj_writelock *writeLock( void ) = 0;
+        virtual shared_obj_writelock *writeLock( const char *c_lock_location ) = 0;
         //read lock with timeout
-        virtual shared_obj_readlock *tryReadLock( uint64_t ms ) = 0;
+        virtual shared_obj_readlock *tryReadLock( const char *c_lock_location, uint64_t ms ) = 0;
         //write lock with timeout
-        virtual shared_obj_writelock *tryWriteLock( uint64_t ms ) = 0;
+        virtual shared_obj_writelock *tryWriteLock( const char *c_lock_location, uint64_t ms ) = 0;
         //attempt read lock
-        virtual shared_obj_readlock *tryReadLock( void ) = 0;
+        virtual shared_obj_readlock *tryReadLock( const char *c_lock_location ) = 0;
         //attempt write lock
-        virtual shared_obj_writelock *tryWriteLock( void ) = 0;
+        virtual shared_obj_writelock *tryWriteLock( const char *c_lock_location ) = 0;
         //return a new ref
         virtual shared_obj_ref *getRef( void ) = 0;
         //unlink ref

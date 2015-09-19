@@ -40,7 +40,7 @@ namespace dragonpoop
         std::vector<ms3d_model_frame> *lf;
         unsigned int i, e;
         
-        m = (model_readlock *)o.readLock( this->m );
+        m = (model_readlock *)o.readLock( this->m, "model_saver_ms3d_state_make_frames::run" );
         if( !m )
             return new model_saver_ms3d_state_cleanup( this->b, this->m, 0 );
         t = (model_saver_ms3d *)ml->getSaver();

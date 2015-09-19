@@ -38,7 +38,7 @@ namespace dragonpoop
         ms3d_model_triangle_m *v;
         std::vector<ms3d_model_triangle_m> *l;
         
-        m = (model_writelock *)o.writeLock( this->m );
+        m = (model_writelock *)o.writeLock( this->m, "model_loader_ms3d_state_make_triangles::run" );
         if( !m )
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
         

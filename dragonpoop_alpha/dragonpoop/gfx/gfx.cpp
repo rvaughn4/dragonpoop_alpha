@@ -39,7 +39,7 @@ namespace dragonpoop
         tp->addTask( this->tsk );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 
-        l = (gfx_writelock *)o.writeLock( this );
+        l = (gfx_writelock *)o.writeLock( this, "gfx::gfx" );
         this->r = new openglx_1o5_renderer( c, l, tp );
     }
 
@@ -99,7 +99,7 @@ namespace dragonpoop
         if( !this->tsk )
             return;
 
-        tl = (dptask_writelock *)o.writeLock( this->tsk );
+        tl = (dptask_writelock *)o.writeLock( this->tsk, "gfx::genRef" );
         tl->kill();
         o.unlock();
 
@@ -197,7 +197,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_writelock *)o.tryReadLock( p, 10 );
+            pl = (model_writelock *)o.tryReadLock( p, 10, "gfx::runModels" );
             if( !pl )
                 continue;
             pl->run( thd );
@@ -227,7 +227,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_loader_writelock *)o.tryWriteLock( p, 100 );
+            pl = (model_loader_writelock *)o.tryWriteLock( p, 100, "gfx::runLoaders" );
             if( !pl )
                 continue;
             pl->run( thd );
@@ -259,7 +259,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_saver_writelock *)o.tryWriteLock( p, 100 );
+            pl = (model_saver_writelock *)o.tryWriteLock( p, 100, "gfx::runSavers" );
             if( !pl )
                 continue;
             pl->run( thd );
@@ -299,7 +299,7 @@ namespace dragonpoop
             return 1;
         }
         
-        tp = (dptaskpool_writelock *)otp.tryWriteLock( this->tpr, 1000 );
+        tp = (dptaskpool_writelock *)otp.tryWriteLock( this->tpr, 1000, "gfx::createModel" );
         if( !tp )
             return 0;
         nid = tp->genId();
@@ -308,7 +308,7 @@ namespace dragonpoop
         p = new model( this->c, nid );
         this->models.push_back( p );
         
-        pl = (model_writelock *)o.writeLock( p );
+        pl = (model_writelock *)o.writeLock( p, "gfx::createModel" );
         if( !pl )
             return 0;
         s.assign( mname );
@@ -342,7 +342,7 @@ namespace dragonpoop
         
         if( mldr )
         {
-            lw = (model_loader_writelock *)o.tryWriteLock( l, 100 );
+            lw = (model_loader_writelock *)o.tryWriteLock( l, 100, "gfx::loadModel" );
             if( lw )
                 *mldr = (model_loader_ref *)lw->getRef();
             else
@@ -375,7 +375,7 @@ namespace dragonpoop
         
         if( msvr )
         {
-            lw = (model_saver_writelock *)o.tryWriteLock( l, 100 );
+            lw = (model_saver_writelock *)o.tryWriteLock( l, 100, "gfx::saveModel" );
             if( lw )
                 *msvr = (model_saver_ref *)lw->getRef();
             o.unlock();
@@ -402,14 +402,14 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_readlock *)o.tryReadLock( p, 100 );
+            pl = (model_readlock *)o.tryReadLock( p, 100, "gfx::findModel" );
             if( !pl )
                 continue;
             
             if( !pl->compareName( &s ) )
                 continue;
             
-            pwl = (model_writelock *)o.tryWriteLock( p, 1000 );
+            pwl = (model_writelock *)o.tryWriteLock( p, 1000, "gfx::findModel" );
             if( !pwl )
                 continue;
             
@@ -435,14 +435,14 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_readlock *)o.tryReadLock( p, 100 );
+            pl = (model_readlock *)o.tryReadLock( p, 100, "gfx::findModel" );
             if( !pl )
                 continue;
 
             if( !pl->compareId( id ) )
                 continue;
             
-            pwl = (model_writelock *)o.tryWriteLock( p, 1000 );
+            pwl = (model_writelock *)o.tryWriteLock( p, 1000, "gfx::findModel" );
             if( !pwl )
                 continue;
             
@@ -466,11 +466,11 @@ namespace dragonpoop
         m = this->findModel( cname );
         if( !m )
             return 0;
-        ml = (model_writelock *)o.writeLock( m );
+        ml = (model_writelock *)o.writeLock( m, "gfx::makeModelInstance" );
         delete m;
         if( !ml )
             return 0;
-        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100 );
+        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100, "gfx::makeModelInstance" );
         if( !tpl )
             return 0;
         
@@ -500,11 +500,11 @@ namespace dragonpoop
         m = this->findModel( id );
         if( !m )
             return 0;
-        ml = (model_writelock *)o.writeLock( m );
+        ml = (model_writelock *)o.writeLock( m, "gfx::makeModelInstance" );
         delete m;
         if( !ml )
             return 0;
-        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100 );
+        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100, "gfx::makeModelInstance" );
         if( !tpl )
             return 0;
         
@@ -535,7 +535,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pwl = (model_writelock *)o.tryWriteLock( p, 1000 );
+            pwl = (model_writelock *)o.tryWriteLock( p, 1000, "gfx::getModels" );
             if( !pwl )
                 continue;
             

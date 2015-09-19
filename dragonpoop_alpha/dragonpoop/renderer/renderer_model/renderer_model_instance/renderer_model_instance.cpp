@@ -328,7 +328,7 @@ namespace dragonpoop
         
         if( !this->bIsSynced )
         {
-            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300 );
+            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300, "renderer_model_instance::run" );
             if( ml )
             {
                 this->makeJoints( ml, thd );
@@ -342,7 +342,7 @@ namespace dragonpoop
 
         if( !this->bIsAnimated )
         {
-            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300 );
+            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300, "renderer_model_instance::run" );
             if( ml )
             {
                 this->syncJoints( ml, thd );

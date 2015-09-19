@@ -34,7 +34,7 @@ namespace dragonpoop
         
         if( !this->m )
             return new model_loader_state_fail( this->b );
-        m = (model_writelock *)o.tryWriteLock( this->m, 300 );
+        m = (model_writelock *)o.tryWriteLock( this->m, 300, "model_loader_dpmodel_state_read::run" );
         if( !m )
             return new model_loader_state_fail( this->b );
         

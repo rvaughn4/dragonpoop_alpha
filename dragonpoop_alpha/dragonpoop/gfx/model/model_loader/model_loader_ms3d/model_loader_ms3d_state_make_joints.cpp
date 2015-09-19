@@ -62,7 +62,7 @@ namespace dragonpoop
         std::vector<ms3d_model_joint_m> *l;
         model_joint *j;
         
-        m = (model_writelock *)o.writeLock( this->m );
+        m = (model_writelock *)o.writeLock( this->m, "model_loader_ms3d_state_make_joints::run" );
         if( !m )
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
         

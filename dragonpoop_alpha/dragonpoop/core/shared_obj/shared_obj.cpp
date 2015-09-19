@@ -20,7 +20,7 @@ namespace dragonpoop
     {
         dpmutex_writelock *wl;
 
-        wl = this->l->writeLock();
+        wl = this->l->writeLock( "shared_obj::~shared_obj" );
         this->unlink();
         dpmutex_lock::unlock( &wl );
 
@@ -28,10 +28,10 @@ namespace dragonpoop
     }
 
     //blocking read lock
-    shared_obj_readlock *shared_obj::readLock( void )
+    shared_obj_readlock *shared_obj::readLock( const char *c_lock_location )
     {
         shared_obj_readlock *r;
-        dpmutex_readlock *l = this->l->readLock();
+        dpmutex_readlock *l = this->l->readLock( c_lock_location );
         if( !l )
             return 0;
         r = this->genReadLock( this, l );
@@ -41,10 +41,10 @@ namespace dragonpoop
     }
 
     //blocking write lock
-    shared_obj_writelock *shared_obj::writeLock( void )
+    shared_obj_writelock *shared_obj::writeLock( const char *c_lock_location )
     {
         shared_obj_writelock *r;
-        dpmutex_writelock *l = this->l->writeLock();
+        dpmutex_writelock *l = this->l->writeLock( c_lock_location );
         if( !l )
             return 0;
         r = this->genWriteLock( this, l );
@@ -54,10 +54,10 @@ namespace dragonpoop
     }
 
     //read lock with timeout
-    shared_obj_readlock *shared_obj::tryReadLock( uint64_t ms )
+    shared_obj_readlock *shared_obj::tryReadLock( const char *c_lock_location, uint64_t ms )
     {
         shared_obj_readlock *r;
-        dpmutex_readlock *l = this->l->tryReadLock( ms );
+        dpmutex_readlock *l = this->l->tryReadLock( c_lock_location, ms );
         if( !l )
             return 0;
         r = this->genReadLock( this, l );
@@ -67,10 +67,10 @@ namespace dragonpoop
     }
 
     //write lock with timeout
-    shared_obj_writelock *shared_obj::tryWriteLock( uint64_t ms )
+    shared_obj_writelock *shared_obj::tryWriteLock( const char *c_lock_location, uint64_t ms )
     {
         shared_obj_writelock *r;
-        dpmutex_writelock *l = this->l->tryWriteLock( ms );
+        dpmutex_writelock *l = this->l->tryWriteLock( c_lock_location, ms );
         if( !l )
             return 0;
         r = this->genWriteLock( this, l );
@@ -80,10 +80,10 @@ namespace dragonpoop
     }
 
     //attempt read lock
-    shared_obj_readlock *shared_obj::tryReadLock( void )
+    shared_obj_readlock *shared_obj::tryReadLock( const char *c_lock_location )
     {
         shared_obj_readlock *r;
-        dpmutex_readlock *l = this->l->tryReadLock();
+        dpmutex_readlock *l = this->l->tryReadLock( c_lock_location );
         if( !l )
             return 0;
         r = this->genReadLock( this, l );
@@ -93,10 +93,10 @@ namespace dragonpoop
     }
 
     //attempt write lock
-    shared_obj_writelock *shared_obj::tryWriteLock( void )
+    shared_obj_writelock *shared_obj::tryWriteLock( const char *c_lock_location )
     {
         shared_obj_writelock *r;
-        dpmutex_writelock *l = this->l->tryWriteLock();
+        dpmutex_writelock *l = this->l->tryWriteLock( c_lock_location );
         if( !l )
             return 0;
         r = this->genWriteLock( this, l );

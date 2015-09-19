@@ -32,10 +32,12 @@ namespace dragonpoop
         this->buffer = 0;
         this->fname.assign( *fname );
         this->pname.assign( *pname );
-        this->cs = new model_loader_state_openfile();
-
-        ml = (model_writelock *)o.writeLock( m );
+        
+        ml = (model_writelock *)o.writeLock( m, "model_loader::model_loader" );
         this->m = (model_ref *)ml->getRef();
+        o.unlock();
+
+        this->cs = new model_loader_state_openfile();
     }
 
     //dtor
@@ -134,7 +136,7 @@ namespace dragonpoop
         model_writelock *l;
         shared_obj_guard o;
 
-        l = (model_writelock *)o.writeLock( this->m );
+        l = (model_writelock *)o.writeLock( this->m, "model_loader::getModel" );
         if( !l )
             return 0;
         return (model_ref *)l->getRef();

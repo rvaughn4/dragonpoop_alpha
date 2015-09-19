@@ -464,7 +464,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = ( model_instance_writelock *)o.tryWriteLock( p, 10 );
+            pl = ( model_instance_writelock *)o.tryWriteLock( p, 10, "model::runInstances" );
             if( !pl )
                 continue;
             pl->run( thd, g );
@@ -493,7 +493,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = ( model_instance_writelock *)o.tryReadLock( p, 300 );
+            pl = ( model_instance_writelock *)o.tryReadLock( p, 300, "model::syncInstances" );
             if( !pl )
                 continue;
             pl->sync();
@@ -514,13 +514,13 @@ namespace dragonpoop
             return 0;
         
         this->instances.push_back( p );
-        pl = (model_instance_writelock *)o.writeLock( p );
+        pl = (model_instance_writelock *)o.writeLock( p, "model::makeInstance" );
         if( !pl )
             return 0;
         
         if( this->r )
         {
-            rl = (renderer_model_readlock *)o2.tryReadLock( this->r, 400 );
+            rl = (renderer_model_readlock *)o2.tryReadLock( this->r, 400, "model::makeInstance" );
             if( rl )
                 rl->sync();
         }
@@ -541,7 +541,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_instance_writelock *)o.tryWriteLock( p, 100 );
+            pl = (model_instance_writelock *)o.tryWriteLock( p, 100, "model::getInstances" );
             if( !pl )
                 continue;
             ll->push_back( (model_instance_ref *)pl->getRef() );
@@ -559,7 +559,7 @@ namespace dragonpoop
 
         if( !this->r )
             return;
-        rl = (renderer_model_readlock *)o.tryReadLock( this->r, 400 );
+        rl = (renderer_model_readlock *)o.tryReadLock( this->r, 400, "model::sync" );
         if( !rl )
             return;
         rl->sync();
@@ -575,7 +575,7 @@ namespace dragonpoop
             delete this->r;
         this->r = 0;
 
-        rl = (renderer_model_writelock *)o.tryWriteLock( r, 1000 );
+        rl = (renderer_model_writelock *)o.tryWriteLock( r, 1000, "model::setRenderer" );
         if( !rl )
             return;
         this->r = (renderer_model_ref *)rl->getRef();

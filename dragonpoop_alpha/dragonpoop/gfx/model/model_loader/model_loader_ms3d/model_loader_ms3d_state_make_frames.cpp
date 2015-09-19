@@ -111,7 +111,7 @@ namespace dragonpoop
         fl = new std::vector<ms3d_model_frame>();
         ldr->frames = fl;
         
-        m = (model_writelock *)o.tryWriteLock( this->m, 1000 );
+        m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeFrames" );
         if( !m )
             return;
         
@@ -141,7 +141,7 @@ namespace dragonpoop
         shared_obj_guard o;
         std::vector<ms3d_model_frame> *fl;
         
-        m = (model_writelock *)o.tryWriteLock( this->m, 1000 );
+        m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeAnimationFrames" );
         if( !m )
             return;
         ldr = (model_loader_ms3d *)ml->getLoader();
@@ -170,7 +170,7 @@ namespace dragonpoop
         model_frame_joint *fjnt;
         dpxyz_f x;
         
-        m = (model_writelock *)o.tryWriteLock( this->m, 1000 );
+        m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeFrameJoints" );
         if( !m )
             return;
         ldr = (model_loader_ms3d *)ml->getLoader();

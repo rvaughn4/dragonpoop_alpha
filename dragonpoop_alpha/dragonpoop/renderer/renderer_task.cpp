@@ -16,7 +16,7 @@ namespace dragonpoop
         shared_obj_guard lg;
 
         this->g = 0;
-        gl = (renderer_writelock *)lg.writeLock( g );
+        gl = (renderer_writelock *)lg.writeLock( g, "renderer_task::renderer_task" );
         if( !gl )
             return;
         this->g = (renderer_ref *)gl->getRef();
@@ -40,7 +40,7 @@ namespace dragonpoop
             tl->kill();
             return;
         }
-        gl = (renderer_writelock *)lg.tryWriteLock( this->g, 30 );
+        gl = (renderer_writelock *)lg.tryWriteLock( this->g, 30, "renderer_task::run" );
         if( !gl )
             return;
 

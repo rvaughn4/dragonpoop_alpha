@@ -15,7 +15,7 @@ namespace dragonpoop
         model_writelock *l;
         
         this->m = 0;
-        l = (model_writelock *)o.tryWriteLock( m, 300 );
+        l = (model_writelock *)o.tryWriteLock( m, 300, "model_saver_dpmodel::model_saver_dpmodel" );
         if( !l )
             return;
         
