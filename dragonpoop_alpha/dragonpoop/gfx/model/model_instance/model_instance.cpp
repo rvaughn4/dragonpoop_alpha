@@ -614,4 +614,36 @@ namespace dragonpoop
         return this->t_end;
     }
     
+    //set position
+    void model_instance::setGuiPosition( float x, float y )
+    {
+        this->gui_pos.x = x;
+        this->gui_pos.y = y;
+    }
+    
+    //set width and height
+    void model_instance::setGuiSize( float w, float h )
+    {
+        this->gui_pos.w = w;
+        this->gui_pos.h = h;
+    }
+    
+    //get dimensions
+    model_gui_pos *model_instance::getGuiDimensions( void )
+    {
+        return &this->gui_pos;
+    }
+    
+    //set gui mode
+    void model_instance::setGuiMode( bool b )
+    {
+        this->bIsGui = b;
+    }
+    
+    //returns true if gui
+    bool model_instance::isGui( void )
+    {
+        return this->bIsGui;
+    }
+    
 };

@@ -15,6 +15,7 @@ namespace dragonpoop
     class dpvertexindex_buffer;
     class model_instance_animation;
     class model_instance_joint;
+    struct model_gui_pos;
     
     class model_instance_readlock : public shared_obj_readlock
     {
@@ -62,6 +63,10 @@ namespace dragonpoop
         uint64_t getStartTime( void );
         //get end time
         uint64_t getEndTime( void );
+        //get dimensions
+        model_gui_pos *getGuiDimensions( void );
+        //returns true if gui
+        bool isGui( void );
 
         friend class model_instance;
     };

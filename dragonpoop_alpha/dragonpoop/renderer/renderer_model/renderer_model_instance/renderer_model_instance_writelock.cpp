@@ -107,4 +107,16 @@ namespace dragonpoop
         this->t->redoMatrixes( this, t );
     }
     
+    //get dimensions
+    model_gui_pos *renderer_model_instance_writelock::getGuiDimensions( void )
+    {
+        return this->t->getGuiDimensions();
+    }
+    
+    //returns true if gui
+    bool renderer_model_instance_writelock::isGui( void )
+    {
+        return this->t->isGui();
+    }
+    
 };

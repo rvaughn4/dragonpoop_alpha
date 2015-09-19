@@ -306,11 +306,7 @@ namespace dragonpoop
     //prepare for rendering world
     void openglx_1o5_renderer::prepareWorldRender( unsigned int w, unsigned int h )
     {
-//        float fw, fh;
-
-  //      fw = w * 0.5f;
-    //    fh = h * 0.5f;
-
+        this->renderer::prepareWorldRender( w, h );
         glClearDepth( 1.0f );
         glClear( GL_DEPTH_BUFFER_BIT );
 
@@ -318,8 +314,9 @@ namespace dragonpoop
     }
 
     //prepare for rendering gui
-    void openglx_1o5_renderer::prepareGuiRender( void )
+    void openglx_1o5_renderer::prepareGuiRender( unsigned int w, unsigned int h )
     {
+        this->renderer::prepareGuiRender( w, h );
         glClearDepth( 1.0f );
         glClear( GL_DEPTH_BUFFER_BIT );
     }

@@ -11,6 +11,7 @@
 #include "../../../core/dpbtree/dpmultibtree.h"
 #include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.h"
+#include "../../../gfx/model/model_instance/model_instance.h"
 
 namespace dragonpoop
 {
@@ -29,6 +30,7 @@ namespace dragonpoop
     class renderer_model_instance_readlock;
     class renderer_model_instance_joint;
     struct dpvertex;
+    struct model_gui_pos;
     
     class renderer_model_instance : public shared_obj
     {
@@ -43,10 +45,11 @@ namespace dragonpoop
             dpid_multibtree byowner;
             dpmultibtree bytype;
         } comps;
-        std::atomic<bool> bIsSynced, bIsAnimated;
+        std::atomic<bool> bIsSynced, bIsAnimated, bIsGui;
         model_instance_ref *m;
         model_instance_joint_cache jnts;
-        
+        model_gui_pos gui_pos;
+
         //delete all components
         void deleteComponents( void );
         
@@ -116,6 +119,10 @@ namespace dragonpoop
         void redoMatrixes( renderer_model_instance_writelock *m, uint64_t t );
         //get model view matrix
         void getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix );
+        //get dimensions
+        model_gui_pos *getGuiDimensions( void );
+        //returns true if gui
+        bool isGui( void );
 
     public:
         

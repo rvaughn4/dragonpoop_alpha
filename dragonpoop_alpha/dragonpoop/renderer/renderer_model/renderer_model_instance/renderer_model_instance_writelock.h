@@ -16,6 +16,7 @@ namespace dragonpoop
     class model_instance_joint_cache;
     class renderer_model_instance_joint;
     struct dpvertex;
+    struct model_gui_pos;
     
     class renderer_model_instance_writelock : public shared_obj_writelock
     {
@@ -63,6 +64,10 @@ namespace dragonpoop
         void transform( dpvertex *v );
         //recompute animation joint matrixes
         void redoMatrixes( uint64_t t );
+        //get dimensions
+        model_gui_pos *getGuiDimensions( void );
+        //returns true if gui
+        bool isGui( void );
 
         friend class renderer_model_instance;
     };

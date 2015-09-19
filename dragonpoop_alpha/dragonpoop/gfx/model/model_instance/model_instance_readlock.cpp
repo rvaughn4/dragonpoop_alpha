@@ -107,4 +107,16 @@ namespace dragonpoop
         return this->t->getEndTime();
     }
     
+    //get dimensions
+    model_gui_pos *model_instance_readlock::getGuiDimensions( void )
+    {
+        return this->t->getGuiDimensions();
+    }
+    
+    //returns true if gui
+    bool model_instance_readlock::isGui( void )
+    {
+        return this->t->isGui();
+    }
+
 };

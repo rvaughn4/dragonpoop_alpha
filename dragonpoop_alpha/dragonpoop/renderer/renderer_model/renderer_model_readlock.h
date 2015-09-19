@@ -47,7 +47,7 @@ namespace dragonpoop
         //sync model instance with changes
         void sync( void );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r );
+        void render( dpthread_lock *thd, renderer_writelock *r, bool doGui );
         //find material
         renderer_model_material *findMaterial( dpid id );
         //get materials

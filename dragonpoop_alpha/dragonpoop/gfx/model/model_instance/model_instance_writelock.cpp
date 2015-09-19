@@ -119,4 +119,34 @@ namespace dragonpoop
         return this->t->getEndTime();
     }
     
+    //set position
+    void model_instance_writelock::setGuiPosition( float x, float y )
+    {
+        this->t->setGuiPosition( x, y );
+    }
+    
+    //set width and height
+    void model_instance_writelock::setGuiSize( float w, float h )
+    {
+        this->t->setGuiSize( w, h );
+    }
+    
+    //get dimensions
+    model_gui_pos *model_instance_writelock::getGuiDimensions( void )
+    {
+        return this->t->getGuiDimensions();
+    }
+    
+    //set gui mode
+    void model_instance_writelock::setGuiMode( bool b )
+    {
+        this->t->setGuiMode( b );
+    }
+    
+    //returns true if gui
+    bool model_instance_writelock::isGui( void )
+    {
+        return this->t->isGui();
+    }
+
 };

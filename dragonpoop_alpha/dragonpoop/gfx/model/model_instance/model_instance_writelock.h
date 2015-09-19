@@ -18,6 +18,7 @@ namespace dragonpoop
     class dpvertexindex_buffer;
     class model_instance_animation;
     class model_instance_joint;
+    struct model_gui_pos;
     
     class model_instance_writelock : public shared_obj_writelock
     {
@@ -69,6 +70,16 @@ namespace dragonpoop
         uint64_t getStartTime( void );
         //get end time
         uint64_t getEndTime( void );
+        //set position
+        void setGuiPosition( float x, float y );
+        //set width and height
+        void setGuiSize( float w, float h );
+        //get dimensions
+        model_gui_pos *getGuiDimensions( void );
+        //set gui mode
+        void setGuiMode( bool b );
+        //returns true if gui
+        bool isGui( void );
 
         friend class model_instance;
     };

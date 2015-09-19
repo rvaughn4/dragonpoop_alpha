@@ -90,7 +90,7 @@ namespace dragonpoop
         //generate instance
         virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m );
+        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui );
         //add material
         renderer_model_material *makeMaterial( model_writelock *ml, model_material *m );
         //find material

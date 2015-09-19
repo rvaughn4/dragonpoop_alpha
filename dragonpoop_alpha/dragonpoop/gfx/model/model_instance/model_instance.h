@@ -39,6 +39,11 @@ namespace dragonpoop
     class model_vertex_joint;
     struct dpvertex;
     
+    struct model_gui_pos
+    {
+        float x, y, w, h;
+    };
+    
     class model_instance : public shared_obj
     {
         
@@ -56,8 +61,9 @@ namespace dragonpoop
         } comps;
         renderer_model_instance_ref *r;
         uint64_t t_start, t_end, t_last_animate, t_frame_time, t_play;
-        std::atomic<bool> bIsSynced;
+        std::atomic<bool> bIsSynced, bIsGui;
         int16_t j_ctr;
+        model_gui_pos gui_pos;
         
         //delete all components
         void deleteComponents( void );
@@ -147,6 +153,16 @@ namespace dragonpoop
         uint64_t getStartTime( void );
         //get end time
         uint64_t getEndTime( void );
+        //set position
+        void setGuiPosition( float x, float y );
+        //set width and height
+        void setGuiSize( float w, float h );
+        //get dimensions
+        model_gui_pos *getGuiDimensions( void );
+        //set gui mode
+        void setGuiMode( bool b );
+        //returns true if gui
+        bool isGui( void );
         
     public:
         

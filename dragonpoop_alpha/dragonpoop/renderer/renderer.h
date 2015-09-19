@@ -3,6 +3,7 @@
 #define dragonpoop_renderer_h
 
 #include "../core/shared_obj/shared_obj.h"
+#include "../gfx/dpmatrix/dpmatrix.h"
 
 namespace dragonpoop
 {
@@ -38,6 +39,7 @@ namespace dragonpoop
         uint64_t t_last_m_ran, t_last_fps;
         float fps, fthiss;
         bool bActive, bActiveOld;
+        dpmatrix m_world, m_gui;
 
         //run models
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
@@ -46,7 +48,7 @@ namespace dragonpoop
         //render
         void render( dpthread_lock *thd, renderer_writelock *rl );
         //render models
-        void renderModels( dpthread_lock *thd, renderer_writelock *rl );
+        void renderModels( dpthread_lock *thd, renderer_writelock *rl, bool doGui );
         
     protected:
 
@@ -79,7 +81,7 @@ namespace dragonpoop
         //prepare for rendering world
         virtual void prepareWorldRender( unsigned int w, unsigned int h );
         //prepare for rendering gui
-        virtual void prepareGuiRender( void );
+        virtual void prepareGuiRender( unsigned int w, unsigned int h );
         //flip backbuffer and present scene to screen
         virtual void flipBuffer( void );
         //generate renderer model
@@ -89,8 +91,8 @@ namespace dragonpoop
         //set active state
         void setActiveState( bool b );
         //render model instance group
-        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat );
-        
+        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world );
+
     public:
 
         //ctor

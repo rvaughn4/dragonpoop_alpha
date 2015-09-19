@@ -305,7 +305,7 @@ namespace dragonpoop
     }
     
     //render model
-    void renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m )
+    void renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui )
     {
         std::list<renderer_model_instance *> *l;
         std::list<renderer_model_instance *>::iterator i;
@@ -320,7 +320,8 @@ namespace dragonpoop
             pl = (renderer_model_instance_readlock *)o.tryReadLock( p, 3, "renderer_model::render" );
             if( !pl )
                 continue;
-            pl->render( thd, r, m );
+            if( pl->isGui() == doGui )
+                pl->render( thd, r, m );
         }
     }
     

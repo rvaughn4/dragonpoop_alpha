@@ -74,7 +74,7 @@ namespace dragonpoop
         //prepare for rendering world
         virtual void prepareWorldRender( unsigned int w, unsigned int h );
         //prepare for rendering gui
-        virtual void prepareGuiRender( void );
+        virtual void prepareGuiRender( unsigned int w, unsigned int h );
         //flip backbuffer and present scene to screen
         virtual void flipBuffer( void );
         //generate renderer model

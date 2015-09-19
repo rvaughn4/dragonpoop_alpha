@@ -331,6 +331,8 @@ namespace dragonpoop
             ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300, "renderer_model_instance::run" );
             if( ml )
             {
+                this->gui_pos = *ml->getGuiDimensions();
+                this->bIsGui = ml->isGui();
                 this->makeJoints( ml, thd );
                 this->makeGroups( ml, thd );
                 this->bIsSynced = 1;
@@ -591,6 +593,18 @@ namespace dragonpoop
         out_model_matrix->translate( 0, -0.5f * f * sz.y, -( f * sz.z + 2 ) );
         out_model_matrix->scale( f, f, f );
         out_model_matrix->rotateY( rr );
+    }
+    
+    //get dimensions
+    model_gui_pos *renderer_model_instance::getGuiDimensions( void )
+    {
+        return &this->gui_pos;
+    }
+    
+    //returns true if gui
+    bool renderer_model_instance::isGui( void )
+    {
+        return this->bIsGui;
     }
     
 };

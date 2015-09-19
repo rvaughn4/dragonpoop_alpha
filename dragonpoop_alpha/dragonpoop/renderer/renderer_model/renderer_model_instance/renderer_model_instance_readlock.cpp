@@ -113,4 +113,16 @@ namespace dragonpoop
         this->t->getModelViewMatrix( r, m, in_world_matrix, out_model_matrix );
     }
 
+    //get dimensions
+    model_gui_pos *renderer_model_instance_readlock::getGuiDimensions( void )
+    {
+        return this->t->getGuiDimensions();
+    }
+    
+    //returns true if gui
+    bool renderer_model_instance_readlock::isGui( void )
+    {
+        return this->t->isGui();
+    }
+    
 };
