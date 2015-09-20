@@ -8,6 +8,8 @@
 namespace dragonpoop
 {
     
+    class model_writelock;
+    
 #pragma pack( 0 )
     struct model_frame_joint_header_hdr
     {
@@ -60,6 +62,8 @@ namespace dragonpoop
         void getTranslation( dpxyz_f *x );
         //returns true if has parent
         virtual bool hasParent( dpid id );
+        //returns weight
+        float getWeight( model_writelock *ml );
         
     };
     

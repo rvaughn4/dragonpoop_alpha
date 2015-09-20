@@ -54,7 +54,7 @@ int main( int argc, const char * argv[] )
     lr = 0;
     
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "test1", "", "felhound_hi_milkshape.dpmodel", 0, &lr );
+    gl->loadModel( "test1", "", "dragon_anim.dpmodel", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;

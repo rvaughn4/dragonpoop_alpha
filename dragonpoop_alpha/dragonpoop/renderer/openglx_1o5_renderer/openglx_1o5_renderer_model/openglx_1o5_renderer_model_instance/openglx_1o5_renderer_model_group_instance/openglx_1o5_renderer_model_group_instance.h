@@ -15,6 +15,9 @@ namespace dragonpoop
         
     private:
         
+        uint64_t last_frame_time;
+        unsigned int glist;
+        
     protected:
         
     public:
@@ -25,6 +28,14 @@ namespace dragonpoop
         virtual ~openglx_1o5_renderer_model_instance_group( void );
         //sync with group
         virtual void sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd );
+        //get last frame compute time
+        uint64_t getLastFrameTime( void );
+        //set last frame time
+        void setLastFrameTime( uint64_t t );
+        //get dipslay list
+        unsigned int getList( void );
+        //set display list
+        void setList( unsigned int l );
         
     };
     

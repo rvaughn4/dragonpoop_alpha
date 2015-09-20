@@ -555,6 +555,7 @@ namespace dragonpoop
         renderer_model_readlock *rl;
 
         this->findSize();
+        this->computeFrameWeights( ml );
         this->syncInstances( thd, ml );
 
         if( !this->r )
@@ -932,18 +933,26 @@ namespace dragonpoop
     {
         std::list<model_vertex *> l;
         std::list<model_vertex *>::iterator i;
-        std::list<model_triangle *> lt;
+        std::list<model_component *> lt;
         model_vertex *p;
-        dpxyz_f x, low, hi;
+        dpxyz_f x, low, hi, cen;
+        float c;
         
         low.x = low.y = low.z = 0;
         hi.x = hi.y = hi.z = 0;
+        cen.x = cen.y = cen.z = 0;
+        c = 1;
         
         this->getVertexes( &l );
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
             p->getPosition( &x );
+            
+            cen.x += x.x;
+            cen.y += x.y;
+            cen.z += x.z;
+            c++;
             
             if( x.x > hi.x )
                 hi.x = x.x;
@@ -964,14 +973,43 @@ namespace dragonpoop
         this->size.y = hi.y - low.y;
         this->size.z = hi.z - low.z;
         
-        this->center.x = low.x + 0.5f * this->size.x;
-        this->center.y = low.y + 0.5f * this->size.y;
-        this->center.z = low.z + 0.5f * this->size.z;
-        
-        this->getTriangles( &lt );
+        this->center.x = cen.x / c;
+        this->center.y = cen.y / c;
+        this->center.z = cen.z / c;
         
         this->cnt_verts = (unsigned int)l.size();
+        l.clear();
+        
+        this->getTriangles( (std::list<model_triangle *> *)&lt );
         this->cnt_triangles = (unsigned int)lt.size();
+        lt.clear();
+        
+        this->getFrames( (std::list<model_frame *> *)&lt );
+        this->cnt_frames = (unsigned int)lt.size();
+        lt.clear();
+        
+        this->getAnimations( (std::list<model_animation *> *)&lt );
+        this->cnt_animations = (unsigned int)lt.size();
+        lt.clear();
+        
+        this->getJoints( (std::list<model_joint *> *)&lt );
+        this->cnt_joints = (unsigned int)lt.size();
+        lt.clear();
+    }
+    
+    //compute weights of frames
+    void model::computeFrameWeights( model_writelock *ml )
+    {
+        std::list<model_frame *> l;
+        std::list<model_frame *>::iterator i;
+        model_frame *p;
+        
+        this->getFrames( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->computeWeight( ml );
+        }
     }
     
     //get model dimensions

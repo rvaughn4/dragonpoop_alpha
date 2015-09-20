@@ -7,6 +7,8 @@
 namespace dragonpoop
 {
     
+    class model_writelock;
+    
 #pragma pack( 0 )
     struct model_frame_header_hdr
     {
@@ -27,6 +29,8 @@ namespace dragonpoop
         
     private:
         
+        float w;
+        
     protected:
         
         //write data to disk/memory
@@ -40,6 +44,10 @@ namespace dragonpoop
         model_frame( dpid id );
         //dtor
         virtual ~model_frame( void );
+        //get weight
+        float getWeight( void );
+        //compute weight
+        void computeWeight( model_writelock *ml );
         
     };
     

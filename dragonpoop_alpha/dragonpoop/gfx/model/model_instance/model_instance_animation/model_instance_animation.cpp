@@ -198,14 +198,11 @@ namespace dragonpoop
     //returns frame with largest movement within a frame time range
     model_frame *model_instance_animation::findBiggestFrame( model_writelock *ml, unsigned int t_start, unsigned int t_end )
     {
-        float od, td, ad;
-        dpxyz_f x;
+        float td, ad;
         std::list<model_animation_frame *> l;
         std::list<model_animation_frame *>::iterator i;
         model_animation_frame *p, *f;
-        std::list<model_frame_joint *> lj;
-        std::list<model_frame_joint *>::iterator ij;
-        model_frame_joint *pj;
+        model_frame *frm;
         
         ml->getAnimationFrames( &l, this->getAnimationId() );
         
@@ -218,25 +215,10 @@ namespace dragonpoop
             if( p->getTime() > t_end || p->getTime() < t_start )
                 continue;
             
-            ml->getFrameJoints( &lj, p->getFrameId() );
-            ad = 0;
-            
-            for( ij = lj.begin(); ij != lj.end(); ++ij )
-            {
-                pj = *ij;
-                
-                pj->getRotation( &x );
-                od = x.x * x.x + x.y * x.y + x.z * x.z;
-                if( od > 0 )
-                    od = sqrtf( od );
-                ad += od * 2;
-
-                pj->getTranslation( &x );
-                od = x.x * x.x + x.y * x.y + x.z * x.z;
-                if( od > 0 )
-                    od = sqrtf( od );
-                ad += od / 10.0f;
-            }
+            frm = ml->findFrame( p->getFrameId() );
+            if( !frm )
+                continue;
+            ad = frm->getWeight();
             
             if( ad < td && f )
                 continue;

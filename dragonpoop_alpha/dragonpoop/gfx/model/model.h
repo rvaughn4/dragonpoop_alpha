@@ -85,8 +85,7 @@ namespace dragonpoop
         renderer_model_ref *r;
         uint64_t ran_time;
         dpxyz_f size, center;
-        uint32_t cnt_verts;
-        uint32_t cnt_triangles;
+        uint32_t cnt_verts, cnt_triangles, cnt_frames, cnt_joints, cnt_animations;
 
         //delete all components
         void deleteComponents( void );
@@ -98,6 +97,8 @@ namespace dragonpoop
         void syncInstances( dpthread_lock *thd, model_writelock *g );
         //find the maximum size of the model
         void findSize( void );
+        //compute weights of frames
+        void computeFrameWeights( model_writelock *ml );
         
     protected:
 

@@ -342,27 +342,41 @@ namespace dragonpoop
         dpvertex *vp;
         std::vector<uint16_t> *indicies;
         dpmatrix wmat;
+        uint64_t t, ot;
+        unsigned int dlist;
 
-        mi->redoMatrixes( thd->getTicks() );
         mi->getModelViewMatrix( r, m, m_world, &wmat );
         glLoadMatrixf( wmat.getRaw4by4() );
-        
-        GLfloat LightPosition[]= { 0.0f, 0.0f, 8.0f, 0.0f };
-        glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
-        
-        
-        glEnable( GL_LIGHTING );
 
         gmat = (openglx_1o5_renderer_model_material *)mat;
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
         
-        vb = g->getTransformedBuffer( mi, &indicies );
-        vp = vb->getBuffer();
+        t = thd->getTicks();
+        dlist = ( (openglx_1o5_renderer_model_instance_group *)g )->getList();
+        ot = ( (openglx_1o5_renderer_model_instance_group *)g )->getLastFrameTime();
+        if( t - ot > 50 || !dlist )
+        {
+            mi->redoMatrixes( thd->getTicks() );
+            ( (openglx_1o5_renderer_model_instance_group *)g )->setLastFrameTime( t );
+            
+            if( dlist )
+                glDeleteLists( dlist, 1 );
+            dlist = glGenLists( 1 );
+            glNewList( dlist, GL_COMPILE );
+            ( (openglx_1o5_renderer_model_instance_group *)g )->setList( dlist );
+            
+            vb = g->getTransformedBuffer( mi, &indicies );
+            vp = vb->getBuffer();
 
-        glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
-        glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
-        glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
-        glDrawElements( GL_TRIANGLES, (int)indicies->size(), GL_UNSIGNED_SHORT, &( *indicies )[ 0 ] );
+            glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
+            glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
+            glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
+            glDrawElements( GL_TRIANGLES, (int)indicies->size(), GL_UNSIGNED_SHORT, &( *indicies )[ 0 ] );
+            
+            glEndList();
+        }
+        
+        glCallList( dlist );
     }
 
 };

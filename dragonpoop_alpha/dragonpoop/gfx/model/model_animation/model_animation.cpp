@@ -144,10 +144,10 @@ namespace dragonpoop
         b->setReadCursor( rc + h.h.size );
         
         this->bIsAutplay = h.bIsAutplay;
-        this->bIsRepeat = 0;//h.bIsRepeat;
+        this->bIsRepeat = h.bIsRepeat;
         this->cnt_frames = h.cnt_frames;
         this->len_frames = h.len_frames;
-        this->speed = 100;//h.speed;
+        this->speed = h.speed;
         this->repeat_delay_f = h.repeat_delay_f;
         
         return 1;

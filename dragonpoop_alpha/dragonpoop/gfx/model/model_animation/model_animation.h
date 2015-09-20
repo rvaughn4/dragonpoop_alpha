@@ -76,6 +76,8 @@ namespace dragonpoop
         void setLength( unsigned int f );
         //get length of animation in frames
         unsigned int getLength( void );
+        //reduce frame resolution by eliminating frames
+        void reduceFrames( model_writelock *ml, unsigned int ms_res );
         
     };
     

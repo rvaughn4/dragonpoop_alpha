@@ -1,6 +1,8 @@
 
 #include "model_frame_joint.h"
 #include "../../../core/dpbuffer/dpbuffer.h"
+#include "../model_writelock.h"
+#include <math.h>
 
 namespace dragonpoop
 {
@@ -100,4 +102,32 @@ namespace dragonpoop
         return 1;
     }
 
+    //returns weight
+    float model_frame_joint::getWeight( model_writelock *ml )
+    {
+        dpxyz_f sz;
+        float w;
+        float f, fs;
+        
+        f = this->rot.x * this->rot.x + this->rot.y * this->rot.y + this->rot.z * this->rot.z;
+        if( f )
+            f = sqrtf( f );
+        w = f;
+        
+        ml->getSize( &sz );
+        
+        fs = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
+        if( fs )
+            fs = sqrtf( fs );
+        else
+            fs = 0;
+        
+        f = this->trans.x * this->trans.x + this->trans.y * this->trans.y + this->trans.z * this->trans.z;
+        if( f )
+            f = sqrtf( f );
+        w += f / fs;
+        
+        return w;
+    }
+    
 };
