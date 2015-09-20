@@ -47,7 +47,7 @@ namespace dragonpoop
         std::atomic<bool> bIsSynced;
         model_ref *m;
         uint64_t t_last_i_ran;
-        dpxyz_f size;
+        dpxyz_f size, center;
         
         //delete all components
         void deleteComponents( void );
@@ -102,6 +102,8 @@ namespace dragonpoop
         virtual renderer_model_material *genMaterial( model_writelock *ml, model_material *m );
         //get size
         void getSize( dpxyz_f *x );
+        //get center
+        void getCenter( dpxyz_f *x );
         
     public:
         

@@ -105,6 +105,8 @@ namespace dragonpoop
         
         s.assign( (char *)t->f.tex_filename, sizeof( t->f.tex_filename ) );
         //s.assign( "beast1.jpg" );
+        s.assign( "dragon-01.jpg" );
+        
         if( s.size() > 0 )
             this->loadBitmap( mv->getDiffuseTexture(), &s );
 

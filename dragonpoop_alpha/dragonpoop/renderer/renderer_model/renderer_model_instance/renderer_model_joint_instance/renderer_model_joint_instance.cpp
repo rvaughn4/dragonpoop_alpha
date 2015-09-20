@@ -41,7 +41,7 @@ namespace dragonpoop
         tt = t - this->start.t;
         td = this->end.t - this->start.t;
         if( !td )
-            re = 0;
+            re = 0.1f;
         else
         {
             if( tt >= td )

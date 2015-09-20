@@ -58,8 +58,8 @@ namespace dragonpoop
         this->blendStart( t );
         
         te = this->findLowestEndTime( mi );
-        if( te < t )
-            te = t;
+        if( te <= t )
+            te = t + 200;
         
         this->combineAllTransforms( te, mi, m, &this->end.pos, &this->end.rot );
         this->end.t = te;
@@ -86,7 +86,7 @@ namespace dragonpoop
         td = this->end.t - this->start.t;
         tt = t - this->start.t;
         if( !td )
-            re = 0;
+            re = 0.1f;
         else
         {
             if( tt >= td )
@@ -94,7 +94,6 @@ namespace dragonpoop
             else
                 re = (float)tt / (float)td;
         }
-        //re = 0.5f + 0.5f * re;
         rs = 1.0f - re;
         
         //lerp the pos

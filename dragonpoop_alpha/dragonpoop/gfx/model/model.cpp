@@ -765,7 +765,7 @@ namespace dragonpoop
     {
         model_header_v2 h;
         
-        h.h.h.version = 1;
+        h.h.h.version = 2;
         h.h.h.size = sizeof( h );
         h.h.cnt_components = (unsigned int)this->comps.lst.size();
         h.h.name_size = (unsigned int)this->sname.size();
@@ -798,7 +798,7 @@ namespace dragonpoop
         b->setReadCursor( i );
         if( h.h.h.size < sizeof( h.h ) || h.h.h.version < 1 )
             return 0;
-        if( h.h.h.size == sizeof( h.h ) && h.h.h.version == 1 )
+        if( h.h.h.size >= sizeof( h.h ) && h.h.h.version == 1 )
             if( !b->readBytes( (uint8_t *)&h, sizeof( h.h ) ) )
                 return 0;
         if( h.h.h.size >= sizeof( h ) && h.h.h.version >= 2 )
@@ -980,4 +980,10 @@ namespace dragonpoop
         *x = this->size;
     }
 
+    //get model dimensions
+    void model::getCenter( dpxyz_f *x )
+    {
+        *x = this->center;
+    }
+    
 };

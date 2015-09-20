@@ -55,6 +55,8 @@ namespace dragonpoop
         void getMaterials( std::list<renderer_model_material *> *l );
         //get size
         void getSize( dpxyz_f *x );
+        //get center
+        void getCenter( dpxyz_f *x );
 
         friend class renderer_model;
     };

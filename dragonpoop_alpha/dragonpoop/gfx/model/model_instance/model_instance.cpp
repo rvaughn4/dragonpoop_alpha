@@ -324,7 +324,7 @@ namespace dragonpoop
     //run animations
     void model_instance::runAnimations( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd )
     {
-        std::list<model_instance_animation *> l;
+        std::list<model_instance_animation *> l, d;
         std::list<model_instance_animation *>::iterator i;
         model_instance_animation *p;
         
@@ -333,6 +333,15 @@ namespace dragonpoop
         {
             p = *i;
             p->run( mi, ml, thd, (unsigned int)this->t_frame_time );
+            if( !p->isPlaying() )
+                d.push_back( p );
+        }
+
+        for( i = d.begin(); i != d.end(); ++i )
+        {
+            p = *i;
+            this->removeComponent( p );
+            delete p;
         }
     }
     

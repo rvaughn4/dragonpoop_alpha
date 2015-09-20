@@ -291,6 +291,7 @@ namespace dragonpoop
         if( !this->bIsSynced )
         {
             ml->getSize( &this->size );
+            ml->getCenter( &this->center );
             this->syncMaterials( ml );
             this->syncInstances( ml );
             this->onSync( thd, g, ml );
@@ -421,6 +422,12 @@ namespace dragonpoop
     void renderer_model::getSize( dpxyz_f *x )
     {
         *x = this->size;
+    }
+
+    //get center
+    void renderer_model::getCenter( dpxyz_f *x )
+    {
+        *x = this->center;
     }
 
 };

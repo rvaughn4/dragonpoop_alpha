@@ -298,4 +298,11 @@ namespace dragonpoop
     {
         return this->t->getSize( x );
     }
+
+    //get model dimensions
+    void model_readlock::getCenter( dpxyz_f *x )
+    {
+        return this->t->getCenter( x );
+    }
+
 };

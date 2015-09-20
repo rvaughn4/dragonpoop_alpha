@@ -77,4 +77,10 @@ namespace dragonpoop
         this->t->getSize( x );
     }
 
+    //get center
+    void renderer_model_readlock::getCenter( dpxyz_f *x )
+    {
+        this->t->getCenter( x );
+    }
+    
 };

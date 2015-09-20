@@ -194,6 +194,8 @@ namespace dragonpoop
         bool readComponent( dpbuffer *b, model_component **c );
         //get model dimensions
         void getSize( dpxyz_f *x );
+        //get model dimensions
+        void getCenter( dpxyz_f *x );
 
         friend class model;
     };

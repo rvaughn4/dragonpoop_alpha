@@ -54,7 +54,7 @@ int main( int argc, const char * argv[] )
     lr = 0;
     
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "test1", "", "felhound_hi_milkshape.ms3d", 0, &lr );
+    gl->loadModel( "test1", "", "felhound_hi_milkshape.dpmodel", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
@@ -75,20 +75,24 @@ int main( int argc, const char * argv[] )
     ml->setGuiSize( 2000, 2000 );
     o.unlock();
     delete m;
+    
+    main_pause( c, 1 );
 
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    m = gl->makeModelInstance( "test1" );
+    o.unlock();
+    delete m;
+    
   //  main_pause( c, 2 );
     
-   // gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-   // m = gl->makeModelInstance( "test2" );
-    //o.unlock();
-    //delete m;
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
 
 
     //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
     //gl->saveModel( "test", "", "out_beast.ms3d", 0 );
-   // gl->saveModel( "test", "", "beast.dpmodel", 0 );
+   // gl->saveModel( "test1", "", "dragon_anim.dpmodel", 0 );
  
-   // o.unlock();
+    o.unlock();
   
     while( c->isRunning() )
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );

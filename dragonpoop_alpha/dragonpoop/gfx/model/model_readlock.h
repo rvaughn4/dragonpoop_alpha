@@ -137,6 +137,8 @@ namespace dragonpoop
         bool writeHeader( dpbuffer *b );
         //get model dimensions
         void getSize( dpxyz_f *x );
+        //get model dimensions
+        void getCenter( dpxyz_f *x );
 
         friend class model;
     };

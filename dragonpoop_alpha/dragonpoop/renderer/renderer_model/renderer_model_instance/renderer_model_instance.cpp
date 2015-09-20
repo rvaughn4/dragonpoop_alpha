@@ -579,13 +579,15 @@ namespace dragonpoop
     //get model view matrix
     void renderer_model_instance::getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
-        dpxyz_f sz;
+        dpxyz_f sz, ct;
         float f, sw, sh, x, y, z;
 
         static float rr;
         rr += 0.1f;
         
         m->getSize( &sz );
+        m->getCenter( &ct );
+        
         f = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
         f = sqrtf( f );
         f = 1.0f / f;
@@ -611,15 +613,10 @@ namespace dragonpoop
             y = ( sh - this->gui_pos.h ) / 2;
         }
 
-        x = ( x * 2.0f / sw ) - 1.0f;
-        y = ( y * 2.0f / sh ) - 1.0f;
+        x = ( ( x * 2.0f / sw ) - 1.0f ) + ( this->gui_pos.w / sw );
+        y = ( ( y * 2.0f / sh ) - 1.0f ) + ( this->gui_pos.h / sh );
         z = ( 1.0f / sz.z ) + 1;
         out_model_matrix->translate( x, -y, -z );
-        
-        x = this->gui_pos.w / sw;
-        y = this->gui_pos.h / sh;
-        out_model_matrix->translate( x, -y, 0 );
-        
         
         x = this->gui_pos.w / sw;
         y = this->gui_pos.h / sh;
@@ -628,8 +625,9 @@ namespace dragonpoop
         z = 1.0f / sz.z;
         out_model_matrix->scale( x, y, z );
         
-        out_model_matrix->rotateY( rr );
+        out_model_matrix->translate( -ct.x, -ct.y, -ct.z );
         
+        //out_model_matrix->rotateY( rr );
     }
     
     //get dimensions
