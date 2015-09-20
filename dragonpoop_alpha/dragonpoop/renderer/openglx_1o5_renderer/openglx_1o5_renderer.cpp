@@ -354,7 +354,7 @@ namespace dragonpoop
         t = thd->getTicks();
         dlist = ( (openglx_1o5_renderer_model_instance_group *)g )->getList();
         ot = ( (openglx_1o5_renderer_model_instance_group *)g )->getLastFrameTime();
-        if( t - ot > 50 || !dlist )
+        if( t - ot > 30 || !dlist )
         {
             mi->redoMatrixes( thd->getTicks() );
             ( (openglx_1o5_renderer_model_instance_group *)g )->setLastFrameTime( t );

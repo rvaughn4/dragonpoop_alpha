@@ -196,6 +196,8 @@ namespace dragonpoop
         void getSize( dpxyz_f *x );
         //get model dimensions
         void getCenter( dpxyz_f *x );
+        //eliminate excess frames to bring animations down in resolution
+        void reduceFrames( unsigned int ms_res );
 
         friend class model;
     };

@@ -71,9 +71,11 @@ namespace dragonpoop
         model_loader_ms3d *ldr;
         unsigned int i, e, ii, ee;
         bool f;
-        float fft;
+        float fft, fd, ftd;
         
         ldr = (model_loader_ms3d *)ml->getLoader();
+        fd = ldr->anim.fps / 7.0f;
+        
         e = (unsigned int)l->size();
         for( i = 0; i < e; i++ )
         {
@@ -82,7 +84,10 @@ namespace dragonpoop
             ee = (unsigned int)this->frame_times.size();
             for( f = 0, ii = 0; !f && ii < ee; ii++ )
             {
-               if( fft == this->frame_times[ ii ] )
+                ftd = fft - this->frame_times[ ii ];
+                if( ftd < 0 )
+                    ftd = -ftd;
+                if( ftd < fd )
                    f = 1;
             }
             if( !f )
@@ -168,7 +173,8 @@ namespace dragonpoop
         ms3d_model_frame *f;
         ms3d_model_joint_m *j;
         model_frame_joint *fjnt;
-        dpxyz_f x;
+        dpxyz_f x_t, x_r;
+        float fs, fd;
         
         m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeFrameJoints" );
         if( !m )
@@ -186,13 +192,23 @@ namespace dragonpoop
             for( i_j = 0; i_j < e_j; i_j++ )
             {
                 j = &( *jl )[ i_j ];
+
+                this->getKeyframeQuat( f->t / ldr->anim.fps, &j->rotate_frames, &x_r );
+                this->getKeyframe( f->t / ldr->anim.fps, &j->translate_frames, &x_t );
+                
+                fs = x_r.x * x_r.x + x_r.y * x_r.y + x_r.z * x_r.z;
+                if( fs )
+                    fs = sqrtf( fs );
+                fd = x_t.x * x_t.x + x_t.y * x_t.y + x_t.z * x_t.z;
+                if( fd )
+                    fd = sqrtf( fd );
+                
+                if( fs < 0.01f && fd < 0.01f )
+                    continue;
                 
                 fjnt = m->makeFrameJoint( thd->genId(), f->id, j->id );
-                
-                this->getKeyframe( f->t / ldr->anim.fps, &j->translate_frames, &x );
-                fjnt->setTranslation( &x );
-                this->getKeyframeQuat( f->t / ldr->anim.fps, &j->rotate_frames, &x );
-                fjnt->setRotation( &x );
+                fjnt->setTranslation( &x_t );
+                fjnt->setRotation( &x_r );
             }
         }
         

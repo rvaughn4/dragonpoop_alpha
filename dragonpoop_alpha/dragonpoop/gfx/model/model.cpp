@@ -78,7 +78,16 @@ namespace dragonpoop
     //run model from task
     void model::run( dpthread_lock *thd, model_writelock *g )
     {
-        this->ran_time = thd->getTicks();
+        uint64_t t;
+        
+        t = thd->getTicks();
+        this->ran_time = t;
+        if( t - this->last_ran_time > 4000 )
+        {
+            this->last_ran_time = t;
+            this->runComponents();
+        }
+        
         this->runInstances( thd, g );
     }
 
@@ -978,22 +987,28 @@ namespace dragonpoop
         this->center.z = cen.z / c;
         
         this->cnt_verts = (unsigned int)l.size();
+        this->sz_verts = this->cnt_verts * sizeof( model_vertex );
         l.clear();
         
         this->getTriangles( (std::list<model_triangle *> *)&lt );
         this->cnt_triangles = (unsigned int)lt.size();
-        lt.clear();
-        
-        this->getFrames( (std::list<model_frame *> *)&lt );
-        this->cnt_frames = (unsigned int)lt.size();
-        lt.clear();
-        
-        this->getAnimations( (std::list<model_animation *> *)&lt );
-        this->cnt_animations = (unsigned int)lt.size();
+        this->sz_triangles = this->cnt_triangles * ( sizeof( model_vertex ) + 3 * sizeof( model_triangle_vertex ) );
         lt.clear();
         
         this->getJoints( (std::list<model_joint *> *)&lt );
         this->cnt_joints = (unsigned int)lt.size();
+        this->sz_joints = this->cnt_joints * sizeof( model_joint );
+        lt.clear();
+        
+        this->getFrames( (std::list<model_frame *> *)&lt );
+        this->cnt_frames = (unsigned int)lt.size();
+        this->sz_frames = this->cnt_frames * ( sizeof( model_frame ) + this->cnt_joints * sizeof( model_frame_joint ) );
+        lt.clear();
+        
+        this->getAnimations( (std::list<model_animation *> *)&lt );
+        this->cnt_animations = (unsigned int)lt.size();
+        this->sz_animations = this->cnt_frames * ( this->cnt_joints * sizeof( model_frame_joint ) + sizeof( model_frame ) + sizeof( model_animation_frame ) );
+        this->sz_animations += this->cnt_animations * sizeof( model_animation );
         lt.clear();
     }
     
@@ -1022,6 +1037,44 @@ namespace dragonpoop
     void model::getCenter( dpxyz_f *x )
     {
         *x = this->center;
+    }
+    
+    void model::runComponents( void )
+    {
+        std::list<model_component *> *l, d;
+        std::list<model_component *>::iterator i;
+        model_component *p;
+        
+        l = &this->comps.lst;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isAlive() )
+                d.push_back( p );
+        }
+
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->removeComponent( p );
+            delete p;
+        }
+    }
+    
+    //eliminate excess frames to bring animations down in resolution
+    void model::reduceFrames( model_writelock *ml, unsigned int ms_res )
+    {
+        std::list<model_animation *> l;
+        std::list<model_animation *>::iterator i;
+        model_animation *p;
+        
+        this->getAnimations( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->reduceFrames( ml, ms_res );
+        }
     }
     
 };

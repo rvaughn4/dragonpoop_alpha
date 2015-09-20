@@ -13,6 +13,7 @@ namespace dragonpoop
         this->mtype = mtype;
         this->sname = 0;
         this->scmmt = 0;
+        this->bIsalive = 1;
     }
 
     //dtor
@@ -220,6 +221,18 @@ namespace dragonpoop
         
         b->setReadCursor( rc + h.h.total_size );
         return r;
+    }
+    
+    //kill component
+    void model_component::kill( void )
+    {
+        this->bIsalive = 0;
+    }
+    
+    //returns true if alive
+    bool model_component::isAlive( void )
+    {
+        return this->bIsalive;
     }
     
 };

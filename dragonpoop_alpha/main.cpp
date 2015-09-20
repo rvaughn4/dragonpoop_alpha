@@ -52,45 +52,61 @@ int main( int argc, const char * argv[] )
     gr = c->getGfx();
     
     lr = 0;
-    
+  
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "test1", "", "dragon_anim.dpmodel", 0, &lr );
+    gl->loadModel( "test1", "", "3drt_dragon_high.dpmodel", 0, &lr );
+    o.unlock();
+    main_wait_loader( c, lr );
+    delete lr;
+
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    gl->loadModel( "test2", "", "3drt_dragon_low.dpmodel", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
     
-   // gl->loadModel( "test2", "", "felhound_hi_milkshape.dpmodel", 0, 0 );//&lr );
-   // main_wait_loader( c, lr );
-    //delete lr;
-
-    main_pause( c, 2 );
-    
+    main_pause( c, 1 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     m = gl->makeModelInstance( "test1" );
     o.unlock();
-    
-    ml = (dragonpoop::model_instance_writelock *)o.writeLock( m, "main" );
-    ml->setGuiMode( 1 );
-    ml->setGuiPosition( 0, 0 );
-    ml->setGuiSize( 2000, 2000 );
+
+    main_pause( c, 1 );
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    m = gl->makeModelInstance( "test2" );
     o.unlock();
     delete m;
     
     main_pause( c, 1 );
-
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     m = gl->makeModelInstance( "test1" );
+    o.unlock();
+    
+    main_pause( c, 1 );
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    m = gl->makeModelInstance( "test2" );
+    o.unlock();
+    delete m;
+    
+    main_pause( c, 1 );
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    m = gl->makeModelInstance( "test1" );
+    o.unlock();
+    
+    main_pause( c, 1 );
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    m = gl->makeModelInstance( "test2" );
     o.unlock();
     delete m;
     
   //  main_pause( c, 2 );
-    
+  
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
 
 
     //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
     //gl->saveModel( "test", "", "out_beast.ms3d", 0 );
-   // gl->saveModel( "test1", "", "dragon_anim.dpmodel", 0 );
+  //  gl->saveModel( "test1", "", "3drt_dragon_high.ms3d", 0 );
+  //  gl->saveModel( "test2", "", "3drt_dragon_low.ms3d", 0 );
  
     o.unlock();
   

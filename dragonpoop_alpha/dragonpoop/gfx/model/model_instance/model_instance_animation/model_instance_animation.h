@@ -28,13 +28,6 @@ namespace dragonpoop
         
     protected:
         
-        //return closest frame after time
-        model_frame *findFrameAtTime( model_writelock *ml, unsigned int t, unsigned int *p_time );
-        //return closest frame before time
-        model_frame *findFrameBeforeTime( model_writelock *ml, unsigned int t, unsigned int *p_time );
-        //returns frame with largest movement within a frame time range
-        model_frame *findBiggestFrame( model_writelock *ml, unsigned int t_start, unsigned int t_end );
-
     public:
         
         //ctor

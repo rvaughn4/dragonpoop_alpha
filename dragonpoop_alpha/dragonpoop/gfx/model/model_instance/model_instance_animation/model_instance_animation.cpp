@@ -127,111 +127,6 @@ namespace dragonpoop
         return (unsigned int)f;
     }
     
-    //return closest frame after time
-    model_frame *model_instance_animation::findFrameAtTime( model_writelock *ml, unsigned int t, unsigned int *p_time )
-    {
-        std::list<model_animation_frame *> l;
-        std::list<model_animation_frame *>::iterator i;
-        model_animation_frame *p, *f;
-        
-        ml->getAnimationFrames( &l, this->getAnimationId() );
-        
-        f = 0;
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            
-            if( p->getTime() < t )
-                continue;
-            if( !f )
-            {
-                f = p;
-                continue;
-            }
-            if( f->getTime() < p->getTime() )
-                continue;
-            f = p;
-        }
-        
-        if( !f )
-            return 0;
-        
-        if( p_time )
-            *p_time = f->getTime();
-        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
-    }
-
-    //return closest frame before time
-    model_frame *model_instance_animation::findFrameBeforeTime( model_writelock *ml, unsigned int t, unsigned int *p_time )
-    {
-        std::list<model_animation_frame *> l;
-        std::list<model_animation_frame *>::iterator i;
-        model_animation_frame *p, *f;
-        
-        ml->getAnimationFrames( &l, this->getAnimationId() );
-        
-        f = 0;
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            
-            if( p->getTime() > t )
-                continue;
-            if( !f )
-            {
-                f = p;
-                continue;
-            }
-            if( f->getTime() > p->getTime() )
-                continue;
-            f = p;
-        }
-        
-        if( !f )
-            return 0;
-        
-        if( p_time )
-            *p_time = f->getTime();
-        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
-    }
-
-    //returns frame with largest movement within a frame time range
-    model_frame *model_instance_animation::findBiggestFrame( model_writelock *ml, unsigned int t_start, unsigned int t_end )
-    {
-        float td, ad;
-        std::list<model_animation_frame *> l;
-        std::list<model_animation_frame *>::iterator i;
-        model_animation_frame *p, *f;
-        model_frame *frm;
-        
-        ml->getAnimationFrames( &l, this->getAnimationId() );
-        
-        f = 0;
-        td = 0;
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-
-            if( p->getTime() > t_end || p->getTime() < t_start )
-                continue;
-            
-            frm = ml->findFrame( p->getFrameId() );
-            if( !frm )
-                continue;
-            ad = frm->getWeight();
-            
-            if( ad < td && f )
-                continue;
-            
-            f = p;
-            td = ad;
-        }
-        
-        if( !f )
-            return 0;
-        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
-    }
-    
     //get start frame id
     dpid model_instance_animation::getStartFrame( void )
     {
@@ -250,6 +145,7 @@ namespace dragonpoop
         float f;
         model_frame *frm;
         unsigned int old_time;
+        model_animation *a;
         
         //stop playing
         if( !this->bDoPlay )
@@ -288,6 +184,10 @@ namespace dragonpoop
             this->bIsPlay = 1;
         }
         
+        a = m->findAnimation( this->getAnimationId() );
+        if( !a )
+            return;
+        
         //calc current animation frame
         f = (float)this->current_time - (float)this->start_time;
         f = f *this->fps / 1000.0f;
@@ -297,17 +197,17 @@ namespace dragonpoop
             old_time = this->current_frame_time;
         
         //find start frame
-        frm = this->findFrameBeforeTime( m, this->current_frame_time, &this->start_frame_time );
+        frm = a->findFrameBeforeTime( m, this->current_frame_time, &this->start_frame_time );
         if( frm )
             this->start_frame = frm->getId();
         
         //find end frame
-        frm = this->findFrameAtTime( m, this->current_frame_time + frame_time, &this->end_frame_time );
+        frm = a->findFrameAtTime( m, this->current_frame_time + frame_time, &this->end_frame_time );
         if( frm )
             this->end_frame = frm->getId();
         
         //find biggest frame
-        frm = this->findBiggestFrame( m, old_time, this->end_frame_time );
+        frm = a->findBiggestFrame( m, old_time, this->end_frame_time );
         if( frm )
             this->end_frame = frm->getId();
     }

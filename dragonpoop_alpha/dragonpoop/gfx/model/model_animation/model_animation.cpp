@@ -3,6 +3,8 @@
 #include "../model_readlock.h"
 #include "../model_writelock.h"
 #include "../../../core/dpbuffer/dpbuffer.h"
+#include "../model_animation_frame/model_animation_frame.h"
+#include "../model_frame/model_frame.h"
 
 namespace dragonpoop
 {
@@ -153,4 +155,171 @@ namespace dragonpoop
         return 1;
     }
 
+    //reduce frame resolution by eliminating frames
+    void model_animation::reduceFrames( model_writelock *ml, unsigned int ms_res )
+    {
+        float frame_step;
+        unsigned int s_frm, e_frm;
+        model_frame *f;
+        bool b;
+        
+        if( !ms_res )
+            return;
+        frame_step = (float)ms_res * this->speed / 1000.0f;
+        if( frame_step < 2.0f )
+            return;
+        
+        b = 1;
+        s_frm = 0;
+        e_frm = frame_step;
+        while( b )
+        {
+            f = this->findBiggestFrame( ml, s_frm, e_frm );
+            if( !f )
+                b = 0;
+            else
+                this->killSmallerFrames( ml, f, s_frm, e_frm );
+            
+            s_frm += frame_step;
+            e_frm += frame_step;
+        }
+    }
+    
+    //return closest frame after time
+    model_frame *model_animation::findFrameAtTime( model_writelock *ml, unsigned int t, unsigned int *p_time )
+    {
+        std::list<model_animation_frame *> l;
+        std::list<model_animation_frame *>::iterator i;
+        model_animation_frame *p, *f;
+        
+        ml->getAnimationFrames( &l, this->getId() );
+        
+        f = 0;
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            
+            if( p->getTime() < t )
+                continue;
+            if( !f )
+            {
+                f = p;
+                continue;
+            }
+            if( f->getTime() < p->getTime() )
+                continue;
+            f = p;
+        }
+        
+        if( !f )
+            return 0;
+        
+        if( p_time )
+            *p_time = f->getTime();
+        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
+    }
+    
+    //return closest frame before time
+    model_frame *model_animation::findFrameBeforeTime( model_writelock *ml, unsigned int t, unsigned int *p_time )
+    {
+        std::list<model_animation_frame *> l;
+        std::list<model_animation_frame *>::iterator i;
+        model_animation_frame *p, *f;
+        
+        ml->getAnimationFrames( &l, this->getId() );
+        
+        f = 0;
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            
+            if( p->getTime() > t )
+                continue;
+            if( !f )
+            {
+                f = p;
+                continue;
+            }
+            if( f->getTime() > p->getTime() )
+                continue;
+            f = p;
+        }
+        
+        if( !f )
+            return 0;
+        
+        if( p_time )
+            *p_time = f->getTime();
+        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
+    }
+    
+    //returns frame with largest movement within a frame time range
+    model_frame *model_animation::findBiggestFrame( model_writelock *ml, unsigned int t_start, unsigned int t_end )
+    {
+        float td, ad;
+        std::list<model_animation_frame *> l;
+        std::list<model_animation_frame *>::iterator i;
+        model_animation_frame *p, *f;
+        model_frame *frm;
+        
+        ml->getAnimationFrames( &l, this->getId() );
+        
+        f = 0;
+        td = 0;
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            
+            if( p->getTime() > t_end || p->getTime() < t_start )
+                continue;
+            
+            frm = ml->findFrame( p->getFrameId() );
+            if( !frm )
+                continue;
+            ad = frm->getWeight();
+            
+            if( ad < td && f )
+                continue;
+            
+            f = p;
+            td = ad;
+        }
+        
+        if( !f )
+            return 0;
+        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
+    }
+    
+    //eliminate all frames smaller than given weight
+    void model_animation::killSmallerFrames( model_writelock *ml, model_frame *f, unsigned int t_start, unsigned int t_end )
+    {
+        float w, pw;
+        std::list<model_animation_frame *> l;
+        std::list<model_animation_frame *>::iterator i;
+        model_animation_frame *p;
+        model_frame *frm;
+        
+        if( !f )
+            return;
+        w = f->getWeight();
+
+        ml->getAnimationFrames( &l, this->getId() );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            
+            if( p->getTime() > t_end || p->getTime() < t_start )
+                continue;
+            
+            frm = ml->findFrame( p->getFrameId() );
+            if( !frm || frm == f )
+                continue;
+            pw = frm->getWeight();
+            
+            if( pw <= w )
+                p->kill();
+        }
+    }
+    
 };

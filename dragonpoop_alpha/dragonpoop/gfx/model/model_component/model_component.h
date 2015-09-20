@@ -39,6 +39,7 @@ namespace dragonpoop
         uint16_t mtype;
         dpid id;
         std::atomic<std::string *> sname, scmmt;
+        std::atomic<bool> bIsalive;
 
     protected:
 
@@ -81,6 +82,10 @@ namespace dragonpoop
         static bool readType( dpbuffer *b, uint16_t *mtype );
         //read component from file/memory
         virtual bool read( dpbuffer *b );
+        //kill component
+        void kill( void );
+        //returns true if alive
+        bool isAlive( void );
 
     };
 

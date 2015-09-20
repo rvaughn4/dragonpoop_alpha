@@ -468,4 +468,10 @@ namespace dragonpoop
         return this->t->getCenter( x );
     }
 
+    //eliminate excess frames to bring animations down in resolution
+    void model_writelock::reduceFrames( unsigned int ms_res )
+    {
+        this->t->reduceFrames( this, ms_res );
+    }
+    
 };

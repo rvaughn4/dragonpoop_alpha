@@ -588,16 +588,18 @@ namespace dragonpoop
         m->getSize( &sz );
         m->getCenter( &ct );
         
-        f = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
-        f = sqrtf( f );
-        f = 1.0f / f;
-
         out_model_matrix->copy( in_world_matrix );
         
         if( !this->isGui() )
         {
-            out_model_matrix->translate( 0, -0.5f * f * sz.y, -( f * sz.z + 2 ) );
+            f = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
+            f = sqrtf( f );
+            f = 1.0f / f;
+
+            out_model_matrix->translate( 0, 0, -1 );
+            
             out_model_matrix->scale( f, f, f );
+            out_model_matrix->translate( -ct.x, -ct.y, -ct.z - sz.z );
             out_model_matrix->rotateY( rr );
             return;
         }

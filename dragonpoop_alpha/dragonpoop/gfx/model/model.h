@@ -83,9 +83,10 @@ namespace dragonpoop
         } comps;
         std::list<model_instance *> instances;
         renderer_model_ref *r;
-        uint64_t ran_time;
+        uint64_t ran_time, last_ran_time;
         dpxyz_f size, center;
         uint32_t cnt_verts, cnt_triangles, cnt_frames, cnt_joints, cnt_animations;
+        uint32_t sz_verts, sz_triangles, sz_frames, sz_joints, sz_animations;
 
         //delete all components
         void deleteComponents( void );
@@ -99,6 +100,8 @@ namespace dragonpoop
         void findSize( void );
         //compute weights of frames
         void computeFrameWeights( model_writelock *ml );
+        //run components
+        void runComponents( void );
         
     protected:
 
@@ -256,6 +259,8 @@ namespace dragonpoop
         void getSize( dpxyz_f *x );
         //get model dimensions
         void getCenter( dpxyz_f *x );
+        //eliminate excess frames to bring animations down in resolution
+        void reduceFrames( model_writelock *ml, unsigned int ms_res );
         
     public:
 
