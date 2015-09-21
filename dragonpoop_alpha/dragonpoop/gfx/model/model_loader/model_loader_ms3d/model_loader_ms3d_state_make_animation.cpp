@@ -35,6 +35,7 @@ namespace dragonpoop
         model_writelock *m;
         model_animation *ma;
         model_loader_ms3d *t;
+        std::string sname;
         
         m = (model_writelock *)o.writeLock( this->m, "model_loader_ms3d_state_make_animation::run" );
         if( !m )
@@ -47,10 +48,13 @@ namespace dragonpoop
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
         ma->setAutoPlay( 1 );
         ma->setRepeatDelay( 0 );
-        ma->setRepeated( 1 );
+        ma->setRepeated( 0 );
         ma->setFps( t->anim.fps );
         ma->setLength( t->anim.cnt_frames );
         t->anim_id = ma->getId();
+        
+        sname.assign( "default" );
+        ma->setName( &sname );
         
         return new model_loader_ms3d_state_make_frames( this->b, this->m );
     }

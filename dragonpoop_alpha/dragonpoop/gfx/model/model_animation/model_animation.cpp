@@ -145,8 +145,8 @@ namespace dragonpoop
             return 0;
         b->setReadCursor( rc + h.h.size );
         
-        this->bIsAutplay = h.bIsAutplay;
-        this->bIsRepeat = h.bIsRepeat;
+        this->bIsAutplay = 0;//h.bIsAutplay;
+        this->bIsRepeat = 0;//h.bIsRepeat;
         this->cnt_frames = h.cnt_frames;
         this->len_frames = h.len_frames;
         this->speed = h.speed;

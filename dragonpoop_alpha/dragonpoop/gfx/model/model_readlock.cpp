@@ -191,6 +191,12 @@ namespace dragonpoop
         return this->t->findAnimation( id );
     }
     
+    //find animation
+    model_animation *model_readlock::findAnimation( const char *cname )
+    {
+        return this->t->findAnimation( cname );
+    }
+
     //get animations
     void model_readlock::getAnimations( std::list<model_animation *> *l )
     {
@@ -303,6 +309,12 @@ namespace dragonpoop
     void model_readlock::getCenter( dpxyz_f *x )
     {
         return this->t->getCenter( x );
+    }
+    
+    //find instance
+    model_instance_ref *model_readlock::findInstance( dpid id )
+    {
+        return this->t->findInstance( id );
     }
 
 };

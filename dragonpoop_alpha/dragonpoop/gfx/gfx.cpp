@@ -22,6 +22,8 @@
 #include "model/model_saver/model_saver.h"
 #include "model/model_saver/model_saver_readlock.h"
 #include "model/model_saver/model_saver_writelock.h"
+#include "model/model_instance/model_instance_ref.h"
+#include "model/model_instance/model_instance_writelock.h"
 
 namespace dragonpoop
 {
@@ -454,73 +456,82 @@ namespace dragonpoop
     }
     
     //get a model instance by name
-    model_instance_ref *gfx::makeModelInstance( const char *cname )
+    dpid gfx::makeModelInstance( const char *cname, model_instance_ref **r )
     {
         model_ref *m;
-        model_writelock *ml;
-        shared_obj_guard o, ot;
-        dptaskpool_readlock *tpl;
-        dpthread_lock *tl;
-        model_instance_ref *r;
+        dpid rid;
         
         m = this->findModel( cname );
         if( !m )
-            return 0;
-        ml = (model_writelock *)o.writeLock( m, "gfx::makeModelInstance" );
+        {
+            dpid_zero( &rid );
+            return rid;
+        }
+        
+        rid = this->makeModelInstance( m, r );
+        
         delete m;
-        if( !ml )
-            return 0;
-        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100, "gfx::makeModelInstance" );
-        if( !tpl )
-            return 0;
-        
-        tl = tpl->lockThread();
-        if( !tl )
-            return 0;
-
-        r = ml->makeInstance( tl, tl->genId() );
-        ot.unlock();
-        o.unlock();
-        
-        delete tl;
-        
-        return r;
+        return rid;
     }
     
     //get a model instance by id
-    model_instance_ref *gfx::makeModelInstance( dpid id )
+    dpid gfx::makeModelInstance( dpid id, model_instance_ref **r )
     {
         model_ref *m;
+        dpid rid;
+        
+        m = this->findModel( id );
+        if( !m )
+        {
+            dpid_zero( &rid );
+            return rid;
+        }
+        
+        rid = this->makeModelInstance( m, r );
+        
+        delete m;
+        return rid;
+    }
+    
+    //get a model instance (returns instance id)
+    dpid gfx::makeModelInstance( model_ref *m, model_instance_ref **rr )
+    {
+        dpid rid, nid;
         model_writelock *ml;
         shared_obj_guard o, ot;
         dptaskpool_readlock *tpl;
         dpthread_lock *tl;
         model_instance_ref *r;
-        
-        m = this->findModel( id );
+
+        dpid_zero( &rid );
         if( !m )
-            return 0;
+            return rid;
+
         ml = (model_writelock *)o.writeLock( m, "gfx::makeModelInstance" );
-        delete m;
         if( !ml )
-            return 0;
+            return rid;
         tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100, "gfx::makeModelInstance" );
         if( !tpl )
-            return 0;
+            return rid;
         
         tl = tpl->lockThread();
         if( !tl )
-            return 0;
+            return rid;
+        nid = tl->genId();
         
-        r = ml->makeInstance( tl, tl->genId() );
-        ot.unlock();
-        o.unlock();
-        
+        r = ml->makeInstance( tl, nid );
         delete tl;
-        
-        return r;
-    }
 
+        if( !r )
+            return rid;
+        if( rr )
+            *rr = r;
+        else
+            delete r;
+        
+        return nid;
+    }
+    
     //get models
     void gfx::getModels( std::list<model_ref *> *ll )
     {
@@ -542,6 +553,45 @@ namespace dragonpoop
             r = (model_ref *)pwl->getRef();
             ll->push_back( r );
         }
+    }
+    
+    //start animation by name (returns animation instance id)
+    dpid gfx::startAnimation( const char *mname, dpid minstance_id, const char *anim_name, bool do_repeat, float speed )
+    {
+        dpid rid;
+        model_instance_ref *mr;
+        model_instance_writelock *mil;
+        model_ref *m;
+        model_readlock *ml;
+        shared_obj_guard om, omr, ot;
+        dptaskpool_readlock *tl;
+        
+        dpid_zero( &rid );
+        m = this->findModel( mname );
+        if( !m )
+            return rid;
+        
+        ml = (model_readlock *)om.tryWriteLock( m, 300, "gfx::startAnimation" );
+        delete m;
+        if( !ml )
+            return rid;
+        
+        mr = ml->findInstance( minstance_id );
+        if( !mr )
+            return rid;
+        
+        mil = (model_instance_writelock *)omr.tryWriteLock( mr, 300, "gfx::startAnimation" );
+        delete mr;
+        if( !mil )
+            return rid;
+        
+        tl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 300, "gfx::startAnimation" );
+        if( !tl )
+            return rid;
+        
+        rid = mil->playAnimation( tl->genId(), ml, anim_name, do_repeat, speed );
+     
+        return rid;
     }
     
 };

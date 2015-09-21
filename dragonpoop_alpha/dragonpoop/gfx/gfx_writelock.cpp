@@ -72,21 +72,27 @@ namespace dragonpoop
     }
     
     //get a model instance by name
-    model_instance_ref *gfx_writelock::makeModelInstance( const char *cname )
+    dpid gfx_writelock::makeModelInstance( const char *cname, model_instance_ref **r )
     {
-        return this->t->makeModelInstance( cname );
+        return this->t->makeModelInstance( cname, r );
     }
     
     //get a model instance by id
-    model_instance_ref *gfx_writelock::makeModelInstance( dpid id )
+    dpid gfx_writelock::makeModelInstance( dpid id, model_instance_ref **r )
     {
-        return this->t->makeModelInstance( id );
+        return this->t->makeModelInstance( id, r );
     }
     
     //get models
     void gfx_writelock::getModels( std::list<model_ref *> *l )
     {
         this->t->getModels( l );
+    }
+    
+    //start animation by name (returns animation instance id)
+    dpid gfx_writelock::startAnimation( const char *mname, dpid minstance_id, const char *anim_name, bool do_repeat, float speed )
+    {
+        return this->t->startAnimation( mname, minstance_id, anim_name, do_repeat, speed );
     }
     
 };

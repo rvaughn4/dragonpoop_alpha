@@ -95,6 +95,72 @@ namespace dragonpoop
         return this->t->findAnimation( id );
     }
     
+    //find animation
+    model_instance_animation *model_instance_writelock::findAnimation( const char *cname )
+    {
+        return this->t->findAnimation( cname );
+    }
+    
+    //play animation (returns animation instance id)
+    dpid model_instance_writelock::playAnimation( dpid id, model_readlock *ml, const char *cname, bool bDoRepeat, float speed )
+    {
+        return this->t->playAnimation( id, ml, cname, bDoRepeat, speed );
+    }
+    
+    //play animation (returns animation instance id)
+    dpid model_instance_writelock::playAnimation( dpid id, model_writelock *ml, const char *cname, bool bDoRepeat, float speed )
+    {
+        return this->t->playAnimation( id, ml, cname, bDoRepeat, speed );
+    }
+    
+    //stop animation
+    void model_instance_writelock::stopAnimation( const char *cname )
+    {
+        this->t->stopAnimation( cname );
+    }
+    
+    //stop animation
+    void model_instance_writelock::stopAnimation( dpid id )
+    {
+        this->t->stopAnimation( id );
+    }
+    
+    //returns true if animation is playing
+    bool model_instance_writelock::isAnimationPlaying( const char *cname )
+    {
+        return this->t->isAnimationPlaying( cname );
+    }
+    
+    //returns true if animation is playing
+    bool model_instance_writelock::isAnimationPlaying( dpid id )
+    {
+        return this->t->isAnimationPlaying( id );
+    }
+    
+    //change animation repeat
+    void model_instance_writelock::setAnimationRepeat( const char *cname, bool bDoRepeat )
+    {
+        this->t->setAnimationRepeat( cname, bDoRepeat );
+    }
+    
+    //change animation repeat
+    void model_instance_writelock::setAnimationRepeat( dpid id, bool bDoRepeat )
+    {
+        this->t->setAnimationRepeat( id, bDoRepeat );
+    }
+    
+    //change animation speed
+    void model_instance_writelock::setAnimationSpeed( const char *cname, float s )
+    {
+        this->t->setAnimationSpeed( cname, s );
+    }
+    
+    //change animation speed
+    void model_instance_writelock::setAnimationSpeed( dpid id, float s )
+    {
+        this->t->setAnimationSpeed( id, s );
+    }
+    
     //get animations
     void model_instance_writelock::getAnimations( std::list<model_instance_animation *> *l )
     {

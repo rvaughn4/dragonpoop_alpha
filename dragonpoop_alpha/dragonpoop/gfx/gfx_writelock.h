@@ -51,11 +51,13 @@ namespace dragonpoop
         //find model by id
         model_ref *findModel( dpid id );
         //get a model instance by name
-        model_instance_ref *makeModelInstance( const char *cname );
+        dpid makeModelInstance( const char *cname, model_instance_ref **r );
         //get a model instance by id
-        model_instance_ref *makeModelInstance( dpid id );
+        dpid makeModelInstance( dpid id, model_instance_ref **r );
         //get models
         void getModels( std::list<model_ref *> *l );
+        //start animation by name (returns animation instance id)
+        dpid startAnimation( const char *mname, dpid minstance_id, const char *anim_name, bool do_repeat, float speed );
 
         friend class gfx;
     };

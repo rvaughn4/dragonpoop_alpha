@@ -312,6 +312,12 @@ namespace dragonpoop
         return this->t->findAnimation( id );
     }
     
+    //find animation
+    model_animation *model_writelock::findAnimation( const char *cname )
+    {
+        return this->t->findAnimation( cname );
+    }
+    
     //get animations
     void model_writelock::getAnimations( std::list<model_animation *> *l )
     {
@@ -472,6 +478,12 @@ namespace dragonpoop
     void model_writelock::reduceFrames( unsigned int ms_res )
     {
         this->t->reduceFrames( this, ms_res );
+    }
+    
+    //find instance
+    model_instance_ref *model_writelock::findInstance( dpid id )
+    {
+        return this->t->findInstance( id );
     }
     
 };

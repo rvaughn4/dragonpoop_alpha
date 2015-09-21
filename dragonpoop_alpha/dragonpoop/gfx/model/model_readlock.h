@@ -26,6 +26,7 @@ namespace dragonpoop
     class model_frame_joint;
     class dpbuffer;
     struct dpxyz_f;
+    class model_instance_ref;
 
     class model_readlock : public shared_obj_readlock
     {
@@ -101,6 +102,8 @@ namespace dragonpoop
         void getMaterials( std::list<model_material *> *l );
         //find animation
         model_animation *findAnimation( dpid id );
+        //find animation
+        model_animation *findAnimation( const char *cname );
         //get animations
         void getAnimations( std::list<model_animation *> *l );
         //find joint
@@ -139,6 +142,8 @@ namespace dragonpoop
         void getSize( dpxyz_f *x );
         //get model dimensions
         void getCenter( dpxyz_f *x );
+        //find instance
+        model_instance_ref *findInstance( dpid id );
 
         friend class model;
     };

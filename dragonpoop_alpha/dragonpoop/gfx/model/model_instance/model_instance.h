@@ -22,6 +22,7 @@ namespace dragonpoop
     class model_instance_writelock;
     class model_instance_group;
     class model_writelock;
+    class model_readlock;
     class model_ref;
     class model_vertex;
     class model_group;
@@ -131,6 +132,38 @@ namespace dragonpoop
         model_instance_animation *makeAnimation( dpid id, model_animation *g );
         //find animation
         model_instance_animation *findAnimation( dpid id );
+        //find animation
+        model_instance_animation *findAnimation( const char *cname );
+        //play animation (returns animation instance id)
+        dpid playAnimation( dpid id, model_readlock *ml, const char *cname, bool bDoRepeat, float speed );
+        //play animation (returns animation instance id)
+        dpid playAnimation( dpid id, model_writelock *ml, const char *cname, bool bDoRepeat, float speed );
+        //play animation (returns animation instance id)
+        dpid playAnimation( dpid id, model_animation *a, bool bDoRepeat, float speed );
+        //stop animation
+        void stopAnimation( const char *cname );
+        //stop animation
+        void stopAnimation( dpid id );
+        //stop animation
+        void stopAnimation( model_instance_animation *a );
+        //returns true if animation is playing
+        bool isAnimationPlaying( const char *cname );
+        //returns true if animation is playing
+        bool isAnimationPlaying( dpid id );
+        //returns true if animation is playing
+        bool isAnimationPlaying( model_instance_animation *a );
+        //change animation repeat
+        void setAnimationRepeat( const char *cname, bool bDoRepeat );
+        //change animation repeat
+        void setAnimationRepeat( dpid id, bool bDoRepeat );
+        //change animation repeat
+        void setAnimationRepeat( model_instance_animation *a, bool bDoRepeat );
+        //change animation speed
+        void setAnimationSpeed( const char *cname, float s );
+        //change animation speed
+        void setAnimationSpeed( dpid id, float s );
+        //change animation speed
+        void setAnimationSpeed( model_instance_animation *a, float s );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
         //make animations

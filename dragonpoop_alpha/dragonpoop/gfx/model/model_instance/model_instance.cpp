@@ -7,6 +7,7 @@
 #include "model_instance_animation/model_instance_animation.h"
 #include "model_instance_group/model_instance_group.h"
 #include "../model_writelock.h"
+#include "../model_readlock.h"
 #include "../model_ref.h"
 #include "../../../core/dpbtree/dpid_btree.h"
 #include "../../../core/dpbtree/dpid_multibtree.h"
@@ -44,7 +45,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 10;
+        this->t_frame_time = 20;
         this->bIsSynced = 1;
         this->j_ctr = 0;
         this->t_start = this->t_end = 0;
@@ -391,6 +392,160 @@ namespace dragonpoop
     model_instance_animation *model_instance::findAnimation( dpid id )
     {
         return (model_instance_animation *)this->findComponent( model_component_type_animation, id );
+    }
+    
+    //find animation
+    model_instance_animation *model_instance::findAnimation( const char *cname )
+    {
+        std::list<model_instance_animation *> l;
+        std::list<model_instance_animation *>::iterator i;
+        model_instance_animation *p;
+        std::string s;
+        
+        s.assign( cname );
+        this->getAnimations( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            if( p->compareName( &s ) )
+                return p;
+        }
+        
+        return 0;
+    }
+    
+    //play animation (returns animation instance id)
+    dpid model_instance::playAnimation( dpid id, model_readlock *ml, const char *cname, bool bDoRepeat, float speed )
+    {
+        model_animation *a;
+        a = ml->findAnimation( cname );
+        return this->playAnimation( id, a, bDoRepeat, speed );
+    }
+    
+    //play animation (returns animation instance id)
+    dpid model_instance::playAnimation( dpid id, model_writelock *ml, const char *cname, bool bDoRepeat, float speed )
+    {
+        model_animation *a;
+        a = ml->findAnimation( cname );
+        return this->playAnimation( id, a, bDoRepeat, speed );
+    }
+    
+    //play animation (returns animation instance id)
+    dpid model_instance::playAnimation( dpid id, model_animation *a, bool bDoRepeat, float speed )
+    {
+        model_instance_animation *r;
+        dpid rid;
+        
+        if( !a )
+        {
+            dpid_zero( &rid );
+            return rid;
+        }
+        
+        r = this->makeAnimation( id, a );
+        r->setRepeated( bDoRepeat );
+        
+        if( speed <= 0 )
+            speed = 1;
+        r->setSpeed( speed );
+        r->start();
+        
+        return r->getId();
+    }
+    
+    //stop animation
+    void model_instance::stopAnimation( const char *cname )
+    {
+        model_instance_animation *a;
+        a = this->findAnimation( cname );
+        this->stopAnimation( a );
+    }
+    
+    //stop animation
+    void model_instance::stopAnimation( dpid id )
+    {
+        model_instance_animation *a;
+        a = this->findAnimation( id );
+        this->stopAnimation( a );
+    }
+    
+    //stop animation
+    void model_instance::stopAnimation( model_instance_animation *a )
+    {
+        if( a )
+            a->stop();
+    }
+    
+    //returns true if animation is playing
+    bool model_instance::isAnimationPlaying( const char *cname )
+    {
+        model_instance_animation *a;
+        a = this->findAnimation( cname );
+        return this->isAnimationPlaying( a );
+    }
+    
+    //returns true if animation is playing
+    bool model_instance::isAnimationPlaying( dpid id )
+    {
+        model_instance_animation *a;
+        a = this->findAnimation( id );
+        return this->isAnimationPlaying( a );
+    }
+    
+    //returns true if animation is playing
+    bool model_instance::isAnimationPlaying( model_instance_animation *a )
+    {
+        if( !a )
+            return 0;
+        return a->isPlaying();
+    }
+    
+    //change animation repeat
+    void model_instance::setAnimationRepeat( const char *cname, bool bDoRepeat )
+    {
+        model_instance_animation *a;
+        a = this->findAnimation( cname );
+        this->setAnimationRepeat( a, bDoRepeat );
+    }
+    
+    //change animation repeat
+    void model_instance::setAnimationRepeat( dpid id, bool bDoRepeat )
+    {
+        model_instance_animation *a;
+        a = this->findAnimation( id );
+        this->setAnimationRepeat( a, bDoRepeat );
+    }
+    
+    //change animation repeat
+    void model_instance::setAnimationRepeat( model_instance_animation *a, bool bDoRepeat )
+    {
+        if( a )
+            a->setRepeated( bDoRepeat );
+    }
+    
+    //change animation speed
+    void model_instance::setAnimationSpeed( const char *cname, float s )
+    {
+        model_instance_animation *a;
+        a = this->findAnimation( cname );
+        this->setAnimationSpeed( a, s );
+    }
+    
+    //change animation speed
+    void model_instance::setAnimationSpeed( dpid id, float s )
+    {
+        model_instance_animation *a;
+        a = this->findAnimation( id );
+        this->setAnimationSpeed( a, s );
+    }
+    
+    //change animation speed
+    void model_instance::setAnimationSpeed( model_instance_animation *a, float s )
+    {
+        if( s <= 0 && a )
+            return a->stop();
+        if( a )
+            a->setSpeed( s );
     }
     
     //get animations

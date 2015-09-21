@@ -53,6 +53,12 @@ namespace dragonpoop
         void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
         //find animation
         model_instance_animation *findAnimation( dpid id );
+        //find animation
+        model_instance_animation *findAnimation( const char *cname );
+        //returns true if animation is playing
+        bool isAnimationPlaying( const char *cname );
+        //returns true if animation is playing
+        bool isAnimationPlaying( dpid id );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
         //get joints

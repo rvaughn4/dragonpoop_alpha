@@ -45,8 +45,6 @@ int main( int argc, const char * argv[] )
     dragonpoop::gfx_ref *gr;
     dragonpoop::gfx_writelock *gl;
     dragonpoop::shared_obj_guard o;
-    dragonpoop::model_instance_ref *m;
-    dragonpoop::model_instance_writelock *ml;
     dragonpoop::model_loader_ref *lr;
     
     gr = c->getGfx();
@@ -64,44 +62,32 @@ int main( int argc, const char * argv[] )
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
+
+    dragonpoop::dpid mid;
     
-    main_pause( c, 1 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    m = gl->makeModelInstance( "test1" );
+    mid = gl->makeModelInstance( "test1", 0 );
     o.unlock();
 
-    main_pause( c, 1 );
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    m = gl->makeModelInstance( "test2" );
-    o.unlock();
-    delete m;
-    
-    main_pause( c, 1 );
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    m = gl->makeModelInstance( "test1" );
-    o.unlock();
-    
-    main_pause( c, 1 );
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    m = gl->makeModelInstance( "test2" );
-    o.unlock();
-    delete m;
-    
-    main_pause( c, 1 );
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    m = gl->makeModelInstance( "test1" );
-    o.unlock();
-    
-    main_pause( c, 1 );
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    m = gl->makeModelInstance( "test2" );
-    o.unlock();
-    delete m;
-    
+    int i;
+    while( c->isRunning() && i < 2 )
+    {
+        i++;
+        main_pause( c, 1 );
+        gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+        gl->makeModelInstance( "test1", 0 );
+        o.unlock();
+
+        main_pause( c, 3 );
+        gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+        gl->makeModelInstance( "test2", 0 );
+        o.unlock();
+    }
   //  main_pause( c, 2 );
   
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
 
+    gl->startAnimation( "test1", mid, "", 0, 1 );
 
     //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
     //gl->saveModel( "test", "", "out_beast.ms3d", 0 );

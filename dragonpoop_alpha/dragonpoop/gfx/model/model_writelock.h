@@ -144,6 +144,8 @@ namespace dragonpoop
         model_animation *makeAnimation( dpid id );
         //find animation
         model_animation *findAnimation( dpid id );
+        //find animation
+        model_animation *findAnimation( const char *cname );
         //get animations
         void getAnimations( std::list<model_animation *> *l );
         //add joint
@@ -198,6 +200,8 @@ namespace dragonpoop
         void getCenter( dpxyz_f *x );
         //eliminate excess frames to bring animations down in resolution
         void reduceFrames( unsigned int ms_res );
+        //find instance
+        model_instance_ref *findInstance( dpid id );
 
         friend class model;
     };

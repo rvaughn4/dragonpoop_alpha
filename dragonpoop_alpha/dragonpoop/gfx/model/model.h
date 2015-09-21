@@ -193,6 +193,8 @@ namespace dragonpoop
         model_instance_ref *makeInstance( dpthread_lock *thd, dpid id, model_writelock *ml );
         //get instances
         void getInstances( std::list<model_instance_ref *> *l );
+        //find instance
+        model_instance_ref *findInstance( dpid id );
         //sync model instance with changes
         void sync( dpthread_lock *thd, model_writelock *ml );
         //set renderer model
@@ -207,6 +209,8 @@ namespace dragonpoop
         model_animation *makeAnimation( dpid id );
         //find animation
         model_animation *findAnimation( dpid id );
+        //find animation
+        model_animation *findAnimation( const char *cname );
         //get animations
         void getAnimations( std::list<model_animation *> *l );
         //add joint

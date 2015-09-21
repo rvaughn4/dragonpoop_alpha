@@ -14,6 +14,7 @@ namespace dragonpoop
     class model_instance_group;
     class dpthread_lock;
     class model_writelock;
+    class model_readlock;
     class renderer_model_instance;
     class dpvertexindex_buffer;
     class model_instance_animation;
@@ -62,6 +63,28 @@ namespace dragonpoop
         void fillVertexBuffer( dpid group_id, dpvertexindex_buffer *vb );
         //find animation
         model_instance_animation *findAnimation( dpid id );
+        //find animation
+        model_instance_animation *findAnimation( const char *cname );
+        //play animation (returns animation instance id)
+        dpid playAnimation( dpid id, model_readlock *ml, const char *cname, bool bDoRepeat, float speed );
+        //play animation (returns animation instance id)
+        dpid playAnimation( dpid id, model_writelock *ml, const char *cname, bool bDoRepeat, float speed );
+        //stop animation
+        void stopAnimation( const char *cname );
+        //stop animation
+        void stopAnimation( dpid id );
+        //returns true if animation is playing
+        bool isAnimationPlaying( const char *cname );
+        //returns true if animation is playing
+        bool isAnimationPlaying( dpid id );
+        //change animation repeat
+        void setAnimationRepeat( const char *cname, bool bDoRepeat );
+        //change animation repeat
+        void setAnimationRepeat( dpid id, bool bDoRepeat );
+        //change animation speed
+        void setAnimationSpeed( const char *cname, float s );
+        //change animation speed
+        void setAnimationSpeed( dpid id, float s );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
         //get joints

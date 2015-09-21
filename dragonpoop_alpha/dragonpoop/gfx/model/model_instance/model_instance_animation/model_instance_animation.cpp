@@ -234,4 +234,10 @@ namespace dragonpoop
         return this->anim_id;
     }
     
+    //set speed
+    void model_instance_animation::setSpeed( float f )
+    {
+        this->speed = f;
+    }
+    
 };

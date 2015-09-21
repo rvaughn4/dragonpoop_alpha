@@ -21,7 +21,7 @@ namespace dragonpoop
         
         bool bIsRepeat, bIsAutplay, bDoPlay, bIsPlay;
         unsigned int repeat_delay_f, cnt_frames, len_Frames, current_frame_time, start_frame_time, end_frame_time;
-        float fps;
+        float fps, speed;
         uint64_t start_time, end_time, current_time;
         dpid start_frame, end_frame;
         dpid anim_id;
@@ -72,6 +72,8 @@ namespace dragonpoop
         uint64_t getStartTime( void );
         //return animation id
         dpid getAnimationId( void );
+        //set speed
+        void setSpeed( float f );
 
     };
     

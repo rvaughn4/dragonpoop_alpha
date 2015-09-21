@@ -537,6 +537,32 @@ namespace dragonpoop
         return (model_instance_ref *)pl->getRef();
     }
 
+    //find instance
+    model_instance_ref *model::findInstance( dpid id )
+    {
+        std::list<model_instance *> *l;
+        std::list<model_instance *>::iterator i;
+        model_instance *p;
+        model_instance_writelock *pl;
+        shared_obj_guard o;
+        dpid iid;
+        
+        l = &this->instances;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (model_instance_writelock *)o.tryWriteLock( p, 100, "model::getInstances" );
+            if( !pl )
+                continue;
+            iid = pl->getId();
+            if( !dpid_compare( &iid, &id ) )
+                continue;
+            return (model_instance_ref *)pl->getRef();
+        }
+        
+        return 0;
+    }
+    
     //get instances
     void model::getInstances( std::list<model_instance_ref *> *ll )
     {
@@ -627,6 +653,26 @@ namespace dragonpoop
         return (model_animation *)this->findComponent( model_component_type_animation, id );
     }
 
+    //find animation
+    model_animation *model::findAnimation( const char *cname )
+    {
+        std::list<model_animation *> l;
+        std::list<model_animation *>::iterator i;
+        model_animation *p;
+        std::string s;
+        
+        s.assign( cname );
+        this->getAnimations( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            if( p->compareName( &s ) )
+                return p;
+        }
+        
+        return 0;
+    }
+    
     //get animations
     void model::getAnimations( std::list<model_animation *> *l )
     {

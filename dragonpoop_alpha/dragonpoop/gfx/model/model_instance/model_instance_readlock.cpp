@@ -77,6 +77,24 @@ namespace dragonpoop
         return this->t->findAnimation( id );
     }
     
+    //find animation
+    model_instance_animation *model_instance_readlock::findAnimation( const char *cname )
+    {
+        return this->t->findAnimation( cname );
+    }
+    
+    //returns true if animation is playing
+    bool model_instance_readlock::isAnimationPlaying( const char *cname )
+    {
+        return this->t->isAnimationPlaying( cname );
+    }
+    
+    //returns true if animation is playing
+    bool model_instance_readlock::isAnimationPlaying( dpid id )
+    {
+        return this->t->isAnimationPlaying( id );
+    }
+    
     //get animations
     void model_instance_readlock::getAnimations( std::list<model_instance_animation *> *l )
     {

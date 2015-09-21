@@ -259,7 +259,7 @@ namespace dragonpoop
             return;
         this->t_last_m_ran = tr;
         
-        gl = (gfx_readlock *)og.tryReadLock( this->g, 20, "renderer::runModels" );
+        gl = (gfx_readlock *)og.tryReadLock( this->g, 100, "renderer::runModels" );
         if( !gl )
             return;
         
@@ -276,7 +276,7 @@ namespace dragonpoop
         for( ii = li.begin(); ii != li.end(); ++ii )
         {
             pi = *ii;
-            pl = (model_writelock *)o.tryWriteLock( pi, 3, "renderer::runModels" );
+            pl = (model_writelock *)o.tryWriteLock( pi, 100, "renderer::runModels" );
             delete pi;
             if( !pl )
                 continue;
@@ -290,7 +290,7 @@ namespace dragonpoop
             t.removeLeaf( p );
             if( !p )
                 continue;
-            ppl = (renderer_model_writelock *)og.tryWriteLock( p, 20, "renderer::runModels" );
+            ppl = (renderer_model_writelock *)og.tryWriteLock( p, 100, "renderer::runModels" );
             if( !ppl )
                 continue;
             ppl->run( thd, pl );
@@ -330,7 +330,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_model_readlock *)o.tryReadLock( p, 10, "renderer::renderModels" );
+            pl = (renderer_model_readlock *)o.tryReadLock( p, 30, "renderer::renderModels" );
             if( !pl )
                 continue;
             pl->render( thd, rl, doGui, m_world );
