@@ -52,23 +52,24 @@ int main( int argc, const char * argv[] )
     lr = 0;
   
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "test1", "", "3drt_dragon_high.dpmodel", 0, &lr );
+    gl->loadModel( "test1", "", "dragon_anim.ms3d", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
-
+/*
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "test2", "", "3drt_dragon_low.dpmodel", 0, &lr );
+    gl->loadModel( "test2", "", "3drt_dragon_low.ms3d", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
-
+*/
     dragonpoop::dpid mid;
+    main_pause( c, 5 );
     
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     mid = gl->makeModelInstance( "test1", 0 );
     o.unlock();
-
+/*
     int i;
     while( c->isRunning() && i < 2 )
     {
@@ -84,14 +85,14 @@ int main( int argc, const char * argv[] )
         o.unlock();
     }
   //  main_pause( c, 2 );
-  
+*/
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
 
-    gl->startAnimation( "test1", mid, "", 0, 1 );
+  //  gl->startAnimation( "test1", mid, "default", 1, 1 );
 
     //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
     //gl->saveModel( "test", "", "out_beast.ms3d", 0 );
-  //  gl->saveModel( "test1", "", "3drt_dragon_high.ms3d", 0 );
+   // gl->saveModel( "test1", "", "3drt_dragon_high.dpmodel", 0 );
   //  gl->saveModel( "test2", "", "3drt_dragon_low.ms3d", 0 );
  
     o.unlock();

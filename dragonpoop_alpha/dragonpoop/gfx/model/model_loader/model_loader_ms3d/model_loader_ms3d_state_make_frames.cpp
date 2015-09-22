@@ -74,7 +74,7 @@ namespace dragonpoop
         float fft, fd, ftd;
         
         ldr = (model_loader_ms3d *)ml->getLoader();
-        fd = ldr->anim.fps / 7.0f;
+        fd = ldr->anim.fps / 10.0f;
         
         e = (unsigned int)l->size();
         for( i = 0; i < e; i++ )
@@ -174,7 +174,6 @@ namespace dragonpoop
         ms3d_model_joint_m *j;
         model_frame_joint *fjnt;
         dpxyz_f x_t, x_r;
-        float fs, fd;
         
         m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeFrameJoints" );
         if( !m )
@@ -195,16 +194,6 @@ namespace dragonpoop
 
                 this->getKeyframeQuat( f->t / ldr->anim.fps, &j->rotate_frames, &x_r );
                 this->getKeyframe( f->t / ldr->anim.fps, &j->translate_frames, &x_t );
-                
-                fs = x_r.x * x_r.x + x_r.y * x_r.y + x_r.z * x_r.z;
-                if( fs )
-                    fs = sqrtf( fs );
-                fd = x_t.x * x_t.x + x_t.y * x_t.y + x_t.z * x_t.z;
-                if( fd )
-                    fd = sqrtf( fd );
-                
-                if( fs < 0.01f && fd < 0.01f )
-                    continue;
                 
                 fjnt = m->makeFrameJoint( thd->genId(), f->id, j->id );
                 fjnt->setTranslation( &x_t );

@@ -27,7 +27,8 @@ namespace dragonpoop
         this->parent_id = j->getParent();
         j->getName( &s );
         this->setName( &s );
-        this->end = this->start = this->orig;
+        memset( &this->start, 0, sizeof( this->start ) );
+        this->end = this->start;
         this->index = index;
     }
     

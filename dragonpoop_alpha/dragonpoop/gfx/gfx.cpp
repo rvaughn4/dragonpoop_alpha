@@ -589,6 +589,10 @@ namespace dragonpoop
         if( !tl )
             return rid;
         
+        if( do_repeat )
+            while( mil->isAnimationPlaying( anim_name ) )
+            mil->stopAnimation( anim_name );
+        
         rid = mil->playAnimation( tl->genId(), ml, anim_name, do_repeat, speed );
      
         return rid;
