@@ -28,7 +28,7 @@ namespace dragonpoop
         std::atomic<std::vector<ms3d_model_frame> *> frames;
         ms3d_model_animation_section anim;
         dpid anim_id;
-        std::string cmt;
+        std::string cmt, fname, pname;
         
     protected:
         
@@ -62,6 +62,17 @@ namespace dragonpoop
         
         friend class model_loader_ms3d_state_cleanup;
     };
+    
+    std::string trim_right_copy(
+                                       const std::string& s,
+                                       const std::string& delimiters = " \f\n\r\t\v" );
+    std::string trim_left_copy(
+                                      const std::string& s,
+                                      const std::string& delimiters = " \f\n\r\t\v" );
+    
+    std::string trim_copy(
+                                 const std::string& s,
+                                 const std::string& delimiters = " \f\n\r\t\v" );
     
 };
 

@@ -88,7 +88,8 @@ int main( int argc, const char * argv[] )
 */
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
 
-  //  gl->startAnimation( "test1", mid, "default", 1, 1 );
+    gl->startAnimation( "test1", mid, "gethit", 0, 1 );
+    gl->startAnimation( "test1", mid, "walk-1", 1, 1 );
 
     //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
     //gl->saveModel( "test", "", "out_beast.ms3d", 0 );

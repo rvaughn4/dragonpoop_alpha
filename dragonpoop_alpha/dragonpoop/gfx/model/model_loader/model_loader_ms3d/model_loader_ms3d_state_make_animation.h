@@ -20,6 +20,9 @@ namespace dragonpoop
         
     protected:
         
+        //read text file and create animations
+        void readAnimations( dpthread_lock *thd, model_loader_writelock *ml );
+        
     public:
         
         //ctor

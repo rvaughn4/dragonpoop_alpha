@@ -11,9 +11,11 @@
 #include "../../model_frame/model_frame.h"
 #include "../../model_frame_joint/model_frame_joint.h"
 #include "../../model_animation_frame/model_animation_frame.h"
+#include "../../model_animation/model_animation.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <sstream>
 #include <iostream>
+#include <fstream>
 
 #include <math.h>
 
@@ -36,11 +38,14 @@ namespace dragonpoop
     //run state, returns next state
     model_loader_state *model_loader_ms3d_state_make_frames::run( dpthread_lock *thd, model_loader_writelock *ml )
     {
+        model_loader_ms3d *ldr;
 
+        ldr = (model_loader_ms3d *)ml->getLoader();
         this->findUnique( ml );
         this->makeFrames( thd, ml );
-        this->makeAnimationFrames( thd, ml );
+        this->makeAnimationFrames( thd, ml, ldr->anim_id, 0, 0 );
         this->makeFrameJoints( thd, ml );
+        this->readAnimations( thd, ml );
         
         return new model_loader_ms3d_state_make_triangles( this->b, this->m );
     }
@@ -136,7 +141,7 @@ namespace dragonpoop
     }
     
     //make animation frames
-    void model_loader_ms3d_state_make_frames::makeAnimationFrames( dpthread_lock *thd, model_loader_writelock *ml )
+    void model_loader_ms3d_state_make_frames::makeAnimationFrames( dpthread_lock *thd, model_loader_writelock *ml, dpid anim_id, unsigned int start_frame, unsigned int end_frame )
     {
         model_loader_ms3d *ldr;
         unsigned int i, e;
@@ -156,8 +161,9 @@ namespace dragonpoop
         for( i = 0; i < e; i++ )
         {
             f = &( *ldr->frames )[ i ];
-            frm = m->makeAnimationFrame( thd->genId(), ldr->anim_id, f->id, f->t );
-            f->afid = frm->getId();
+            if( end_frame && ( f->t < start_frame || f->t > end_frame ) )
+                continue;
+            frm = m->makeAnimationFrame( thd->genId(), anim_id, f->id, f->t - start_frame );
         }
     }
     
@@ -314,6 +320,45 @@ namespace dragonpoop
         
         if( !f )
             this->getKeyframeBefore( t, l, x );
+    }
+    
+    //read text file and create animations
+    void model_loader_ms3d_state_make_frames::readAnimations( dpthread_lock *thd, model_loader_writelock *ml )
+    {
+        std::fstream f;
+        model_loader_ms3d *ldr;
+        model_writelock *m;
+        shared_obj_guard o;
+        std::string ss, ds;
+        unsigned int s, e;
+        model_animation *a;
+        
+        m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeAnimationFrames" );
+        if( !m )
+            return;
+        ldr = (model_loader_ms3d *)ml->getLoader();
+        
+        ss.append( ldr->fname );
+        ss.append( ".animations.list.txt" );
+        
+        f.open( ss.c_str(), f.in | f.binary );
+        if( !f.is_open() )
+            return;
+        
+        while( !f.eof() )
+        {
+            f >> s;
+            f >> ds;
+            f >> e;
+            std::getline( f, ss );
+            ss = trim_copy( ss );
+            
+            a = m->findAnimation( ss.c_str() );
+            if( !a )
+                continue;
+            this->makeAnimationFrames( thd, ml, a->getId(), s, e );
+        }
+        
     }
     
 };

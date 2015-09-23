@@ -36,7 +36,7 @@ namespace dragonpoop
         //make frames
         void makeFrames( dpthread_lock *thd, model_loader_writelock *ml );
         //make animation frames
-        void makeAnimationFrames( dpthread_lock *thd, model_loader_writelock *ml );
+        void makeAnimationFrames( dpthread_lock *thd, model_loader_writelock *ml, dpid anim_id, unsigned int start_frame, unsigned int end_frame );
         //make frame joints
         void makeFrameJoints( dpthread_lock *thd, model_loader_writelock *ml );
         //find xyz keyframe before and after time and interpolate
@@ -47,6 +47,8 @@ namespace dragonpoop
         void getKeyframeBefore( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x );
         //find xyz keyframe after time
         void getKeyframeAfter( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x );
+        //read text file and create animations
+        void readAnimations( dpthread_lock *thd, model_loader_writelock *ml );
         
     public:
         

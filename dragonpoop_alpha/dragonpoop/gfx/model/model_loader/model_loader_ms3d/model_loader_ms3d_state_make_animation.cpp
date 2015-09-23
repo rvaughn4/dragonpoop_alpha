@@ -11,6 +11,7 @@
 #include "../../model_ref.h"
 #include "../../model_writelock.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
+#include <fstream>
 
 namespace dragonpoop
 {
@@ -46,7 +47,7 @@ namespace dragonpoop
         ma = m->makeAnimation( thd->genId() );
         if( !ma )
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
-        ma->setAutoPlay( 1 );
+        ma->setAutoPlay( 0 );
         ma->setRepeatDelay( 0 );
         ma->setRepeated( 0 );
         ma->setFps( t->anim.fps );
@@ -56,7 +57,49 @@ namespace dragonpoop
         sname.assign( "default" );
         ma->setName( &sname );
         
+        this->readAnimations( thd, ml );
+        
         return new model_loader_ms3d_state_make_frames( this->b, this->m );
+    }
+   
+    //read text file and create animations
+    void model_loader_ms3d_state_make_animation::readAnimations( dpthread_lock *thd, model_loader_writelock *ml )
+    {
+        std::fstream f;
+        model_loader_ms3d *ldr;
+        model_writelock *m;
+        shared_obj_guard o;
+        std::string ss, ds;
+        unsigned int s, e;
+        model_animation *a;
+        
+        m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeAnimationFrames" );
+        if( !m )
+            return;
+        ldr = (model_loader_ms3d *)ml->getLoader();
+        
+        ss.append( ldr->fname );
+        ss.append( ".animations.list.txt" );
+        
+        f.open( ss.c_str(), f.in | f.binary );
+        if( !f.is_open() )
+            return;
+        
+        while( !f.eof() )
+        {
+            f >> s;
+            f >> ds;
+            f >> e;
+            std::getline( f, ss );
+            ss = trim_copy( ss );
+            
+            a = m->makeAnimation( thd->genId() );
+            if( !a )
+                continue;
+            a->setName( &ss );
+            a->setLength( e - s + 2 );
+        }
+        
     }
     
 };

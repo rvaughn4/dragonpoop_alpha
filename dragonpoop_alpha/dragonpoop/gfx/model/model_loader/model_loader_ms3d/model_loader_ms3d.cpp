@@ -15,6 +15,9 @@ namespace dragonpoop
         this->joints = 0;
         this->frames = 0;
         dpid_zero( &this->anim_id );
+        
+        this->fname.assign( *fname );
+        this->pname.assign( *path_name );
     }
     
     //dtor
@@ -27,5 +30,28 @@ namespace dragonpoop
     {
         return new model_loader_ms3d_state_parse_header( b );
     }
+    
+    std::string trim_right_copy(
+                                       const std::string& s,
+                                       const std::string& delimiters )
+    {
+        return s.substr( 0, s.find_last_not_of( delimiters ) + 1 );
+    }
+    
+    std::string trim_left_copy(
+                                      const std::string& s,
+                                      const std::string& delimiters )
+    {
+        return s.substr( s.find_first_not_of( delimiters ) );
+    }
+    
+    std::string trim_copy(
+                                 const std::string& s,
+                                 const std::string& delimiters )
+    {
+        return trim_left_copy( trim_right_copy( s, delimiters ), delimiters );
+    }
+    
+    
     
 };
