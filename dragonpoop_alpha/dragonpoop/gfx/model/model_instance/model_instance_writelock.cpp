@@ -161,6 +161,12 @@ namespace dragonpoop
         this->t->setAnimationSpeed( id, s );
     }
     
+    //stop all animations
+    void model_instance_writelock::stopAllAnimations( void )
+    {
+        this->t->stopAllAnimations();
+    }
+    
     //get animations
     void model_instance_writelock::getAnimations( std::list<model_instance_animation *> *l )
     {

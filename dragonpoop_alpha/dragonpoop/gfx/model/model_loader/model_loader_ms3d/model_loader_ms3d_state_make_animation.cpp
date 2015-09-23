@@ -47,14 +47,11 @@ namespace dragonpoop
         ma = m->makeAnimation( thd->genId() );
         if( !ma )
             return new model_loader_ms3d_state_cleanup( this->b, this->m, 0 );
-        ma->setAutoPlay( 0 );
-        ma->setRepeatDelay( 0 );
-        ma->setRepeated( 0 );
         ma->setFps( t->anim.fps );
         ma->setLength( t->anim.cnt_frames );
         t->anim_id = ma->getId();
         
-        sname.assign( "default" );
+        sname.assign( "ms3d_all" );
         ma->setName( &sname );
         
         this->readAnimations( thd, ml );
@@ -97,7 +94,8 @@ namespace dragonpoop
             if( !a )
                 continue;
             a->setName( &ss );
-            a->setLength( e - s + 2 );
+            a->setLength( e - s );
+            a->setFps( ldr->anim.fps );
         }
         
     }

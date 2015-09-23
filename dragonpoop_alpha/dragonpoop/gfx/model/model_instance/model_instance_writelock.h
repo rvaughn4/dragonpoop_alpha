@@ -85,6 +85,8 @@ namespace dragonpoop
         void setAnimationSpeed( const char *cname, float s );
         //change animation speed
         void setAnimationSpeed( dpid id, float s );
+        //stop all animations
+        void stopAllAnimations( void );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
         //get joints

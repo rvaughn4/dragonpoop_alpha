@@ -414,6 +414,21 @@ namespace dragonpoop
         return 0;
     }
     
+    //stop all animations
+    void model_instance::stopAllAnimations( void )
+    {
+        std::list<model_instance_animation *> l;
+        std::list<model_instance_animation *>::iterator i;
+        model_instance_animation *p;
+        
+        this->getAnimations( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->stop();
+        }
+    }
+    
     //play animation (returns animation instance id)
     dpid model_instance::playAnimation( dpid id, model_readlock *ml, const char *cname, bool bDoRepeat, float speed )
     {

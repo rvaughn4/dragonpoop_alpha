@@ -52,49 +52,47 @@ int main( int argc, const char * argv[] )
     lr = 0;
   
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "test1", "", "dragon_anim.ms3d", 0, &lr );
+    gl->loadModel( "low_dragon", "", "3drt_dragon_low.dpmodel", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
-/*
+
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "test2", "", "3drt_dragon_low.ms3d", 0, &lr );
+    gl->loadModel( "med_dragon", "", "3drt_dragon_medium.dpmodel", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
-*/
+
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    gl->loadModel( "high_dragon", "", "3drt_dragon_high.dpmodel", 0, &lr );
+    o.unlock();
+    main_wait_loader( c, lr );
+    delete lr;
+
     dragonpoop::dpid mid;
     main_pause( c, 5 );
     
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    mid = gl->makeModelInstance( "test1", 0 );
+    mid = gl->makeModelInstance( "low_dragon", 0 );
+    gl->startAnimation( "low_dragon", mid, "gethit", 1, 5 );
     o.unlock();
-/*
-    int i;
-    while( c->isRunning() && i < 2 )
-    {
-        i++;
-        main_pause( c, 1 );
-        gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-        gl->makeModelInstance( "test1", 0 );
-        o.unlock();
+    
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    mid = gl->makeModelInstance( "med_dragon", 0 );
+    gl->startAnimation( "med_dragon", mid, "run", 1, 0.2f );
+    o.unlock();
+    
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    mid = gl->makeModelInstance( "high_dragon", 0 );
+    gl->startAnimation( "high_dragon", mid, "flying idle", 1, 2 );
+    o.unlock();
+    
 
-        main_pause( c, 3 );
-        gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-        gl->makeModelInstance( "test2", 0 );
-        o.unlock();
-    }
-  //  main_pause( c, 2 );
-*/
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
 
-    gl->startAnimation( "test1", mid, "gethit", 0, 1 );
-    gl->startAnimation( "test1", mid, "walk-1", 1, 1 );
-
-    //gl = (dragonpoop::gfx_writelock *)o.writeLock( gr );
-    //gl->saveModel( "test", "", "out_beast.ms3d", 0 );
-   // gl->saveModel( "test1", "", "3drt_dragon_high.dpmodel", 0 );
-  //  gl->saveModel( "test2", "", "3drt_dragon_low.ms3d", 0 );
+    //gl->saveModel( "low_dragon", "", "3drt_dragon_low.ms3d", 0 );
+    //gl->saveModel( "med_dragon", "", "3drt_dragon_medium.ms3d", 0 );
+    //gl->saveModel( "high_dragon", "", "3drt_dragon_high.ms3d", 0 );
  
     o.unlock();
   

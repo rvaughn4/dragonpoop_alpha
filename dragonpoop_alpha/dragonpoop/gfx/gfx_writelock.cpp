@@ -95,4 +95,10 @@ namespace dragonpoop
         return this->t->startAnimation( mname, minstance_id, anim_name, do_repeat, speed );
     }
     
+    //stop all animations
+    void gfx_writelock::stopAllAnimations( const char *mname, dpid minstance_id )
+    {
+        this->t->stopAllAnimations( mname, minstance_id );
+    }
+    
 };

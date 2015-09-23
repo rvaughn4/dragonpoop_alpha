@@ -15,7 +15,7 @@ namespace dragonpoop
         this->index = g->getIndex();
         this->parent_id = g->getParentId();
         this->start.t = g->getStartData( &this->start.pos, &this->start.rot );
-        this->end = this->start;
+        this->smooth = this->end = this->start;
         this->sync( ml, g, thd );
     }
     
@@ -115,6 +115,38 @@ namespace dragonpoop
         float rs, re;
         uint64_t tt, td;
         
+        //compute smooth rotation and translation
+        td = this->end.t - this->start.t;
+        tt = t - this->start.t;
+        if( !td )
+            re = 0;
+        else
+        {
+            if( tt >= td )
+                re = 1;
+            else
+                re = (float)tt / (float)td;
+        }
+        rs = 1.0f - re;
+
+        pos.x = this->start.pos.x * rs + this->end.pos.x * re;
+        pos.y = this->start.pos.y * rs + this->end.pos.y * re;
+        pos.z = this->start.pos.z * rs + this->end.pos.z * re;
+        
+        qs.setAngle( &this->start.rot );
+        qe.setAngle( &this->end.rot );
+        q.slerp( &qs, &qe, re );
+        q.getAngle( &rot );
+        
+        this->smooth.pos.x += ( pos.x - this->smooth.pos.x ) * 0.7f;
+        this->smooth.pos.y += ( pos.y - this->smooth.pos.y ) * 0.7f;
+        this->smooth.pos.z += ( pos.z - this->smooth.pos.z ) * 0.7f;
+
+        qs.setAngle( &this->smooth.rot );
+        qe.setAngle( &rot );
+        q.slerp( &qs, &qe, 0.7f );
+        q.getAngle( &this->smooth.rot );
+        
         //compute bone local
         this->bone_local.setAngleRadAndPosition( &this->orig.rot, &this->orig.pos );
         
@@ -129,29 +161,7 @@ namespace dragonpoop
         this->bone_global_inv.inverse( &this->bone_global );
         
         //compute animation local
-        td = this->end.t - this->start.t;
-        tt = t - this->start.t;
-        if( !td )
-            re = 0;
-        else
-        {
-            if( tt >= td )
-                re = 1;
-            else
-                re = (float)tt / (float)td;
-        }
-        rs = 1.0f - re;
-        
-        pos.x = this->start.pos.x * rs + this->end.pos.x * re;
-        pos.y = this->start.pos.y * rs + this->end.pos.y * re;
-        pos.z = this->start.pos.z * rs + this->end.pos.z * re;
-        
-        qs.setAngle( &this->start.rot );
-        qe.setAngle( &this->end.rot );
-        q.slerp( &qs, &qe, re );
-        q.getAngle( &rot );
-        
-        this->anim_local.setAngleRadAndPosition( &rot, &pos );
+        this->anim_local.setAngleRadAndPosition( &this->smooth.rot, &this->smooth.pos );
         
         //compute animation global
         m.copy( &this->bone_local );

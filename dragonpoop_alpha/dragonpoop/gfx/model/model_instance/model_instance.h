@@ -164,6 +164,8 @@ namespace dragonpoop
         void setAnimationSpeed( dpid id, float s );
         //change animation speed
         void setAnimationSpeed( model_instance_animation *a, float s );
+        //stop all animations
+        void stopAllAnimations( void );
         //get animations
         void getAnimations( std::list<model_instance_animation *> *l );
         //make animations

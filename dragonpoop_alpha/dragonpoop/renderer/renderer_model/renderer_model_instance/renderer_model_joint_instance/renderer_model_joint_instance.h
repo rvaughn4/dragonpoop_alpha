@@ -25,7 +25,7 @@ namespace dragonpoop
         {
             dpxyz_f pos, rot;
             uint64_t t;
-        } orig, start, end;
+        } orig, start, end, smooth;
         dpid parent_id;
         int16_t index;
         

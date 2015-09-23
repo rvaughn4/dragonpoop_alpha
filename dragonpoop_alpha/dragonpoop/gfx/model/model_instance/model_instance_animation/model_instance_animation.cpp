@@ -25,6 +25,7 @@ namespace dragonpoop
         this->len_Frames = m->getLength();
         this->cnt_frames = m->getFrameCount();
         this->fps = m->getFps();
+        this->speed = 1;
         this->bIsPlay = 0;
         this->bDoPlay = this->bIsAutplay;
         this->start_time = this->end_time = 0;
@@ -111,7 +112,7 @@ namespace dragonpoop
         float f;
         
         f = (float)tm / 1000.0f;
-        f *= this->fps;
+        f *= this->fps * this->speed;
         
         return (unsigned int)f;
     }
@@ -121,7 +122,7 @@ namespace dragonpoop
     {
         float f;
         
-        f = (float)tm / this->fps;
+        f = (float)tm / ( this->fps * this->speed );
         f *= 1000.0f;
         
         return (unsigned int)f;
@@ -179,8 +180,8 @@ namespace dragonpoop
         {
             this->start_time = this->current_time;
             this->current_frame_time = 0;
-            f = (float)this->len_Frames * 1000.0f / this->fps;
-            this->end_time = this->start_time + (uint64_t)f;
+            f = (float)this->len_Frames * 1000.0f / ( this->fps * this->speed );
+            this->end_time = this->start_time + (uint64_t)f + 50;
             this->bIsPlay = 1;
         }
         
@@ -190,7 +191,7 @@ namespace dragonpoop
         
         //calc current animation frame
         f = (float)this->current_time - (float)this->start_time;
-        f = f *this->fps / 1000.0f;
+        f = f * this->fps * this->speed / 1000.0f;
         old_time = this->current_frame_time;
         this->current_frame_time = (unsigned int)f;
         if( old_time > this->current_frame_time )
@@ -216,7 +217,7 @@ namespace dragonpoop
     uint64_t model_instance_animation::getEndTime( void )
     {
         float f;
-        f = (float)this->end_frame_time * 1000.0f / this->fps;
+        f = (float)this->end_frame_time * 1000.0f / ( this->fps * this->speed );
         return this->start_time + (uint64_t)f;
     }
     
@@ -224,7 +225,7 @@ namespace dragonpoop
     uint64_t model_instance_animation::getStartTime( void )
     {
         float f;
-        f = (float)this->start_frame_time * 1000.0f / this->fps;
+        f = (float)this->start_frame_time * 1000.0f / ( this->fps * this->speed );
         return this->start_time + (uint64_t)f;
     }
   

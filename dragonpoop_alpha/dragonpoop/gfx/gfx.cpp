@@ -598,4 +598,64 @@ namespace dragonpoop
         return rid;
     }
     
+    //stop animation by name
+    void gfx::stopAnimation( const char *mname, dpid minstance_id, const char *anim_name )
+    {
+        model_instance_ref *mr;
+        model_instance_writelock *mil;
+        model_ref *m;
+        model_readlock *ml;
+        shared_obj_guard om, omr;
+        
+        m = this->findModel( mname );
+        if( !m )
+            return;
+        
+        ml = (model_readlock *)om.tryWriteLock( m, 300, "gfx::stopAnimation" );
+        delete m;
+        if( !ml )
+            return;
+        
+        mr = ml->findInstance( minstance_id );
+        if( !mr )
+            return;
+        
+        mil = (model_instance_writelock *)omr.tryWriteLock( mr, 300, "gfx::stopAnimation" );
+        delete mr;
+        if( !mil )
+            return;
+        
+        mil->stopAnimation( anim_name );
+    }
+    
+    //stop all animations
+    void gfx::stopAllAnimations( const char *mname, dpid minstance_id )
+    {
+        model_instance_ref *mr;
+        model_instance_writelock *mil;
+        model_ref *m;
+        model_readlock *ml;
+        shared_obj_guard om, omr;
+        
+        m = this->findModel( mname );
+        if( !m )
+            return;
+        
+        ml = (model_readlock *)om.tryWriteLock( m, 300, "gfx::stopAnimation" );
+        delete m;
+        if( !ml )
+            return;
+        
+        mr = ml->findInstance( minstance_id );
+        if( !mr )
+            return;
+        
+        mil = (model_instance_writelock *)omr.tryWriteLock( mr, 300, "gfx::stopAnimation" );
+        delete mr;
+        if( !mil )
+            return;
+        
+        mil->stopAllAnimations();
+    }
+    
 };
