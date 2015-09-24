@@ -74,17 +74,17 @@ int main( int argc, const char * argv[] )
     
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     mid = gl->makeModelInstance( "low_dragon", 0 );
-    gl->startAnimation( "low_dragon", mid, "gethit", 1, 5 );
+    gl->startAnimation( "low_dragon", mid, "run", 1, 5 );
     o.unlock();
     
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     mid = gl->makeModelInstance( "med_dragon", 0 );
-    gl->startAnimation( "med_dragon", mid, "run", 1, 0.2f );
+    gl->startAnimation( "med_dragon", mid, "run", 1, 2 );
     o.unlock();
     
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     mid = gl->makeModelInstance( "high_dragon", 0 );
-    gl->startAnimation( "high_dragon", mid, "flying idle", 1, 2 );
+    gl->startAnimation( "high_dragon", mid, "flying idle", 1, 10 );
     o.unlock();
     
 
