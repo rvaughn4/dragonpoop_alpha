@@ -4,14 +4,17 @@
 #include "gui_readlock.h"
 #include "gui_writelock.h"
 #include "../../core/core.h"
+#include "../gfx_writelock.h"
+#include "../gfx_ref.h"
 
 namespace dragonpoop
 {
     
     //ctor
-    gui::gui( core *c, dpid id ) : shared_obj( c->getMutexMaster() )
+    gui::gui( gfx_writelock *g, dpid id, dpid parent_id ) : shared_obj( g->getCore()->getMutexMaster() )
     {
-        this->c = c;
+        this->c = g->getCore();
+        this->g = (gfx_ref *)g->getRef();
         this->id = id;
         this->bHasBg = this->bHasFg = 0;
         this->bPosChanged = this->bTexChanged = 0;
@@ -22,7 +25,7 @@ namespace dragonpoop
     //dtor
     gui::~gui( void )
     {
-        
+        delete this->g;
     }
     
     //return core

@@ -15,6 +15,8 @@ namespace dragonpoop
     class dpthread_lock;
     class core;
     class gui_writelock;
+    class gfx_writelock;
+    class gfx_ref;
     
     struct gui_dims
     {
@@ -32,6 +34,7 @@ namespace dragonpoop
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg;
         std::atomic<bool> bPosChanged, bTexChanged, bRedraw;
         gui_dims pos;
+        gfx_ref *g;
 
     protected:
         
@@ -79,7 +82,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        gui( core *c, dpid id );
+        gui( gfx_writelock *g, dpid id, dpid parent_id );
         //dtor
         virtual ~gui( void );
         //return core

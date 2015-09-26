@@ -47,4 +47,10 @@ namespace dragonpoop
         this->t->getModels( l );
     }
 
+    //get guis
+    void gfx_readlock::getGuis( std::list<gui_ref *> *l )
+    {
+        this->t->getGuis( l );
+    }
+    
 };

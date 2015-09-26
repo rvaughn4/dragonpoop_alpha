@@ -11,6 +11,7 @@ namespace dragonpoop
     class gfx;
     class core;
     class model_ref;
+    class gui_ref;
 
     class gfx_readlock : public shared_obj_readlock
     {
@@ -38,7 +39,9 @@ namespace dragonpoop
         model_ref *findModel( dpid id );
         //get models
         void getModels( std::list<model_ref *> *l );
-        
+        //get guis
+        void getGuis( std::list<gui_ref *> *l );
+
         friend class gfx;
     };
     

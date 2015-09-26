@@ -15,6 +15,8 @@ namespace dragonpoop
     class model_loader_ref;
     class model_instance_ref;
     class model_saver_ref;
+    class gui;
+    class gui_ref;
 
     class gfx_writelock : public shared_obj_writelock
     {
@@ -60,6 +62,12 @@ namespace dragonpoop
         dpid startAnimation( const char *mname, dpid minstance_id, const char *anim_name, bool do_repeat, float speed );
         //stop all animations
         void stopAllAnimations( const char *mname, dpid minstance_id );
+        //add gui
+        void addGui( gui *g );
+        //add gui
+        void addGui( gui_ref *g );
+        //get guis
+        void getGuis( std::list<gui_ref *> *l );
 
         friend class gfx;
     };

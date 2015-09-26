@@ -100,5 +100,23 @@ namespace dragonpoop
     {
         this->t->stopAllAnimations( mname, minstance_id );
     }
+  
+    //add gui
+    void gfx_writelock::addGui( gui *g )
+    {
+        this->t->addGui( g );
+    }
+    
+    //add gui
+    void gfx_writelock::addGui( gui_ref *g )
+    {
+        this->t->addGui( g );
+    }
+    
+    //get guis
+    void gfx_writelock::getGuis( std::list<gui_ref *> *l )
+    {
+        this->t->getGuis( l );
+    }
     
 };
