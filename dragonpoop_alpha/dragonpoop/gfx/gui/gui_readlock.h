@@ -9,6 +9,7 @@ namespace dragonpoop
 {
     class gui;
     class core;
+    struct gui_dims;
     
     class gui_readlock : public shared_obj_readlock
     {
@@ -32,6 +33,12 @@ namespace dragonpoop
         dpid getId( void );
         //compares id
         bool compareId( dpid id );
+        //get dimensions
+        void getDimensions( gui_dims *p );
+        //returns true if has background texture
+        bool hasBg( void );
+        //returns true if has forground texture
+        bool hasFg( void );
 
         friend class gui;
     };

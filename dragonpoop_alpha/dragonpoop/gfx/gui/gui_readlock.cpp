@@ -23,4 +23,22 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
+    //get dimensions
+    void gui_readlock::getDimensions( gui_dims *p )
+    {
+        this->t->getDimensions( p );
+    }
+
+    //returns true if has background texture
+    bool gui_readlock::hasBg( void )
+    {
+        return this->t->hasBg();
+    }
+    
+    //returns true if has forground texture
+    bool gui_readlock::hasFg( void )
+    {
+        return this->t->hasFg();
+    }
+    
 };
