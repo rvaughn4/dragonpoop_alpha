@@ -6,6 +6,10 @@
 #include "../../core/core.h"
 #include "../gfx_writelock.h"
 #include "../gfx_ref.h"
+#include "../../core/shared_obj/shared_obj_guard.h"
+#include "../../renderer/renderer_gui/renderer_gui.h"
+#include "../../renderer/renderer_gui/renderer_gui_ref.h"
+#include "../../renderer/renderer_gui/renderer_gui_writelock.h"
 
 namespace dragonpoop
 {
@@ -17,15 +21,19 @@ namespace dragonpoop
         this->g = (gfx_ref *)g->getRef();
         this->id = id;
         this->bHasBg = this->bHasFg = 0;
-        this->bPosChanged = this->bTexChanged = 0;
+        this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
         this->bRedraw = 1;
         this->bRepaintBg = this->bRepaintFg = 0;
+        this->r = 0;
+        this->bWasBgDrawn = this->bWasFgDrawn = 0;
     }
     
     //dtor
     gui::~gui( void )
     {
         delete this->g;
+        if( this->r )
+            delete this->r;
     }
     
     //return core
@@ -55,30 +63,47 @@ namespace dragonpoop
     //run gui
     void gui::run( dpthread_lock *thd, gui_writelock *g )
     {
+        shared_obj_guard o;
+        renderer_gui_writelock *l;
         
         if( this->bRedraw )
         {
-            if( this->bRepaintBg && this->bHasBg )
+            if( ( this->bWasBgDrawn || this->bRepaintBg ) && this->bHasBg )
             {
                 this->bgtex.resize( this->pos.w, this->pos.h );
                 this->repaintBg( g, &this->bgtex, this->pos.w, this->pos.h );
-                this->bTexChanged = 1;
+                this->bBgChanged = 1;
+                this->bWasBgDrawn = 1;
             }
             
-            if( this->bRepaintFg && this->bHasFg )
+            if( ( this->bWasBgDrawn || this->bRepaintFg ) && this->bHasFg )
             {
                 this->fgtex.resize( this->pos.w, this->pos.h );
                 this->repaintFg( g, &this->fgtex, this->pos.w, this->pos.h );
-                this->bTexChanged = 1;
+                this->bFgChanged = 1;
+                this->bWasFgDrawn = 1;
             }
             
             this->bRedraw = 0;
         }
         
-        if( this->bPosChanged || this->bTexChanged )
+        if( this->bPosChanged || this->bBgChanged || this->bFgChanged )
         {
-            //sync with renderer
-            this->bPosChanged = this->bTexChanged = 0;
+            if( this->r )
+            {
+                l = (renderer_gui_writelock *)o.tryWriteLock( this->r, 500, "gui::run" );
+                if( l )
+                {
+                    if( this->bPosChanged )
+                        l->syncPos();
+                    if( this->bBgChanged )
+                        l->syncBg();
+                    if( this->bFgChanged )
+                        l->syncFg();
+                }
+
+                this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
+            }
         }
     }
     
@@ -181,6 +206,30 @@ namespace dragonpoop
     dpid gui::getParentId( void )
     {
         return this->pid;
+    }
+    
+    //returns true if has renderer
+    bool gui::hasRenderer( void )
+    {
+        if( !this->r || !this->r->isLinked() )
+            return 0;
+        return 1;
+    }
+    
+    //set renderer
+    void gui::setRenderer( renderer_gui *g )
+    {
+        shared_obj_guard o;
+        renderer_gui_writelock *l;
+        
+        if( this->r )
+            delete this->r;
+        this->r = 0;
+        
+        l = (renderer_gui_writelock *)o.tryWriteLock( g, 300, "gui::setRenderer" );
+        if( !l )
+            return;
+        this->r = (renderer_gui_ref *)l->getRef();
     }
     
 };

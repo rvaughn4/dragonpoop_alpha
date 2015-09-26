@@ -17,6 +17,8 @@ namespace dragonpoop
     class gui_writelock;
     class gfx_writelock;
     class gfx_ref;
+    class renderer_gui;
+    class renderer_gui_ref;
     
     struct gui_dims
     {
@@ -31,10 +33,11 @@ namespace dragonpoop
         core *c;
         dpid id, pid;
         dpbitmap fgtex, bgtex;
-        bool bHasFg, bHasBg, bRepaintFg, bRepaintBg;
-        std::atomic<bool> bPosChanged, bTexChanged, bRedraw;
+        bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
+        std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw;
         gui_dims pos;
         gfx_ref *g;
+        renderer_gui_ref *r;
 
     protected:
         
@@ -78,6 +81,10 @@ namespace dragonpoop
         void setParentId( dpid id );
         //get parent id
         dpid getParentId( void );
+        //returns true if has renderer
+        bool hasRenderer( void );
+        //set renderer
+        void setRenderer( renderer_gui *g );
         
     public:
         

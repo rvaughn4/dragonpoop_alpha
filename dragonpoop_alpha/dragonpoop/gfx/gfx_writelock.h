@@ -12,6 +12,7 @@ namespace dragonpoop
     class core;
     class dpthread_lock;
     class model_ref;
+    class model;
     class model_loader_ref;
     class model_instance_ref;
     class model_saver_ref;
@@ -57,7 +58,7 @@ namespace dragonpoop
         //get a model instance by id
         dpid makeModelInstance( dpid id, model_instance_ref **r );
         //get models
-        void getModels( std::list<model_ref *> *l );
+        void getModels( std::list<model *> *l );
         //start animation by name (returns animation instance id)
         dpid startAnimation( const char *mname, dpid minstance_id, const char *anim_name, bool do_repeat, float speed );
         //stop all animations

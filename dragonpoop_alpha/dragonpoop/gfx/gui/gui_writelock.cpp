@@ -29,6 +29,18 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
+    //returns id
+    dpid gui_writelock::getId( void )
+    {
+        return this->t->getId();
+    }
+    
+    //compares id
+    bool gui_writelock::compareId( dpid id )
+    {
+        return this->t->compareId( id );
+    }
+    
     //set width and height
     void gui_writelock::setWidthHeight( float w, float h )
     {

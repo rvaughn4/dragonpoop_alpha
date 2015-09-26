@@ -594,25 +594,17 @@ namespace dragonpoop
     }
     
     //get models
-    void gfx::getModels( std::list<model_ref *> *ll )
+    void gfx::getModels( std::list<model *> *ll )
     {
         std::list<model *> *l;
         std::list<model *>::iterator i;
         model *p;
-        model_ref *r;
-        model_writelock *pwl;
-        shared_obj_guard o;
         
         l = &this->models;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pwl = (model_writelock *)o.tryWriteLock( p, 1000, "gfx::getModels" );
-            if( !pwl )
-                continue;
-            
-            r = (model_ref *)pwl->getRef();
-            ll->push_back( r );
+            ll->push_back( p );
         }
     }
     

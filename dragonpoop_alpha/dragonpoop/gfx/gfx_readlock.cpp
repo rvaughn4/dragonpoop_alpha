@@ -42,7 +42,7 @@ namespace dragonpoop
     }
     
     //get models
-    void gfx_readlock::getModels( std::list<model_ref *> *l )
+    void gfx_readlock::getModels( std::list<model *> *l )
     {
         this->t->getModels( l );
     }

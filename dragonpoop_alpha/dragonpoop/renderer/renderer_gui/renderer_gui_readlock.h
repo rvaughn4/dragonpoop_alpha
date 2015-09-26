@@ -10,6 +10,9 @@ namespace dragonpoop
     class renderer_gui;
     class core;
     struct gui_dims;
+    class renderer_writelock;
+    class dpthread_lock;
+    class dpmatrix;
     
     class renderer_gui_readlock : public shared_obj_readlock
     {
@@ -43,8 +46,10 @@ namespace dragonpoop
         dpid getParentId( void );
         //compares parent id
         bool compareParentId( dpid id );
-        
-        friend class gui;
+        //render model
+        void render( dpthread_lock *thd, renderer_writelock *r, dpmatrix *m_world );
+
+        friend class renderer_gui;
     };
     
 };

@@ -24,6 +24,8 @@ namespace dragonpoop
     class renderer_model_instance_readlock;
     class renderer_model_readlock;
     class renderer_model_material;
+    class renderer_gui;
+    class gui_writelock;
 
     class renderer : public shared_obj
     {
@@ -34,9 +36,12 @@ namespace dragonpoop
         renderer_task *gtsk;
         core *c;
         gfx_ref *g;
+        
         std::atomic<bool> bDoRun, bIsRun;
         std::list<renderer_model *> models;
-        uint64_t t_last_m_ran, t_last_fps;
+        std::list<renderer_gui *> guis;
+        
+        uint64_t t_last_m_ran, t_last_gui_ran, t_last_fps;
         float fps, fthiss;
         bool bActive, bActiveOld;
         dpmatrix m_world, m_gui;
@@ -45,6 +50,10 @@ namespace dragonpoop
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
         //delete models
         void deleteModels( void );
+        //run guis
+        void runGuis( dpthread_lock *thd, renderer_writelock *rl );
+        //delete guis
+        void deleteGuis( void );
         //render
         void render( dpthread_lock *thd, renderer_writelock *rl );
         //render models
@@ -86,6 +95,8 @@ namespace dragonpoop
         virtual void flipBuffer( void );
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
+        //generate renderer gui
+        virtual renderer_gui *genGui( gui_writelock *ml );
         //returns fps
         float getFps( void );
         //set active state

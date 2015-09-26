@@ -88,7 +88,7 @@ namespace dragonpoop
         //get a model instance (returns instance id)
         dpid makeModelInstance( model_ref *m, model_instance_ref **r );
         //get models
-        void getModels( std::list<model_ref *> *l );
+        void getModels( std::list<model *> *l );
         //start animation by name (returns animation instance id)
         dpid startAnimation( const char *mname, dpid minstance_id, const char *anim_name, bool do_repeat, float speed );
         //stop animation by name

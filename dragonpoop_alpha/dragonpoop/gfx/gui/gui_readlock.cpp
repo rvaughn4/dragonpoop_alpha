@@ -23,6 +23,18 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
+    //returns id
+    dpid gui_readlock::getId( void )
+    {
+        return this->t->getId();
+    }
+    
+    //compares id
+    bool gui_readlock::compareId( dpid id )
+    {
+        return this->t->compareId( id );
+    }
+    
     //get dimensions
     void gui_readlock::getDimensions( gui_dims *p )
     {
