@@ -24,6 +24,9 @@
 #include "model/model_saver/model_saver_writelock.h"
 #include "model/model_instance/model_instance_ref.h"
 #include "model/model_instance/model_instance_writelock.h"
+#include "gui/gui_ref.h"
+#include "gui/gui.h"
+#include "gui/gui_writelock.h"
 
 namespace dragonpoop
 {
@@ -50,6 +53,7 @@ namespace dragonpoop
     {
         this->kill();
         
+        this->deleteGuis();
         this->deleteLoaders();
         this->deleteSavers();
         this->deleteModels();
@@ -115,6 +119,7 @@ namespace dragonpoop
         this->runLoaders( thd );
         this->runSavers( thd );
         this->runModels( thd );
+        this->runGuis( thd );
     }
 
     //delete all models
@@ -171,6 +176,29 @@ namespace dragonpoop
         model_saver *p;
         
         l = &this->savers;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    
+    //delete all guis
+    void gfx::deleteGuis( void )
+    {
+        std::list<gui_ref *> *l, d;
+        std::list<gui_ref *>::iterator i;
+        gui_ref *p;
+        
+        l = &this->guis;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -276,6 +304,39 @@ namespace dragonpoop
         {
             p = *i;
             this->savers.remove( p );
+            delete p;
+        }
+    }
+    
+    //run all guis
+    void gfx::runGuis( dpthread_lock *thd )
+    {
+        std::list<gui_ref *> *l, d;
+        std::list<gui_ref *>::iterator i;
+        gui_ref *p;
+        shared_obj_guard o;
+        gui_writelock *pl;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+                d.push_back( p );
+            else
+            {
+                pl = (gui_writelock *)o.tryWriteLock( p, 100, "gfx::runGuis" );
+                if( pl )
+                    pl->run( thd );
+                o.unlock();
+            }
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
             delete p;
         }
     }
@@ -656,6 +717,53 @@ namespace dragonpoop
             return;
         
         mil->stopAllAnimations();
+    }
+    
+    //add gui
+    void gfx::addGui( gui *g )
+    {
+        shared_obj_guard o;
+        gui_writelock *l;
+        gui_ref *r;
+        
+        l = (gui_writelock *)o.writeLock( g, "gfx::addGui" );
+        if( !l )
+            return;
+        
+        r = (gui_ref *)l->getRef();
+        if( r )
+            this->guis.push_back( r );
+    }
+    
+    //add gui
+    void gfx::addGui( gui_ref *g )
+    {
+        shared_obj_guard o;
+        gui_writelock *l;
+        gui_ref *r;
+        
+        l = (gui_writelock *)o.writeLock( g, "gfx::addGui" );
+        if( !l )
+            return;
+        
+        r = (gui_ref *)l->getRef();
+        if( r )
+            this->guis.push_back( r );
+    }
+    
+    //get guis
+    void gfx::getGuis( std::list<gui_ref *> *ll )
+    {
+        std::list<gui_ref *> *l;
+        std::list<gui_ref *>::iterator i;
+        gui_ref *p;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            ll->push_back( p );
+        }
     }
     
 };

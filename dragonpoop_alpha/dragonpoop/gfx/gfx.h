@@ -23,6 +23,8 @@ namespace dragonpoop
     class model_instance_ref;
     class model_saver;
     class model_saver_ref;
+    class gui;
+    class gui_ref;
 
     class gfx : public shared_obj
     {
@@ -38,6 +40,7 @@ namespace dragonpoop
         std::list<model *> models;
         std::list<model_loader *> loaders;
         std::list<model_saver *> savers;
+        std::list<gui_ref *> guis;
         
         //delete all models
         void deleteModels( void );
@@ -45,13 +48,17 @@ namespace dragonpoop
         void deleteLoaders( void );
         //delete all savers
         void deleteSavers( void );
+        //delete all guis
+        void deleteGuis( void );
         //delete old models
         void runModels( dpthread_lock *thd );
         //delete old loaders
         void runLoaders( dpthread_lock *thd );
         //delete old savers
         void runSavers( dpthread_lock *thd );
-
+        //run all guis
+        void runGuis( dpthread_lock *thd );
+        
     protected:
 
         //generate read lock
@@ -88,6 +95,12 @@ namespace dragonpoop
         void stopAnimation( const char *mname, dpid minstance_id, const char *anim_name );
         //stop all animations
         void stopAllAnimations( const char *mname, dpid minstance_id );
+        //add gui
+        void addGui( gui *g );
+        //add gui
+        void addGui( gui_ref *g );
+        //get guis
+        void getGuis( std::list<gui_ref *> *l );
 
     public:
 

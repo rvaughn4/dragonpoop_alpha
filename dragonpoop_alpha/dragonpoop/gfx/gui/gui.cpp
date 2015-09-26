@@ -168,4 +168,16 @@ namespace dragonpoop
         
     }
     
+    //set parent id
+    void gui::setParentId( dpid id )
+    {
+        this->pid = id;
+    }
+    
+    //get parent id
+    dpid gui::getParentId( void )
+    {
+        return this->pid;
+    }
+    
 };

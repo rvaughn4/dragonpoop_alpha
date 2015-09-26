@@ -27,7 +27,7 @@ namespace dragonpoop
     private:
         
         core *c;
-        dpid id;
+        dpid id, pid;
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg;
         std::atomic<bool> bPosChanged, bTexChanged, bRedraw;
@@ -71,6 +71,10 @@ namespace dragonpoop
         virtual void repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h );
         //override to paint forground texture
         virtual void repaintFg( gui_writelock *g, dpbitmap *bm, float w, float h );
+        //set parent id
+        void setParentId( dpid id );
+        //get parent id
+        dpid getParentId( void );
         
     public:
         

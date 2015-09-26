@@ -17,6 +17,12 @@ namespace dragonpoop
         
     }
     
+    //run gui
+    void gui_writelock::run( dpthread_lock *thd )
+    {
+        this->t->run( thd, this );
+    }
+    
     //return core
     core *gui_writelock::getCore( void )
     {
@@ -81,6 +87,18 @@ namespace dragonpoop
     bool gui_writelock::hasFg( void )
     {
         return this->t->hasFg();
+    }
+    
+    //set parent id
+    void gui_writelock::setParentId( dpid id )
+    {
+        this->t->setParentId( id );
+    }
+    
+    //get parent id
+    dpid gui_writelock::getParentId( void )
+    {
+        return this->t->getParentId();
     }
     
 };

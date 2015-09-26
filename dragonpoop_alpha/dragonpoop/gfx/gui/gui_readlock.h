@@ -39,6 +39,8 @@ namespace dragonpoop
         bool hasBg( void );
         //returns true if has forground texture
         bool hasFg( void );
+        //get parent id
+        dpid getParentId( void );
 
         friend class gui;
     };

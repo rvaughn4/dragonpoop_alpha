@@ -41,4 +41,10 @@ namespace dragonpoop
         return this->t->hasFg();
     }
     
+    //get parent id
+    dpid gui_readlock::getParentId( void )
+    {
+        return this->t->getParentId();
+    }
+    
 };

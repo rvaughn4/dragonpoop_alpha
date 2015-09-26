@@ -10,6 +10,7 @@ namespace dragonpoop
     class gui;
     class core;
     struct gui_dims;
+    class dpthread_lock;
     
     class gui_writelock : public shared_obj_writelock
     {
@@ -27,6 +28,8 @@ namespace dragonpoop
         
     public:
         
+        //run gui
+        void run( dpthread_lock *thd );
         //return core
         core *getCore( void );
         //returns id
@@ -53,6 +56,10 @@ namespace dragonpoop
         bool hasBg( void );
         //returns true if has forground texture
         bool hasFg( void );
+        //set parent id
+        void setParentId( dpid id );
+        //get parent id
+        dpid getParentId( void );
 
         friend class gui;
     };
