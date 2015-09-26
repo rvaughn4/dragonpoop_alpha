@@ -260,6 +260,9 @@ namespace dragonpoop
         dpxy cp;
         float scale_x, scale_y, rat_x, rat_y, p_x, p_y, m_rat_x, m_rat_y, v;
 
+        if( !this->dims.w || !this->dims.h )
+            return;
+            
         scale_x = dst_dims->w / this->dims.w;
         scale_y = dst_dims->h / this->dims.h;
 
@@ -372,6 +375,9 @@ namespace dragonpoop
         dpxy p, pc;
         dprgba rc;
         float rat_x, rat_y, f;
+        
+        if( !src_rect->w || !src_rect->h )
+            return;
 
         rat_x = dst_rect->w / src_rect->w;
         rat_y = dst_rect->h / src_rect->h;
@@ -400,6 +406,9 @@ namespace dragonpoop
         dprgba rc;
         float rat_x, rat_y, f;
 
+        if( !dst_rect->w || !dst_rect->h )
+            return;
+        
         rat_x = src_rect->w / dst_rect->w;
         rat_y = src_rect->h / dst_rect->h;
         pc.w = rat_x;
@@ -432,6 +441,9 @@ namespace dragonpoop
         dprgba rc;
         float rat_x, rat_y, f;
 
+        if( !dst_rect->w || !dst_rect->h )
+            return;
+        
         rat_x = src_rect->w / dst_rect->w;
         rat_y = src_rect->h / dst_rect->h;
 

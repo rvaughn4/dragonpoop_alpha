@@ -289,6 +289,43 @@ namespace dragonpoop
             return 0;
         return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
     }
+
+    //returns frame with smallest movement within a frame time range
+    model_frame *model_animation::findSmallestFrame( model_writelock *ml, unsigned int t_start, unsigned int t_end )
+    {
+        float td, ad;
+        std::list<model_animation_frame *> l;
+        std::list<model_animation_frame *>::iterator i;
+        model_animation_frame *p, *f;
+        model_frame *frm;
+        
+        ml->getAnimationFrames( &l, this->getId() );
+        
+        f = 0;
+        td = 0;
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            
+            if( p->getTime() > t_end || p->getTime() < t_start )
+                continue;
+            
+            frm = ml->findFrame( p->getFrameId() );
+            if( !frm )
+                continue;
+            ad = frm->getWeight();
+            
+            if( ad > td && f )
+                continue;
+            
+            f = p;
+            td = ad;
+        }
+        
+        if( !f )
+            return 0;
+        return (model_frame *)ml->findComponent( model_component_type_frame, f->getFrameId() );
+    }
     
     //eliminate all frames smaller than given weight
     void model_animation::killSmallerFrames( model_writelock *ml, model_frame *f, unsigned int t_start, unsigned int t_end )

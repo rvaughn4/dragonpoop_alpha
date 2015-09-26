@@ -83,19 +83,20 @@ namespace dragonpoop
         } comps;
         std::list<model_instance *> instances;
         renderer_model_ref *r;
-        uint64_t ran_time, last_ran_time;
+        uint64_t ran_time, last_ran_time, last_comp_time;
         dpxyz_f size, center;
         uint32_t cnt_verts, cnt_triangles, cnt_frames, cnt_joints, cnt_animations;
         uint32_t sz_verts, sz_triangles, sz_frames, sz_joints, sz_animations;
+        bool bSync;
 
         //delete all components
         void deleteComponents( void );
         //delete instances
         void deleteInstances( void );
         //run instances
-        void runInstances( dpthread_lock *thd, model_writelock *g );
+        void runInstances( dpthread_lock *thd, model_writelock *g, unsigned int ms_each_frame );
         //sync instances
-        void syncInstances( dpthread_lock *thd, model_writelock *g );
+        void syncInstances( dpthread_lock *thd, model_writelock *g, unsigned int ms_each_frame );
         //find the maximum size of the model
         void findSize( void );
         //compute weights of frames
@@ -112,7 +113,7 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run model
-        void run( dpthread_lock *thd, model_writelock *g );
+        void run( dpthread_lock *thd, model_writelock *g, unsigned int ms_each_frame );
         //set name
         void setName( std::string *sname );
         //get name
@@ -196,7 +197,7 @@ namespace dragonpoop
         //find instance
         model_instance_ref *findInstance( dpid id );
         //sync model instance with changes
-        void sync( dpthread_lock *thd, model_writelock *ml );
+        void sync( void );
         //set renderer model
         void setRenderer( renderer_model *r );
         //add material

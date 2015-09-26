@@ -47,4 +47,16 @@ namespace dragonpoop
         this->t->renderGroup( thd, this, m, mi, g, mat, m_world );
     }
     
+    //returns fps
+    float renderer_writelock::getFps( void )
+    {
+        return this->t->getFps();
+    }
+    
+    //return ms each frame
+    unsigned int renderer_writelock::getMsPerFrame( void )
+    {
+        return this->t->getMsPerFrame();
+    }
+    
 };

@@ -86,7 +86,7 @@ namespace dragonpoop
         //sync
         void dosync( model_instance_writelock *mi, model_writelock *ml );
         //do animation
-        void animate( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd );
+        void animate( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd, unsigned int ms_each_frame );
         //run animations
         void runAnimations( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd );
         //run joints
@@ -101,7 +101,7 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run model from task
-        void run( dpthread_lock *thd, model_instance_writelock *g, model_writelock *m );
+        void run( dpthread_lock *thd, model_instance_writelock *g, model_writelock *m, unsigned int ms_each_frame );
         //get id
         dpid getId( void );
         //add component to list and trees

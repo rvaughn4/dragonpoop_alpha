@@ -34,7 +34,7 @@ namespace dragonpoop
         {
             m = (model_writelock *)g.tryWriteLock( mr, 1000, "model_loader_state_sucess::run" );
             if( m )
-                m->sync( thd );
+                m->sync();
             delete mr;
         }
         

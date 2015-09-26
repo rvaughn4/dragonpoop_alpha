@@ -222,7 +222,7 @@ namespace dragonpoop
             std::stringstream ss;
 
             this->fps = this->getFps();
-            ss << "Dragonpoop: its as smooth as silk! " << (int)this->fps << " fps";
+            ss << "Dragonpoop: its as smooth as silk! " << (int)this->fps << " fps (" << this->getMsPerFrame() << " ms)";
 
             XSetStandardProperties( this->gl.dpy, this->gl.win, ss.str().c_str(), ss.str().c_str(), None, NULL, 0, NULL );
         }
@@ -343,7 +343,6 @@ namespace dragonpoop
         std::vector<uint16_t> *indicies;
         dpmatrix wmat;
         uint64_t t, ot;
-        unsigned int dlist;
 
         mi->getModelViewMatrix( r, m, m_world, &wmat );
         glLoadMatrixf( wmat.getRaw4by4() );
@@ -352,31 +351,18 @@ namespace dragonpoop
         glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
         
         t = thd->getTicks();
-        dlist = ( (openglx_1o5_renderer_model_instance_group *)g )->getList();
         ot = ( (openglx_1o5_renderer_model_instance_group *)g )->getLastFrameTime();
-        if( t - ot > 30 || !dlist )
-        {
-            mi->redoMatrixes( thd->getTicks() );
-            ( (openglx_1o5_renderer_model_instance_group *)g )->setLastFrameTime( t );
-            
-            if( dlist )
-                glDeleteLists( dlist, 1 );
-            dlist = glGenLists( 1 );
-            glNewList( dlist, GL_COMPILE );
-            ( (openglx_1o5_renderer_model_instance_group *)g )->setList( dlist );
-            
-            vb = g->getTransformedBuffer( mi, &indicies );
-            vp = vb->getBuffer();
 
-            glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
-            glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
-            glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
-            glDrawElements( GL_TRIANGLES, (int)indicies->size(), GL_UNSIGNED_SHORT, &( *indicies )[ 0 ] );
+        mi->redoMatrixes( thd->getTicks() );
+        ( (openglx_1o5_renderer_model_instance_group *)g )->setLastFrameTime( t );
             
-            glEndList();
-        }
-        
-        glCallList( dlist );
+        vb = g->getTransformedBuffer( mi, &indicies );
+        vp = vb->getBuffer();
+
+        glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
+        glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
+        glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
+        glDrawElements( GL_TRIANGLES, (int)indicies->size(), GL_UNSIGNED_SHORT, &( *indicies )[ 0 ] );
     }
 
 };

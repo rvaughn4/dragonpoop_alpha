@@ -66,9 +66,9 @@ namespace dragonpoop
     }
     
     //run model from task
-    void model_instance_writelock::run( dpthread_lock *thd, model_writelock *m )
+    void model_instance_writelock::run( dpthread_lock *thd, model_writelock *m, unsigned int ms_each_frame )
     {
-        this->t->run( thd, this, m );
+        this->t->run( thd, this, m, ms_each_frame );
     }
     
     //sync

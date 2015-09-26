@@ -116,6 +116,23 @@ namespace dragonpoop
     //run gfx from task
     void gfx::run( dpthread_lock *thd, gfx_writelock *g )
     {
+        uint64_t t;
+        shared_obj_guard o;
+        renderer_readlock *l;
+        
+        t = thd->getTicks();
+        if( this->r && t - this->last_r_poll > 4000 )
+        {
+            l = (renderer_readlock *)o.tryReadLock( this->r, 100, "gfx::run" );
+            if( l )
+            {
+                this->ms_each_frame = l->getMsPerFrame();
+                this->fps = l->getFps();
+                this->last_r_poll = t;
+            }
+            o.unlock();
+        }
+        
         this->runLoaders( thd );
         this->runSavers( thd );
         this->runModels( thd );
@@ -230,7 +247,7 @@ namespace dragonpoop
             pl = (model_writelock *)o.tryReadLock( p, 10, "gfx::runModels" );
             if( !pl )
                 continue;
-            pl->run( thd );
+            pl->run( thd, this->ms_each_frame );
 //            d.push_back( p );
         }
         o.unlock();
@@ -756,6 +773,18 @@ namespace dragonpoop
             p = *i;
             ll->push_back( p );
         }
+    }
+    
+    //return fps
+    float gfx::getFps( void )
+    {
+        return this->fps;
+    }
+    
+    //return ms each frame
+    unsigned int gfx::getMsEachFrame( void )
+    {
+        return this->ms_each_frame;
     }
     
 };

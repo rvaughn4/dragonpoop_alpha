@@ -54,7 +54,7 @@ namespace dragonpoop
         //get groups
         void getGroups( std::list<model_instance_group *> *l );
         //run model from task
-        void run( dpthread_lock *thd, model_writelock *m );
+        void run( dpthread_lock *thd, model_writelock *m, unsigned int ms_each_frame );
         //sync
         void sync( void );
         //set renderer model

@@ -5,6 +5,7 @@
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include "../renderer_model_instance_writelock.h"
 #include "../renderer_model_instance_readlock.h"
+#include <math.h>
 
 namespace dragonpoop
 {
@@ -138,13 +139,18 @@ namespace dragonpoop
         q.slerp( &qs, &qe, re );
         q.getAngle( &rot );
         
-        this->smooth.pos.x += ( pos.x - this->smooth.pos.x ) * 0.7f;
-        this->smooth.pos.y += ( pos.y - this->smooth.pos.y ) * 0.7f;
-        this->smooth.pos.z += ( pos.z - this->smooth.pos.z ) * 0.7f;
+        re = 0.5f - re;
+        re *= re;
+        if( re > 0 )
+            re = sqrtf( re );
+        re = 1.8f * ( 0.5f - re + 0.1f );
+        this->smooth.pos.x += ( pos.x - this->smooth.pos.x ) * re;
+        this->smooth.pos.y += ( pos.y - this->smooth.pos.y ) * re;
+        this->smooth.pos.z += ( pos.z - this->smooth.pos.z ) * re;
 
         qs.setAngle( &this->smooth.rot );
         qe.setAngle( &rot );
-        q.slerp( &qs, &qe, 0.7f );
+        q.slerp( &qs, &qe, re );
         q.getAngle( &this->smooth.rot );
         
         //compute bone local

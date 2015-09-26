@@ -29,4 +29,16 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
+    //returns fps
+    float renderer_readlock::getFps( void )
+    {
+        return this->t->getFps();
+    }
+    
+    //return ms each frame
+    unsigned int renderer_readlock::getMsPerFrame( void )
+    {
+        return this->t->getMsPerFrame();
+    }
+    
 };

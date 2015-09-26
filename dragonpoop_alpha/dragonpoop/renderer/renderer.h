@@ -41,7 +41,7 @@ namespace dragonpoop
         std::list<renderer_model *> models;
         std::list<renderer_gui *> guis;
         
-        uint64_t t_last_m_ran, t_last_gui_ran, t_last_fps;
+        uint64_t t_last_m_ran, t_last_m_synced, t_last_gui_ran, t_last_fps, ms_each_frame;
         float fps, fthiss;
         bool bActive, bActiveOld;
         dpmatrix m_world, m_gui;
@@ -99,8 +99,8 @@ namespace dragonpoop
         virtual renderer_gui *genGui( gui_writelock *ml );
         //returns fps
         float getFps( void );
-        //set active state
-        void setActiveState( bool b );
+        //return ms each frame
+        unsigned int getMsPerFrame( void );
         //render model instance group
         virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world ) = 0;
 

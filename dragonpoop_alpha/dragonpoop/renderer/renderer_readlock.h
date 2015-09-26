@@ -29,6 +29,10 @@ namespace dragonpoop
         bool isRunning( void );
         //return core
         core *getCore( void );
+        //returns fps
+        float getFps( void );
+        //return ms each frame
+        unsigned int getMsPerFrame( void );
 
         friend class renderer;
     };

@@ -49,7 +49,7 @@ namespace dragonpoop
         //return core
         core *getCore( void );
         //run model from task
-        void run( dpthread_lock *thd );
+        void run( dpthread_lock *thd, unsigned int ms_each_frame );
         //set name
         void setName( std::string *sname );
         //get name
@@ -131,7 +131,7 @@ namespace dragonpoop
         //get instances
         void getInstances( std::list<model_instance_ref *> *l );
         //sync model instance with changes
-        void sync( dpthread_lock *thd );
+        void sync( void );
         //set renderer model
         void setRenderer( renderer_model *r );
         //add material

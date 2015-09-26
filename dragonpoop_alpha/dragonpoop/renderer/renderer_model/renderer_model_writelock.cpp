@@ -72,9 +72,9 @@ namespace dragonpoop
     }
 
     //run model from task
-    void renderer_model_writelock::run( dpthread_lock *thd, model_writelock *ml )
+    void renderer_model_writelock::run( dpthread_lock *thd )
     {
-        this->t->run( thd, this, ml );
+        this->t->run( thd, this );
     }
     
     //find material

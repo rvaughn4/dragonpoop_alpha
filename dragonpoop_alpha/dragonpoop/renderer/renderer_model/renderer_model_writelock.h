@@ -54,7 +54,7 @@ namespace dragonpoop
         //sync model instance with changes
         void sync( void );
         //run model from task
-        void run( dpthread_lock *thd, model_writelock *ml );
+        void run( dpthread_lock *thd );
         //find material
         renderer_model_material *findMaterial( dpid id );
         //get materials

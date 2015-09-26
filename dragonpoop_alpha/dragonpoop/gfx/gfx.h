@@ -36,6 +36,9 @@ namespace dragonpoop
         core *c;
         renderer *r;
         dptaskpool_ref *tpr;
+        unsigned int ms_each_frame;
+        float fps;
+        uint64_t last_r_poll;
         
         std::list<model *> models;
         std::list<model_loader *> loaders;
@@ -101,6 +104,10 @@ namespace dragonpoop
         void addGui( gui_ref *g );
         //get guis
         void getGuis( std::list<gui_ref *> *l );
+        //return fps
+        float getFps( void );
+        //return ms each frame
+        unsigned int getMsEachFrame( void );
 
     public:
 

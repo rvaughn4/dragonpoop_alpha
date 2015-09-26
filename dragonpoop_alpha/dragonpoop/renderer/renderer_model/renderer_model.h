@@ -29,6 +29,7 @@ namespace dragonpoop
     class renderer_model_readlock;
     class model_material;
     class dpmatrix;
+    class model_ref;
     
     class renderer_model : public shared_obj
     {
@@ -85,7 +86,7 @@ namespace dragonpoop
         //sync model instance with changes
         void sync( void );
         //run model from task
-        void run( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml );
+        void run( dpthread_lock *thd, renderer_model_writelock *g );
         //handle sync
         virtual void onSync( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml );
         //generate instance

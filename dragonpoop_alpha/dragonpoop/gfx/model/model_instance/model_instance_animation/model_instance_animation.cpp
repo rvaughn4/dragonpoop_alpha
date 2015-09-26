@@ -31,7 +31,7 @@ namespace dragonpoop
         this->start_time = this->end_time = 0;
         this->end_frame_time = this->start_frame_time = 0;
         dpid_zero( &this->start_frame );
-        dpid_zero( &this->end_frame );
+        this->old_end_frame = this->end_frame = this->start_frame;
     }
     
     //dtor
@@ -145,7 +145,6 @@ namespace dragonpoop
     {
         float f;
         model_frame *frm;
-        unsigned int old_time;
         model_animation *a;
         
         //stop playing
@@ -161,16 +160,8 @@ namespace dragonpoop
         {
             this->bDoPlay = this->bIsRepeat;
             this->bIsPlay = 0;
-            if( this->bIsRepeat )
-            {
-                this->start_frame_time = this->end_frame_time;
-                this->start_frame = this->end_frame;
-            }
-            else
-            {
-                dpid_zero( &this->start_frame );
-                this->start_frame_time = 0;
-            }
+            dpid_zero( &this->start_frame );
+            this->start_frame_time = 0;
             if( !this->bDoPlay )
                 return;
         }
@@ -181,7 +172,7 @@ namespace dragonpoop
             this->start_time = this->current_time;
             this->current_frame_time = 0;
             f = (float)this->len_Frames * 1000.0f / ( this->fps * this->speed );
-            this->end_time = this->start_time + (uint64_t)f + 50;
+            this->end_time = this->start_time + (uint64_t)f;
             this->bIsPlay = 1;
         }
         
@@ -192,25 +183,36 @@ namespace dragonpoop
         //calc current animation frame
         f = (float)this->current_time - (float)this->start_time;
         f = f * this->fps * this->speed / 1000.0f;
-        old_time = this->current_frame_time;
         this->current_frame_time = (unsigned int)f;
-        if( old_time > this->current_frame_time )
-            old_time = this->current_frame_time;
-        
-        //find start frame
-        frm = a->findFrameBeforeTime( m, this->current_frame_time, &this->start_frame_time );
-        if( frm )
-            this->start_frame = frm->getId();
+        this->start_frame_time = this->current_frame_time;
+        this->end_frame_time = this->current_frame_time + frame_time;
+        if( this->bIsRepeat && this->end_frame_time > this->len_Frames )
+        {
+            this->start_time = this->current_time;
+            this->current_frame_time = 0;
+            f = (float)this->len_Frames * 1000.0f / ( this->fps * this->speed );
+            this->end_time = this->start_time + (uint64_t)f;
+            this->start_frame_time = this->current_frame_time;
+            this->end_frame_time = this->current_frame_time + frame_time;
+        }
         
         //find end frame
-        frm = a->findFrameAtTime( m, this->current_frame_time + frame_time, &this->end_frame_time );
+        frm = a->findFrameAtTime( m, this->end_frame_time, 0 );
+        if( !frm )
+            frm = a->findFrameBeforeTime( m, this->end_frame_time, 0 );
         if( frm )
             this->end_frame = frm->getId();
         
-        //find biggest frame
-        frm = a->findBiggestFrame( m, old_time, this->end_frame_time );
+        //find start frame
+        frm = a->findFrameBeforeTime( m, this->start_frame_time, 0 );
+        if( !frm )
+            frm = a->findFrameAtTime( m, this->start_frame_time, 0 );
         if( frm )
-            this->end_frame = frm->getId();
+            this->start_frame = frm->getId();
+        else
+            this->start_frame = this->old_end_frame;
+        
+        this->old_end_frame = this->end_frame;
     }
     
     //return end frame time

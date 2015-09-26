@@ -24,9 +24,9 @@ namespace dragonpoop
     }
 
     //run model from task
-    void model_writelock::run( dpthread_lock *thd )
+    void model_writelock::run( dpthread_lock *thd, unsigned int ms_each_frame )
     {
-        this->t->run( thd, this );
+        this->t->run( thd, this, ms_each_frame );
     }
 
     //set name
@@ -271,9 +271,9 @@ namespace dragonpoop
     }
 
     //sync model instance with changes
-    void model_writelock::sync( dpthread_lock *thd )
+    void model_writelock::sync( void )
     {
-        this->t->sync( thd, this );
+        this->t->sync();
     }
     
     //set renderer model

@@ -60,35 +60,56 @@ namespace dragonpoop
     //generate read lock
     shared_obj_readlock *model::genReadLock( shared_obj *p, dpmutex_readlock *l )
     {
-        return new model_readlock( (model *)p, l );
+        return new model_readlock( this, l );
     }
 
     //generate write lock
     shared_obj_writelock *model::genWriteLock( shared_obj *p, dpmutex_writelock *l )
     {
-        return new model_writelock( (model *)p, l );
+        return new model_writelock( this, l );
     }
 
     //generate ref
     shared_obj_ref *model::genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k )
     {
-        return new model_ref( (model *)p, k );
+        return new model_ref( this, k );
     }
 
     //run model from task
-    void model::run( dpthread_lock *thd, model_writelock *g )
+    void model::run( dpthread_lock *thd, model_writelock *g, unsigned int ms_each_frame )
     {
         uint64_t t;
+        shared_obj_guard o;
+        renderer_model_readlock *rl;
         
         t = thd->getTicks();
-        this->ran_time = t;
-        if( t - this->last_ran_time > 4000 )
+        if( t - this->last_ran_time < 10 )
+            return;
+        this->last_ran_time = t;
+        
+        if( this->bSync )
         {
-            this->last_ran_time = t;
+            this->findSize();
+            this->computeFrameWeights( g );
+            this->syncInstances( thd, g, ms_each_frame );
+        
+            this->bSync = 0;
+            if( !this->r )
+                return;
+            rl = (renderer_model_readlock *)o.tryReadLock( this->r, 400, "model::sync" );
+            if( rl )
+                rl->sync();
+            o.unlock();
+        }
+        
+        this->ran_time = t;
+        if( t - this->last_comp_time > 4000 )
+        {
+            this->last_comp_time = t;
             this->runComponents();
         }
         
-        this->runInstances( thd, g );
+        this->runInstances( thd, g, ms_each_frame );
     }
 
     //set name
@@ -461,7 +482,7 @@ namespace dragonpoop
     }
 
     //run instances
-    void model::runInstances( dpthread_lock *thd, model_writelock *g )
+    void model::runInstances( dpthread_lock *thd, model_writelock *g, unsigned int ms_each_frame )
     {
         std::list<model_instance *> *l, d;
         std::list<model_instance *>::iterator i;
@@ -476,7 +497,7 @@ namespace dragonpoop
             pl = ( model_instance_writelock *)o.tryWriteLock( p, 10, "model::runInstances" );
             if( !pl )
                 continue;
-            pl->run( thd, g );
+            pl->run( thd, g, ms_each_frame );
             //
             //d.push_back( p );
         }
@@ -490,7 +511,7 @@ namespace dragonpoop
     }
 
     //sync instances
-    void model::syncInstances( dpthread_lock *thd, model_writelock *g )
+    void model::syncInstances( dpthread_lock *thd, model_writelock *g, unsigned int ms_each_frame )
     {
         std::list<model_instance *> *l;
         std::list<model_instance *>::iterator i;
@@ -506,7 +527,7 @@ namespace dragonpoop
             if( !pl )
                 continue;
             pl->sync();
-            pl->run( thd, g );
+            pl->run( thd, g, ms_each_frame );
         }
     }
 
@@ -584,21 +605,9 @@ namespace dragonpoop
     }
 
     //sync model instance with changes
-    void model::sync( dpthread_lock *thd, model_writelock *ml )
+    void model::sync( void )
     {
-        shared_obj_guard o;
-        renderer_model_readlock *rl;
-
-        this->findSize();
-        this->computeFrameWeights( ml );
-        this->syncInstances( thd, ml );
-
-        if( !this->r )
-            return;
-        rl = (renderer_model_readlock *)o.tryReadLock( this->r, 400, "model::sync" );
-        if( !rl )
-            return;
-        rl->sync();
+        this->bSync = 1;
     }
 
     //set renderer model

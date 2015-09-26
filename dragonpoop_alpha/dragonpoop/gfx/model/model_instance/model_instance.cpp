@@ -45,7 +45,7 @@ namespace dragonpoop
         this->id = id;
         this->c = ml->getCore();
         this->m = (model_ref *)ml->getRef();
-        this->t_frame_time = 20;
+        this->t_frame_time = 50;
         this->bIsSynced = 1;
         this->j_ctr = 0;
         this->t_start = this->t_end = 0;
@@ -116,7 +116,7 @@ namespace dragonpoop
     }
     
     //run model from task
-    void model_instance::run( dpthread_lock *thd, model_instance_writelock *g, model_writelock *m )
+    void model_instance::run( dpthread_lock *thd, model_instance_writelock *g, model_writelock *m, unsigned int ms_each_frame )
     {
         uint64_t t;
         
@@ -129,7 +129,7 @@ namespace dragonpoop
         t = thd->getTicks();
         if( t - this->t_last_animate > this->t_frame_time )
         {
-            this->animate( g, m, thd );
+            this->animate( g, m, thd, ms_each_frame );
             this->t_last_animate = t;
         }
     }
@@ -306,10 +306,20 @@ namespace dragonpoop
     }
     
     //do animation
-    void model_instance::animate( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd )
+    void model_instance::animate( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd, unsigned int ms_each_frame )
     {
         shared_obj_guard o;
         renderer_model_instance_writelock *rl;
+        unsigned int i;
+        
+        this->t_frame_time = 10;
+        
+        i = ( ms_each_frame + 9 ) / 10;
+        i *= 10;
+        if( i > 100 )
+            i = 100;
+        if( i > this->t_frame_time )
+            this->t_frame_time = i;
         
         this->runAnimations( mi, ml, thd );
         this->runJoints( mi, ml, thd );

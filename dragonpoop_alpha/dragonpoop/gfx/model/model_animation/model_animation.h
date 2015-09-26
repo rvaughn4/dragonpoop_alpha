@@ -85,6 +85,8 @@ namespace dragonpoop
         model_frame *findFrameBeforeTime( model_writelock *ml, unsigned int t, unsigned int *p_time );
         //returns frame with largest movement within a frame time range
         model_frame *findBiggestFrame( model_writelock *ml, unsigned int t_start, unsigned int t_end );
+        //returns frame with smallest movement within a frame time range
+        model_frame *findSmallestFrame( model_writelock *ml, unsigned int t_start, unsigned int t_end );
         //eliminate all frames smaller than given weight
         void killSmallerFrames( model_writelock *ml, model_frame *f, unsigned int t_start, unsigned int t_end );
 

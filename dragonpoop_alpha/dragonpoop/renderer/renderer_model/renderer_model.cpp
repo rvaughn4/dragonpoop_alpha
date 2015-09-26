@@ -282,27 +282,28 @@ namespace dragonpoop
     }
     
     //run model from task
-    void renderer_model::run( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml )
+    void renderer_model::run( dpthread_lock *thd, renderer_model_writelock *g )
     {
         uint64_t t;
+        model_writelock *ml;
+        shared_obj_guard o;
         
         t = thd->getTicks();
-        
-        if( !this->bIsSynced )
+        if( !this->bIsSynced && this->m )
         {
-            ml->getSize( &this->size );
-            ml->getCenter( &this->center );
-            this->syncMaterials( ml );
-            this->syncInstances( ml );
-            this->onSync( thd, g, ml );
-            this->bIsSynced = 1;
+            ml = (model_writelock *)o.tryWriteLock( this->m, 100, "renderer_model::run" );
+            if( ml )
+            {
+                ml->getSize( &this->size );
+                ml->getCenter( &this->center );
+                this->syncMaterials( ml );
+                this->syncInstances( ml );
+                this->onSync( thd, g, ml );
+                this->bIsSynced = 1;
+            }
         }
-        
-        if( t - this->t_last_i_ran > 50 )
-        {
-            this->t_last_i_ran = t;
-            this->runInstances( thd );
-        }
+    
+        this->runInstances( thd );
     }
     
     //render model

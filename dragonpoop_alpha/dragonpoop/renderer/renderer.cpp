@@ -41,6 +41,7 @@ namespace dragonpoop
         this->bIsRun = 0;
         this->bActive = 1;
         this->bActiveOld = 0;
+        this->ms_each_frame = 30;
         this->gtsk = new renderer_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3/*14*/, 1 );
         tp->addTask( this->tsk );
@@ -175,6 +176,9 @@ namespace dragonpoop
             f0 = (float)td / 1000.0f;
             this->fps = this->fthiss / f0;
             this->t_last_fps = t;
+            if( this->fps > 0 )
+                f0 = 1000.0f / this->fps;
+            this->ms_each_frame = (uint64_t)f0;
             this->fthiss = 0;
         }
     }
@@ -338,14 +342,14 @@ namespace dragonpoop
             delete p;
         }
     }
-    //MEMORY LEAK!
+
     //run models
     void renderer::runModels( dpthread_lock *thd, renderer_writelock *rl )
     {
         std::list<renderer_model *> *l, d;
         std::list<renderer_model *>::iterator i;
         renderer_model *p;
-        dpid_bytetree t;
+        dpid_btree t;
         std::list<model *> li;
         std::list<model *>::iterator ii;
         model *pi;
@@ -354,11 +358,25 @@ namespace dragonpoop
         shared_obj_guard o, og;
         gfx_readlock *gl;
         uint64_t tr;
-        
+
         tr = thd->getTicks();
-        if( tr - this->t_last_m_ran < 200 )
+        if( tr - this->t_last_m_ran < 10 )
             return;
         this->t_last_m_ran = tr;
+        
+        l = &this->models;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            ppl = (renderer_model_writelock *)o.tryWriteLock( p, 100, "renderer::runModels" );
+            if( !ppl )
+                continue;
+            ppl->run( thd );
+        }
+        
+        if( tr - this->t_last_m_synced < 500 )
+            return;
+        this->t_last_m_synced = tr;
         
         gl = (gfx_readlock *)og.tryReadLock( this->g, 100, "renderer::runModels" );
         if( !gl )
@@ -378,7 +396,6 @@ namespace dragonpoop
         {
             pi = *ii;
             pl = (model_writelock *)o.tryWriteLock( pi, 100, "renderer::runModels" );
-            delete pi;
             if( !pl )
                 continue;
             p = (renderer_model *)t.findLeaf( pl->getId() );
@@ -394,7 +411,6 @@ namespace dragonpoop
             ppl = (renderer_model_writelock *)og.tryWriteLock( p, 100, "renderer::runModels" );
             if( !ppl )
                 continue;
-            ppl->run( thd, pl );
         }
         o.unlock();
         og.unlock();
@@ -479,10 +495,10 @@ namespace dragonpoop
         return this->fps;
     }
 
-    //set active state
-    void renderer::setActiveState( bool b )
+    //return ms each frame
+    unsigned int renderer::getMsPerFrame( void )
     {
-        this->bActive = b;
+        return (unsigned int)this->ms_each_frame;
     }
     
 };
