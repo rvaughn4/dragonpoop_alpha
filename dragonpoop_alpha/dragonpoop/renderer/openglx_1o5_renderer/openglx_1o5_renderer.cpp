@@ -5,6 +5,7 @@
 #include "openglx_1o5_renderer_ref.h"
 #include "../../core/core.h"
 #include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui.h"
+#include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui_readlock.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_instance/openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_material/openglx_1o5_renderer_model_material.h"
@@ -378,16 +379,23 @@ namespace dragonpoop
         dpvertex *vp;
         
         glLoadMatrixf( m_world->getRaw4by4() );
-        
-//        glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
-        
-        vp = this->vbbox.getVertexBuffer( 0 );
 
+        vp = this->vbbox.getVertexBuffer( 0 );
         glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
-        glDrawElements( GL_TRIANGLES, (int)this->vbbox_indicies.size(), GL_UNSIGNED_SHORT, &this->vbbox_indicies[ 0 ] );
+
+        if( m->hasBg() && ( (openglx_1o5_renderer_gui_readlock *)m )->getBgTex() )
+        {
+            glBindTexture( GL_TEXTURE_2D, ( (openglx_1o5_renderer_gui_readlock *)m )->getBgTex() );
+            glDrawElements( GL_TRIANGLES, (int)this->vbbox_indicies.size(), GL_UNSIGNED_SHORT, &this->vbbox_indicies[ 0 ] );
+        }
         
+        if( m->hasFg() && ( (openglx_1o5_renderer_gui_readlock *)m )->getFgTex() )
+        {
+            glBindTexture( GL_TEXTURE_2D, ( (openglx_1o5_renderer_gui_readlock *)m )->getFgTex() );
+            glDrawElements( GL_TRIANGLES, (int)this->vbbox_indicies.size(), GL_UNSIGNED_SHORT, &this->vbbox_indicies[ 0 ] );
+        }
     }
     
     //build gui box

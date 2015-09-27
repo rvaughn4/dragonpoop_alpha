@@ -16,7 +16,13 @@ namespace dragonpoop
         
     private:
         
+        unsigned int bg_tex, fg_tex;
         
+        //release texture
+        void killTex( unsigned int *t );
+        //create and load texture
+        void makeTex( unsigned int *t, dpbitmap *bm );
+
     protected:
         
         //generate read lock
@@ -26,9 +32,13 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //override to handle bg texture update
-        virtual void updateBg( openglx_1o5_renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        virtual void updateBg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
         //override to handle fg texture update
-        virtual void updateFg( openglx_1o5_renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        virtual void updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        //return bg texture
+        unsigned int getBgTex( void );
+        //return fg texture
+        unsigned int getFgTex( void );
         
     public:
         

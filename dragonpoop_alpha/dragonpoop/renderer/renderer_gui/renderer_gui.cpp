@@ -4,6 +4,7 @@
 #include "renderer_gui_writelock.h"
 #include "renderer_gui_ref.h"
 #include "../../gfx/gui/gui_writelock.h"
+#include "../../gfx/gui/gui_readlock.h"
 #include "../../gfx/gui/gui_ref.h"
 #include "../../core/core.h"
 #include "../renderer_writelock.h"
@@ -22,6 +23,8 @@ namespace dragonpoop
         g->getDimensions( &this->pos );
         this->bHasBg = g->hasBg();
         this->bHasFg = g->hasFg();
+        this->bSyncBg = this->bSyncFg = 1;
+        this->bSyncPos = 0;
     }
     
     //dtor
@@ -63,7 +66,41 @@ namespace dragonpoop
     //run gui
     void renderer_gui::run( dpthread_lock *thd, renderer_gui_writelock *g )
     {
-        //gui_writelock
+        gui_readlock *pl;
+        shared_obj_guard o;
+        dpbitmap *bm;
+        
+        if( this->bSyncBg || this->bSyncFg || this->bSyncPos )
+        {
+            pl = (gui_readlock *)o.tryReadLock( this->g, 200, "renderer_gui::run" );
+            if( pl )
+            {
+                
+                if( this->bSyncPos )
+                {
+                    this->pid = g->getParentId();
+                    g->getDimensions( &this->pos );
+                    this->bHasBg = g->hasBg();
+                    this->bHasFg = g->hasFg();
+                    this->bSyncPos = 0;
+                }
+                
+                if( this->bHasBg && this->bSyncBg )
+                {
+                    bm = pl->getBg();
+                    this->updateBg( g, pl, bm );
+                    this->bSyncBg = 0;
+                }
+                
+                if( this->bHasFg && this->bSyncFg )
+                {
+                    bm = pl->getFg();
+                    this->updateFg( g, pl, bm );
+                    this->bSyncFg = 0;
+                }
+                
+            }
+        }
     }
     
     //render model

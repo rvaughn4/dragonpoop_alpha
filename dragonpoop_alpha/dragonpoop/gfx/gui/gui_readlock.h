@@ -10,6 +10,7 @@ namespace dragonpoop
     class gui;
     class core;
     struct gui_dims;
+    class dpbitmap;
     
     class gui_readlock : public shared_obj_readlock
     {
@@ -41,6 +42,10 @@ namespace dragonpoop
         bool hasFg( void );
         //get parent id
         dpid getParentId( void );
+        //returns pointer to bg texture
+        dpbitmap *getBg( void );
+        //returns pointer to fg texture
+        dpbitmap *getFg( void );
 
         friend class gui;
     };

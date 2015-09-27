@@ -11,6 +11,7 @@ namespace dragonpoop
     class core;
     struct gui_dims;
     class dpthread_lock;
+    class dpbitmap;
     
     class gui_writelock : public shared_obj_writelock
     {
@@ -60,6 +61,10 @@ namespace dragonpoop
         void setParentId( dpid id );
         //get parent id
         dpid getParentId( void );
+        //returns pointer to bg texture
+        dpbitmap *getBg( void );
+        //returns pointer to fg texture
+        dpbitmap *getFg( void );
 
         friend class gui;
     };

@@ -85,6 +85,10 @@ namespace dragonpoop
         bool hasRenderer( void );
         //set renderer
         void setRenderer( renderer_gui *g );
+        //returns pointer to bg texture
+        dpbitmap *getBg( void );
+        //returns pointer to fg texture
+        dpbitmap *getFg( void );
         
     public:
         

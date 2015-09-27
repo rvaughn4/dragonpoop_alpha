@@ -16,5 +16,17 @@ namespace dragonpoop
     {
         
     }
+
+    //return bg texture
+    unsigned int openglx_1o5_renderer_gui_readlock::getBgTex( void )
+    {
+        return this->t->getBgTex();
+    }
     
+    //return fg texture
+    unsigned int openglx_1o5_renderer_gui_readlock::getFgTex( void )
+    {
+        return this->t->getFgTex();
+    }
+
 };

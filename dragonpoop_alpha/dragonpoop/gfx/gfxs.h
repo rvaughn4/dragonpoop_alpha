@@ -10,5 +10,6 @@
 
 #include "model/models.h"
 #include "gui/guis.h"
+#include "dpbitmap/dpbitmaps.h"
 
 #endif

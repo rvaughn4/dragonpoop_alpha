@@ -160,12 +160,18 @@ namespace dragonpoop
         
         this->setViewport( w, h );
         this->clearScreen( 0.5f, 0.5f, 1.0f );
-        this->prepareWorldRender( w, h );
-        this->renderModels( thd, rl, 0, &this->m_world );
-        
+
         this->prepareGuiRender( w, h );
         //this->renderModels( thd, rl, 1, &this->m_gui );
         this->renderGuis( thd, rl, &this->m_gui );
+        
+        
+        this->prepareWorldRender( w, h );
+        this->renderModels( thd, rl, 0, &this->m_world );
+        
+//        this->prepareGuiRender( w, h );
+        //this->renderModels( thd, rl, 1, &this->m_gui );
+  //      this->renderGuis( thd, rl, &this->m_gui );
         
         this->flipBuffer();
         

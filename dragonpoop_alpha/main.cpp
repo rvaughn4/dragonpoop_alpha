@@ -45,7 +45,10 @@ protected:
     //override to paint background texture
     virtual void repaintBg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
     {
-        
+        dragonpoop::dpbitmap b;
+        b.loadFile( "example.bmp" );
+        bm->resize( b.getWidth(), b.getHeight() );
+        bm->blit( &b, 0 );
     }
     
     //override to paint forground texture
@@ -59,7 +62,9 @@ public:
     //ctor
     test_gui( dragonpoop::gfx_writelock *g, dragonpoop::dpid id ) : dragonpoop::gui( g, id, dragonpoop::dpid_null() )
     {
-        
+        this->enableBg( 1 );
+        this->setPosition( 0, 0 );
+        this->setWidthHeight( 500, 500 );
     }
     
     //dtor
@@ -87,15 +92,16 @@ int main( int argc, const char * argv[] )
     lr = 0;
   
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "low_dragon", "", "3drt_dragon_medium.dpmodel", 0, &lr );
+    gl->loadModel( "low_dragon", "", "3drt_dragon_high.dpmodel", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
 
-    dragonpoop::dpid mid;
+    dragonpoop::dpid mid, mmid;
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     mid = gl->makeModelInstance( "low_dragon", 0 );
+    mmid = gl->makeModelInstance( "low_dragon", 0 );
     o.unlock();
 
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
@@ -105,7 +111,8 @@ int main( int argc, const char * argv[] )
     
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->startAnimation( "low_dragon", mid, "ms3d_all", 1, 3 );
+    gl->startAnimation( "low_dragon", mid, "fly_forward", 1, 1 );
+    gl->startAnimation( "low_dragon", mmid, "run", 1, 1 );
     o.unlock();
     
     main_pause( c, 5 );

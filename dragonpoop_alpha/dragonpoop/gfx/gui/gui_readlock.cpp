@@ -59,4 +59,16 @@ namespace dragonpoop
         return this->t->getParentId();
     }
     
+    //returns pointer to bg texture
+    dpbitmap *gui_readlock::getBg( void )
+    {
+        return this->t->getBg();
+    }
+    
+    //returns pointer to fg texture
+    dpbitmap *gui_readlock::getFg( void )
+    {
+        return this->t->getFg();
+    }
+
 };

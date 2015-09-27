@@ -69,17 +69,15 @@ namespace dragonpoop
         
         if( this->bRedraw )
         {
-            if( ( this->bWasBgDrawn || this->bRepaintBg ) && this->bHasBg )
+            if( ( !this->bWasBgDrawn || this->bRepaintBg ) && this->bHasBg )
             {
-                this->bgtex.resize( this->pos.w, this->pos.h );
                 this->repaintBg( g, &this->bgtex, this->pos.w, this->pos.h );
                 this->bBgChanged = 1;
                 this->bWasBgDrawn = 1;
             }
             
-            if( ( this->bWasBgDrawn || this->bRepaintFg ) && this->bHasFg )
+            if( ( !this->bWasBgDrawn || this->bRepaintFg ) && this->bHasFg )
             {
-                this->fgtex.resize( this->pos.w, this->pos.h );
                 this->repaintFg( g, &this->fgtex, this->pos.w, this->pos.h );
                 this->bFgChanged = 1;
                 this->bWasFgDrawn = 1;
@@ -231,6 +229,18 @@ namespace dragonpoop
         if( !l )
             return;
         this->r = (renderer_gui_ref *)l->getRef();
+    }
+
+    //returns pointer to bg texture
+    dpbitmap *gui::getBg( void )
+    {
+        return &this->bgtex;
+    }
+    
+    //returns pointer to fg texture
+    dpbitmap *gui::getFg( void )
+    {
+        return &this->fgtex;
     }
     
 };

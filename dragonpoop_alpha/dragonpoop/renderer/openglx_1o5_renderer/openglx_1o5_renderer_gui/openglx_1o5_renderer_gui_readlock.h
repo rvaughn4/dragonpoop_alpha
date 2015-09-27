@@ -24,6 +24,11 @@ namespace dragonpoop
         
     public:
         
+        //return bg texture
+        unsigned int getBgTex( void );
+        //return fg texture
+        unsigned int getFgTex( void );
+        
         friend class openglx_1o5_renderer_gui;
     };
     
