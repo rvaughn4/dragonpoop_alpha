@@ -18,9 +18,9 @@ namespace dragonpoop
     }
     
     //run gui
-    void renderer_gui_writelock::run( dpthread_lock *thd, gui_writelock *g )
+    void renderer_gui_writelock::run( dpthread_lock *thd )
     {
-        this->t->run( thd, g, this );
+        this->t->run( thd, this );
     }
     
     //return core

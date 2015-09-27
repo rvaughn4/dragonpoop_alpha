@@ -47,6 +47,12 @@ namespace dragonpoop
         this->t->renderGroup( thd, this, m, mi, g, mat, m_world );
     }
     
+    //render gui
+    void renderer_writelock::renderGui( dpthread_lock *thd, renderer_gui_readlock *m, dpmatrix *m_world )
+    {
+        this->t->renderGui( thd, this, m, m_world );
+    }
+    
     //returns fps
     float renderer_writelock::getFps( void )
     {
@@ -57,6 +63,12 @@ namespace dragonpoop
     unsigned int renderer_writelock::getMsPerFrame( void )
     {
         return this->t->getMsPerFrame();
+    }
+
+    //return guis
+    void renderer_writelock::getChildrenGuis( std::list<renderer_gui *> *l, dpid pid )
+    {
+        this->t->getChildrenGuis( l, pid );
     }
     
 };

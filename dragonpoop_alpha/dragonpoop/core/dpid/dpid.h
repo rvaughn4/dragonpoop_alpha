@@ -27,6 +27,8 @@ namespace dragonpoop
     void dpid_copy( dpid *src, dpid *dst );
     //compare dpid
     int dpid_signed_compare( dpid *a, dpid *b );
+    //returns all zeroes
+    dpid dpid_null( void );
     
 }
 

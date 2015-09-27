@@ -3,6 +3,8 @@
 #define dragonpoop_renderer_writelock_h
 
 #include "../core/shared_obj/shared_obj_writelock.h"
+#include <list>
+#include "../core/dpid/dpid.h"
 
 namespace dragonpoop
 {
@@ -17,6 +19,8 @@ namespace dragonpoop
     class renderer_model_instance_group;
     class renderer_model_material;
     class dpmatrix;
+    class renderer_gui_readlock;
+    class renderer_gui;
 
     class renderer_writelock : public shared_obj_writelock
     {
@@ -43,11 +47,15 @@ namespace dragonpoop
         //run renderer from task
         void run( dptask_writelock *tskl, dpthread_lock *thd );
         //render model instance group
-        virtual void renderGroup( dpthread_lock *thd, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world );
+        void renderGroup( dpthread_lock *thd, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world );
+        //render gui
+        void renderGui( dpthread_lock *thd, renderer_gui_readlock *m, dpmatrix *m_world );
         //returns fps
         float getFps( void );
         //return ms each frame
         unsigned int getMsPerFrame( void );
+        //return guis
+        void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
 
         friend class renderer;
     };

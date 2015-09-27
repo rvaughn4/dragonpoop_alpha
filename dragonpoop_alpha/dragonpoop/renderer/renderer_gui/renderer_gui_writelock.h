@@ -30,7 +30,7 @@ namespace dragonpoop
     public:
         
         //run gui
-        void run( dpthread_lock *thd, gui_writelock *gl );
+        void run( dpthread_lock *thd );
         //return core
         core *getCore( void );
         //returns id

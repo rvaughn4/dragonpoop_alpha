@@ -9,5 +9,6 @@
 #include "gfx_task.h"
 
 #include "model/models.h"
+#include "gui/guis.h"
 
 #endif

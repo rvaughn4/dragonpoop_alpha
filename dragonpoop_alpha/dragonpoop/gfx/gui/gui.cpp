@@ -20,6 +20,7 @@ namespace dragonpoop
         this->c = g->getCore();
         this->g = (gfx_ref *)g->getRef();
         this->id = id;
+        this->pid = parent_id;
         this->bHasBg = this->bHasFg = 0;
         this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
         this->bRedraw = 1;

@@ -345,15 +345,15 @@ namespace dragonpoop
                 pl = (gui_writelock *)o.tryWriteLock( p, 100, "gfx::runGuis" );
                 if( pl )
                     pl->run( thd );
-                o.unlock();
             }
         }
-        l->clear();
+        o.unlock();
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
+            this->guis.remove( p );
             delete p;
         }
     }

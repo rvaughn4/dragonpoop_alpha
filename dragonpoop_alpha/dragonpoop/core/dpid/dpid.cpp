@@ -65,5 +65,13 @@ namespace dragonpoop
         return 0;
     }
     
+    //returns all zeroes
+    dpid dpid_null( void )
+    {
+        dpid r;
+        dpid_zero( &r );
+        return r;
+    }
+    
 }
 

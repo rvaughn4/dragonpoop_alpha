@@ -26,6 +26,7 @@ namespace dragonpoop
     class renderer_model_material;
     class renderer_gui;
     class gui_writelock;
+    class renderer_gui_readlock;
 
     class renderer : public shared_obj
     {
@@ -41,7 +42,7 @@ namespace dragonpoop
         std::list<renderer_model *> models;
         std::list<renderer_gui *> guis;
         
-        uint64_t t_last_m_ran, t_last_m_synced, t_last_gui_ran, t_last_fps, ms_each_frame;
+        uint64_t t_last_m_ran, t_last_m_synced, t_last_gui_ran, t_last_gui_synced, t_last_fps, ms_each_frame;
         float fps, fthiss;
         bool bActive, bActiveOld;
         dpmatrix m_world, m_gui;
@@ -54,6 +55,8 @@ namespace dragonpoop
         void runGuis( dpthread_lock *thd, renderer_writelock *rl );
         //delete guis
         void deleteGuis( void );
+        //render guis
+        void renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
         //render
         void render( dpthread_lock *thd, renderer_writelock *rl );
         //render models
@@ -103,7 +106,11 @@ namespace dragonpoop
         unsigned int getMsPerFrame( void );
         //render model instance group
         virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world ) = 0;
-
+        //render gui
+        virtual void renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world ) = 0;
+        //return guis
+        void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
+        
     public:
 
         //ctor

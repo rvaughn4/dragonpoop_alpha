@@ -37,6 +37,40 @@ void main_wait_loader( dragonpoop::core *c, dragonpoop::model_loader_ref *lr )
     
 }
 
+class test_gui : public dragonpoop::gui
+{
+    
+protected:
+    
+    //override to paint background texture
+    virtual void repaintBg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
+    {
+        
+    }
+    
+    //override to paint forground texture
+    virtual void repaintFg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
+    {
+        
+    }
+    
+public:
+    
+    //ctor
+    test_gui( dragonpoop::gfx_writelock *g, dragonpoop::dpid id ) : dragonpoop::gui( g, id, dragonpoop::dpid_null() )
+    {
+        
+    }
+    
+    //dtor
+    virtual ~test_gui( void )
+    {
+        
+    }
+
+
+};
+
 int main( int argc, const char * argv[] )
 {
 
@@ -46,6 +80,7 @@ int main( int argc, const char * argv[] )
     dragonpoop::gfx_writelock *gl;
     dragonpoop::shared_obj_guard o;
     dragonpoop::model_loader_ref *lr;
+    dragonpoop::gui *tg;
     
     gr = c->getGfx();
     
@@ -63,6 +98,11 @@ int main( int argc, const char * argv[] )
     mid = gl->makeModelInstance( "low_dragon", 0 );
     o.unlock();
 
+    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
+    tg = new test_gui( gl, mid );
+    gl->addGui( tg );
+    o.unlock();
+    
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     gl->startAnimation( "low_dragon", mid, "ms3d_all", 1, 3 );
@@ -78,6 +118,7 @@ int main( int argc, const char * argv[] )
     while( c->isRunning() )
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
+    delete tg;
     delete c;
 
     return 0;

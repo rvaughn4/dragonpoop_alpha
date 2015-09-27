@@ -44,7 +44,7 @@ namespace dragonpoop
         //dtor
         virtual ~shared_obj_interface( void );
         //returns true if linked
-        virtual bool isLinked( void ) = 0;
+        virtual bool isLinked( void );
 
         friend class shared_obj_lock;
         friend class shared_obj_ref;

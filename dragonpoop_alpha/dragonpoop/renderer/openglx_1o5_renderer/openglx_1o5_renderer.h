@@ -10,6 +10,7 @@
 //#include <X11/extensions/xf86vmode.h>
 #include <X11/keysym.h>
 #include "../../gfx/dpmatrix/dpmatrix.h"
+#include <vector>
 
 namespace dragonpoop
 {
@@ -42,6 +43,11 @@ namespace dragonpoop
         openglx_1o5_stuffs gl;
         dpmatrix world_m, local_m;
         float fps;
+        dpvertexindex_buffer vbbox;
+        std::vector<uint16_t> vbbox_indicies;
+        
+        //build gui box
+        void makeBox( void );
 
     protected:
 
@@ -79,8 +85,12 @@ namespace dragonpoop
         virtual void flipBuffer( void );
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
+        //generate renderer gui
+        virtual renderer_gui *genGui( gui_writelock *ml );
         //render model instance group
         virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world );
+        //render gui
+        virtual void renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world );
 
     public:
 

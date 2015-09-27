@@ -16,4 +16,10 @@ namespace dragonpoop
 
     }
 
+    //returns true if linked
+    bool shared_obj_interface::isLinked( void )
+    {
+        return 0;
+    }
+    
 };

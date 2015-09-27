@@ -164,7 +164,8 @@ namespace dragonpoop
         this->renderModels( thd, rl, 0, &this->m_world );
         
         this->prepareGuiRender( w, h );
-        this->renderModels( thd, rl, 1, &this->m_gui );
+        //this->renderModels( thd, rl, 1, &this->m_gui );
+        this->renderGuis( thd, rl, &this->m_gui );
         
         this->flipBuffer();
         
@@ -258,10 +259,26 @@ namespace dragonpoop
         gfx_readlock *gl;
         uint64_t tr;
         
+        //run guis
         tr = thd->getTicks();
-        if( tr - this->t_last_gui_ran < 200 )
+        if( tr - this->t_last_gui_ran < 50 )
             return;
         this->t_last_gui_ran = tr;
+
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::runGuis" );
+            if( !ppl )
+                continue;
+            ppl->run( thd );
+        }
+
+        //make new guis and delete old
+        if( tr - this->t_last_gui_synced < 500 )
+            return;
+        this->t_last_gui_synced = tr;
         
         gl = (gfx_readlock *)og.tryReadLock( this->g, 100, "renderer::runGuis" );
         if( !gl )
@@ -281,7 +298,6 @@ namespace dragonpoop
         {
             pi = *ii;
             pl = (gui_writelock *)o.tryWriteLock( pi, 100, "renderer::runGuis" );
-            delete pi;
             if( !pl )
                 continue;
             p = (renderer_gui *)t.findLeaf( pl->getId() );
@@ -294,10 +310,9 @@ namespace dragonpoop
             t.removeLeaf( p );
             if( !p )
                 continue;
-            ppl = (renderer_gui_writelock *)og.tryWriteLock( p, 100, "renderer::runModels" );
+            ppl = (renderer_gui_writelock *)og.tryWriteLock( p, 100, "renderer::runGuis" );
             if( !ppl )
                 continue;
-            ppl->run( thd, pl );
         }
         o.unlock();
         og.unlock();
@@ -320,13 +335,37 @@ namespace dragonpoop
         
     }
     
+    //render guis
+    void renderer::renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
+    {
+        std::list<renderer_gui *> *l, d;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_readlock *pl;
+        shared_obj_guard o;
+        dpid nid;
+        
+        dpid_zero( &nid );
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->compareParentId( nid ) )
+                continue;
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 30, "renderer::renderGuis" );
+            if( !pl )
+                continue;
+            pl->render( thd, rl, m_world );
+        }
+    }
+    
     //delete guis
     void renderer::deleteGuis( void )
     {
         std::list<renderer_gui *> *l, d;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
-        
+
         l = &this->guis;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -334,13 +373,6 @@ namespace dragonpoop
             d.push_back( p );
         }
         l->clear();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            delete p;
-        }
     }
 
     //run models
@@ -501,4 +533,20 @@ namespace dragonpoop
         return (unsigned int)this->ms_each_frame;
     }
     
+    //return guis
+    void renderer::getChildrenGuis( std::list<renderer_gui *> *ll, dpid pid )
+    {
+        std::list<renderer_gui *> *l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( p->compareParentId( pid ) )
+                ll->push_back( p );
+        }
+    }
+
 };

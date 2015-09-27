@@ -4,6 +4,7 @@
 #include "openglx_1o5_renderer_writelock.h"
 #include "openglx_1o5_renderer_ref.h"
 #include "../../core/core.h"
+#include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_instance/openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_material/openglx_1o5_renderer_model_material.h"
@@ -59,6 +60,7 @@ namespace dragonpoop
         if( !this->makeWindow( (char *)"Dragonpoop: its as smooth as silk!", 1024, 728, 32, 0 ) )
             return 0;
 
+        this->makeBox();
         return 1;
     }
 
@@ -332,7 +334,12 @@ namespace dragonpoop
     {
         return new openglx_1o5_renderer_model( ml );
     }
-    void render_joints( model_instance_joint_cache *c, renderer_model_instance_readlock *m );
+    
+    //generate renderer gui
+    renderer_gui *openglx_1o5_renderer::genGui( gui_writelock *ml )
+    {
+        return new openglx_1o5_renderer_gui( ml );
+    }
 
     //render model instance group
     void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world )
@@ -364,5 +371,93 @@ namespace dragonpoop
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
         glDrawElements( GL_TRIANGLES, (int)indicies->size(), GL_UNSIGNED_SHORT, &( *indicies )[ 0 ] );
     }
+    
+    //render gui
+    void openglx_1o5_renderer::renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world )
+    {
+        dpvertex *vp;
+        
+        glLoadMatrixf( m_world->getRaw4by4() );
+        
+//        glBindTexture( GL_TEXTURE_2D, gmat->getDiffuseTex() );
+        
+        vp = this->vbbox.getVertexBuffer( 0 );
 
+        glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
+        glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
+        glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
+        glDrawElements( GL_TRIANGLES, (int)this->vbbox_indicies.size(), GL_UNSIGNED_SHORT, &this->vbbox_indicies[ 0 ] );
+        
+    }
+    
+    //build gui box
+    void openglx_1o5_renderer::makeBox( void )
+    {
+        dpvertex b;
+        dpindex *p, *ip;
+        unsigned int i, e;
+        
+        this->vbbox.clear();
+
+        b.normal.x = 0;
+        b.normal.y = 0;
+        b.normal.z = 1;
+        b.pos.z = -1;
+        
+        //t_0
+        
+        //tl
+        b.pos.x = -1;
+        b.pos.y = 1;
+        b.texcoords[ 0 ].s = 0;
+        b.texcoords[ 0 ].t = 0;
+        this->vbbox.addVertexUnique( &b );
+        
+        //bl
+        b.pos.x = -1;
+        b.pos.y = -1;
+        b.texcoords[ 0 ].s = 0;
+        b.texcoords[ 0 ].t = 1;
+        this->vbbox.addVertexUnique( &b );
+        
+        //tr
+        b.pos.x = 1;
+        b.pos.y = 1;
+        b.texcoords[ 0 ].s = 1;
+        b.texcoords[ 0 ].t = 0;
+        this->vbbox.addVertexUnique( &b );
+        
+        //t_1
+        
+        //tr
+        b.pos.x = 1;
+        b.pos.y = 1;
+        b.texcoords[ 0 ].s = 1;
+        b.texcoords[ 0 ].t = 0;
+        this->vbbox.addVertexUnique( &b );
+        
+        //bl
+        b.pos.x = -1;
+        b.pos.y = -1;
+        b.texcoords[ 0 ].s = 0;
+        b.texcoords[ 0 ].t = 1;
+        this->vbbox.addVertexUnique( &b );
+        
+        //br
+        b.pos.x = 1;
+        b.pos.y = -1;
+        b.texcoords[ 0 ].s = 1;
+        b.texcoords[ 0 ].t = 1;
+        this->vbbox.addVertexUnique( &b );
+        
+        this->vbbox_indicies.clear();
+        ip = this->vbbox.getIndexBuffer( &e );
+        for( i = 0; i < e; i++ )
+        {
+            p = &ip[ i ];
+            this->vbbox_indicies.push_back( p->i );
+        }
+        
+    }
+    
 };

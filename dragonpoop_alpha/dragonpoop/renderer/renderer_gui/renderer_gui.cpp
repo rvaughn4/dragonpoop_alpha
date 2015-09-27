@@ -6,6 +6,8 @@
 #include "../../gfx/gui/gui_writelock.h"
 #include "../../gfx/gui/gui_ref.h"
 #include "../../core/core.h"
+#include "../renderer_writelock.h"
+#include "../../core/shared_obj/shared_obj_guard.h"
 
 namespace dragonpoop
 {
@@ -59,15 +61,31 @@ namespace dragonpoop
     }
     
     //run gui
-    void renderer_gui::run( dpthread_lock *thd, gui_writelock *gl, renderer_gui_writelock *g )
+    void renderer_gui::run( dpthread_lock *thd, renderer_gui_writelock *g )
     {
-        
+        //gui_writelock
     }
     
     //render model
     void renderer_gui::render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world )
     {
+        std::list<renderer_gui *> l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_readlock *pl;
+        shared_obj_guard o;
         
+        r->getChildrenGuis( &l, this->id );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 30, "renderer_gui::render" );
+            if( !pl )
+                continue;
+            pl->render( thd, r, m_world );
+        }
+        
+        r->renderGui( thd, m, m_world );
     }
     
     //returns id
