@@ -45,7 +45,7 @@ namespace dragonpoop
         uint64_t t_last_m_ran, t_last_m_synced, t_last_gui_ran, t_last_gui_synced, t_last_fps, ms_each_frame;
         float fps, fthiss;
         bool bActive, bActiveOld;
-        dpmatrix m_world, m_gui;
+        dpmatrix m_world, m_gui, m_gui_undo;
 
         //run models
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
@@ -110,6 +110,10 @@ namespace dragonpoop
         virtual void renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world ) = 0;
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
+        //process mouse input
+        void processMouseInput( float x, float y, bool lb, bool rb );
+        //process mouse input
+        bool processGuiMouseInput( float x, float y, bool lb, bool rb );
         
     public:
 

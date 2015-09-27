@@ -57,14 +57,23 @@ protected:
         
     }
     
+    //override to handle mouse button
+    virtual void handleMouseClick( float x, float y, bool isRight, bool isDown )
+    {
+        dragonpoop::gui_dims p;
+        this->getDimensions( &p );
+        if( !isRight && isDown )
+            this->setPosition( x + p.x, y + p.y );
+    }
+    
 public:
     
     //ctor
-    test_gui( dragonpoop::gfx_writelock *g, dragonpoop::dpid id ) : dragonpoop::gui( g, id, dragonpoop::dpid_null() )
+    test_gui( dragonpoop::gfx_writelock *g, dragonpoop::dpid id, float x, float y, float w, float h ) : dragonpoop::gui( g, id, dragonpoop::dpid_null() )
     {
         this->enableBg( 1 );
-        this->setPosition( 0, 0 );
-        this->setWidthHeight( 1920, 1080 );
+        this->setPosition( x, y );
+        this->setWidthHeight( w, h );
     }
     
     //dtor
@@ -85,7 +94,7 @@ int main( int argc, const char * argv[] )
     dragonpoop::gfx_writelock *gl;
     dragonpoop::shared_obj_guard o;
     dragonpoop::model_loader_ref *lr;
-    dragonpoop::gui *tg;
+    dragonpoop::gui *tg, *tg2;
     
     gr = c->getGfx();
     
@@ -105,14 +114,16 @@ int main( int argc, const char * argv[] )
     o.unlock();
 
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    tg = new test_gui( gl, mid );
+    tg = new test_gui( gl, mid, 100, 100, 200, 200 );
     gl->addGui( tg );
+    tg2 = new test_gui( gl, mmid, 150, 150, 200, 200 );
+    gl->addGui( tg2 );
     o.unlock();
     
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->startAnimation( "low_dragon", mid, "fly_forward", 1, 1 );
-    gl->startAnimation( "low_dragon", mmid, "run", 1, 1 );
+    gl->startAnimation( "low_dragon", mid, "flying idle", 1, 1 );
+    gl->startAnimation( "low_dragon", mid, "reaction-1", 0, 0.2 );
     o.unlock();
     
     main_pause( c, 5 );
@@ -126,6 +137,7 @@ int main( int argc, const char * argv[] )
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
     delete tg;
+    delete tg2;
     delete c;
 
     return 0;

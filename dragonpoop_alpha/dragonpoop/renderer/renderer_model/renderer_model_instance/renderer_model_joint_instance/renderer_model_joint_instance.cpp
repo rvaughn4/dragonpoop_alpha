@@ -143,7 +143,9 @@ namespace dragonpoop
         re *= re;
         if( re > 0 )
             re = sqrtf( re );
-        re = 1.8f * ( 0.5f - re + 0.1f );
+        re = 2.0f * re;
+        re *= re;
+        re = 0.7f * ( 1.0f - re ) + 0.3f;
         this->smooth.pos.x += ( pos.x - this->smooth.pos.x ) * re;
         this->smooth.pos.y += ( pos.y - this->smooth.pos.y ) * re;
         this->smooth.pos.z += ( pos.z - this->smooth.pos.z ) * re;

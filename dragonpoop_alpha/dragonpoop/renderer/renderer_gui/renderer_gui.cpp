@@ -10,6 +10,8 @@
 #include "../renderer_writelock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 
+#include <thread>
+
 namespace dragonpoop
 {
     
@@ -25,6 +27,7 @@ namespace dragonpoop
         this->bHasFg = g->hasFg();
         this->bSyncBg = this->bSyncFg = 1;
         this->bSyncPos = 0;
+        this->z = g->getZ();
     }
     
     //dtor
@@ -78,10 +81,11 @@ namespace dragonpoop
                 
                 if( this->bSyncPos )
                 {
-                    this->pid = g->getParentId();
-                    g->getDimensions( &this->pos );
-                    this->bHasBg = g->hasBg();
-                    this->bHasFg = g->hasFg();
+                    this->pid = pl->getParentId();
+                    pl->getDimensions( &this->pos );
+                    this->bHasBg = pl->hasBg();
+                    this->bHasFg = pl->hasFg();
+                    this->z = pl->getZ();
                     this->bSyncPos = 0;
                 }
                 
@@ -120,7 +124,8 @@ namespace dragonpoop
             pl = (renderer_gui_readlock *)o.tryReadLock( p, 30, "renderer_gui::render" );
             if( !pl )
                 continue;
-            pl->render( thd, r, m_world );
+            if( !pl->compareId( this->id ) )
+                pl->render( thd, r, m_world );
         }
         
         mat.copy( m_world );
@@ -203,9 +208,11 @@ namespace dragonpoop
         renderer_gui *p;
         renderer_gui_writelock *pl;
         shared_obj_guard o;
+        float z;
         
         this->mat.copy( p_matrix );
-        this->mat.translate( this->pos.x, this->pos.y, 0 );
+        z = (float)this->z / -20.0f;
+        this->mat.translate( this->pos.x, this->pos.y, z );
         
         this->undo_mat.inverse( &this->mat );
         this->size_mat.copy( &this->mat );
@@ -220,6 +227,37 @@ namespace dragonpoop
                 continue;
             pl->redoMatrix( thd, r, &this->mat );
         }
+    }
+    
+    //returns z order
+    unsigned int renderer_gui::getZ( void )
+    {
+        return this->z;
+    }
+    
+    //process mouse input
+    bool renderer_gui::processMouse( float x, float y, bool lb, bool rb )
+    {
+        dpxyz_f p;
+        gui_writelock *g;
+        shared_obj_guard o;
+        
+        p.x = x;
+        p.y = y;
+        p.z = 0;//(float)this->z / -20.0f;
+        this->undo_mat.transform( &p );
+        
+        if( p.x < 0 || p.y < 0 )
+            return 0;
+        if( p.x >= this->pos.w || p.y >= this->pos.h )
+            return 0;
+        
+        g = (gui_writelock *)o.tryWriteLock( this->g, 300, "renderer_gui::processMouse" );
+        if( !g )
+            return 1;
+        g->processMouse( p.x, p.y, lb, rb );
+
+        return 1;
     }
     
 };

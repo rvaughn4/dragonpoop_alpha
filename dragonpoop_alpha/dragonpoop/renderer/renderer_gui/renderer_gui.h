@@ -28,6 +28,7 @@ namespace dragonpoop
         gui_ref *g;
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg;
         dpmatrix mat, size_mat, undo_mat;
+        unsigned int z;
         
     protected:
         
@@ -63,6 +64,8 @@ namespace dragonpoop
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world );
         //redo matrix
         void redoMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix );
+        //process mouse input
+        bool processMouse( float x, float y, bool lb, bool rb );
         
     public:
         
@@ -76,6 +79,8 @@ namespace dragonpoop
         bool compareParentId( dpid id );
         //returns id
         dpid getId( void );
+        //returns z order
+        unsigned int getZ( void );
 
         friend class renderer_gui_readlock;
         friend class renderer_gui_writelock;

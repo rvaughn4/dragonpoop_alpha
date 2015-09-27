@@ -197,14 +197,14 @@ namespace dragonpoop
         }
         
         //find end frame
-        frm = a->findFrameAtTime( m, this->end_frame_time, 0 );
+        frm = a->findFrameAtTime( m, this->end_frame_time, &this->end_frame_time );
         if( !frm )
             frm = a->findFrameBeforeTime( m, this->end_frame_time, 0 );
         if( frm )
             this->end_frame = frm->getId();
         
         //find start frame
-        frm = a->findFrameBeforeTime( m, this->start_frame_time, 0 );
+        frm = a->findFrameBeforeTime( m, this->start_frame_time, &this->start_frame_time );
         if( !frm )
             frm = a->findFrameAtTime( m, this->start_frame_time, 0 );
         if( frm )

@@ -18,9 +18,9 @@ namespace dragonpoop
     }
     
     //run gui
-    void gui_writelock::run( dpthread_lock *thd )
+    void gui_writelock::run( dpthread_lock *thd, gfx_writelock *gl )
     {
-        this->t->run( thd, this );
+        this->t->run( thd, this, gl );
     }
     
     //return core
@@ -123,6 +123,48 @@ namespace dragonpoop
     dpbitmap *gui_writelock::getFg( void )
     {
         return this->t->getFg();
+    }
+
+    //returns z order
+    unsigned int gui_writelock::getZ( void )
+    {
+        return this->t->getZ();
+    }
+    
+    //sets focus
+    void gui_writelock::setFocus( gfx_readlock *g )
+    {
+        this->t->setFocus( g );
+    }
+    
+    //sets focus
+    void gui_writelock::setFocus( gfx_writelock *g )
+    {
+        this->t->setFocus( g );
+    }
+    
+    //returns true if has focus
+    bool gui_writelock::hasFocus( void )
+    {
+        return this->t->hasFocus();
+    }
+    
+    //process mouse input
+    void gui_writelock::processMouse( float x, float y, bool lb, bool rb )
+    {
+        this->t->processMouse( x, y, lb, rb );
+    }
+    
+    //returns true if has renderer
+    bool gui_writelock::hasRenderer( void )
+    {
+        return this->t->hasRenderer();
+    }
+    
+    //set renderer
+    void gui_writelock::setRenderer( renderer_gui *g )
+    {
+        this->t->setRenderer( g );
     }
 
 };

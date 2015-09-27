@@ -57,6 +57,8 @@ namespace dragonpoop
         void syncFg( void );
         //redo matrix
         void redoMatrix( dpthread_lock *thd, renderer_writelock *r, dpmatrix *p_matrix );
+        //process mouse input
+        bool processMouse( float x, float y, bool lb, bool rb );
 
         friend class renderer_gui;
     };

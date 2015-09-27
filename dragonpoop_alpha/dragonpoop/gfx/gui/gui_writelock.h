@@ -12,6 +12,10 @@ namespace dragonpoop
     struct gui_dims;
     class dpthread_lock;
     class dpbitmap;
+    class gfx_readlock;
+    class gfx_writelock;
+    class renderer_gui;
+    class gfx_writelock;
     
     class gui_writelock : public shared_obj_writelock
     {
@@ -30,7 +34,7 @@ namespace dragonpoop
     public:
         
         //run gui
-        void run( dpthread_lock *thd );
+        void run( dpthread_lock *thd, gfx_writelock *gl );
         //return core
         core *getCore( void );
         //returns id
@@ -65,6 +69,20 @@ namespace dragonpoop
         dpbitmap *getBg( void );
         //returns pointer to fg texture
         dpbitmap *getFg( void );
+        //returns z order
+        unsigned int getZ( void );
+        //sets focus
+        void setFocus( gfx_readlock *g );
+        //sets focus
+        void setFocus( gfx_writelock *g );
+        //returns true if has focus
+        bool hasFocus( void );
+        //process mouse input
+        void processMouse( float x, float y, bool lb, bool rb );
+        //returns true if has renderer
+        bool hasRenderer( void );
+        //set renderer
+        void setRenderer( renderer_gui *g );
 
         friend class gui;
     };

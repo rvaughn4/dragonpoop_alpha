@@ -45,6 +45,7 @@ namespace dragonpoop
         float fps;
         dpvertexindex_buffer vbbox;
         std::vector<uint16_t> vbbox_indicies;
+        bool lb, rb;
         
         //build gui box
         void makeBox( void );

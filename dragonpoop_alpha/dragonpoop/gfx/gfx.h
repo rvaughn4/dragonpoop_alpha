@@ -60,7 +60,7 @@ namespace dragonpoop
         //delete old savers
         void runSavers( dpthread_lock *thd );
         //run all guis
-        void runGuis( dpthread_lock *thd );
+        void runGuis( dpthread_lock *thd, gfx_writelock *gl );
         
     protected:
 

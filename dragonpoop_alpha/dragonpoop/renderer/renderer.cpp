@@ -234,7 +234,21 @@ namespace dragonpoop
     //prepare for rendering world
     void renderer::prepareWorldRender( unsigned int w, unsigned int h )
     {
-        this->m_world.setPerspective( -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 100.0f, 45.0f );
+        float sw, sh, rw, rh, r, dw, dh;
+        
+        sw = 1920.0f;
+        sh = 1080.0f;
+        
+        rw = sw / w;
+        rh = sh / h;
+        
+        r = rw;
+        if( r < rh )
+            r = rh;
+        dw = r - rw;
+        dh = r - rh;
+        
+        this->m_world.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 100.0f, 45.0f );
     }
 
     //prepare for rendering gui
@@ -259,6 +273,7 @@ namespace dragonpoop
         dh *= 0.5f;
         
         this->m_gui.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, 10.0f );
+        this->m_gui_undo.inverse( &this->m_gui );
     }
 
     //flip backbuffer and present scene to screen
@@ -346,6 +361,7 @@ namespace dragonpoop
                 p = this->genGui( pl );
                 if( p )
                     this->guis.push_back( p );
+                pl->setRenderer( p );
             }
             t.removeLeaf( p );
             if( !p )
@@ -589,4 +605,70 @@ namespace dragonpoop
         }
     }
 
+    //process mouse input
+    void renderer::processMouseInput( float x, float y, bool lb, bool rb )
+    {
+        if( this->processGuiMouseInput( x, y, lb, rb ) )
+            return;
+    }
+    
+    //process mouse input
+    bool renderer::processGuiMouseInput( float x, float y, bool lb, bool rb )
+    {
+        std::list<renderer_gui *> *l, lz, d;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+        dpid nid;
+        int max_z, z;
+        
+        l = &this->guis;
+        nid = dpid_null();
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( p->compareParentId( nid ) )
+                lz.push_back( p );
+        }
+        
+        max_z = 0;
+        l = &lz;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            z = p->getZ();
+            if( z > max_z )
+                max_z = z;
+        }
+        max_z++;
+
+        for( z = max_z; z >= 0; z-- )
+        {
+            l = &lz;
+            for( i = l->begin(); i != l->end(); ++i )
+            {
+                p = *i;
+                if( z != p->getZ() )
+                    continue;
+                pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::processGuiMouseInput" );
+                if( !pl )
+                    continue;
+                if( pl->processMouse( x, y, lb, rb ) )
+                    return 1;
+                d.push_back( p );
+            }
+            
+            l = &d;
+            for( i = l->begin(); i != l->end(); ++i )
+            {
+                p = *i;
+                lz.remove( p );
+            }
+            d.clear();
+        }
+        
+        return 0;
+    }
+    
 };

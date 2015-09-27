@@ -5,6 +5,7 @@
 #include "gui_writelock.h"
 #include "../../core/core.h"
 #include "../gfx_writelock.h"
+#include "../gfx_readlock.h"
 #include "../gfx_ref.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 #include "../../renderer/renderer_gui/renderer_gui.h"
@@ -27,6 +28,10 @@ namespace dragonpoop
         this->bRepaintBg = this->bRepaintFg = 0;
         this->r = 0;
         this->bWasBgDrawn = this->bWasFgDrawn = 0;
+        this->z = 1;
+        this->bMouseInput = 0;
+        this->bOldLb = this->bOldRb = 0;
+        this->bLb = this->bRb = 0;
     }
     
     //dtor
@@ -62,7 +67,7 @@ namespace dragonpoop
     }
     
     //run gui
-    void gui::run( dpthread_lock *thd, gui_writelock *g )
+    void gui::run( dpthread_lock *thd, gui_writelock *g, gfx_writelock *gl )
     {
         shared_obj_guard o;
         renderer_gui_writelock *l;
@@ -103,6 +108,19 @@ namespace dragonpoop
 
                 this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
             }
+        }
+        
+        if( this->bMouseInput )
+        {
+            if( this->bOldLb != this->bLb )
+                this->setFocus( gl );
+            if( this->bOldLb != this->bLb )
+                this->handleMouseClick( this->mx, this->my, 0, this->bLb );
+            if( this->bOldRb != this->bRb )
+                this->handleMouseClick( this->mx, this->my, 1, this->bRb );
+            this->bMouseInput = 0;
+            this->bOldLb = this->bLb;
+            this->bOldRb = this->bRb;
         }
     }
     
@@ -241,6 +259,76 @@ namespace dragonpoop
     dpbitmap *gui::getFg( void )
     {
         return &this->fgtex;
+    }
+    
+    //returns z order
+    unsigned int gui::getZ( void )
+    {
+        return this->z;
+    }
+    
+    //sets focus
+    void gui::setFocus( gfx_readlock *g )
+    {
+        std::list<gui_ref *> l;
+        g->getGuis( &l );
+        this->setFocus( &l );
+    }
+    
+    //sets focus
+    void gui::setFocus( gfx_writelock *g )
+    {
+        std::list<gui_ref *> l;
+        g->getGuis( &l );
+        this->setFocus( &l );
+    }
+    
+    //sets focus
+    void gui::setFocus( std::list<gui_ref *> *l )
+    {
+        shared_obj_guard o;
+        gui_writelock *pl;
+        gui_ref *p;
+        std::list<gui_ref *>::iterator i;
+        
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (gui_writelock *)o.tryWriteLock( p, 100, "gui::setFocus" );
+            if( !pl )
+                continue;
+            if( pl->t->z < 20 )
+            {
+                pl->t->z++;
+                pl->t->bPosChanged = 1;
+            }
+        }
+        o.unlock();
+        
+        this->bPosChanged = 1;
+        this->z = 0;
+    }
+    
+    //returns true if has focus
+    bool gui::hasFocus( void )
+    {
+        return this->z == 0;
+    }
+ 
+    //process mouse input
+    void gui::processMouse( float x, float y, bool lb, bool rb )
+    {
+        this->mx = x;
+        this->my = y;
+        this->bLb = lb;
+        this->bRb = rb;
+        this->bMouseInput = 1;
+    }
+    
+    //override to handle mouse button
+    void gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
+    {
+        
     }
     
 };

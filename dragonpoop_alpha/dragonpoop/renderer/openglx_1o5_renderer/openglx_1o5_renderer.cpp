@@ -137,7 +137,7 @@ namespace dragonpoop
         this->gl.attr.border_pixel = 0;
 
         //create window
-        this->gl.attr.event_mask = ExposureMask | KeyPressMask | ButtonPressMask | StructureNotifyMask | VisibilityChangeMask | FocusChangeMask;
+        this->gl.attr.event_mask = KeyPressMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask;
         this->gl.win = XCreateWindow( this->gl.dpy, RootWindow( this->gl.dpy, vi->screen ), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &this->gl.attr );
         if( !this->gl.win )
         {
@@ -236,15 +236,6 @@ namespace dragonpoop
         XNextEvent( this->gl.dpy, &event );
         switch (event.type)
         {
-            case VisibilityNotify:
-                //this->setActiveState( event.xvisibility.state == VisibilityUnobscured );
-                break;
-            case FocusIn:
-                //this->setActiveState( 1 );
-                break;
-            case FocusOut:
-                //this->setActiveState( 0 );
-                break;
             case ConfigureNotify:
                 if(
                    ( event.xconfigure.width != (int)this->gl.width )
@@ -257,6 +248,14 @@ namespace dragonpoop
                 }
                 break;
             case ButtonPress:
+                this->lb |= event.xbutton.button == Button1;
+                this->rb |= event.xbutton.button == Button2;
+                this->processMouseInput( event.xbutton.x, event.xbutton.y, this->lb, this->rb );
+                break;
+            case ButtonRelease:
+                this->lb &= event.xbutton.button != Button1;
+                this->rb &= event.xbutton.button != Button2;
+                this->processMouseInput( event.xbutton.x, event.xbutton.y, this->lb, this->rb );
                 break;
             case KeyPress:
                 if (XLookupKeysym(&event.xkey, 0) == XK_Escape)

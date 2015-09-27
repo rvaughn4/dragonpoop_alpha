@@ -136,7 +136,7 @@ namespace dragonpoop
         this->runLoaders( thd );
         this->runSavers( thd );
         this->runModels( thd );
-        this->runGuis( thd );
+        this->runGuis( thd, g );
     }
 
     //delete all models
@@ -326,7 +326,7 @@ namespace dragonpoop
     }
     
     //run all guis
-    void gfx::runGuis( dpthread_lock *thd )
+    void gfx::runGuis( dpthread_lock *thd, gfx_writelock *gl )
     {
         std::list<gui_ref *> *l, d;
         std::list<gui_ref *>::iterator i;
@@ -344,7 +344,7 @@ namespace dragonpoop
             {
                 pl = (gui_writelock *)o.tryWriteLock( p, 100, "gfx::runGuis" );
                 if( pl )
-                    pl->run( thd );
+                    pl->run( thd, gl );
             }
         }
         o.unlock();
@@ -658,10 +658,6 @@ namespace dragonpoop
         tl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 300, "gfx::startAnimation" );
         if( !tl )
             return rid;
-        
-        if( do_repeat )
-            while( mil->isAnimationPlaying( anim_name ) )
-            mil->stopAnimation( anim_name );
         
         rid = mil->playAnimation( tl->genId(), ml, anim_name, do_repeat, speed );
      

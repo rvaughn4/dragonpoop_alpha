@@ -95,4 +95,10 @@ namespace dragonpoop
         this->t->redoMatrix( thd, r, this, p_matrix );
     }
     
+    //process mouse input
+    bool renderer_gui_writelock::processMouse( float x, float y, bool lb, bool rb )
+    {
+        return this->t->processMouse( x, y, lb, rb );
+    }
+    
 };

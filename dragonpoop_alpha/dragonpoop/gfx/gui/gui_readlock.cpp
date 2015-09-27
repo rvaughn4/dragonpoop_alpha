@@ -70,5 +70,17 @@ namespace dragonpoop
     {
         return this->t->getFg();
     }
+    
+    //returns z order
+    unsigned int gui_readlock::getZ( void )
+    {
+        return this->t->getZ();
+    }
+    
+    //returns true if has focus
+    bool gui_readlock::hasFocus( void )
+    {
+        return this->t->hasFocus();
+    }
 
 };

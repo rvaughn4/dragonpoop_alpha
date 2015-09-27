@@ -16,7 +16,9 @@ namespace dragonpoop
     class core;
     class gui_writelock;
     class gfx_writelock;
+    class gfx_readlock;
     class gfx_ref;
+    class gui_ref;
     class renderer_gui;
     class renderer_gui_ref;
     
@@ -34,10 +36,13 @@ namespace dragonpoop
         dpid id, pid;
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
-        std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw;
+        std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw, bMouseInput, bLb, bRb;
+        bool bOldLb, bOldRb;
+        float mx, my;
         gui_dims pos;
         gfx_ref *g;
         renderer_gui_ref *r;
+        unsigned int z;
 
     protected:
         
@@ -48,7 +53,7 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run gui
-        void run( dpthread_lock *thd, gui_writelock *g );
+        void run( dpthread_lock *thd, gui_writelock *g, gfx_writelock *gl );
         //returns id
         dpid getId( void );
         //compares id
@@ -89,6 +94,20 @@ namespace dragonpoop
         dpbitmap *getBg( void );
         //returns pointer to fg texture
         dpbitmap *getFg( void );
+        //returns z order
+        unsigned int getZ( void );
+        //sets focus
+        void setFocus( gfx_readlock *g );
+        //sets focus
+        void setFocus( gfx_writelock *g );
+        //sets focus
+        void setFocus( std::list<gui_ref *> *l );
+        //returns true if has focus
+        bool hasFocus( void );
+        //process mouse input
+        void processMouse( float x, float y, bool lb, bool rb );
+        //override to handle mouse button
+        virtual void handleMouseClick( float x, float y, bool isRight, bool isDown );
         
     public:
         
