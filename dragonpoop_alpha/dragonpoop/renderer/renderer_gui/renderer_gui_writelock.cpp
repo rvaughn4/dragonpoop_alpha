@@ -89,4 +89,10 @@ namespace dragonpoop
         this->t->syncFg();
     }
     
+    //redo matrix
+    void renderer_gui_writelock::redoMatrix( dpthread_lock *thd, renderer_writelock *r, dpmatrix *p_matrix )
+    {
+        this->t->redoMatrix( thd, r, this, p_matrix );
+    }
+    
 };

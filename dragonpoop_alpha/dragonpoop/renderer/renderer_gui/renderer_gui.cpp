@@ -111,6 +111,7 @@ namespace dragonpoop
         renderer_gui *p;
         renderer_gui_readlock *pl;
         shared_obj_guard o;
+        dpmatrix mat;
         
         r->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )
@@ -122,7 +123,10 @@ namespace dragonpoop
             pl->render( thd, r, m_world );
         }
         
-        r->renderGui( thd, m, m_world );
+        mat.copy( m_world );
+        mat.multiply( &this->size_mat );
+        
+        r->renderGui( thd, m, &mat );
     }
     
     //returns id
@@ -189,6 +193,33 @@ namespace dragonpoop
     void renderer_gui::syncFg( void )
     {
         this->bSyncFg = 1;
+    }
+    
+    //redo matrix
+    void renderer_gui::redoMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix )
+    {
+        std::list<renderer_gui *> l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+        
+        this->mat.copy( p_matrix );
+        this->mat.translate( this->pos.x, this->pos.y, 0 );
+        
+        this->undo_mat.inverse( &this->mat );
+        this->size_mat.copy( &this->mat );
+        this->size_mat.scale( this->pos.w, this->pos.h, 1 );
+        
+        r->getChildrenGuis( &l, this->id );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui::redoMatrix" );
+            if( !pl )
+                continue;
+            pl->redoMatrix( thd, r, &this->mat );
+        }
     }
     
 };

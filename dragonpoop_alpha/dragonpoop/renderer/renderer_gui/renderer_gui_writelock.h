@@ -12,6 +12,8 @@ namespace dragonpoop
     struct gui_dims;
     class dpthread_lock;
     class gui_writelock;
+    class dpmatrix;
+    class renderer_writelock;
     
     class renderer_gui_writelock : public shared_obj_writelock
     {
@@ -53,6 +55,8 @@ namespace dragonpoop
         void syncBg( void );
         //called to force fg update
         void syncFg( void );
+        //redo matrix
+        void redoMatrix( dpthread_lock *thd, renderer_writelock *r, dpmatrix *p_matrix );
 
         friend class renderer_gui;
     };

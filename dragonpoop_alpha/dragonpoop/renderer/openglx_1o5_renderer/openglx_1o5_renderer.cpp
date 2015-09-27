@@ -415,22 +415,22 @@ namespace dragonpoop
         //t_0
         
         //tl
-        b.pos.x = -1;
-        b.pos.y = 1;
+        b.pos.x = 0;
+        b.pos.y = 0;
         b.texcoords[ 0 ].s = 0;
         b.texcoords[ 0 ].t = 0;
         this->vbbox.addVertexUnique( &b );
         
         //bl
-        b.pos.x = -1;
-        b.pos.y = -1;
+        b.pos.x = 0;
+        b.pos.y = 1;
         b.texcoords[ 0 ].s = 0;
         b.texcoords[ 0 ].t = 1;
         this->vbbox.addVertexUnique( &b );
         
         //tr
         b.pos.x = 1;
-        b.pos.y = 1;
+        b.pos.y = 0;
         b.texcoords[ 0 ].s = 1;
         b.texcoords[ 0 ].t = 0;
         this->vbbox.addVertexUnique( &b );
@@ -439,21 +439,21 @@ namespace dragonpoop
         
         //tr
         b.pos.x = 1;
-        b.pos.y = 1;
+        b.pos.y = 0;
         b.texcoords[ 0 ].s = 1;
         b.texcoords[ 0 ].t = 0;
         this->vbbox.addVertexUnique( &b );
         
         //bl
-        b.pos.x = -1;
-        b.pos.y = -1;
+        b.pos.x = 0;
+        b.pos.y = 1;
         b.texcoords[ 0 ].s = 0;
         b.texcoords[ 0 ].t = 1;
         this->vbbox.addVertexUnique( &b );
         
         //br
         b.pos.x = 1;
-        b.pos.y = -1;
+        b.pos.y = 1;
         b.texcoords[ 0 ].s = 1;
         b.texcoords[ 0 ].t = 1;
         this->vbbox.addVertexUnique( &b );

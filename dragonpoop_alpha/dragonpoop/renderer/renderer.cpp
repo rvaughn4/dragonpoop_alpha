@@ -240,7 +240,25 @@ namespace dragonpoop
     //prepare for rendering gui
     void renderer::prepareGuiRender( unsigned int w, unsigned int h )
     {
-        this->m_gui.setOrtho( -1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 10.0f );
+        float sw, sh, rw, rh, r, dw, dh;
+        
+        sw = 1920.0f;
+        sh = 1080.0f;
+        
+        rw = sw / w;
+        rh = sh / h;
+        
+        r = rw;
+        if( r < rh )
+            r = rh;
+        w = w * r;
+        h = h * r;
+        dw = w - sw;
+        dh = h - sh;
+        dw *= 0.5f;
+        dh *= 0.5f;
+        
+        this->m_gui.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, 10.0f );
     }
 
     //flip backbuffer and present scene to screen
@@ -264,12 +282,28 @@ namespace dragonpoop
         shared_obj_guard o, og;
         gfx_readlock *gl;
         uint64_t tr;
+        dpid nid;
+        dpmatrix mat;
         
         //run guis
         tr = thd->getTicks();
         if( tr - this->t_last_gui_ran < 50 )
             return;
         this->t_last_gui_ran = tr;
+
+        nid = dpid_null();
+        mat.setTranslation( 0, 0, -1 );
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->compareParentId( nid ) )
+                continue;
+            ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::runGuis" );
+            if( !ppl )
+                continue;
+            ppl->redoMatrix( thd, rl, &mat );
+        }
 
         l = &this->guis;
         for( i = l->begin(); i != l->end(); ++i )

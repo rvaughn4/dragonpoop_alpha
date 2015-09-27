@@ -3,6 +3,7 @@
 #define dragonpoop_renderer_gui_h
 
 #include "../../gfx/gui/gui.h"
+#include "../../gfx/dpmatrix/dpmatrix.h"
 
 namespace dragonpoop
 {
@@ -26,6 +27,7 @@ namespace dragonpoop
         gui_dims pos;
         gui_ref *g;
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg;
+        dpmatrix mat, size_mat, undo_mat;
         
     protected:
         
@@ -59,6 +61,8 @@ namespace dragonpoop
         void syncFg( void );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world );
+        //redo matrix
+        void redoMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix );
         
     public:
         

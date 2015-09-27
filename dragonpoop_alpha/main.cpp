@@ -64,7 +64,7 @@ public:
     {
         this->enableBg( 1 );
         this->setPosition( 0, 0 );
-        this->setWidthHeight( 500, 500 );
+        this->setWidthHeight( 1920, 1080 );
     }
     
     //dtor
