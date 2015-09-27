@@ -54,16 +54,21 @@ protected:
     //override to paint forground texture
     virtual void repaintFg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
     {
+        dragonpoop::dpfont f;
+        
+        f.openFont( "", "/Library/Fonts/Tahoma.ttf", 20 );
+        
+        bm->resize( w, h );
         
     }
     
     //override to handle mouse button
     virtual void handleMouseClick( float x, float y, bool isRight, bool isDown )
     {
-        dragonpoop::gui_dims p;
-        this->getDimensions( &p );
-        if( !isRight && isDown )
-            this->setPosition( x + p.x, y + p.y );
+        //dragonpoop::gui_dims p;
+      //  this->getDimensions( &p );
+    //    if( !isRight && isDown )
+  //          this->setPosition( x + p.x, y + p.y );
     }
     
 public:
@@ -72,6 +77,7 @@ public:
     test_gui( dragonpoop::gfx_writelock *g, dragonpoop::dpid id, float x, float y, float w, float h ) : dragonpoop::gui( g, id, dragonpoop::dpid_null() )
     {
         this->enableBg( 1 );
+        this->enableFg( 1 );
         this->setPosition( x, y );
         this->setWidthHeight( w, h );
     }
@@ -101,7 +107,7 @@ int main( int argc, const char * argv[] )
     lr = 0;
   
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "low_dragon", "", "3drt_dragon_high.dpmodel", 0, &lr );
+    gl->loadModel( "low_dragon", "", "3drt_dragon_low.dpmodel", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
@@ -114,16 +120,16 @@ int main( int argc, const char * argv[] )
     o.unlock();
 
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    tg = new test_gui( gl, mid, 100, 100, 200, 200 );
+    tg = new test_gui( gl, mid, 10, 10, 800, 800 );
     gl->addGui( tg );
-    tg2 = new test_gui( gl, mmid, 150, 150, 200, 200 );
+    tg2 = new test_gui( gl, mmid, 300, 300, 800, 800 );
     gl->addGui( tg2 );
     o.unlock();
     
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->startAnimation( "low_dragon", mid, "flying idle", 1, 1 );
-    gl->startAnimation( "low_dragon", mid, "reaction-1", 0, 0.2 );
+    gl->startAnimation( "low_dragon", mid, "turn left", 1, 1 );
+    gl->startAnimation( "low_dragon", mmid, "turn right", 1, 1 );
     o.unlock();
     
     main_pause( c, 5 );

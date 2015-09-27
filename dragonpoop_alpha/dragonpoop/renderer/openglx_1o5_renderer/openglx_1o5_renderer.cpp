@@ -72,9 +72,9 @@ namespace dragonpoop
     }
 
     //do background graphics api processing
-    bool openglx_1o5_renderer::runApi( void )
+    bool openglx_1o5_renderer::runApi( dpthread_lock *thd )
     {
-        this->runWindow();
+        this->runWindow( thd );
         return 1;
     }
 
@@ -137,7 +137,7 @@ namespace dragonpoop
         this->gl.attr.border_pixel = 0;
 
         //create window
-        this->gl.attr.event_mask = KeyPressMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask;
+        this->gl.attr.event_mask = KeyPressMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask | PointerMotionMask;
         this->gl.win = XCreateWindow( this->gl.dpy, RootWindow( this->gl.dpy, vi->screen ), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &this->gl.attr );
         if( !this->gl.win )
         {
@@ -216,9 +216,10 @@ namespace dragonpoop
     }
 
     //run window
-    void openglx_1o5_renderer::runWindow( void )
+    void openglx_1o5_renderer::runWindow( dpthread_lock *thd )
     {
         XEvent event;
+        uint64_t t;
 
         if( this->fps != this->getFps() )
         {
@@ -245,6 +246,14 @@ namespace dragonpoop
                 {
                     this->gl.width = event.xconfigure.width;
                     this->gl.height = event.xconfigure.height;
+                }
+                break;
+            case MotionNotify:
+                t = thd->getTicks();
+                if( t - this->t_last_motion > 30 )
+                {
+                    this->processMouseInput( event.xbutton.x, event.xbutton.y, this->lb, this->rb );
+                    this->t_last_motion = t;
                 }
                 break;
             case ButtonPress:

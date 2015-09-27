@@ -11,5 +11,6 @@
 #include "model/models.h"
 #include "gui/guis.h"
 #include "dpbitmap/dpbitmaps.h"
+#include "dpfont/dpfonts.h"
 
 #endif

@@ -125,7 +125,7 @@ namespace dragonpoop
                 return;
             }
 
-            if( !this->runApi() )
+            if( !this->runApi( thd ) )
                 this->bDoRun = 0;
             else
             {
@@ -202,7 +202,7 @@ namespace dragonpoop
     }
 
     //do background graphics api processing
-    bool renderer::runApi( void )
+    bool renderer::runApi( dpthread_lock *thd )
     {
         return 1;
     }
@@ -394,24 +394,56 @@ namespace dragonpoop
     //render guis
     void renderer::renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
     {
-        std::list<renderer_gui *> *l, d;
+        std::list<renderer_gui *> *l, lz, d;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
         renderer_gui_readlock *pl;
         shared_obj_guard o;
         dpid nid;
+        int max_z, z;
         
-        dpid_zero( &nid );
         l = &this->guis;
+        nid = dpid_null();
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            if( !p->compareParentId( nid ) )
-                continue;
-            pl = (renderer_gui_readlock *)o.tryReadLock( p, 30, "renderer::renderGuis" );
-            if( !pl )
-                continue;
-            pl->render( thd, rl, m_world );
+            if( p->compareParentId( nid ) )
+                lz.push_back( p );
+        }
+        
+        max_z = 0;
+        l = &lz;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            z = p->getZ();
+            if( z > max_z )
+                max_z = z;
+        }
+        max_z++;
+        
+        for( z = max_z; z >= 0; z-- )
+        {
+            l = &lz;
+            for( i = l->begin(); i != l->end(); ++i )
+            {
+                p = *i;
+                if( z != p->getZ() )
+                    continue;
+                pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer::processGuiMouseInput" );
+                if( !pl )
+                    continue;
+                pl->render( thd, rl, m_world );
+                d.push_back( p );
+            }
+            
+            l = &d;
+            for( i = l->begin(); i != l->end(); ++i )
+            {
+                p = *i;
+                lz.remove( p );
+            }
+            d.clear();
         }
     }
     
@@ -608,6 +640,17 @@ namespace dragonpoop
     //process mouse input
     void renderer::processMouseInput( float x, float y, bool lb, bool rb )
     {
+        float w, h;
+        
+        w = this->getWidth();
+        h = this->getHeight();
+        x = x / w;
+        y = y / h;
+        
+        x = ( 2.0f * x ) - 1.0f;
+        y = ( 2.0f * y ) - 1.0f;
+        y = -y;
+        
         if( this->processGuiMouseInput( x, y, lb, rb ) )
             return;
     }
@@ -622,6 +665,12 @@ namespace dragonpoop
         shared_obj_guard o;
         dpid nid;
         int max_z, z;
+        dpxyz_f t;
+        
+        t.x = x;
+        t.y = y;
+        t.z = 0;
+        this->m_gui_undo.transform( &t );
         
         l = &this->guis;
         nid = dpid_null();
@@ -643,7 +692,8 @@ namespace dragonpoop
         }
         max_z++;
 
-        for( z = max_z; z >= 0; z-- )
+        this->hover_gui = dpid_null();
+        for( z = 0; z < max_z; z++ )
         {
             l = &lz;
             for( i = l->begin(); i != l->end(); ++i )
@@ -654,8 +704,11 @@ namespace dragonpoop
                 pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::processGuiMouseInput" );
                 if( !pl )
                     continue;
-                if( pl->processMouse( x, y, lb, rb ) )
+                if( pl->processMouse( t.x, t.y, lb, rb ) )
+                {
+                    this->hover_gui = pl->getId();
                     return 1;
+                }
                 d.push_back( p );
             }
             
@@ -669,6 +722,12 @@ namespace dragonpoop
         }
         
         return 0;
+    }
+    
+    //get hovering gui id
+    dpid renderer::getHoverId( void )
+    {
+        return this->hover_gui;
     }
     
 };

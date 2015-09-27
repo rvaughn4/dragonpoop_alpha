@@ -46,6 +46,7 @@ namespace dragonpoop
         dpvertexindex_buffer vbbox;
         std::vector<uint16_t> vbbox_indicies;
         bool lb, rb;
+        uint64_t t_last_motion;
         
         //build gui box
         void makeBox( void );
@@ -63,13 +64,13 @@ namespace dragonpoop
         //deinit graphics api
         virtual void deinitApi( void );
         //do background graphics api processing
-        virtual bool runApi( void );
+        virtual bool runApi( dpthread_lock *thd );
         //create gl window
         bool makeWindow( char* title, int width, int height, int bits, bool fullscreenflag );
         //kill gl window
         void killWindow( void );
         //run window
-        void runWindow( void );
+        void runWindow( dpthread_lock *thd );
         //return screen/window width
         virtual unsigned int getWidth( void );
         //return screen/window height

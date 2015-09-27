@@ -56,6 +56,8 @@ namespace dragonpoop
         unsigned int getMsPerFrame( void );
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
+        //get hovering gui id
+        dpid getHoverId( void );
 
         friend class renderer;
     };

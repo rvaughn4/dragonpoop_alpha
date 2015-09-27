@@ -81,7 +81,7 @@ namespace dragonpoop
                 this->bWasBgDrawn = 1;
             }
             
-            if( ( !this->bWasBgDrawn || this->bRepaintFg ) && this->bHasFg )
+            if( ( !this->bWasFgDrawn || this->bRepaintFg ) && this->bHasFg )
             {
                 this->repaintFg( g, &this->fgtex, this->pos.w, this->pos.h );
                 this->bFgChanged = 1;

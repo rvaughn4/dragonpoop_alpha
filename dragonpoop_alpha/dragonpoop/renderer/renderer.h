@@ -46,6 +46,7 @@ namespace dragonpoop
         float fps, fthiss;
         bool bActive, bActiveOld;
         dpmatrix m_world, m_gui, m_gui_undo;
+        dpid hover_gui;
 
         //run models
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
@@ -79,7 +80,7 @@ namespace dragonpoop
         //deinit graphics api
         virtual void deinitApi( void );
         //do background graphics api processing
-        virtual bool runApi( void );
+        virtual bool runApi( dpthread_lock *thd );
         //stop task and deinit api
         void _kill( void );
         //return screen/window width
@@ -114,6 +115,8 @@ namespace dragonpoop
         void processMouseInput( float x, float y, bool lb, bool rb );
         //process mouse input
         bool processGuiMouseInput( float x, float y, bool lb, bool rb );
+        //get hovering gui id
+        dpid getHoverId( void );
         
     public:
 

@@ -29,6 +29,7 @@ namespace dragonpoop
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg;
         dpmatrix mat, size_mat, undo_mat;
         unsigned int z;
+        float hv;
         
     protected:
         

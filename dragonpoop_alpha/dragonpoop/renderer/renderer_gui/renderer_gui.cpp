@@ -28,6 +28,7 @@ namespace dragonpoop
         this->bSyncBg = this->bSyncFg = 1;
         this->bSyncPos = 0;
         this->z = g->getZ();
+        this->hv = 0;
     }
     
     //dtor
@@ -104,7 +105,7 @@ namespace dragonpoop
                 }
                 
             }
-        }
+        }        
     }
     
     //render model
@@ -209,10 +210,22 @@ namespace dragonpoop
         renderer_gui_writelock *pl;
         shared_obj_guard o;
         float z;
+        dpid hid;
+        
+        hid = r->getHoverId();
+        if( this->compareId( hid ) )
+            this->hv += ( 0.2f - this->hv ) * 0.6f;
+        else
+            this->hv += ( 0.0f - this->hv ) * 0.6f;
         
         this->mat.copy( p_matrix );
-        z = (float)this->z / -20.0f;
+        z = (float)this->z / -8.0f;
         this->mat.translate( this->pos.x, this->pos.y, z );
+        if( this->hv > 0.01f )
+        {
+            this->mat.translate( -this->pos.w * 0.5f * this->hv, -this->pos.h * 0.5f * this->hv, 0 );
+            this->mat.scale( this->hv + 1, this->hv + 1, 1 );
+        }
         
         this->undo_mat.inverse( &this->mat );
         this->size_mat.copy( &this->mat );
@@ -244,7 +257,7 @@ namespace dragonpoop
         
         p.x = x;
         p.y = y;
-        p.z = 0;//(float)this->z / -20.0f;
+        p.z = (float)this->z / -8.0f;
         this->undo_mat.transform( &p );
         
         if( p.x < 0 || p.y < 0 )

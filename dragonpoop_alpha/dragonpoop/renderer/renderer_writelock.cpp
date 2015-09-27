@@ -71,4 +71,10 @@ namespace dragonpoop
         this->t->getChildrenGuis( l, pid );
     }
     
+    //get hovering gui id
+    dpid renderer_writelock::getHoverId( void )
+    {
+        return this->t->getHoverId();
+    }
+    
 };
