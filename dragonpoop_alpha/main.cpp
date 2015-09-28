@@ -51,22 +51,6 @@ protected:
         bm->blit( &b, 0 );
     }
     
-    //override to paint forground texture
-    virtual void repaintFg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
-    {
-        dragonpoop::dpfont f;
-        dragonpoop::dprgba clr;
-        
-        f.openFont( "", "/Library/Fonts/Tahoma.ttf", 200 );
-        
-        bm->resize( w, h );
-        clr.r = clr.b = clr.g = clr.a = 100;
-        bm->clear( &clr );
-        clr.r = clr.b = clr.g = clr.a = 255;
-        f.draw( *"h", 0, 0, bm, 0, 0, &clr );
-        
-    }
-    
     //override to handle mouse button
     virtual void handleMouseClick( float x, float y, bool isRight, bool isDown )
     {
@@ -85,6 +69,7 @@ public:
         this->enableFg( 1 );
         this->setPosition( x, y );
         this->setWidthHeight( w, h );
+        this->setText( "Hello! abcdefghijklmopqrstuvwxyz !@#$%^&*() 1234567890" );
     }
     
     //dtor

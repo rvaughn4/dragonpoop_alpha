@@ -6,6 +6,7 @@
 #include "../../core/dpid/dpid.h"
 #include "../dpbitmap/dpbitmap.h"
 #include <atomic>
+#include <string>
 
 namespace dragonpoop
 {
@@ -43,6 +44,7 @@ namespace dragonpoop
         gfx_ref *g;
         renderer_gui_ref *r;
         unsigned int z;
+        std::string stxt;
 
     protected:
         
@@ -82,6 +84,8 @@ namespace dragonpoop
         virtual void repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h );
         //override to paint forground texture
         virtual void repaintFg( gui_writelock *g, dpbitmap *bm, float w, float h );
+        //override to customize font rendering
+        virtual void drawText( dpbitmap *bm );
         //set parent id
         void setParentId( dpid id );
         //get parent id
@@ -108,6 +112,12 @@ namespace dragonpoop
         void processMouse( float x, float y, bool lb, bool rb );
         //override to handle mouse button
         virtual void handleMouseClick( float x, float y, bool isRight, bool isDown );
+        //set text
+        void setText( const char *c );
+        //set text
+        void setText( std::string *s );
+        //get text
+        void getText( std::string *s );
         
     public:
         

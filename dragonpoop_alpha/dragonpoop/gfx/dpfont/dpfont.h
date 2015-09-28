@@ -19,6 +19,7 @@ namespace dragonpoop
         FT_Library  lb;
         FT_Face fc;
         bool lb_loaded, fc_loaded;
+        int sz;
         
     protected:
         

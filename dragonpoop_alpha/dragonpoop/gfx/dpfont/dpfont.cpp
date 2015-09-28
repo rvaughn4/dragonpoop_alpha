@@ -40,6 +40,7 @@ namespace dragonpoop
             FT_Done_Face( this->fc );
             return 0;
         }
+        this->sz = size;
         
         this->fc_loaded = 1;
         return 1;
@@ -51,7 +52,7 @@ namespace dragonpoop
         if( !this->lb_loaded || !this->fc_loaded )
             return;
         
-        if( FT_Load_Char( this->fc, 38, FT_LOAD_RENDER ) )
+        if( FT_Load_Char( this->fc, letter, FT_LOAD_RENDER ) )
             return;
         this->drawBitmap( bm, x, y, osx, osy, clr );
     }
@@ -59,15 +60,20 @@ namespace dragonpoop
     //draw bitmap
     void dpfont::drawBitmap( dpbitmap *bm, int sx, int sy, int *osx, int *osy, dprgba *clr )
     {
-        unsigned int x, y, mx, my;
+        unsigned int x, y, mx, my, by, bh;
         unsigned char c;
         dpxy xy;
         dprgba rg;
+        
+        by = (int)this->fc->glyph->metrics.horiBearingY >> 6;
+        bh = (int)this->fc->glyph->metrics.height >> 6;
+        by = bh - by;
+        bh = this->sz - bh + by;
 
         mx = my = 0;
         for( y = 0; y < this->fc->glyph->bitmap.rows; y++ )
         {
-            xy.y = y + sy;
+            xy.y = y + sy + bh;
             for( x = 0; x < this->fc->glyph->bitmap.width; x++ )
             {
                 xy.x = x + sx;
@@ -88,22 +94,16 @@ namespace dragonpoop
                     rg.b = 255 - (float)c;
                     rg.a = (float)c;
                 }
-                bm->setColor( &rg, &xy, 1 );
+                if( bm )
+                    bm->setColor( &rg, &xy, 1 );
 
-                if( rg.a > 0.1f )
-                {
-                    if( x > mx )
-                        mx = x;
-                    if( y > my )
-                        my = y;
-                }
             }
         }
         
         if( osx )
-            *osx = mx;
+            *osx = (int)this->fc->glyph->advance.x >> 6;
         if( osy )
-            *osy = my;
+            *osy = bh + (int)(this->fc->glyph->advance.y >> 6);
     }
     
 };

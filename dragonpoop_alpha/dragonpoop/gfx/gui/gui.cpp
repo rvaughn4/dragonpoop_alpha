@@ -11,6 +11,7 @@
 #include "../../renderer/renderer_gui/renderer_gui.h"
 #include "../../renderer/renderer_gui/renderer_gui_ref.h"
 #include "../../renderer/renderer_gui/renderer_gui_writelock.h"
+#include "../dpfont/dpfont.h"
 
 namespace dragonpoop
 {
@@ -210,7 +211,60 @@ namespace dragonpoop
     //override to paint forground texture
     void gui::repaintFg( gui_writelock *g, dpbitmap *bm, float w, float h )
     {
+        dprgba c;
         
+        if( !this->hasFg() )
+        {
+            bm->reset();
+            return;
+        }
+        
+        bm->resize( w, h );
+        c.r = c.b = c.g = c.a = 0;
+        bm->clear( &c );
+        
+        this->drawText( bm );
+    }
+    
+    //override to customize font rendering
+    void gui::drawText( dpbitmap *bm )
+    {
+        dpfont f;
+        unsigned int i, e;
+        unsigned char c, *cb;
+        int w, h, x, y, cw, ch, lch, fsz;
+        dprgba clr;
+        
+        w = bm->getWidth();
+        h = bm->getHeight();
+        
+        fsz = 20;
+        clr.r = clr.g = clr.b = clr.a = 255;
+        if( !f.openFont( "", "tahoma.ttf", fsz ) )
+            return;
+        
+        e = (unsigned int)this->stxt.length();
+        cb = (unsigned char *)this->stxt.c_str();
+        
+        x = y = 0;
+        lch = 0;
+        for( i = 0; i < e; i++ )
+        {
+            c = cb[ i ];
+            
+            f.draw( c, 0, 0, 0, &cw, &ch, 0 );
+            if( cw + x > w )
+            {
+                x = 0;
+                y += lch;
+                lch = ch;
+            }
+            if( ch > lch )
+                lch = ch;
+            
+            f.draw( c, x, y, bm, 0, 0, &clr );
+            x += cw;
+        }
     }
     
     //set parent id
@@ -329,6 +383,24 @@ namespace dragonpoop
     void gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
     {
         
+    }
+    
+    //set text
+    void gui::setText( const char *c )
+    {
+        this->stxt.assign( c );
+    }
+    
+    //set text
+    void gui::setText( std::string *s )
+    {
+        this->stxt.assign( *s );
+    }
+    
+    //get text
+    void gui::getText( std::string *s )
+    {
+        s->assign( this->stxt );
     }
     
 };
