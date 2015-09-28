@@ -133,7 +133,7 @@ namespace dragonpoop
         for( p.y = r->p.y; p.y < r->p.y + r->h; p.y++ )
         {
             for( p.x = r->p.x; p.x < r->p.x + r->w; p.x++ )
-                this->setColor( c, &p, 1 );
+                this->setColor( c, &p, 0 );
         }
     }
 
@@ -165,7 +165,7 @@ namespace dragonpoop
         }
 
         sa = c->a;
-        da = px[ 3 ];
+        da = 255 - sa;
 
         v = ( ( px[ 0 ] * da ) + ( c->r * sa ) ) / 255;
         if( v > 255 )

@@ -46,13 +46,64 @@ namespace dragonpoop
     }
     
     //render chracter to bitmap at x, y
-    void dpfont::draw( unsigned int letter, int x, int y, dpbitmap *bm )
+    void dpfont::draw( unsigned int letter, int x, int y, dpbitmap *bm, int *osx, int *osy, dprgba *clr )
     {
-        
         if( !this->lb_loaded || !this->fc_loaded )
             return;
         
-        
+        if( FT_Load_Char( this->fc, 38, FT_LOAD_RENDER ) )
+            return;
+        this->drawBitmap( bm, x, y, osx, osy, clr );
     }
 
+    //draw bitmap
+    void dpfont::drawBitmap( dpbitmap *bm, int sx, int sy, int *osx, int *osy, dprgba *clr )
+    {
+        unsigned int x, y, mx, my;
+        unsigned char c;
+        dpxy xy;
+        dprgba rg;
+
+        mx = my = 0;
+        for( y = 0; y < this->fc->glyph->bitmap.rows; y++ )
+        {
+            xy.y = y + sy;
+            for( x = 0; x < this->fc->glyph->bitmap.width; x++ )
+            {
+                xy.x = x + sx;
+                
+                c = this->fc->glyph->bitmap.buffer[ y * abs( this->fc->glyph->bitmap.pitch ) + x ];
+
+                if( clr )
+                {
+                    rg.r = clr->r * (float)c / 256.0f;
+                    rg.g = clr->g * (float)c / 256.0f;
+                    rg.b = clr->b * (float)c / 256.0f;
+                    rg.a = clr->a * (float)c / 256.0f;
+                }
+                else
+                {
+                    rg.r = 255 - (float)c;
+                    rg.g = 255 - (float)c;
+                    rg.b = 255 - (float)c;
+                    rg.a = (float)c;
+                }
+                bm->setColor( &rg, &xy, 1 );
+
+                if( rg.a > 0.1f )
+                {
+                    if( x > mx )
+                        mx = x;
+                    if( y > my )
+                        my = y;
+                }
+            }
+        }
+        
+        if( osx )
+            *osx = mx;
+        if( osy )
+            *osy = my;
+    }
+    
 };

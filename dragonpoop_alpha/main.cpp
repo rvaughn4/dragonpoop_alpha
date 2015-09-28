@@ -55,10 +55,15 @@ protected:
     virtual void repaintFg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
     {
         dragonpoop::dpfont f;
+        dragonpoop::dprgba clr;
         
-        f.openFont( "", "/Library/Fonts/Tahoma.ttf", 20 );
+        f.openFont( "", "/Library/Fonts/Tahoma.ttf", 200 );
         
         bm->resize( w, h );
+        clr.r = clr.b = clr.g = clr.a = 100;
+        bm->clear( &clr );
+        clr.r = clr.b = clr.g = clr.a = 255;
+        f.draw( *"h", 0, 0, bm, 0, 0, &clr );
         
     }
     
