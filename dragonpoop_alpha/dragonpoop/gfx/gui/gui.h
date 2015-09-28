@@ -7,6 +7,7 @@
 #include "../dpbitmap/dpbitmap.h"
 #include <atomic>
 #include <string>
+#include "../dpvertex/dprgba.h"
 
 namespace dragonpoop
 {
@@ -43,7 +44,8 @@ namespace dragonpoop
         gui_dims pos;
         gfx_ref *g;
         renderer_gui_ref *r;
-        unsigned int z;
+        unsigned int z, fnt_size;
+        dprgba fnt_clr;
         std::string stxt;
 
     protected:
@@ -118,6 +120,14 @@ namespace dragonpoop
         void setText( std::string *s );
         //get text
         void getText( std::string *s );
+        //set font size
+        void setFontSize( unsigned int s );
+        //get font size
+        unsigned int getFontSize( void );
+        //set font color
+        void setFontColor( dprgba *c );
+        //get font color
+        dprgba *getFontColor( void );
         
     public:
         

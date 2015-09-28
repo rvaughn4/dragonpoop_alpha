@@ -33,7 +33,7 @@ namespace dragonpoop
         //dtor
         virtual ~dpfont( void );
         //open font file
-        bool openFont( const char *path_name, const char *file_name, unsigned int size );
+        bool openFont( const char *font_name, unsigned int size );
         //render chracter to bitmap at x, y
         void draw( unsigned int letter, int x, int y, dpbitmap *bm, int *osx, int *osy, dprgba *clr );
         

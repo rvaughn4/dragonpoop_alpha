@@ -12,6 +12,8 @@
 #include "../../renderer/renderer_gui/renderer_gui_ref.h"
 #include "../../renderer/renderer_gui/renderer_gui_writelock.h"
 #include "../dpfont/dpfont.h"
+#include <sstream>
+#include <string>
 
 namespace dragonpoop
 {
@@ -33,6 +35,9 @@ namespace dragonpoop
         this->bMouseInput = 0;
         this->bOldLb = this->bOldRb = 0;
         this->bLb = this->bRb = 0;
+        this->fnt_size = 20;
+        this->fnt_clr.r = this->fnt_clr.g = this->fnt_clr.b = 0;
+        this->fnt_clr.a = 255;
     }
     
     //dtor
@@ -229,18 +234,22 @@ namespace dragonpoop
     //override to customize font rendering
     void gui::drawText( dpbitmap *bm )
     {
-        dpfont f;
-        unsigned int i, e;
+        unsigned int i, e, d, fnt_size;
         unsigned char c, *cb;
-        int w, h, x, y, cw, ch, lch, fsz;
+        int w, h, x, y, cw, ch, lch;
         dprgba clr;
+        std::string s, fnt_face;
+        std::size_t loc_sp;
+        dpfont f;
         
         w = bm->getWidth();
         h = bm->getHeight();
         
-        fsz = 20;
-        clr.r = clr.g = clr.b = clr.a = 255;
-        if( !f.openFont( "", "tahoma.ttf", fsz ) )
+        fnt_face.assign( "sans" );
+        
+        fnt_size = this->fnt_size;
+        clr = this->fnt_clr;
+        if( !f.openFont( fnt_face.c_str(), fnt_size ) )
             return;
         
         e = (unsigned int)this->stxt.length();
@@ -252,8 +261,81 @@ namespace dragonpoop
         {
             c = cb[ i ];
             
+            //handle inline codes first
+            
+            //27 /e font size
+            if( c == 27 && e - i >= 4 )
+            {
+                std::stringstream ss;
+
+                s.assign( (char *)&cb[ i + 1 ], 3 );
+                ss << s;
+                ss >> d;
+                if( d > 0 && f.openFont( fnt_face.c_str(), d ) )
+                    fnt_size = d;
+                else
+                {
+                    if( !f.openFont( fnt_face.c_str(), fnt_size ) )
+                        return;
+                }
+                    
+                i += 3;
+                continue;
+            }
+            
+            //12 /f font face
+            if( c == 12 && e - i >= 4 )
+            {
+                s.assign( (char *)&cb[ i + 1 ], e - i );
+
+                loc_sp = s.find( " " );
+                if( loc_sp >= e || loc_sp <= 0 )
+                    continue;
+                s = s.substr( 0, loc_sp );
+                i += loc_sp + 1;
+                if( s.size() < 4 )
+                    continue;
+                if( f.openFont( s.c_str(), fnt_size ) )
+                    fnt_face = s;
+                else
+                {
+                    if( !f.openFont( fnt_face.c_str(), fnt_size ) )
+                        return;
+                }
+                
+                continue;
+            }
+            
+            //7 /a font color
+            if( c == 7 && e - i >= 10 )
+            {
+                std::stringstream ssr, ssg, ssb;
+                
+                i += 1;
+                s.assign( (char *)&cb[ i ], 3 );
+                ssr << s;
+                ssr >> d;
+                clr.r = d;
+                
+                i += 3;
+                s.assign( (char *)&cb[ i ], 3 );
+                ssg << s;
+                ssg >> d;
+                clr.g = d;
+                
+                i += 3;
+                s.assign( (char *)&cb[ i ], 3 );
+                ssb << s;
+                ssb >> d;
+                clr.b = d;
+                
+                clr.a = 255;
+                continue;
+            }
+            
+            
             f.draw( c, 0, 0, 0, &cw, &ch, 0 );
-            if( cw + x > w )
+            if( cw + cw + x >= w )
             {
                 x = 0;
                 y += lch;
@@ -403,4 +485,28 @@ namespace dragonpoop
         s->assign( this->stxt );
     }
     
+    //set font size
+    void gui::setFontSize( unsigned int s )
+    {
+        this->fnt_size = s;
+    }
+    
+    //get font size
+    unsigned int gui::getFontSize( void )
+    {
+        return this->fnt_size;
+    }
+    
+    //set font color
+    void gui::setFontColor( dprgba *c )
+    {
+        this->fnt_clr = *c;
+    }
+    
+    //get font color
+    dprgba *gui::getFontColor( void )
+    {
+        return &this->fnt_clr;
+    }
+
 };

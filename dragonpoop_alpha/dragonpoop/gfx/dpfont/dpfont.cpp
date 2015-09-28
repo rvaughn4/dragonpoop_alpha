@@ -1,6 +1,7 @@
 
 #include "dpfont.h"
 #include "../dpbitmap/dpbitmap.h"
+#include <string>
 
 namespace dragonpoop
 {
@@ -23,18 +24,100 @@ namespace dragonpoop
     }
     
     //open font file
-    bool dpfont::openFont( const char *path_name, const char *file_name, unsigned int size )
+    bool dpfont::openFont( const char *font_name, unsigned int size )
     {
-
+        std::string s;
+        bool r;
+        int i;
+        char c;
+        
         if( !this->lb_loaded )
             return 0;
         if( this->fc_loaded )
             FT_Done_Face( this->fc );
         this->fc_loaded = 0;
+        r = 0;
         
-        if( FT_New_Face( this->lb, file_name, 0, &this->fc ) )
+        s.assign( font_name );
+        for( i = 0; i < s.size(); i++ )
+        {
+            c = font_name[ i ];
+            
+            if( !
+               (
+                    ( c >= 48 && c <= 57 )
+                    ||
+                    ( c >= 65 && c <= 90 )
+                    ||
+                    ( c >= 97 && c <= 122 )
+                    ||
+                    ( c == 46 )
+                    ||
+                    ( c == 32 )
+                )
+               )
+                return 0;
+        }
+        
+        if( !r )
+        {
+            s.assign( font_name );
+            s.append( ".ttf" );
+            r = FT_New_Face( this->lb, s.c_str(), 0, &this->fc ) == 0;
+        }
+        
+        if( !r )
+        {
+            s.assign( font_name );
+            s.append( ".ttc" );
+            r = FT_New_Face( this->lb, s.c_str(), 0, &this->fc ) == 0;
+        }
+        
+        if( !r )
+        {
+            s.assign( font_name );
+            s.append( ".otf" );
+            r = FT_New_Face( this->lb, s.c_str(), 0, &this->fc ) == 0;
+        }
+        
+        if( !r )
+        {
+            s.assign( font_name );
+            s.append( ".fnt" );
+            r = FT_New_Face( this->lb, s.c_str(), 0, &this->fc ) == 0;
+        }
+        
+        if( !r )
+        {
+            s.assign( font_name );
+            s.append( ".pfm" );
+            r = FT_New_Face( this->lb, s.c_str(), 0, &this->fc ) == 0;
+        }
+        
+        if( !r )
+        {
+            s.assign( font_name );
+            s.append( ".afm" );
+            r = FT_New_Face( this->lb, s.c_str(), 0, &this->fc ) == 0;
+        }
+        
+        if( !r )
+        {
+            s.assign( font_name );
+            s.append( ".dfont" );
+            r = FT_New_Face( this->lb, s.c_str(), 0, &this->fc ) == 0;
+        }
+        
+        if( !r )
+        {
+            s.assign( font_name );
+            s.append( ".woff" );
+            r = FT_New_Face( this->lb, s.c_str(), 0, &this->fc ) == 0;
+        }
+        
+        if( !r )
             return 0;
-        
+
         if( FT_Set_Pixel_Sizes( this->fc, size, 0 ) )
         {
             FT_Done_Face( this->fc );
