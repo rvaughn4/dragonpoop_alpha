@@ -71,4 +71,10 @@ namespace dragonpoop
         this->t->render( thd, r, this, m_world );
     }
     
+    //returns opacity
+    float renderer_gui_readlock::getOpacity( void )
+    {
+        return this->t->getOpacity();
+    }
+    
 };

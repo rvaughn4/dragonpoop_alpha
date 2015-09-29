@@ -5,6 +5,8 @@
 #include "../../gfx/gui/gui.h"
 #include "../../gfx/dpmatrix/dpmatrix.h"
 
+#define GUI_HOVER_MAX 0.2f
+
 namespace dragonpoop
 {
     
@@ -23,13 +25,13 @@ namespace dragonpoop
         
         core *c;
         dpid id, pid;
-        bool bHasFg, bHasBg;
+        bool bHasFg, bHasBg, bIsAlive;
         gui_dims pos;
         gui_ref *g;
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg;
         dpmatrix mat, size_mat, undo_mat;
         unsigned int z;
-        float hv;
+        float hv, opacity, fade;
         
     protected:
         
@@ -67,6 +69,16 @@ namespace dragonpoop
         void redoMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix );
         //process mouse input
         bool processMouse( float x, float y, bool lb, bool rb );
+        //returns opacity
+        float getOpacity( void );
+        //returns true if alive
+        bool isAlive( void );
+        //kills gui
+        void kill( void );
+        //returns true if has focus
+        bool hasFocus( void );
+        //gets gui id of focused child
+        bool getFocusChild( renderer_writelock *r, dpid *fid );
         
     public:
         

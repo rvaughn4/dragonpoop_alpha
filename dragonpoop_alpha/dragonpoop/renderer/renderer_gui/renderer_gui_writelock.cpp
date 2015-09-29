@@ -101,4 +101,28 @@ namespace dragonpoop
         return this->t->processMouse( x, y, lb, rb );
     }
     
+    //returns true if alive
+    bool renderer_gui_writelock::isAlive( void )
+    {
+        return this->t->isAlive();
+    }
+    
+    //kills gui
+    void renderer_gui_writelock::kill( void )
+    {
+        this->t->kill();
+    }
+    
+    //returns true if has focus
+    bool renderer_gui_writelock::hasFocus( void )
+    {
+        return this->t->hasFocus();
+    }
+    
+    //gets gui id of focused child
+    bool renderer_gui_writelock::getFocusChild( renderer_writelock *r, dpid *fid )
+    {
+        return this->t->getFocusChild( r, fid );
+    }
+    
 };

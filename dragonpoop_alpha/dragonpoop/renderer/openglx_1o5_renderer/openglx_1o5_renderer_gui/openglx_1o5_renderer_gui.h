@@ -21,7 +21,7 @@ namespace dragonpoop
         //release texture
         void killTex( unsigned int *t );
         //create and load texture
-        void makeTex( unsigned int *t, dpbitmap *bm );
+        void makeTex( unsigned int *t, dpbitmap *bm, bool isBg );
 
     protected:
         

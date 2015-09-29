@@ -46,7 +46,7 @@ namespace dragonpoop
         float fps, fthiss;
         bool bActive, bActiveOld;
         dpmatrix m_world, m_gui, m_gui_undo;
-        dpid hover_gui;
+        dpid hover_gui, focus_gui;
 
         //run models
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
@@ -117,6 +117,10 @@ namespace dragonpoop
         bool processGuiMouseInput( float x, float y, bool lb, bool rb );
         //get hovering gui id
         dpid getHoverId( void );
+        //process keyboard input
+        void processKbInput( std::string *skey_name, bool isDown );
+        //process gui keyboard input
+        void processGuiKbInput( std::string *skey_name, bool isDown );
         
     public:
 

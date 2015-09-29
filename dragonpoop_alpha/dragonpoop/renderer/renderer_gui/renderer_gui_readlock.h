@@ -48,6 +48,8 @@ namespace dragonpoop
         bool compareParentId( dpid id );
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, dpmatrix *m_world );
+        //returns opacity
+        float getOpacity( void );
 
         friend class renderer_gui;
     };

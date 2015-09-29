@@ -165,10 +165,17 @@ namespace dragonpoop
 
                 if( clr )
                 {
-                    rg.r = clr->r * (float)c / 256.0f;
-                    rg.g = clr->g * (float)c / 256.0f;
-                    rg.b = clr->b * (float)c / 256.0f;
-                    rg.a = clr->a * (float)c / 256.0f;
+                    if( c > 20 )
+                    {
+                        rg.r = clr->r;
+                        rg.g = clr->g;
+                        rg.b = clr->b;
+                        rg.a = clr->a * (float)c / 255.0f;
+                    }
+                    else
+                    {
+                        rg.r = rg.g = rg.b = rg.a = 0;
+                    }
                 }
                 else
                 {

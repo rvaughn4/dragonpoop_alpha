@@ -161,17 +161,13 @@ namespace dragonpoop
         this->setViewport( w, h );
         this->clearScreen( 0.5f, 0.5f, 1.0f );
 
-        this->prepareGuiRender( w, h );
-        //this->renderModels( thd, rl, 1, &this->m_gui );
-        this->renderGuis( thd, rl, &this->m_gui );
-        
         
         this->prepareWorldRender( w, h );
         this->renderModels( thd, rl, 0, &this->m_world );
         
-//        this->prepareGuiRender( w, h );
+        this->prepareGuiRender( w, h );
         //this->renderModels( thd, rl, 1, &this->m_gui );
-  //      this->renderGuis( thd, rl, &this->m_gui );
+        this->renderGuis( thd, rl, &this->m_gui );
         
         this->flipBuffer();
         
@@ -302,7 +298,7 @@ namespace dragonpoop
         
         //run guis
         tr = thd->getTicks();
-        if( tr - this->t_last_gui_ran < 50 )
+        if( tr - this->t_last_gui_ran < 40 )
             return;
         this->t_last_gui_ran = tr;
 
@@ -320,18 +316,8 @@ namespace dragonpoop
             ppl->redoMatrix( thd, rl, &mat );
         }
 
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::runGuis" );
-            if( !ppl )
-                continue;
-            ppl->run( thd );
-        }
-
         //make new guis and delete old
-        if( tr - this->t_last_gui_synced < 500 )
+        if( tr - this->t_last_gui_synced < 250 )
             return;
         this->t_last_gui_synced = tr;
         
@@ -348,6 +334,7 @@ namespace dragonpoop
         }
         
         //sync models and create if not exist
+        this->focus_gui = nid;
         gl->getGuis( &li );
         for( ii = li.begin(); ii != li.end(); ++ii )
         {
@@ -369,6 +356,12 @@ namespace dragonpoop
             ppl = (renderer_gui_writelock *)og.tryWriteLock( p, 100, "renderer::runGuis" );
             if( !ppl )
                 continue;
+            ppl->run( thd );
+            if( ppl->hasFocus() )
+            {
+                if( !ppl->getFocusChild( rl, &this->focus_gui ) )
+                    this->focus_gui = ppl->getId();
+            }
         }
         o.unlock();
         og.unlock();
@@ -378,8 +371,17 @@ namespace dragonpoop
         {
             p = *i;
             if( t.findLeaf( p->getId() ) )
-                d.push_back( p );
+            {
+                ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::runGuis" );
+                if( ppl )
+                {
+                    ppl->kill();
+                    if( !ppl->isAlive() )
+                        d.push_back( p );
+                }
+            }
         }
+        o.unlock();
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
@@ -728,6 +730,21 @@ namespace dragonpoop
     dpid renderer::getHoverId( void )
     {
         return this->hover_gui;
+    }
+    
+    //process keyboard input
+    void renderer::processKbInput( std::string *skey_name, bool isDown )
+    {
+        this->processGuiKbInput( skey_name, isDown );
+    }
+    
+    //process gui keyboard input
+    void renderer::processGuiKbInput( std::string *skey_name, bool isDown )
+    {
+        std::list<renderer_gui *> *l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
     }
     
 };

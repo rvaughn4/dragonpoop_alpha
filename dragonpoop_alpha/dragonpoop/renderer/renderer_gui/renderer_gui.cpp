@@ -29,6 +29,9 @@ namespace dragonpoop
         this->bSyncPos = 0;
         this->z = g->getZ();
         this->hv = 0;
+        this->opacity = 1;
+        this->fade = 0;
+        this->bIsAlive = 1;
     }
     
     //dtor
@@ -212,19 +215,26 @@ namespace dragonpoop
         float z;
         dpid hid;
         
+        if( this->bIsAlive )
+            this->fade += ( 1.0f - this->fade ) * 0.3f;
+        if( !this->bIsAlive )
+            this->fade += ( 0.0f - this->fade ) * 0.3f;
+        
         hid = r->getHoverId();
         if( this->compareId( hid ) )
-            this->hv += ( 0.2f - this->hv ) * 0.6f;
+            this->hv += ( GUI_HOVER_MAX - this->hv ) * 0.3f;
         else
-            this->hv += ( 0.0f - this->hv ) * 0.6f;
+            this->hv += ( 0.0f - this->hv ) * 0.3f;
         
         this->mat.copy( p_matrix );
         z = (float)this->z / -8.0f;
         this->mat.translate( this->pos.x, this->pos.y, z );
-        if( this->hv > 0.01f )
+        z = this->fade * this->fade;
+        z = ( 1.0f - z ) * ( 1.0f - GUI_HOVER_MAX ) + this->hv;
+        if( z > 0.01f )
         {
-            this->mat.translate( -this->pos.w * 0.5f * this->hv, -this->pos.h * 0.5f * this->hv, 0 );
-            this->mat.scale( this->hv + 1, this->hv + 1, 1 );
+            this->mat.translate( -this->pos.w * 0.5f * z, -this->pos.h * 0.5f * z, 0 );
+            this->mat.scale( z + 1, z + 1, 1 );
         }
         
         this->undo_mat.inverse( &this->mat );
@@ -271,6 +281,59 @@ namespace dragonpoop
         g->processMouse( p.x, p.y, lb, rb );
 
         return 1;
+    }
+    
+    //returns opacity
+    float renderer_gui::getOpacity( void )
+    {
+        return this->fade * this->opacity * ( 0.9f + 0.1f * this->hv / GUI_HOVER_MAX );
+    }
+    
+    //returns true if alive
+    bool renderer_gui::isAlive( void )
+    {
+        if( this->bIsAlive )
+            return 1;
+        return this->fade > 0.1f;
+    }
+    
+    //kills gui
+    void renderer_gui::kill( void )
+    {
+        this->bIsAlive = 0;
+    }
+    
+    //returns true if has focus
+    bool renderer_gui::hasFocus( void )
+    {
+        return this->z == 0;
+    }
+    
+    //gets gui id of focused child
+    bool renderer_gui::getFocusChild( renderer_writelock *r, dpid *fid )
+    {
+        std::list<renderer_gui *> l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+
+        r->getChildrenGuis( &l, this->id );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            if( p->getZ() != 0 )
+                continue;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui::getFocusChild" );
+            if( !pl )
+                continue;
+            if( pl->getFocusChild( r, fid ) )
+                return 1;
+            *fid = pl->getId();
+            return 1;
+        }
+        
+        return 0;
     }
     
 };

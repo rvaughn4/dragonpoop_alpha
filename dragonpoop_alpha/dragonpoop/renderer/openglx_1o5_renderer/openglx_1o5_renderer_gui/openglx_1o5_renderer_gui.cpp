@@ -44,13 +44,13 @@ namespace dragonpoop
     //override to handle bg texture update
     void openglx_1o5_renderer_gui::updateBg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
     {
-        this->makeTex( &this->bg_tex, bm );
+        this->makeTex( &this->bg_tex, bm, 1 );
     }
     
     //override to handle fg texture update
     void openglx_1o5_renderer_gui::updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
     {
-        this->makeTex( &this->fg_tex, bm );
+        this->makeTex( &this->fg_tex, bm, 0 );
     }
     
     //release texture
@@ -64,14 +64,14 @@ namespace dragonpoop
     }
     
     //create and load texture
-    void openglx_1o5_renderer_gui::makeTex( unsigned int *p_tex, dpbitmap *img )
+    void openglx_1o5_renderer_gui::makeTex( unsigned int *p_tex, dpbitmap *img, bool isBg )
     {
-        unsigned int sz, bits, w, h, d, l, m;
+        unsigned int sz, bits, w, h;
         char *buffer;
-        bool doMip, doLin;
-        dpbitmap ci;
+        bool doLin;
         
         this->killTex( p_tex );
+        doLin = 1;
         
         sz = img->getSize();
         w = img->getWidth();
@@ -82,9 +82,6 @@ namespace dragonpoop
         if( !p_tex || !buffer || !sz || !w || !h || ( bits != 24 && bits != 32 ) )
             return;
         
-        doMip = 1;
-        doLin = 1;
-        
         glGenTextures( 1, p_tex );
         if( !*p_tex )
             return;
@@ -94,79 +91,19 @@ namespace dragonpoop
         if( doLin )
         {
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-            if( doMip )
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR );
-            else
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
         }
         else
         {
             glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-            if( doMip )
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST );
-            else
-                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
         }
         
-        l = w;
-        if( h > l )
-            l = h;
-        if( l > 512 )
-            l = 512;
-        d = 8;
-        while( d < l )
-            d *= 8;
-        
-        if( doMip )
-        {
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
             
-            m = 0;
-            l = d * 2;
-            do
-            {
-                l = l / 2;
-                m++;
-            }
-            while( l > 1 );
-            m--;
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, m );
-            
-            d *= 2;
-            l = 0;
-            do
-            {
-                d /= 2;
-                
-                ci.reset();
-                if( !ci.resize( d, d ) )
-                    d = 0;
-                else
-                {
-                    ci.blit( img, 0 );
-                    buffer = ci.getBuffer();
-                    glTexImage2D( GL_TEXTURE_2D, l, GL_RGBA8, d, d, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
-                    l++;
-                }
-            }
-            while( d > 1 );
-        }
-        else
-        {
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_BASE_LEVEL, 0 );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0 );
-            
-            ci.reset();
-            if( !ci.resize( d, d ) )
-                d = 0;
-            else
-            {
-                
-                ci.blit( img, 0 );
-                buffer = ci.getBuffer();
-                glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, d, d, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
-            }
-        }
+        buffer = img->getBuffer();
+        glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, img->getWidth(), img->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
     }
     
     //return bg texture

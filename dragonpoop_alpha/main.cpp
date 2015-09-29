@@ -50,6 +50,14 @@ protected:
         bm->resize( b.getWidth(), b.getHeight() );
         bm->blit( &b, 0 );
     }
+
+    
+    //override to paint background texture
+    virtual void repaintFg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
+    {
+        this->gui::repaintFg( g, bm, w, h );
+        dragonpoop::dpbitmap_bitmap_loader::saveFile( bm, "testing.bmp" );
+    }
     
     //override to handle mouse button
     virtual void handleMouseClick( float x, float y, bool isRight, bool isDown )
@@ -128,12 +136,12 @@ int main( int argc, const char * argv[] )
     //gl->saveModel( "low_dragon", "", "3drt_felhound_high.dpmodel", 0 );
  
     o.unlock();
+    delete tg2;
   
     while( c->isRunning() )
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
     delete tg;
-    delete tg2;
     delete c;
 
     return 0;

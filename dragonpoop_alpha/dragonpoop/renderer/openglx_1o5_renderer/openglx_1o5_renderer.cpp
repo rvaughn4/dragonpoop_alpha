@@ -318,10 +318,10 @@ namespace dragonpoop
     void openglx_1o5_renderer::prepareWorldRender( unsigned int w, unsigned int h )
     {
         this->renderer::prepareWorldRender( w, h );
+
         glClearDepth( 1.0f );
         glClear( GL_DEPTH_BUFFER_BIT );
-
-        this->world_m.setPerspective( -1.0f, -1.0f, 1.0f, 1.0f, 1.0f, 100.0f, 45.0f );
+        glEnable( GL_LIGHTING );
     }
 
     //prepare for rendering gui
@@ -329,9 +329,11 @@ namespace dragonpoop
     {
         this->renderer::prepareGuiRender( w, h );
         glClearDepth( 1.0f );
+        
         glClear( GL_DEPTH_BUFFER_BIT );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         glEnable( GL_BLEND );
+        glDisable( GL_LIGHTING );
     }
 
     //flip backbuffer and present scene to screen
@@ -387,6 +389,7 @@ namespace dragonpoop
     void openglx_1o5_renderer::renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world )
     {
         dpvertex *vp;
+        float a;
         
         glLoadMatrixf( m_world->getRaw4by4() );
 
@@ -394,15 +397,18 @@ namespace dragonpoop
         glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
         glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
         glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
+        a = m->getOpacity();
 
         if( m->hasBg() && ( (openglx_1o5_renderer_gui_readlock *)m )->getBgTex() )
         {
+            glColor4f( 1, 1, 1, a * 0.9f );
             glBindTexture( GL_TEXTURE_2D, ( (openglx_1o5_renderer_gui_readlock *)m )->getBgTex() );
             glDrawElements( GL_TRIANGLES, (int)this->vbbox_indicies.size(), GL_UNSIGNED_SHORT, &this->vbbox_indicies[ 0 ] );
         }
         
         if( m->hasFg() && ( (openglx_1o5_renderer_gui_readlock *)m )->getFgTex() )
         {
+            glColor4f( 1, 1, 1, a );
             glBindTexture( GL_TEXTURE_2D, ( (openglx_1o5_renderer_gui_readlock *)m )->getFgTex() );
             glDrawElements( GL_TRIANGLES, (int)this->vbbox_indicies.size(), GL_UNSIGNED_SHORT, &this->vbbox_indicies[ 0 ] );
         }

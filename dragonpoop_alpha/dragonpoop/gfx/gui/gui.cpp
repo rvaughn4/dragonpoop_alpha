@@ -234,10 +234,10 @@ namespace dragonpoop
     //override to customize font rendering
     void gui::drawText( dpbitmap *bm )
     {
-        unsigned int i, e, d, fnt_size;
+        unsigned int i, e, d, fnt_size, sdw_off;
         unsigned char c, *cb;
         int w, h, x, y, cw, ch, lch;
-        dprgba clr;
+        dprgba clr, clr_dark, clr_light;
         std::string s, fnt_face;
         std::size_t loc_sp;
         dpfont f;
@@ -248,14 +248,26 @@ namespace dragonpoop
         fnt_face.assign( "sans" );
         
         fnt_size = this->fnt_size;
+        sdw_off = fnt_size / 120 + 1;
+        
         clr = this->fnt_clr;
+        
+        clr_dark.r = clr.r * 0.125f;
+        clr_dark.g = clr.g * 0.125f;
+        clr_dark.b = clr.b * 0.125f;
+        clr_dark.a = clr.a * 0.5f;
+        clr_light.r = clr.r * 0.3f + 170;
+        clr_light.g = clr.g * 0.3f + 170;
+        clr_light.b = clr.b * 0.3f + 170;
+        clr_light.a = clr.a * 0.5f;
+        
         if( !f.openFont( fnt_face.c_str(), fnt_size ) )
             return;
         
         e = (unsigned int)this->stxt.length();
         cb = (unsigned char *)this->stxt.c_str();
         
-        x = y = 0;
+        x = y = 1;
         lch = 0;
         for( i = 0; i < e; i++ )
         {
@@ -272,7 +284,10 @@ namespace dragonpoop
                 ss << s;
                 ss >> d;
                 if( d > 0 && f.openFont( fnt_face.c_str(), d ) )
+                {
                     fnt_size = d;
+                    sdw_off = fnt_size / 120 + 1;
+                }
                 else
                 {
                     if( !f.openFont( fnt_face.c_str(), fnt_size ) )
@@ -330,20 +345,32 @@ namespace dragonpoop
                 clr.b = d;
                 
                 clr.a = 255;
+                
+                clr_dark.r = clr.r * 0.125f;
+                clr_dark.g = clr.g * 0.125f;
+                clr_dark.b = clr.b * 0.125f;
+                clr_dark.a = clr.a * 0.5f;
+                clr_light.r = clr.r * 0.3f + 170;
+                clr_light.g = clr.g * 0.3f + 170;
+                clr_light.b = clr.b * 0.3f + 170;
+                clr_light.a = clr.a * 0.5f;
+                
                 continue;
             }
             
             
             f.draw( c, 0, 0, 0, &cw, &ch, 0 );
-            if( cw + cw + x >= w )
+            if( cw + x + 1 > w )
             {
-                x = 0;
+                x = 1;
                 y += lch;
                 lch = ch;
             }
             if( ch > lch )
                 lch = ch;
             
+            f.draw( c, x - sdw_off, y - sdw_off, bm, 0, 0, &clr_light );
+            f.draw( c, x + sdw_off, y + sdw_off, bm, 0, 0, &clr_dark );
             f.draw( c, x, y, bm, 0, 0, &clr );
             x += cw;
         }

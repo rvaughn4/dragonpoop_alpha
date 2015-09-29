@@ -59,6 +59,14 @@ namespace dragonpoop
         void redoMatrix( dpthread_lock *thd, renderer_writelock *r, dpmatrix *p_matrix );
         //process mouse input
         bool processMouse( float x, float y, bool lb, bool rb );
+        //returns true if alive
+        bool isAlive( void );
+        //kills gui
+        void kill( void );
+        //returns true if has focus
+        bool hasFocus( void );
+        //gets gui id of focused child
+        bool getFocusChild( renderer_writelock *r, dpid *fid );
 
         friend class renderer_gui;
     };
