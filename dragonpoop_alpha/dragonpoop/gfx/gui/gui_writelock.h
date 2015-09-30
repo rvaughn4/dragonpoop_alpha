@@ -4,6 +4,7 @@
 
 #include "../../core/shared_obj/shared_obj_writelock.h"
 #include "../../core/dpid/dpid.h"
+#include <string>
 
 namespace dragonpoop
 {
@@ -79,6 +80,8 @@ namespace dragonpoop
         bool hasFocus( void );
         //process mouse input
         void processMouse( float x, float y, bool lb, bool rb );
+        //process kb input
+        void processKb( std::string *skey, bool bDown );
         //returns true if has renderer
         bool hasRenderer( void );
         //set renderer

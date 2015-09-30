@@ -61,7 +61,6 @@ namespace dragonpoop
         if( !this->makeWindow( (char *)"Dragonpoop: its as smooth as silk!", 1024, 728, 32, 0 ) )
             return 0;
 
-        this->makeBox();
         return 1;
     }
 
@@ -137,7 +136,7 @@ namespace dragonpoop
         this->gl.attr.border_pixel = 0;
 
         //create window
-        this->gl.attr.event_mask = KeyPressMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask | PointerMotionMask;
+        this->gl.attr.event_mask = KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask | PointerMotionMask;
         this->gl.win = XCreateWindow( this->gl.dpy, RootWindow( this->gl.dpy, vi->screen ), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &this->gl.attr );
         if( !this->gl.win )
         {
@@ -195,9 +194,6 @@ namespace dragonpoop
         glLightfv(GL_LIGHT2, GL_POSITION,LightPosition2);
         glEnable(GL_LIGHT2);
 
-        glEnableClientState( GL_NORMAL_ARRAY );
-        glEnableClientState( GL_VERTEX_ARRAY );
-        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
         return 1;
     }
 
@@ -267,16 +263,10 @@ namespace dragonpoop
                 this->processMouseInput( event.xbutton.x, event.xbutton.y, this->lb, this->rb );
                 break;
             case KeyPress:
-                if (XLookupKeysym(&event.xkey, 0) == XK_Escape)
-                {
-                    // done = True;
-                }
-                if (XLookupKeysym(&event.xkey,0) == XK_F1)
-                {
-                    // killGLWindow();
-                    // GLWin.fs = !GLWin.fs;
-                    //createGLWindow("NeHe's OpenGL Framework", 640, 480, 24, GLWin.fs);
-                }
+                this->processKb( XLookupKeysym( &event.xkey, 0 ), 1 );
+                break;
+            case KeyRelease:
+                this->processKb( XLookupKeysym( &event.xkey, 0 ), 0 );
                 break;
             case ClientMessage:
                 if( (Atom)event.xclient.data.l[0] == this->gl.wm_delete_window )
@@ -354,12 +344,63 @@ namespace dragonpoop
         return new openglx_1o5_renderer_gui( ml );
     }
 
+    //draw vb
+    void openglx_1o5_renderer::drawVb( dpvertexindex_buffer *vb )
+    {
+        dpvertex *p_vb;
+        unsigned int vb_size;
+        dpindex *p_ib;
+        unsigned int ib_size;
+        
+        p_vb = vb->getVertexBuffer( &vb_size );
+        p_ib = vb->getIndexBuffer( &ib_size );
+        
+        this->drawVb( p_vb, vb_size, (char *)&p_ib->i, ib_size, sizeof( dpindex ) );
+    }
+    
+    //draw vb
+    void openglx_1o5_renderer::drawVb( dpvertex_buffer *vb, std::vector<uint16_t> *indicies )
+    {
+        dpvertex *p_vb;
+        unsigned int vb_size;
+
+        p_vb = vb->getBuffer();
+        vb_size = vb->getSize();
+        
+        this->drawVb( p_vb, vb_size, (char *)&( *indicies )[ 0 ], (unsigned int)indicies->size(), sizeof( uint16_t ) );
+    }
+    
+    //draw vb
+    void openglx_1o5_renderer::drawVb( dpvertex *vb, unsigned int vb_size, char *ib, unsigned int ib_size, unsigned int ib_stride )
+    {
+        dpvertex *v;
+        uint16_t in;
+        unsigned int i;
+        
+        glBegin( GL_TRIANGLES );
+        
+        for( i = 0; i < ib_size; i++ )
+        {
+            in = *( (uint16_t *)ib );
+            ib += ib_stride;
+            
+            if( in >= vb_size )
+                continue;
+            v = &vb[ in ];
+            
+            glTexCoord2f( v->texcoords[ 0 ].s, v->texcoords[ 0 ].t );
+            glNormal3f( v->normal.x, v->normal.y, v->normal.z );
+            glVertex3f( v->pos.x, v->pos.y, v->pos.z );
+        }
+        
+        glEnd();
+    }
+    
     //render model instance group
     void openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world )
     {
         openglx_1o5_renderer_model_material *gmat;
         dpvertex_buffer *vb;
-        dpvertex *vp;
         std::vector<uint16_t> *indicies;
         dpmatrix wmat;
         uint64_t t, ot;
@@ -377,111 +418,160 @@ namespace dragonpoop
         ( (openglx_1o5_renderer_model_instance_group *)g )->setLastFrameTime( t );
             
         vb = g->getTransformedBuffer( mi, &indicies );
-        vp = vb->getBuffer();
-
-        glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
-        glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
-        glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
-        glDrawElements( GL_TRIANGLES, (int)indicies->size(), GL_UNSIGNED_SHORT, &( *indicies )[ 0 ] );
+        this->drawVb( vb, indicies );
     }
     
     //render gui
     void openglx_1o5_renderer::renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world )
     {
-        dpvertex *vp;
         float a;
         
         glLoadMatrixf( m_world->getRaw4by4() );
 
-        vp = this->vbbox.getVertexBuffer( 0 );
-        glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vp->texcoords[ 0 ] );
-        glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vp->normal );
-        glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vp->pos );
         a = m->getOpacity();
 
         if( m->hasBg() && ( (openglx_1o5_renderer_gui_readlock *)m )->getBgTex() )
         {
             glColor4f( 1, 1, 1, a * 0.9f );
             glBindTexture( GL_TEXTURE_2D, ( (openglx_1o5_renderer_gui_readlock *)m )->getBgTex() );
-            glDrawElements( GL_TRIANGLES, (int)this->vbbox_indicies.size(), GL_UNSIGNED_SHORT, &this->vbbox_indicies[ 0 ] );
+            drawVb( m->getBgBuffer() );
         }
         
         if( m->hasFg() && ( (openglx_1o5_renderer_gui_readlock *)m )->getFgTex() )
         {
             glColor4f( 1, 1, 1, a );
             glBindTexture( GL_TEXTURE_2D, ( (openglx_1o5_renderer_gui_readlock *)m )->getFgTex() );
-            glDrawElements( GL_TRIANGLES, (int)this->vbbox_indicies.size(), GL_UNSIGNED_SHORT, &this->vbbox_indicies[ 0 ] );
+            drawVb( m->getFgBuffer() );
         }
     }
     
-    //build gui box
-    void openglx_1o5_renderer::makeBox( void )
+    //process keyboard input
+    void openglx_1o5_renderer::processKb( KeySym k, bool isDown )
     {
-        dpvertex b;
-        dpindex *p, *ip;
-        unsigned int i, e;
+        unsigned char c[ 2 ];
+        std::string s;
         
-        this->vbbox.clear();
-
-        b.normal.x = 0;
-        b.normal.y = 0;
-        b.normal.z = 1;
-        b.pos.z = -1;
+        c[ 1 ] = 0;
+        c[ 0 ] = (unsigned char)k;
         
-        //t_0
-        
-        //tl
-        b.pos.x = 0;
-        b.pos.y = 0;
-        b.texcoords[ 0 ].s = 0;
-        b.texcoords[ 0 ].t = 0;
-        this->vbbox.addVertexUnique( &b );
-        
-        //bl
-        b.pos.x = 0;
-        b.pos.y = 1;
-        b.texcoords[ 0 ].s = 0;
-        b.texcoords[ 0 ].t = 1;
-        this->vbbox.addVertexUnique( &b );
-        
-        //tr
-        b.pos.x = 1;
-        b.pos.y = 0;
-        b.texcoords[ 0 ].s = 1;
-        b.texcoords[ 0 ].t = 0;
-        this->vbbox.addVertexUnique( &b );
-        
-        //t_1
-        
-        //tr
-        b.pos.x = 1;
-        b.pos.y = 0;
-        b.texcoords[ 0 ].s = 1;
-        b.texcoords[ 0 ].t = 0;
-        this->vbbox.addVertexUnique( &b );
-        
-        //bl
-        b.pos.x = 0;
-        b.pos.y = 1;
-        b.texcoords[ 0 ].s = 0;
-        b.texcoords[ 0 ].t = 1;
-        this->vbbox.addVertexUnique( &b );
-        
-        //br
-        b.pos.x = 1;
-        b.pos.y = 1;
-        b.texcoords[ 0 ].s = 1;
-        b.texcoords[ 0 ].t = 1;
-        this->vbbox.addVertexUnique( &b );
-        
-        this->vbbox_indicies.clear();
-        ip = this->vbbox.getIndexBuffer( &e );
-        for( i = 0; i < e; i++ )
+        if( k >= 32 && k <= 127 )
+            s.assign( (const char *)c );
+        else
         {
-            p = &ip[ i ];
-            this->vbbox_indicies.push_back( p->i );
+            /*
+#define XK_BackSpace                     0xff08  // Back space, back char
+#define XK_Tab                           0xff09
+#define XK_Linefeed                      0xff0a  // Linefeed, LF
+#define XK_Clear                         0xff0b
+#define XK_Return                        0xff0d  // Return, enter
+#define XK_Pause                         0xff13  // Pause, hold
+#define XK_Scroll_Lock                   0xff14
+#define XK_Sys_Req                       0xff15
+#define XK_Escape                        0xff1b
+#define XK_Delete                        0xffff  // Delete, rubout
+            */
+            
+            switch( k )
+            {
+            
+                case XK_KP_Space:
+                    s.assign( "Space" );
+                    break;
+                case XK_KP_Tab:
+                    s.assign( "Tab" );
+                    break;
+                case XK_KP_Enter:
+                    s.assign( "Enter" );
+                    break;
+                case XK_Home:
+                case XK_KP_Home:
+                    s.assign( "Home" );
+                    break;
+                case XK_Left:
+                case XK_KP_Left:
+                    s.assign( "Left" );
+                    break;
+                case XK_Up:
+                case XK_KP_Up:
+                    s.assign( "Up" );
+                    break;
+                case XK_Right:
+                case XK_KP_Right:
+                    s.assign( "Right" );
+                    break;
+                case XK_Down:
+                case XK_KP_Down:
+                    s.assign( "Down" );
+                    break;
+                case XK_Page_Up:
+                case XK_KP_Page_Up:
+                    s.assign( "Page Up" );
+                    break;
+                case XK_Page_Down:
+                case XK_KP_Page_Down:
+                    s.assign( "Page Down" );
+                    break;
+                case XK_End:
+                case XK_KP_End:
+                    s.assign( "End" );
+                    break;
+                case XK_Begin:
+                case XK_KP_Begin:
+                    s.assign( "Home" );
+                    break;
+                case XK_KP_Insert:
+                    s.assign( "Insert" );
+                    break;
+                case XK_KP_Delete:
+                    s.assign( "Delete" );
+                    break;
+                case XK_KP_Equal:
+                    s.assign( "Equal" );
+                    break;
+                case XK_KP_Multiply:
+                    s.assign( "Multiply" );
+                    break;
+                case XK_KP_Add:
+                    s.assign( "Add" );
+                    break;
+                case XK_KP_Separator:
+                    s.assign( "Comma" );
+                    break;
+                case XK_KP_Subtract:
+                    s.assign( "Subtract" );
+                    break;
+                case XK_KP_Decimal:
+                    s.assign( "Period" );
+                    break;
+                case XK_KP_Divide:
+                    s.assign( "Divide" );
+                    break;
+                default:
+                    //numpad 0 - 9
+                    if( k >= XK_KP_0 && k <= XK_KP_9 )
+                    {
+                        c[ 0 ] = k - XK_KP_0 + 48;
+                        s.assign( (const char *)c );
+                    }
+                    //F1 - F9
+                    if( k >= XK_F1 && k <= XK_F9 )
+                    {
+                        c[ 0 ] = k - XK_F1 + 49;
+                        s.assign( "F" );
+                        s.append( (const char *)c );
+                    }
+                    //F10 - F19
+                    if( k >= XK_F10 && k <= XK_F19 )
+                    {
+                        c[ 0 ] = k - XK_F10 + 48;
+                        s.assign( "F1" );
+                        s.append( (const char *)c );
+                    }
+            }
         }
         
+        if( s.size() > 0 )
+            this->renderer::processKbInput( &s, isDown );
     }
     
 };

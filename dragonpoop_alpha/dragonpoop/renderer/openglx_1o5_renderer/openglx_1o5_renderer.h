@@ -43,14 +43,18 @@ namespace dragonpoop
         openglx_1o5_stuffs gl;
         dpmatrix world_m, local_m;
         float fps;
-        dpvertexindex_buffer vbbox;
-        std::vector<uint16_t> vbbox_indicies;
         bool lb, rb;
         uint64_t t_last_motion;
         
-        //build gui box
-        void makeBox( void );
-
+        //draw vb
+        void drawVb( dpvertexindex_buffer *vb );
+        //draw vb
+        void drawVb( dpvertex_buffer *vb, std::vector<uint16_t> *indicies );
+        //draw vb
+        void drawVb( dpvertex *vb, unsigned int vb_size, char *ib, unsigned int ib_size, unsigned int ib_stride );
+        //process keyboard input
+        void processKb( KeySym k, bool isDown );
+        
     protected:
 
         //generate read lock

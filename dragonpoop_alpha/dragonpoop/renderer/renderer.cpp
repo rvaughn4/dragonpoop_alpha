@@ -745,6 +745,20 @@ namespace dragonpoop
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
         renderer_gui_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::processGuiKbInput" );
+            if( !pl )
+                return;
+            if( !pl->compareId( this->focus_gui ) )
+                continue;
+            pl->processKb( skey_name, isDown );
+            return;
+        }
     }
     
 };

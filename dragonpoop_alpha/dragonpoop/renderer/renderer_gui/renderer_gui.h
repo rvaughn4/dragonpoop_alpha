@@ -4,6 +4,7 @@
 
 #include "../../gfx/gui/gui.h"
 #include "../../gfx/dpmatrix/dpmatrix.h"
+#include "../../gfx/dpvertex/dpvertexindex_buffer.h"
 
 #define GUI_HOVER_MAX 0.2f
 
@@ -29,9 +30,11 @@ namespace dragonpoop
         gui_dims pos;
         gui_ref *g;
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg;
-        dpmatrix mat, size_mat, undo_mat;
+        dpmatrix mat, undo_mat;
         unsigned int z;
         float hv, opacity, fade;
+        dpvertexindex_buffer bg_vb, fg_vb;
+        uint64_t t_last_tex_update;
         
     protected:
         
@@ -57,6 +60,8 @@ namespace dragonpoop
         virtual void updateBg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
         //override to handle fg texture update
         virtual void updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        //override to handle vb update
+        virtual void updateVb( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p );
         //called to force pos update
         void syncPos( void );
         //called to force bg update
@@ -69,6 +74,8 @@ namespace dragonpoop
         void redoMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix );
         //process mouse input
         bool processMouse( float x, float y, bool lb, bool rb );
+        //process kb input
+        bool processKb( std::string *sname, bool bIsDown );
         //returns opacity
         float getOpacity( void );
         //returns true if alive
@@ -79,6 +86,10 @@ namespace dragonpoop
         bool hasFocus( void );
         //gets gui id of focused child
         bool getFocusChild( renderer_writelock *r, dpid *fid );
+        //return bg vb
+        dpvertexindex_buffer *getBgBuffer( void );
+        //return fg vb
+        dpvertexindex_buffer *getFgBuffer( void );
         
     public:
         

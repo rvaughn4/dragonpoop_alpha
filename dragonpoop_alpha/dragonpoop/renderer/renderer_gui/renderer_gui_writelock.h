@@ -4,6 +4,7 @@
 
 #include "../../core/shared_obj/shared_obj_writelock.h"
 #include "../../core/dpid/dpid.h"
+#include <string>
 
 namespace dragonpoop
 {
@@ -59,6 +60,8 @@ namespace dragonpoop
         void redoMatrix( dpthread_lock *thd, renderer_writelock *r, dpmatrix *p_matrix );
         //process mouse input
         bool processMouse( float x, float y, bool lb, bool rb );
+        //process kb input
+        bool processKb( std::string *sname, bool bIsDown );
         //returns true if alive
         bool isAlive( void );
         //kills gui

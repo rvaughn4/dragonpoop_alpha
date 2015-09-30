@@ -155,6 +155,12 @@ namespace dragonpoop
         this->t->processMouse( x, y, lb, rb );
     }
     
+    //process kb input
+    void gui_writelock::processKb( std::string *skey, bool bDown )
+    {
+        this->t->processKb( skey, bDown );
+    }
+    
     //returns true if has renderer
     bool gui_writelock::hasRenderer( void )
     {

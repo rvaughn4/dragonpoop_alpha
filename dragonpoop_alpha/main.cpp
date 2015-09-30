@@ -77,7 +77,7 @@ public:
         this->enableFg( 1 );
         this->setPosition( x, y );
         this->setWidthHeight( w, h );
-        this->setText( "Hello! \a255000255 abcdefghi \e100 jklmopqrstuvwxyz \fcursive !@#$%^&*() 1234567890" );
+        this->setText( "Hello! \a255255000 abcdefghi \e30 jklmopqrstuvwxyz \fancient !@#$%^&*() 1234567890" );
     }
     
     //dtor

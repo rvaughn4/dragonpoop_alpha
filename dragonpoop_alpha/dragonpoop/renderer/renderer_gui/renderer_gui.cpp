@@ -9,6 +9,7 @@
 #include "../../core/core.h"
 #include "../renderer_writelock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
+#include "../../core/dpthread/dpthread_lock.h"
 
 #include <thread>
 
@@ -76,9 +77,17 @@ namespace dragonpoop
         gui_readlock *pl;
         shared_obj_guard o;
         dpbitmap *bm;
+        uint64_t t;
+        
         
         if( this->bSyncBg || this->bSyncFg || this->bSyncPos )
         {
+
+            t = thd->getTicks();
+            if( !this->bSyncPos && t - this->t_last_tex_update < 400 )
+                return;
+            this->t_last_tex_update = t;
+            
             pl = (gui_readlock *)o.tryReadLock( this->g, 200, "renderer_gui::run" );
             if( pl )
             {
@@ -90,6 +99,7 @@ namespace dragonpoop
                     this->bHasBg = pl->hasBg();
                     this->bHasFg = pl->hasFg();
                     this->z = pl->getZ();
+                    this->updateVb( g, pl, &this->pos );
                     this->bSyncPos = 0;
                 }
                 
@@ -133,7 +143,7 @@ namespace dragonpoop
         }
         
         mat.copy( m_world );
-        mat.multiply( &this->size_mat );
+        mat.multiply( &this->mat );
         
         r->renderGui( thd, m, &mat );
     }
@@ -184,6 +194,103 @@ namespace dragonpoop
     void renderer_gui::updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
     {
         
+    }
+    
+    //makes a box in vb
+    void makeBox( dpvertexindex_buffer *vb, float x, float y, float w, float h, float tx, float ty, float tw, float th )
+    {
+        dpvertex b;
+
+        b.normal.x = 0;
+        b.normal.y = 0;
+        b.normal.z = 1;
+        b.pos.z = -1;
+        
+        //tri_0
+        
+        //tl
+        b.pos.x = x;
+        b.pos.y = y;
+        b.texcoords[ 0 ].s = tx;
+        b.texcoords[ 0 ].t = ty;
+        vb->addVertexUnique( &b );
+        
+        //bl
+        b.pos.x = x;
+        b.pos.y = y + h;
+        b.texcoords[ 0 ].s = tx;
+        b.texcoords[ 0 ].t = ty + th;
+        vb->addVertexUnique( &b );
+        
+        //tr
+        b.pos.x = x + w;
+        b.pos.y = y;
+        b.texcoords[ 0 ].s = tx + tw;
+        b.texcoords[ 0 ].t = ty;
+        vb->addVertexUnique( &b );
+        
+        //tri_1
+        
+        //tr
+        b.pos.x = x + w;
+        b.pos.y = y;
+        b.texcoords[ 0 ].s = tx + tw;
+        b.texcoords[ 0 ].t = ty;
+        vb->addVertexUnique( &b );
+        
+        //bl
+        b.pos.x = x;
+        b.pos.y = y + h;
+        b.texcoords[ 0 ].s = tx;
+        b.texcoords[ 0 ].t = ty + th;
+        vb->addVertexUnique( &b );
+        
+        //br
+        b.pos.x = x + w;
+        b.pos.y = y + h;
+        b.texcoords[ 0 ].s = tx + tw;
+        b.texcoords[ 0 ].t = ty + th;
+        vb->addVertexUnique( &b );
+    }
+    
+    //override to handle vb update
+    void renderer_gui::updateVb( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p )
+    {
+        dpvertexindex_buffer *vb;
+        float w, h, bw, tw;
+        
+        bw = p->border_w;
+        tw = p->border_tex_w;
+        w = p->w;
+        h = p->h;
+
+        //fg
+        vb = &this->fg_vb;
+        vb->clear();
+        makeBox( vb, 0, 0, w, h, 0, 0, 1, 1 );
+        
+        //bg
+        vb = &this->bg_vb;
+        vb->clear();
+
+        //tl
+        makeBox( vb, 0,         0,          bw,             bw,             0,          0,          tw, tw );
+        //top
+        makeBox( vb, bw,        0,          w - bw - bw,    bw,             tw,         0,          1 - tw - tw, tw );
+        //tr
+        makeBox( vb, w - bw,    0,          bw,             bw,             1 - tw,     0,          tw, tw );
+        //left
+        makeBox( vb, 0,         bw,         bw,             h - bw - bw,    0,          tw,         tw, 1 - tw - tw );
+        //center
+        makeBox( vb, bw,        bw,         w - bw - bw,    h - bw - bw,    tw,         tw,         1 - tw - tw, 1 - tw - tw );
+        //right
+        makeBox( vb, w - bw,    bw,         bw,             h - bw - bw,    1 - tw,     tw,         tw, 1 - tw - tw );
+        //bl
+        makeBox( vb, 0,         h - bw,     bw,             bw,             0,          1 - tw,     tw, tw );
+        //bottom
+        makeBox( vb, bw,        h - bw,     w - bw - bw,    bw,             tw,         1 - tw,     1 - tw - tw, tw );
+        //br
+        makeBox( vb, w - bw,    h - bw,     bw,             bw,             1 - tw,     1 - tw,     tw, tw );
     }
     
     //called to force pos update
@@ -238,8 +345,6 @@ namespace dragonpoop
         }
         
         this->undo_mat.inverse( &this->mat );
-        this->size_mat.copy( &this->mat );
-        this->size_mat.scale( this->pos.w, this->pos.h, 1 );
         
         r->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )
@@ -280,6 +385,20 @@ namespace dragonpoop
             return 1;
         g->processMouse( p.x, p.y, lb, rb );
 
+        return 1;
+    }
+    
+    //process kb input
+    bool renderer_gui::processKb( std::string *sname, bool bIsDown )
+    {
+        gui_writelock *g;
+        shared_obj_guard o;
+
+        g = (gui_writelock *)o.tryWriteLock( this->g, 300, "renderer_gui::processKb" );
+        if( !g )
+            return 1;
+        
+        g->processKb( sname, bIsDown );
         return 1;
     }
     
@@ -334,6 +453,18 @@ namespace dragonpoop
         }
         
         return 0;
+    }
+    
+    //return bg vb
+    dpvertexindex_buffer *renderer_gui::getBgBuffer( void )
+    {
+        return &this->bg_vb;
+    }
+    
+    //return fg vb
+    dpvertexindex_buffer *renderer_gui::getFgBuffer( void )
+    {
+        return &this->fg_vb;
     }
     
 };

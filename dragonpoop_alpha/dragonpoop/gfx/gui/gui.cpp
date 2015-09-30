@@ -28,7 +28,8 @@ namespace dragonpoop
         this->bHasBg = this->bHasFg = 0;
         this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
         this->bRedraw = 1;
-        this->bRepaintBg = this->bRepaintFg = 0;
+        this->bRepaintBg = 0;
+        this->bRepaintFg = 1;
         this->r = 0;
         this->bWasBgDrawn = this->bWasFgDrawn = 0;
         this->z = 1;
@@ -38,6 +39,8 @@ namespace dragonpoop
         this->fnt_size = 20;
         this->fnt_clr.r = this->fnt_clr.g = this->fnt_clr.b = 0;
         this->fnt_clr.a = 255;
+        this->pos.border_w = 10;
+        this->pos.border_tex_w = 0.2f;
     }
     
     //dtor
@@ -127,6 +130,12 @@ namespace dragonpoop
             this->bMouseInput = 0;
             this->bOldLb = this->bLb;
             this->bOldRb = this->bRb;
+        }
+        
+        if( this->bKeyInput )
+        {
+            this->handleKbEvent( &this->skb, this->bKeyDown );
+            this->bKeyInput = 0;
         }
     }
     
@@ -488,10 +497,28 @@ namespace dragonpoop
         this->bMouseInput = 1;
     }
     
+    //process kb input
+    void gui::processKb( std::string *skey, bool bDown )
+    {
+        this->skb.assign( *skey );
+        this->bKeyDown = bDown;
+        this->bKeyInput = 1;
+    }
+    
     //override to handle mouse button
     void gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
     {
         
+    }
+    
+    //override to handle keyboard button
+    void gui::handleKbEvent( std::string *skey, bool isDown )
+    {
+        if( isDown )
+        {
+            this->stxt.append( *skey );
+            this->redraw();
+        }
     }
     
     //set text

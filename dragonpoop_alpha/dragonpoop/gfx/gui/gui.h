@@ -27,6 +27,7 @@ namespace dragonpoop
     struct gui_dims
     {
         float x, y, w, h;
+        float border_w, border_tex_w;
     };
     
     class gui : public shared_obj
@@ -38,7 +39,7 @@ namespace dragonpoop
         dpid id, pid;
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
-        std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw, bMouseInput, bLb, bRb;
+        std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw, bMouseInput, bLb, bRb, bKeyDown, bKeyInput;
         bool bOldLb, bOldRb;
         float mx, my;
         gui_dims pos;
@@ -46,7 +47,7 @@ namespace dragonpoop
         renderer_gui_ref *r;
         unsigned int z, fnt_size;
         dprgba fnt_clr;
-        std::string stxt;
+        std::string stxt, skb;
 
     protected:
         
@@ -112,8 +113,12 @@ namespace dragonpoop
         bool hasFocus( void );
         //process mouse input
         void processMouse( float x, float y, bool lb, bool rb );
+        //process kb input
+        void processKb( std::string *skey, bool bDown );
         //override to handle mouse button
         virtual void handleMouseClick( float x, float y, bool isRight, bool isDown );
+        //override to handle keyboard button
+        virtual void handleKbEvent( std::string *skey, bool isDown );
         //set text
         void setText( const char *c );
         //set text

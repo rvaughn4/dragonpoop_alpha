@@ -101,6 +101,12 @@ namespace dragonpoop
         return this->t->processMouse( x, y, lb, rb );
     }
     
+    //process kb input
+    bool renderer_gui_writelock::processKb( std::string *sname, bool bIsDown )
+    {
+        return this->t->processKb( sname, bIsDown );
+    }
+    
     //returns true if alive
     bool renderer_gui_writelock::isAlive( void )
     {

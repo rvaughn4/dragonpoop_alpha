@@ -13,6 +13,7 @@ namespace dragonpoop
     class renderer_writelock;
     class dpthread_lock;
     class dpmatrix;
+    class dpvertexindex_buffer;
     
     class renderer_gui_readlock : public shared_obj_readlock
     {
@@ -50,6 +51,10 @@ namespace dragonpoop
         void render( dpthread_lock *thd, renderer_writelock *r, dpmatrix *m_world );
         //returns opacity
         float getOpacity( void );
+        //return bg vb
+        dpvertexindex_buffer *getBgBuffer( void );
+        //return fg vb
+        dpvertexindex_buffer *getFgBuffer( void );
 
         friend class renderer_gui;
     };

@@ -77,4 +77,16 @@ namespace dragonpoop
         return this->t->getOpacity();
     }
     
+    //return bg vb
+    dpvertexindex_buffer *renderer_gui_readlock::getBgBuffer( void )
+    {
+        return this->t->getBgBuffer();
+    }
+    
+    //return fg vb
+    dpvertexindex_buffer *renderer_gui_readlock::getFgBuffer( void )
+    {
+        return this->t->getFgBuffer();
+    }
+
 };
