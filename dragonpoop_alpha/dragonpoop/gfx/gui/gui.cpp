@@ -14,6 +14,7 @@
 #include "../dpfont/dpfont.h"
 #include <sstream>
 #include <string>
+#include "../../core/dpthread/dpthread_lock.h"
 
 namespace dragonpoop
 {
@@ -36,11 +37,15 @@ namespace dragonpoop
         this->bMouseInput = 0;
         this->bOldLb = this->bOldRb = 0;
         this->bLb = this->bRb = 0;
-        this->fnt_size = 20;
+        this->fnt_size = 0;
         this->fnt_clr.r = this->fnt_clr.g = this->fnt_clr.b = 0;
         this->fnt_clr.a = 255;
         this->pos.border_w = 10;
         this->pos.border_tex_w = 0.2f;
+        this->cursor = 0;
+        this->sz_div = 3;
+        this->bShiftDown = 0;
+        this->redraw_timer = 0;
     }
     
     //dtor
@@ -80,9 +85,24 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         renderer_gui_writelock *l;
+        uint64_t t;
         
-        if( this->bRedraw )
+        t = thd->getTicks();
+        if( this->z == 0 )
+            this->redraw_timer = 100;
+        if( this->z != 0 && !cur_flash )
+            this->redraw_timer = 0;
+        
+        if( this->redraw_timer && t - this->t_last_redraw > this->redraw_timer )
         {
+            this->redraw();
+            this->cur_flash = !this->cur_flash;
+        }
+        
+        if( this->bRedraw && t - this->t_last_redraw > 40 )
+        {
+            this->t_last_redraw = t;
+
             if( ( !this->bWasBgDrawn || this->bRepaintBg ) && this->bHasBg )
             {
                 this->repaintBg( g, &this->bgtex, this->pos.w, this->pos.h );
@@ -233,6 +253,11 @@ namespace dragonpoop
             return;
         }
         
+        if( w > 128 && sz_div )
+            w = w / sz_div;
+        if( h > 128 && sz_div )
+            h = h / sz_div;
+        
         bm->resize( w, h );
         c.r = c.b = c.g = c.a = 0;
         bm->clear( &c );
@@ -240,16 +265,47 @@ namespace dragonpoop
         this->drawText( bm );
     }
     
+    //reset text loc
+    void gui::resetTxtLoc( void )
+    {
+        this->line_front = 0;
+        this->last_txt_line = 0;
+        this->txt_loc.clear();
+    }
+    
+    //add text loc
+    void gui::addTxtLoc( float x, float y, float w, float h, unsigned int line_no, unsigned int char_no )
+    {
+        gui_txt_loc l;
+        
+        if( line_no != this->last_txt_line )
+        {
+            this->line_front = (unsigned int)this->txt_loc.size();
+            this->last_txt_line = line_no;
+        }
+        
+        l.x = x;
+        l.y = y;
+        l.w = w;
+        l.h = h;
+        l.front = this->line_front;
+        l.line_no = line_no;
+        l.char_no = char_no;
+        
+        this->txt_loc.push_back( l );
+    }
+    
     //override to customize font rendering
     void gui::drawText( dpbitmap *bm )
     {
-        unsigned int i, e, d, fnt_size, sdw_off;
+        unsigned int i, e, d, fnt_size, sdw_off, ln, tt;
         unsigned char c, *cb;
         int w, h, x, y, cw, ch, lch;
         dprgba clr, clr_dark, clr_light;
         std::string s, fnt_face;
         std::size_t loc_sp;
         dpfont f;
+        bool cur_drawn;
         
         w = bm->getWidth();
         h = bm->getHeight();
@@ -257,6 +313,10 @@ namespace dragonpoop
         fnt_face.assign( "sans" );
         
         fnt_size = this->fnt_size;
+        if( !fnt_size )
+            fnt_size = ( w + h ) / 20;
+        if( this->sz_div )
+            fnt_size /= this->sz_div;
         sdw_off = fnt_size / 120 + 1;
         
         clr = this->fnt_clr;
@@ -275,9 +335,12 @@ namespace dragonpoop
         
         e = (unsigned int)this->stxt.length();
         cb = (unsigned char *)this->stxt.c_str();
+        this->resetTxtLoc();
         
         x = y = 1;
-        lch = 0;
+        cw = lch = 0;
+        ln = 0;
+        cur_drawn = this->cur_flash && ( this->z == 0 );
         for( i = 0; i < e; i++ )
         {
             c = cb[ i ];
@@ -292,6 +355,8 @@ namespace dragonpoop
                 s.assign( (char *)&cb[ i + 1 ], 3 );
                 ss << s;
                 ss >> d;
+                if( this->sz_div )
+                    d /= this->sz_div;
                 if( d > 0 && f.openFont( fnt_face.c_str(), d ) )
                 {
                     fnt_size = d;
@@ -353,6 +418,7 @@ namespace dragonpoop
                 ssb >> d;
                 clr.b = d;
                 
+                i += 2;
                 clr.a = 255;
                 
                 clr_dark.r = clr.r * 0.125f;
@@ -367,22 +433,70 @@ namespace dragonpoop
                 continue;
             }
             
+            // \r
+            if( c == 13 )
+            {
+                x = 0;
+                continue;
+            }
+            // \n
+            if( c == 10 )
+            {
+                x = 0;
+                if( lch < fnt_size )
+                    lch = fnt_size;
+                y += lch;
+                ln++;
+                continue;
+            }
+            // \t
+            if( c == 9 )
+            {
+                tt = 0;
+                while( tt <= x )
+                    tt += 4 * fnt_size;
+                x = tt;
+                continue;
+            }
             
             f.draw( c, 0, 0, 0, &cw, &ch, 0 );
             if( cw + x + 1 > w )
             {
                 x = 1;
+                if( lch < fnt_size )
+                    lch = fnt_size;
                 y += lch;
                 lch = ch;
+                ln++;
             }
             if( ch > lch )
                 lch = ch;
+            if( x + cw > w || y + ch > h )
+                return;
+            
+            if( !cur_drawn && i >= this->cursor )
+            {
+                f.draw( 45, x + sdw_off, y + sdw_off + fnt_size / 3, bm, 0, 0, &clr_dark );
+                f.draw( 45, x - sdw_off, y - sdw_off + fnt_size / 3, bm, 0, 0, &clr_light );
+                f.draw( 45, x, y + fnt_size / 3, bm, 0, 0, &clr );
+                cur_drawn = 1;
+            }
             
             f.draw( c, x - sdw_off, y - sdw_off, bm, 0, 0, &clr_light );
             f.draw( c, x + sdw_off, y + sdw_off, bm, 0, 0, &clr_dark );
             f.draw( c, x, y, bm, 0, 0, &clr );
+            
+            this->addTxtLoc( x, y, cw, ch, ln, i );
             x += cw;
         }
+
+        if( !cur_drawn )
+        {
+            f.draw( 45, x + sdw_off, y + sdw_off + fnt_size / 3, bm, 0, 0, &clr_dark );
+            f.draw( 45, x - sdw_off, y - sdw_off + fnt_size / 3, bm, 0, 0, &clr_light );
+            f.draw( 45, x, y + fnt_size / 3, bm, 0, 0, &clr );
+        }
+        
     }
     
     //set parent id
@@ -514,10 +628,75 @@ namespace dragonpoop
     //override to handle keyboard button
     void gui::handleKbEvent( std::string *skey, bool isDown )
     {
+        char c[ 2 ];
+        
         if( isDown )
         {
-            this->stxt.append( *skey );
-            this->redraw();
+
+            if( skey->size() == 1 )
+            {
+                c[ 0 ] = (char)skey->c_str()[ 0 ];
+                c[ 1 ] = 0;
+                if( this->bShiftDown && c[ 0 ] >= 97 && c[ 0 ] <= 122 )
+                    c[ 0 ] -= 97 - 65;
+                this->insert( (const char *)c );
+                this->redraw();
+                return;
+            }
+            
+            if( skey->compare( "Enter" ) == 0 || skey->compare( "Return" ) == 0 )
+            {
+                this->insert( "\n" );
+                this->redraw();
+                return;
+            }
+            
+            if( skey->compare( "Tab" ) == 0 )
+            {
+                this->insert( "\t" );
+                this->redraw();
+                return;
+            }
+            
+            if( skey->compare( "Left" ) == 0 )
+            {
+                this->left();
+                this->redraw();
+                return;
+            }
+            
+            if( skey->compare( "Right" ) == 0 )
+            {
+                this->right();
+                this->redraw();
+                return;
+            }
+
+            if( skey->compare( "Backspace" ) == 0 )
+            {
+                this->backspace();
+                this->redraw();
+                return;
+            }
+            
+            if( skey->compare( "Delete" ) == 0 )
+            {
+                this->delete_();
+                this->redraw();
+                return;
+            }
+            
+            if( skey->compare( "Shift" ) == 0 )
+                this->bShiftDown = 1;
+        }
+        else
+        {
+            
+            if( skey->compare( "Shift" ) == 0 )
+                this->bShiftDown = 0;
+            if( skey->compare( "Caps Lock" ) == 0 )
+                this->bShiftDown = !this->bShiftDown;
+            
         }
     }
     
@@ -525,12 +704,14 @@ namespace dragonpoop
     void gui::setText( const char *c )
     {
         this->stxt.assign( c );
+        this->cursor = (unsigned int)this->stxt.length();
     }
     
     //set text
     void gui::setText( std::string *s )
     {
         this->stxt.assign( *s );
+        this->cursor = (unsigned int)this->stxt.length();
     }
     
     //get text
@@ -563,4 +744,91 @@ namespace dragonpoop
         return &this->fnt_clr;
     }
 
+    //backspace text
+    void gui::backspace( void )
+    {
+        if( this->cursor > this->stxt.size() )
+            this->cursor = (unsigned int)this->stxt.size();
+        if( this->cursor < 1 )
+            return;
+        this->cursor--;
+        this->stxt.replace( this->cursor, 1, "" );
+    }
+    
+    //delete text
+    void gui::delete_( void )
+    {
+        if( this->cursor > this->stxt.size() )
+            this->cursor = (unsigned int)this->stxt.size();
+        if( this->cursor >= this->stxt.size() )
+            return;
+        this->stxt.replace( this->cursor, 1, "" );
+    }
+    
+    //insert text
+    void gui::insert( const char *c )
+    {
+        std::string s( c );
+        
+        if( this->cursor >= this->stxt.size() )
+        {
+            this->stxt.append( s );
+            this->cursor += s.size();
+            return;
+        }
+        
+        this->stxt.insert( this->cursor, s );
+        this->cursor += s.size();
+    }
+    
+    //move cursor left
+    void gui::left( void )
+    {
+        if( this->cursor > 0 )
+            this->cursor--;
+    }
+    
+    //move cursor right
+    void gui::right( void )
+    {
+        if( this->cursor < this->stxt.size() )
+            this->cursor++;
+    }
+    
+    //move cursor to end
+    void gui::end( void )
+    {
+        
+    }
+    
+    //move cursor to home
+    void gui::home( void )
+    {
+        
+    }
+    
+    //move cursor to top
+    void gui::top( void )
+    {
+        this->cursor = 0;
+    }
+    
+    //move cursor to bottom
+    void gui::bottom( void )
+    {
+        this->cursor = (unsigned int)this->stxt.size();
+    }
+    
+    //move cursor up
+    void gui::up( void )
+    {
+        
+    }
+    
+    //move cursor down
+    void gui::down( void )
+    {
+        
+    }
+    
 };

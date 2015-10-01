@@ -458,22 +458,35 @@ namespace dragonpoop
             s.assign( (const char *)c );
         else
         {
-            /*
-#define XK_BackSpace                     0xff08  // Back space, back char
-#define XK_Tab                           0xff09
-#define XK_Linefeed                      0xff0a  // Linefeed, LF
-#define XK_Clear                         0xff0b
-#define XK_Return                        0xff0d  // Return, enter
-#define XK_Pause                         0xff13  // Pause, hold
-#define XK_Scroll_Lock                   0xff14
-#define XK_Sys_Req                       0xff15
-#define XK_Escape                        0xff1b
-#define XK_Delete                        0xffff  // Delete, rubout
-            */
             
             switch( k )
             {
-            
+                case XK_Caps_Lock:
+                    s.assign( "Caps Lock" );
+                    break;
+                case XK_Control_L:
+                case XK_Control_R:
+                    s.assign( "Control" );
+                    break;
+                case XK_Shift_L:
+                case XK_Shift_R:
+                    s.assign( "Shift" );
+                    break;
+                case XK_BackSpace:
+                    s.assign( "Backspace" );
+                    break;
+                case XK_Tab:
+                    s.assign( "Tab" );
+                    break;
+                case XK_Return:
+                    s.assign( "Enter" );
+                    break;
+                case XK_Escape:
+                    s.assign( "Escape" );
+                    break;
+                case XK_Delete:
+                    s.assign( "Delete" );
+                    break;
                 case XK_KP_Space:
                     s.assign( "Space" );
                     break;
@@ -526,25 +539,25 @@ namespace dragonpoop
                     s.assign( "Delete" );
                     break;
                 case XK_KP_Equal:
-                    s.assign( "Equal" );
+                    s.assign( "=" );
                     break;
                 case XK_KP_Multiply:
-                    s.assign( "Multiply" );
+                    s.assign( "*" );
                     break;
                 case XK_KP_Add:
-                    s.assign( "Add" );
+                    s.assign( "+" );
                     break;
                 case XK_KP_Separator:
-                    s.assign( "Comma" );
+                    s.assign( "," );
                     break;
                 case XK_KP_Subtract:
-                    s.assign( "Subtract" );
+                    s.assign( "-" );
                     break;
                 case XK_KP_Decimal:
-                    s.assign( "Period" );
+                    s.assign( "." );
                     break;
                 case XK_KP_Divide:
-                    s.assign( "Divide" );
+                    s.assign( "/" );
                     break;
                 default:
                     //numpad 0 - 9

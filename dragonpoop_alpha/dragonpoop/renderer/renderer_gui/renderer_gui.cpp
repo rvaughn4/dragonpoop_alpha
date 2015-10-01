@@ -84,7 +84,7 @@ namespace dragonpoop
         {
 
             t = thd->getTicks();
-            if( !this->bSyncPos && t - this->t_last_tex_update < 400 )
+            if( !this->bSyncPos && t - this->t_last_tex_update < 40 )
                 return;
             this->t_last_tex_update = t;
             

@@ -8,6 +8,7 @@
 #include <atomic>
 #include <string>
 #include "../dpvertex/dprgba.h"
+#include <vector>
 
 namespace dragonpoop
 {
@@ -30,6 +31,12 @@ namespace dragonpoop
         float border_w, border_tex_w;
     };
     
+    struct gui_txt_loc
+    {
+        float x, y, w, h;
+        unsigned int front, line_no, char_no;
+    };
+    
     class gui : public shared_obj
     {
         
@@ -40,7 +47,7 @@ namespace dragonpoop
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
         std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw, bMouseInput, bLb, bRb, bKeyDown, bKeyInput;
-        bool bOldLb, bOldRb;
+        bool bOldLb, bOldRb, bShiftDown, cur_flash;
         float mx, my;
         gui_dims pos;
         gfx_ref *g;
@@ -48,6 +55,14 @@ namespace dragonpoop
         unsigned int z, fnt_size;
         dprgba fnt_clr;
         std::string stxt, skb;
+        std::vector<gui_txt_loc> txt_loc;
+        unsigned int last_txt_line, line_front, cursor, sz_div, redraw_timer;
+        uint64_t t_last_redraw;
+        
+        //reset text loc
+        void resetTxtLoc( void );
+        //add text loc
+        void addTxtLoc( float x, float y, float w, float h, unsigned int line_no, unsigned int char_no );
 
     protected:
         
@@ -133,6 +148,28 @@ namespace dragonpoop
         void setFontColor( dprgba *c );
         //get font color
         dprgba *getFontColor( void );
+        //backspace text
+        void backspace( void );
+        //delete text
+        void delete_( void );
+        //insert text
+        void insert( const char *c );
+        //move cursor left
+        void left( void );
+        //move cursor right
+        void right( void );
+        //move cursor to end
+        void end( void );
+        //move cursor to home
+        void home( void );
+        //move cursor to top
+        void top( void );
+        //move cursor to bottom
+        void bottom( void );
+        //move cursor up
+        void up( void );
+        //move cursor down
+        void down( void );
         
     public:
         
