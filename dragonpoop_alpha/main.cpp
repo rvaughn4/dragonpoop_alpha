@@ -46,8 +46,16 @@ protected:
     virtual void repaintBg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
     {
         dragonpoop::dpbitmap b;
-        b.loadFile( "example.bmp" );
+        dragonpoop::dprgba c;
+        
+        c.r = 50;
+        c.g = 55;
+        c.b = 50;
+        c.a = 255;
+        
+        b.loadFile( "white_gui_box.bmp" );
         bm->resize( b.getWidth(), b.getHeight() );
+        b.multiply( &c );
         bm->blit( &b, 0 );
     }
 
@@ -56,7 +64,6 @@ protected:
     virtual void repaintFg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
     {
         this->gui::repaintFg( g, bm, w, h );
-        dragonpoop::dpbitmap_bitmap_loader::saveFile( bm, "testing.bmp" );
     }
     
     //override to handle mouse button
@@ -77,7 +84,7 @@ public:
         this->enableFg( 1 );
         this->setPosition( x, y );
         this->setWidthHeight( w, h );
-        this->setText( "\a255255255\e050 Hello! \t\tabcdefghi \n jklmopqrstuvwxyz \fancient !@#$%^&*() 1234567890" );
+        this->setText( " Hello! \t\tabcdefghi \n jklmopqrstuvwxyz \fancient !@#$%^&*() 1234567890" );
     }
     
     //dtor

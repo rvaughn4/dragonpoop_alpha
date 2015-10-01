@@ -84,7 +84,7 @@ namespace dragonpoop
         {
 
             t = thd->getTicks();
-            if( !this->bSyncPos && t - this->t_last_tex_update < 40 )
+            if( !this->bSyncPos && t - this->t_last_tex_update < 20 )
                 return;
             this->t_last_tex_update = t;
             
@@ -334,16 +334,27 @@ namespace dragonpoop
             this->hv += ( 0.0f - this->hv ) * 0.3f;
         
         this->mat.copy( p_matrix );
+
         z = (float)this->z / -8.0f;
         this->mat.translate( this->pos.x, this->pos.y, z );
-        z = this->fade * this->fade;
-        z = ( 1.0f - z ) * ( 1.0f - GUI_HOVER_MAX ) + this->hv;
-        if( z > 0.01f )
+
+        z = 1.0f - this->fade * this->fade;
+        z += 0.05f * this->hv / GUI_HOVER_MAX;
+        if( z > 0.001f )
         {
             this->mat.translate( -this->pos.w * 0.5f * z, -this->pos.h * 0.5f * z, 0 );
             this->mat.scale( z + 1, z + 1, 1 );
         }
         
+        z = 1.0f - this->fade;
+        if( z > 0.01f )
+        {
+            this->mat.translate( -this->pos.w * 0.5f, -this->pos.h * 0.5f, -z * 2 );
+            this->mat.rotateY( 5.0f * z );
+            this->mat.rotateZ( 10.0f * z );
+            this->mat.translate( this->pos.w * 0.5f, this->pos.h * 0.5f, 0 );
+        }
+
         this->undo_mat.inverse( &this->mat );
         
         r->getChildrenGuis( &l, this->id );

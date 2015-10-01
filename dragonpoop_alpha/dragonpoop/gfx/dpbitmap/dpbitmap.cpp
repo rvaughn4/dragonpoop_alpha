@@ -137,6 +137,32 @@ namespace dragonpoop
         }
     }
 
+    //multiply image by color
+    void dpbitmap::multiply( dprgba *c )
+    {
+        this->multiply( c, &this->dims );
+    }
+    
+    //multiply image by color in rect
+    void dpbitmap::multiply( dprgba *c, dpxywh *r )
+    {
+        dpxy p;
+        dprgba oc;
+        
+        for( p.y = r->p.y; p.y < r->p.y + r->h; p.y++ )
+        {
+            for( p.x = r->p.x; p.x < r->p.x + r->w; p.x++ )
+            {
+                this->getColor( &oc, &p );
+                oc.r = oc.r * c->r / 255.0f;
+                oc.g = oc.g * c->g / 255.0f;
+                oc.b = oc.b * c->b / 255.0f;
+                oc.a = oc.a * c->a / 255.0f;
+                this->setColor( &oc, &p, 0 );
+            }
+        }
+    }
+    
     //set color at pixel
     void dpbitmap::setColor( dprgba *c, dpxy *p, bool doAlphaBlend )
     {

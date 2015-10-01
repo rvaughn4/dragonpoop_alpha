@@ -20,9 +20,10 @@ namespace dragonpoop
     {
         dpmutex_writelock *wl;
 
-        wl = this->l->writeLock( "shared_obj::~shared_obj" );
+        wl = this->l->tryWriteLock( "shared_obj::~shared_obj", 3000 );
         this->unlink();
-        dpmutex_lock::unlock( &wl );
+        if( wl )
+            dpmutex_lock::unlock( &wl );
 
         this->mm->destroyMutex( &this->l );
     }

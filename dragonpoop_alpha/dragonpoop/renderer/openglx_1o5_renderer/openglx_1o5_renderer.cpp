@@ -312,6 +312,7 @@ namespace dragonpoop
         glClearDepth( 1.0f );
         glClear( GL_DEPTH_BUFFER_BIT );
         glEnable( GL_LIGHTING );
+        glEnable( GL_DEPTH_TEST );
     }
 
     //prepare for rendering gui
@@ -324,6 +325,7 @@ namespace dragonpoop
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         glEnable( GL_BLEND );
         glDisable( GL_LIGHTING );
+        glDisable( GL_DEPTH_TEST );
     }
 
     //flip backbuffer and present scene to screen

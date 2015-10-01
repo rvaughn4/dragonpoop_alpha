@@ -51,11 +51,19 @@ namespace dragonpoop
     //dtor
     renderer::~renderer( void )
     {
+        shared_obj_guard o;
+        shared_obj_writelock *l;
+
         this->_kill();
+
         delete this->tsk;
         delete this->gtsk;
+
+        l = o.tryWriteLock( this, 3000, "renderer::~renderer" );
         this->deleteModels();
         this->deleteGuis();
+        o.unlock();
+
         delete this->g;
     }
 
@@ -119,6 +127,8 @@ namespace dragonpoop
         {
             if( !this->bDoRun )
             {
+                this->deleteModels();
+                this->deleteGuis();
                 this->deinitApi();
                 this->bIsRun = 0;
                 tskl->kill();
@@ -250,10 +260,13 @@ namespace dragonpoop
     //prepare for rendering gui
     void renderer::prepareGuiRender( unsigned int w, unsigned int h )
     {
-        float sw, sh, rw, rh, r, dw, dh;
+        float sw, sh, rw, rh, r, dw, dh, ss;
         
         sw = 1920.0f;
         sh = 1080.0f;
+        
+        ss = sw * sw + sh * sh;
+        ss = sqrtf( ss );
         
         rw = sw / w;
         rh = sh / h;
@@ -268,7 +281,7 @@ namespace dragonpoop
         dw *= 0.5f;
         dh *= 0.5f;
         
-        this->m_gui.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, 10.0f );
+        this->m_gui.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, ss );
         this->m_gui_undo.inverse( &this->m_gui );
     }
 

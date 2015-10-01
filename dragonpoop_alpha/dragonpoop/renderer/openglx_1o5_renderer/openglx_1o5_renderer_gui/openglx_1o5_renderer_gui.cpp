@@ -71,7 +71,7 @@ namespace dragonpoop
         bool doLin;
         
         this->killTex( p_tex );
-        doLin = 1;
+        doLin = 1;//isBg;
         
         sz = img->getSize();
         w = img->getWidth();

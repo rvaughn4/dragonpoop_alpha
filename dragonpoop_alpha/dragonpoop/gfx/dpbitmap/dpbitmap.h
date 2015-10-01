@@ -77,6 +77,10 @@ namespace dragonpoop
         void clear( dprgba *c );
         //set image to color in rect
         void clear( dprgba *c, dpxywh *r );
+        //multiply image by color
+        void multiply( dprgba *c );
+        //multiply image by color
+        void multiply( dprgba *c, dpxywh *r );
         //set color at pixel
         void setColor( dprgba *c, dpxy *p, bool doAlphaBlend );
         //get color at pixel

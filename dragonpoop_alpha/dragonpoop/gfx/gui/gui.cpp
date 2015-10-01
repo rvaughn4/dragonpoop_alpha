@@ -43,7 +43,7 @@ namespace dragonpoop
         this->pos.border_w = 10;
         this->pos.border_tex_w = 0.2f;
         this->cursor = 0;
-        this->sz_div = 3;
+        this->sz_div = 2;
         this->bShiftDown = 0;
         this->redraw_timer = 0;
     }
@@ -99,7 +99,7 @@ namespace dragonpoop
             this->cur_flash = !this->cur_flash;
         }
         
-        if( this->bRedraw && t - this->t_last_redraw > 40 )
+        if( this->bRedraw && t - this->t_last_redraw > 20 )
         {
             this->t_last_redraw = t;
 
