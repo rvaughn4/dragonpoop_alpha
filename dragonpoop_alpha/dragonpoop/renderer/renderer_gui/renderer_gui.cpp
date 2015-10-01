@@ -337,7 +337,7 @@ namespace dragonpoop
 
         z = (float)this->z / -8.0f;
         this->mat.translate( this->pos.x, this->pos.y, z );
-
+/*
         z = 1.0f - this->fade * this->fade;
         z += 0.05f * this->hv / GUI_HOVER_MAX;
         if( z > 0.001f )
@@ -355,7 +355,7 @@ namespace dragonpoop
             this->mat.translate( this->pos.w * 0.5f, this->pos.h * 0.5f, 0 );
         }
 
-        this->undo_mat.inverse( &this->mat );
+  */      this->undo_mat.inverse( &this->mat );
         
         r->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )

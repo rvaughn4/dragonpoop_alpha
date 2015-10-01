@@ -43,7 +43,8 @@ namespace dragonpoop
         this->pos.border_w = 10;
         this->pos.border_tex_w = 0.2f;
         this->cursor = 0;
-        this->sz_div = 2;
+        this->bIsSel = 0;
+        this->sz_div = 0;
         this->bShiftDown = 0;
         this->redraw_timer = 0;
     }
@@ -306,6 +307,7 @@ namespace dragonpoop
         std::size_t loc_sp;
         dpfont f;
         bool cur_drawn;
+        dpxywh cur_pos;
         
         w = bm->getWidth();
         h = bm->getHeight();
@@ -340,7 +342,7 @@ namespace dragonpoop
         x = y = 1;
         cw = lch = 0;
         ln = 0;
-        cur_drawn = this->cur_flash && ( this->z == 0 );
+        cur_drawn = this->cur_flash || ( this->z != 0 );
         for( i = 0; i < e; i++ )
         {
             c = cb[ i ];
@@ -474,27 +476,48 @@ namespace dragonpoop
             if( x + cw > w || y + ch > h )
                 return;
             
-            if( !cur_drawn && i >= this->cursor )
+            if(
+                    ( !cur_drawn && i >= this->cursor )
+                    ||
+                    (
+                        this->bIsSel &&
+                        (
+                            ( i >= this->cursor && i <= this->sel_cursor )
+                            ||
+                            ( i >= this->sel_cursor && i <= this->cursor )
+                         )
+                    )
+                )
             {
-                f.draw( 45, x + sdw_off, y + sdw_off + fnt_size / 3, bm, 0, 0, &clr_dark );
-                f.draw( 45, x - sdw_off, y - sdw_off + fnt_size / 3, bm, 0, 0, &clr_light );
-                f.draw( 45, x, y + fnt_size / 3, bm, 0, 0, &clr );
+                cur_pos.p.x = x;
+                cur_pos.p.y = y;
+                cur_pos.w = cw;
+                cur_pos.h = fnt_size;
+                bm->clear( &clr, &cur_pos );
                 cur_drawn = 1;
+                f.draw( c, x, y, bm, 0, 0, &clr_light );
+            }
+            else
+            {
+                f.draw( c, x - sdw_off, y - sdw_off, bm, 0, 0, &clr_light );
+                f.draw( c, x + sdw_off, y + sdw_off, bm, 0, 0, &clr_dark );
+                f.draw( c, x, y, bm, 0, 0, &clr );
             }
             
-            f.draw( c, x - sdw_off, y - sdw_off, bm, 0, 0, &clr_light );
-            f.draw( c, x + sdw_off, y + sdw_off, bm, 0, 0, &clr_dark );
-            f.draw( c, x, y, bm, 0, 0, &clr );
-            
-            this->addTxtLoc( x, y, cw, ch, ln, i );
+            if( this->sz_div )
+                this->addTxtLoc( x * this->sz_div, y * this->sz_div, cw * this->sz_div, ch * this->sz_div, ln, i );
+            else
+                this->addTxtLoc( x, y, cw, ch, ln, i );
             x += cw;
         }
 
         if( !cur_drawn )
         {
-            f.draw( 45, x + sdw_off, y + sdw_off + fnt_size / 3, bm, 0, 0, &clr_dark );
-            f.draw( 45, x - sdw_off, y - sdw_off + fnt_size / 3, bm, 0, 0, &clr_light );
-            f.draw( 45, x, y + fnt_size / 3, bm, 0, 0, &clr );
+            cur_pos.p.x = x;
+            cur_pos.p.y = y;
+            cur_pos.w = fnt_size;
+            cur_pos.h = fnt_size;
+            bm->clear( &clr, &cur_pos );
         }
         
     }
@@ -622,7 +645,12 @@ namespace dragonpoop
     //override to handle mouse button
     void gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
     {
-        
+        if( !isRight && isDown )
+        {
+            this->cursor = this->findCursor( x, y );
+            this->cur_flash = 1;
+            this->redraw();
+        }
     }
     
     //override to handle keyboard button
@@ -784,15 +812,41 @@ namespace dragonpoop
     //move cursor left
     void gui::left( void )
     {
-        if( this->cursor > 0 )
-            this->cursor--;
+        if( this->bShiftDown )
+        {
+            if( !this->bIsSel )
+                this->sel_cursor = this->cursor;
+            this->bIsSel = 1;
+            if( this->sel_cursor > 0 )
+                this->sel_cursor--;
+        }
+        else
+        {
+            this->bIsSel = 0;
+            if( this->cursor > 0 )
+                this->cursor--;
+        }
+        this->cur_flash = 1;
     }
     
     //move cursor right
     void gui::right( void )
     {
-        if( this->cursor < this->stxt.size() )
-            this->cursor++;
+        if( this->bShiftDown )
+        {
+            if( !this->bIsSel )
+                this->sel_cursor = this->cursor;
+            this->bIsSel = 1;
+            if( this->sel_cursor < this->stxt.size() )
+                this->sel_cursor++;
+        }
+        else
+        {
+            this->bIsSel = 0;
+            if( this->cursor < this->stxt.size() )
+                this->cursor++;
+        }
+        this->cur_flash = 1;
     }
     
     //move cursor to end
@@ -831,4 +885,21 @@ namespace dragonpoop
         
     }
     
+    //find cursor by mouse coords
+    unsigned int gui::findCursor( float x, float y )
+    {
+        unsigned int i, e, f;
+        gui_txt_loc *t;
+        
+        e = (unsigned int)this->txt_loc.size();
+        for( f = i = 0; i < e; i++ )
+        {
+            t = &this->txt_loc[ i ];
+            if( t->x <= x && t->y <= y )
+                f = t->char_no;
+        }
+        
+        return f;
+    }
+
 };

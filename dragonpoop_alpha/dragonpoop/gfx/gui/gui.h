@@ -47,7 +47,7 @@ namespace dragonpoop
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
         std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw, bMouseInput, bLb, bRb, bKeyDown, bKeyInput;
-        bool bOldLb, bOldRb, bShiftDown, cur_flash;
+        bool bOldLb, bOldRb, bShiftDown, cur_flash, bIsSel;
         float mx, my;
         gui_dims pos;
         gfx_ref *g;
@@ -56,13 +56,15 @@ namespace dragonpoop
         dprgba fnt_clr;
         std::string stxt, skb;
         std::vector<gui_txt_loc> txt_loc;
-        unsigned int last_txt_line, line_front, cursor, sz_div, redraw_timer;
+        unsigned int last_txt_line, line_front, cursor, sel_cursor, sz_div, redraw_timer;
         uint64_t t_last_redraw;
         
         //reset text loc
         void resetTxtLoc( void );
         //add text loc
         void addTxtLoc( float x, float y, float w, float h, unsigned int line_no, unsigned int char_no );
+        //find cursor by mouse coords
+        unsigned int findCursor( float x, float y );
 
     protected:
         

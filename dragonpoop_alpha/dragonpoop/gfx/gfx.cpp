@@ -54,14 +54,14 @@ namespace dragonpoop
         shared_obj_writelock *l;
         shared_obj_guard o;
 
+        this->kill();
+
         l = o.tryWriteLock( this, 3000, "gfx::~gfx" );
         this->deleteGuis();
         this->deleteLoaders();
         this->deleteSavers();
         this->deleteModels();
         o.unlock();
-        
-        this->kill();
         
         delete this->r;
         this->r = 0;

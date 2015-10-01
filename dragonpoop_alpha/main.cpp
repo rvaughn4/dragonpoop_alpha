@@ -69,6 +69,7 @@ protected:
     //override to handle mouse button
     virtual void handleMouseClick( float x, float y, bool isRight, bool isDown )
     {
+        this->gui::handleMouseClick( x, y, isRight, isDown );
         //dragonpoop::gui_dims p;
       //  this->getDimensions( &p );
     //    if( !isRight && isDown )
