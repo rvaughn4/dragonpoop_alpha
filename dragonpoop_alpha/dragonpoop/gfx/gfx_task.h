@@ -4,6 +4,7 @@
 
 #include "../core/dptask/dptask_owner.h"
 #include "gfx.h"
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -15,7 +16,7 @@ namespace dragonpoop
 
     private:
 
-        gfx_ref *g;
+        std::atomic<gfx_ref *> g;
 
     protected:
 

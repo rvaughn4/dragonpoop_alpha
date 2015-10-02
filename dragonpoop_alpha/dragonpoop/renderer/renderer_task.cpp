@@ -25,8 +25,14 @@ namespace dragonpoop
     //dtor
     renderer_task::~renderer_task( void )
     {
+        renderer_ref *gg;
+        
         if( this->g )
-            delete this->g;
+        {
+            gg = this->g;
+            delete gg;
+        }
+        this->g = 0;
     }
 
     //run by task

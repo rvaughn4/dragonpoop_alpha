@@ -55,6 +55,8 @@ namespace dragonpoop
         shared_obj_guard o;
 
         this->kill();
+        delete this->gtsk;
+        delete this->tpr;
 
         l = o.tryWriteLock( this, 3000, "gfx::~gfx" );
         this->deleteGuis();
@@ -65,8 +67,6 @@ namespace dragonpoop
         
         delete this->r;
         this->r = 0;
-        delete this->gtsk;
-        delete this->tpr;
     }
 
     //returns true if running

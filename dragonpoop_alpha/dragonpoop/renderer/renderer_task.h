@@ -4,6 +4,7 @@
 
 #include "../core/dptask/dptask_owner.h"
 #include "renderer.h"
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -15,7 +16,7 @@ namespace dragonpoop
 
     private:
 
-        renderer_ref *g;
+        std::atomic<renderer_ref *> g;
 
     protected:
 

@@ -52,6 +52,7 @@ namespace dragonpoop
     //dtor
     gui::~gui( void )
     {
+        this->unlink();
         delete this->g;
         if( this->r )
             delete this->r;
@@ -647,7 +648,16 @@ namespace dragonpoop
     {
         if( !isRight && isDown )
         {
-            this->cursor = this->findCursor( x, y );
+            if( this->bShiftDown )
+            {
+                this->bIsSel = 1;
+                this->sel_cursor = this->findCursor( x, y );
+            }
+            else
+            {
+                this->bIsSel = 0;
+                this->cursor = this->findCursor( x, y );
+            }
             this->cur_flash = 1;
             this->redraw();
         }
@@ -733,6 +743,7 @@ namespace dragonpoop
     {
         this->stxt.assign( c );
         this->cursor = (unsigned int)this->stxt.length();
+        this->bIsSel = 0;
     }
     
     //set text
@@ -740,6 +751,7 @@ namespace dragonpoop
     {
         this->stxt.assign( *s );
         this->cursor = (unsigned int)this->stxt.length();
+        this->bIsSel = 0;
     }
     
     //get text
@@ -775,10 +787,14 @@ namespace dragonpoop
     //backspace text
     void gui::backspace( void )
     {
+        if( this->bIsSel )
+            return this->delete_();
+        
         if( this->cursor > this->stxt.size() )
             this->cursor = (unsigned int)this->stxt.size();
         if( this->cursor < 1 )
             return;
+        
         this->cursor--;
         this->stxt.replace( this->cursor, 1, "" );
     }
@@ -786,11 +802,36 @@ namespace dragonpoop
     //delete text
     void gui::delete_( void )
     {
-        if( this->cursor > this->stxt.size() )
-            this->cursor = (unsigned int)this->stxt.size();
-        if( this->cursor >= this->stxt.size() )
+        unsigned int a, b;
+        
+        if( this->bIsSel )
+        {
+            if( this->cursor <= this->sel_cursor )
+            {
+                a = this->cursor;
+                b = this->sel_cursor;
+            }
+            else
+            {
+                b = this->cursor;
+                a = this->sel_cursor;
+            }
+            this->bIsSel = 0;
+        }
+        else
+        {
+            a = this->cursor;
+            b = this->cursor + 1;
+        }
+        
+        if( a > this->stxt.size() )
+            a = (unsigned int)this->stxt.size();
+        if( b > this->stxt.size() )
+            b = (unsigned int)this->stxt.size();
+        if( a >= this->stxt.size() )
             return;
-        this->stxt.replace( this->cursor, 1, "" );
+        this->stxt.replace( a, b - a + 1, "" );
+        this->cursor = a;
     }
     
     //insert text
@@ -798,15 +839,49 @@ namespace dragonpoop
     {
         std::string s( c );
         
-        if( this->cursor >= this->stxt.size() )
+        unsigned int a, b;
+        
+        if( this->bIsSel )
+        {
+            if( this->cursor <= this->sel_cursor )
+            {
+                a = this->cursor;
+                b = this->sel_cursor;
+            }
+            else
+            {
+                b = this->cursor;
+                a = this->sel_cursor;
+            }
+            this->bIsSel = 0;
+        }
+        else
+        {
+            a = this->cursor;
+            b = this->cursor;
+        }
+        
+        if( a > this->stxt.size() )
+            a = (unsigned int)this->stxt.size();
+        if( b > this->stxt.size() )
+            b = (unsigned int)this->stxt.size();
+        
+        if( a >= this->stxt.size() )
         {
             this->stxt.append( s );
-            this->cursor += s.size();
+            this->cursor = a + (unsigned int)s.size();
             return;
         }
         
-        this->stxt.insert( this->cursor, s );
-        this->cursor += s.size();
+        if( a == b )
+        {
+            this->stxt.insert( a, s );
+            this->cursor = a + (unsigned int)s.size();
+            return;
+        }
+        
+        this->stxt.replace( a, b - a + 1, s );
+        this->cursor = a + (unsigned int)s.size();
     }
     
     //move cursor left

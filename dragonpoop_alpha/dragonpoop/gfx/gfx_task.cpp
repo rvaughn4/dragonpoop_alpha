@@ -25,8 +25,13 @@ namespace dragonpoop
     //dtor
     gfx_task::~gfx_task( void )
     {
+        gfx_ref *gg;
         if( this->g )
-            delete this->g;
+        {
+            gg = this->g;
+            delete gg;
+        }
+        this->g = 0;
     }
 
     //run by task
