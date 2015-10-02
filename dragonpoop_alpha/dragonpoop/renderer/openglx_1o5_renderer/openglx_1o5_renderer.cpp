@@ -29,6 +29,8 @@ namespace dragonpoop
     {
         memset( &this->gl, 0, sizeof( this->gl ) );
         this->fps = 0;
+        this->lb = this->rb = 0;
+        this->bshift = this->bctrl = this->bcaps = 0;
     }
 
     //dtor
@@ -453,11 +455,65 @@ namespace dragonpoop
         unsigned char c[ 2 ];
         std::string s;
         
-        c[ 1 ] = 0;
-        c[ 0 ] = (unsigned char)k;
+        //http://tronche.com/gui/x/icccm/sec-2.html#s-2.1
+        //https://en.wikipedia.org/wiki/ASCII
         
         if( k >= 32 && k <= 127 )
-            s.assign( (const char *)c );
+        {
+            c[ 1 ] = 0;
+
+            if( !this->bshift && !this->bcaps )
+            {
+                c[ 0 ] = (unsigned char)k;
+                s.assign( (const char *)c );
+            }
+            else
+            {
+                if( this->bshift )
+                {
+                    switch( k )
+                    {
+                        case 49: //1 to !
+                            k = 33;
+                            break;
+                        case 50: //2 to @
+                            k = 64;
+                            break;
+                        case 51: //3 to #
+                            k = 35;
+                            break;
+                        case 52: //4 to $
+                            k = 36;
+                            break;
+                        case 53: //5 to %
+                            k = 37;
+                            break;
+                        case 54: //6 to ^
+                            k = 94;
+                            break;
+                        case 55: //7 to &
+                            k = 38;
+                            break;
+                        case 56: //8 to *
+                            k = 42;
+                            break;
+                        case 57: //9 to (
+                            k = 40;
+                            break;
+                        case 48: //0 to )
+                            k = 41;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                
+                if( k >= 97 && k <= 122 && !( this->bshift && this->bcaps ) )
+                    k -= 97 - 65;
+                c[ 0 ] = (unsigned char)k;
+                s.assign( (const char *)c );
+            }
+        }
         else
         {
             
@@ -465,14 +521,18 @@ namespace dragonpoop
             {
                 case XK_Caps_Lock:
                     s.assign( "Caps Lock" );
+                    if( isDown )
+                        this->bcaps = !this->bcaps;
                     break;
                 case XK_Control_L:
                 case XK_Control_R:
                     s.assign( "Control" );
+                    this->bctrl = isDown;
                     break;
                 case XK_Shift_L:
                 case XK_Shift_R:
                     s.assign( "Shift" );
+                    this->bshift = isDown;
                     break;
                 case XK_BackSpace:
                     s.assign( "Backspace" );
@@ -562,12 +622,15 @@ namespace dragonpoop
                     s.assign( "/" );
                     break;
                 default:
+                    c[ 1 ] = 0;
+    
                     //numpad 0 - 9
                     if( k >= XK_KP_0 && k <= XK_KP_9 )
                     {
                         c[ 0 ] = k - XK_KP_0 + 48;
                         s.assign( (const char *)c );
                     }
+                    
                     //F1 - F9
                     if( k >= XK_F1 && k <= XK_F9 )
                     {
@@ -575,6 +638,7 @@ namespace dragonpoop
                         s.assign( "F" );
                         s.append( (const char *)c );
                     }
+                    
                     //F10 - F19
                     if( k >= XK_F10 && k <= XK_F19 )
                     {

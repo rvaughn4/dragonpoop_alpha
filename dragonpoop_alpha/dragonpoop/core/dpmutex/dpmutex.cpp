@@ -2,6 +2,7 @@
 #include "dpmutex.h"
 #include "dpmutex_master.h"
 #include "../dpspinlock/dpsponlock.h"
+#include <iostream>
 
 namespace dragonpoop
 {
@@ -23,6 +24,8 @@ namespace dragonpoop
         dpmutex_readlock *r = this->m->genReadLock( this, 1 );
         if( r )
             this->c_lock_loc = clock_location;
+        else
+            std::cerr << "Lock failed: " << clock_location << "\r\n";
         return r;
     }
 
@@ -32,6 +35,8 @@ namespace dragonpoop
         dpmutex_writelock *r = this->m->genWriteLock( this, 1 );
         if( r )
             this->c_lock_loc = clock_location;
+        else
+            std::cerr << "Lock failed: " << clock_location << "\r\n";
         return r;
     }
 
@@ -41,6 +46,8 @@ namespace dragonpoop
         dpmutex_readlock *r = this->m->readLock( this, w );
         if( r )
             this->c_lock_loc = clock_location;
+        else
+            std::cerr << "Lock failed: " << clock_location << "\r\n";
         return r;
     }
 
@@ -50,6 +57,8 @@ namespace dragonpoop
         dpmutex_writelock *r = this->m->writeLock( this, w );
         if( r )
             this->c_lock_loc = clock_location;
+        else
+            std::cerr << "Lock failed: " << clock_location << "\r\n";
         return r;
     }
 
@@ -59,6 +68,8 @@ namespace dragonpoop
         dpmutex_readlock *r = this->m->readLock( this );
         if( r )
             this->c_lock_loc = clock_location;
+        else
+            std::cerr << "Lock failed: " << clock_location << "\r\n";
         return r;
     }
 
@@ -68,6 +79,8 @@ namespace dragonpoop
         dpmutex_writelock *r = this->m->writeLock( this );
         if( r )
             this->c_lock_loc = clock_location;
+        else
+            std::cerr << "Lock failed: " << clock_location << "\r\n";
         return r;
     }
 

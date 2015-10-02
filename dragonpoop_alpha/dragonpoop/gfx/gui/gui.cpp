@@ -666,18 +666,13 @@ namespace dragonpoop
     //override to handle keyboard button
     void gui::handleKbEvent( std::string *skey, bool isDown )
     {
-        char c[ 2 ];
-        
+
         if( isDown )
         {
 
             if( skey->size() == 1 )
             {
-                c[ 0 ] = (char)skey->c_str()[ 0 ];
-                c[ 1 ] = 0;
-                if( this->bShiftDown && c[ 0 ] >= 97 && c[ 0 ] <= 122 )
-                    c[ 0 ] -= 97 - 65;
-                this->insert( (const char *)c );
+                this->insert( skey->c_str() );
                 this->redraw();
                 return;
             }
@@ -732,8 +727,6 @@ namespace dragonpoop
             
             if( skey->compare( "Shift" ) == 0 )
                 this->bShiftDown = 0;
-            if( skey->compare( "Caps Lock" ) == 0 )
-                this->bShiftDown = !this->bShiftDown;
             
         }
     }

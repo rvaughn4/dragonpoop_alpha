@@ -43,7 +43,7 @@ namespace dragonpoop
         openglx_1o5_stuffs gl;
         dpmatrix world_m, local_m;
         float fps;
-        bool lb, rb;
+        bool lb, rb, bshift, bctrl, bcaps;
         uint64_t t_last_motion;
         
         //draw vb
