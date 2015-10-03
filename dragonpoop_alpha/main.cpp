@@ -106,36 +106,36 @@ int main( int argc, const char * argv[] )
     dragonpoop::gfx_writelock *gl;
     dragonpoop::shared_obj_guard o;
     dragonpoop::model_loader_ref *lr;
-    dragonpoop::gui *tg, *tg2;
+    dragonpoop::gui *tg;//, *tg2;
     
     gr = c->getGfx();
     
     lr = 0;
   
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->loadModel( "low_dragon", "", "3drt_dragon_low.dpmodel", 0, &lr );
+    gl->loadModel( "low_dragon", "", "3drt_dragon_high.dpmodel", 0, &lr );
     o.unlock();
     main_wait_loader( c, lr );
     delete lr;
 
-    dragonpoop::dpid mid, mmid;
+    dragonpoop::dpid mid;//, mmid;
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
     mid = gl->makeModelInstance( "low_dragon", 0 );
-    mmid = gl->makeModelInstance( "low_dragon", 0 );
+    //mmid = gl->makeModelInstance( "low_dragon", 0 );
     o.unlock();
 
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    tg = new test_gui( gl, mid, 10, 10, 800, 800 );
+    tg = new test_gui( gl, mid, 40, 40, 400, 200 );
     gl->addGui( tg );
-    tg2 = new test_gui( gl, mmid, 300, 300, 800, 800 );
-    gl->addGui( tg2 );
+    //tg2 = new test_gui( gl, mmid, 1000, 1000, 800, 800 );
+    //gl->addGui( tg2 );
     o.unlock();
     
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->startAnimation( "low_dragon", mid, "turn left", 1, 1 );
-    gl->startAnimation( "low_dragon", mmid, "turn right", 1, 1 );
+    gl->startAnimation( "low_dragon", mid, "ms3d_all", 1, 4 );
+  //  gl->startAnimation( "low_dragon", mmid, "ms3d_all", 1, 1 );
     o.unlock();
     
     main_pause( c, 5 );
@@ -144,7 +144,7 @@ int main( int argc, const char * argv[] )
     //gl->saveModel( "low_dragon", "", "3drt_felhound_high.dpmodel", 0 );
  
     o.unlock();
-    delete tg2;
+ //   delete tg2;
   
     while( c->isRunning() )
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
