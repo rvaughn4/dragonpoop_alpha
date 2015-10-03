@@ -970,4 +970,46 @@ namespace dragonpoop
         return f;
     }
 
+    //gets selected text from gui (copy or cut)
+    bool gui::getSelectedText( std::string *s, bool bDoCut )
+    {
+        unsigned int a, b;
+        
+        if( !this->bIsSel || this->cursor == this->sel_cursor )
+            return 0;
+        
+        if( this->cursor <= this->sel_cursor )
+        {
+            a = this->cursor;
+            b = this->sel_cursor;
+        }
+        else
+        {
+            b = this->cursor;
+            a = this->sel_cursor;
+        }
+        this->bIsSel = 0;
+        
+        if( a > this->stxt.size() )
+            a = (unsigned int)this->stxt.size();
+        if( b > this->stxt.size() )
+            b = (unsigned int)this->stxt.size();
+        if( a >= this->stxt.size() )
+            return 0;
+
+        s->assign( this->stxt.substr( a, b - a + 1 ) );
+        
+        //if( bDoCut )
+          //  this->delete_();
+        
+        return 1;
+    }
+    
+    //sets selected text in gui (paste)
+    bool gui::setSelectedText( std::string *s )
+    {
+        this->insert( s->c_str() );
+        return 1;
+    }
+    
 };

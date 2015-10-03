@@ -774,4 +774,54 @@ namespace dragonpoop
         }
     }
     
+    //gets selected text from gui (copy or cut)
+    bool renderer::getSelectedText( std::string *s, bool bDoCut )
+    {
+        std::list<renderer_gui *> *l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::getSelectedText" );
+            if( !pl )
+                return 0;
+            if( !pl->compareId( this->focus_gui ) )
+                continue;
+            pl->getSelectedText( s, bDoCut );
+            return 1;
+        }
+        
+        return 0;
+    }
+    
+    //sets selected text in gui (paste)
+    bool renderer::setSelectedText( std::string *s )
+    {
+        std::list<renderer_gui *> *l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::setSelectedText" );
+            if( !pl )
+                return 0;
+            if( !pl->compareId( this->focus_gui ) )
+                continue;
+            pl->setSelectedText( s );
+            return 1;
+        }
+        
+        return 0;
+    }
+    
 };

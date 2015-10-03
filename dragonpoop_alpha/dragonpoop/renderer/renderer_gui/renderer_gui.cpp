@@ -477,5 +477,31 @@ namespace dragonpoop
     {
         return &this->fg_vb;
     }
+
+    //gets selected text from gui (copy or cut)
+    bool renderer_gui::getSelectedText( std::string *s, bool bDoCut )
+    {
+        gui_writelock *g;
+        shared_obj_guard o;
+        
+        g = (gui_writelock *)o.tryWriteLock( this->g, 300, "renderer_gui::getSelectedText" );
+        if( !g )
+            return 0;
+        
+        return g->getSelectedText( s, bDoCut );
+    }
+    
+    //sets selected text in gui (paste)
+    bool renderer_gui::setSelectedText( std::string *s )
+    {
+        gui_writelock *g;
+        shared_obj_guard o;
+        
+        g = (gui_writelock *)o.tryWriteLock( this->g, 300, "renderer_gui::setSelectedText" );
+        if( !g )
+            return 0;
+        
+        return g->setSelectedText( s );
+    }
     
 };

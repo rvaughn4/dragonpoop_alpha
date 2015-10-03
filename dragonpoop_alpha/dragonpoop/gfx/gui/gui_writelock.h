@@ -86,6 +86,10 @@ namespace dragonpoop
         bool hasRenderer( void );
         //set renderer
         void setRenderer( renderer_gui *g );
+        //gets selected text from gui (copy or cut)
+        bool getSelectedText( std::string *s, bool bDoCut );
+        //sets selected text in gui (paste)
+        bool setSelectedText( std::string *s );
 
         friend class gui;
     };

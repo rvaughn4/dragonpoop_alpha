@@ -131,4 +131,16 @@ namespace dragonpoop
         return this->t->getFocusChild( r, fid );
     }
     
+    //gets selected text from gui (copy or cut)
+    bool renderer_gui_writelock::getSelectedText( std::string *s, bool bDoCut )
+    {
+        return this->t->getSelectedText( s, bDoCut );
+    }
+    
+    //sets selected text in gui (paste)
+    bool renderer_gui_writelock::setSelectedText( std::string *s )
+    {
+        return this->t->setSelectedText( s );
+    }
+    
 };

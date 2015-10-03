@@ -173,4 +173,16 @@ namespace dragonpoop
         this->t->setRenderer( g );
     }
 
+    //gets selected text from gui (copy or cut)
+    bool gui_writelock::getSelectedText( std::string *s, bool bDoCut )
+    {
+        return this->t->getSelectedText( s, bDoCut );
+    }
+    
+    //sets selected text in gui (paste)
+    bool gui_writelock::setSelectedText( std::string *s )
+    {
+        return this->t->setSelectedText( s );
+    }
+    
 };

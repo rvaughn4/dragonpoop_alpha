@@ -138,7 +138,7 @@ namespace dragonpoop
         this->gl.attr.border_pixel = 0;
 
         //create window
-        this->gl.attr.event_mask = KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask | PointerMotionMask;
+        this->gl.attr.event_mask = PropertyChangeMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask | PointerMotionMask;
         this->gl.win = XCreateWindow( this->gl.dpy, RootWindow( this->gl.dpy, vi->screen ), 0, 0, width, height, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &this->gl.attr );
         if( !this->gl.win )
         {
@@ -152,6 +152,9 @@ namespace dragonpoop
         //setup close button event
         this->gl.wm_delete_window = XInternAtom( this->gl.dpy, "WM_DELETE_WINDOW", True );
         XSetWMProtocols( this->gl.dpy, this->gl.win, &this->gl.wm_delete_window, 1 );
+        
+        //selection property
+        this->gl.selprop = XInternAtom( this->gl.dpy, "SELECTION_PROPERTY", True );
 
         //set title
         XSetStandardProperties( this->gl.dpy, this->gl.win, title, title, None, NULL, 0, NULL );
@@ -274,6 +277,51 @@ namespace dragonpoop
                 if( (Atom)event.xclient.data.l[0] == this->gl.wm_delete_window )
                     this->getCore()->kill();
                 break;
+            case SelectionRequest:
+            {
+                Atom a;
+                XEvent rpy;
+                XSelectionEvent *r = &rpy.xselection;
+                
+                r->type = SelectionNotify;
+                r->time = event.xselectionrequest.time;
+                r->target = event.xselectionrequest.target;
+                r->selection = event.xselectionrequest.selection;
+                r->property = None;
+                r->requestor = event.xselectionrequest.requestor;
+                r->display = event.xselectionrequest.display;
+                r->serial = event.xselectionrequest.serial;
+                r->send_event = event.xselectionrequest.send_event;
+                
+                if( r->target == XA_STRING )
+                {
+                    std::string s;
+                    if( this->getSelectedText( &s, this->bdocut ) && s.length() )
+                    {
+                        r->property = this->gl.selprop;
+                        XChangeProperty( this->gl.dpy, this->gl.win, this->gl.selprop, XA_STRING, 8, PropModeReplace, (unsigned char *)s.c_str(), (int)s.length() );
+                    }
+                }
+
+                a = XInternAtom( this->gl.dpy, "TARGETS", True );
+                if( a && r->target == a )
+                {
+                    Atom supported[]={ XA_STRING };
+                    r->property = this->gl.selprop;
+                    XChangeProperty( this->gl.dpy, this->gl.win, this->gl.selprop, a, 8, PropModeReplace, (unsigned char *)&supported, sizeof( supported ) );
+                }
+            
+                XSendEvent( this->gl.dpy, this->gl.win, 0, PropertyChangeMask, &rpy );
+                break;
+            }
+            case SelectionNotify:
+                
+                
+                break;
+            case SelectionClear:
+                
+                break;
+                
             default:
                 break;
         }
@@ -458,6 +506,24 @@ namespace dragonpoop
         //http://tronche.com/gui/x/icccm/sec-2.html#s-2.1
         //https://en.wikipedia.org/wiki/ASCII
         
+        if( this->bctrl && k == 99 )//ctrl c
+        {
+            XSetSelectionOwner( this->gl.dpy, XA_PRIMARY, this->gl.win, CurrentTime );
+            this->bdocut = 0;
+            return;
+        }
+        if( this->bctrl && k == XK_X )
+        {
+            XSetSelectionOwner( this->gl.dpy, XA_PRIMARY, this->gl.win, CurrentTime );
+            this->bdocut = 1;
+            return;
+        }
+        if( this->bctrl && k == XK_V )
+        {
+            XConvertSelection( this->gl.dpy, XA_PRIMARY, XA_STRING, None, this->gl.win, CurrentTime );
+            return;
+        }
+        
         if( k >= 32 && k <= 127 )
         {
             c[ 1 ] = 0;
@@ -503,18 +569,36 @@ namespace dragonpoop
                         case 48: //0 to )
                             k = 41;
                             break;
-                            
-                            //- to _
-                            //= to +
-                            //[ to {
-                            //] to }
-                            //\ to |
-                            //; to :
-                            //' to "
-                            //, to <
-                            //. to >
-                            /// to ?
-                            
+                        case 45: //- to _
+                            k = 95;
+                            break;
+                        case 61: //= to +
+                            k = 43;
+                            break;
+                        case 91: //[ to {
+                            k = 123;
+                            break;
+                        case 93: //] to }
+                            k = 125;
+                            break;
+                        case 92: //\ to |
+                            k = 124;
+                            break;
+                        case 59: //; to :
+                            k = 58;
+                            break;
+                        case 39: //' to "
+                            k = 34;
+                            break;
+                        case 44: //, to <
+                            k = 60;
+                            break;
+                        case 46: //. to >
+                            k = 62;
+                            break;
+                        case 47: /// to ?
+                            k = 63;
+                            break;
                         default:
                             break;
                     }

@@ -7,8 +7,10 @@
 #include <GL/glx.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-//#include <X11/extensions/xf86vmode.h>
+#include <X11/Xlib.h>
 #include <X11/keysym.h>
+#include <X11/Xatom.h>
+
 #include "../../gfx/dpmatrix/dpmatrix.h"
 #include <vector>
 
@@ -32,7 +34,7 @@ namespace dragonpoop
         int x, y;
         unsigned int width, height;
         unsigned int depth;
-        Atom wm_delete_window;
+        Atom wm_delete_window, selprop;
     };
 
     class openglx_1o5_renderer : public renderer
@@ -43,7 +45,7 @@ namespace dragonpoop
         openglx_1o5_stuffs gl;
         dpmatrix world_m, local_m;
         float fps;
-        bool lb, rb, bshift, bctrl, bcaps;
+        bool lb, rb, bshift, bctrl, bcaps, bdocut;
         uint64_t t_last_motion;
         
         //draw vb

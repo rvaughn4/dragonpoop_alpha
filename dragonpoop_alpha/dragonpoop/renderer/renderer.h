@@ -121,6 +121,10 @@ namespace dragonpoop
         void processKbInput( std::string *skey_name, bool isDown );
         //process gui keyboard input
         void processGuiKbInput( std::string *skey_name, bool isDown );
+        //gets selected text from gui (copy or cut)
+        bool getSelectedText( std::string *s, bool bDoCut );
+        //sets selected text in gui (paste)
+        bool setSelectedText( std::string *s );
         
     public:
 

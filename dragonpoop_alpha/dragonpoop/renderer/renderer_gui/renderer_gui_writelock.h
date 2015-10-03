@@ -70,6 +70,10 @@ namespace dragonpoop
         bool hasFocus( void );
         //gets gui id of focused child
         bool getFocusChild( renderer_writelock *r, dpid *fid );
+        //gets selected text from gui (copy or cut)
+        bool getSelectedText( std::string *s, bool bDoCut );
+        //sets selected text in gui (paste)
+        bool setSelectedText( std::string *s );
 
         friend class renderer_gui;
     };

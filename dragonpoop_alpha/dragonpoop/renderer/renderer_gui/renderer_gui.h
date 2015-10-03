@@ -90,7 +90,11 @@ namespace dragonpoop
         dpvertexindex_buffer *getBgBuffer( void );
         //return fg vb
         dpvertexindex_buffer *getFgBuffer( void );
-        
+        //gets selected text from gui (copy or cut)
+        bool getSelectedText( std::string *s, bool bDoCut );
+        //sets selected text in gui (paste)
+        bool setSelectedText( std::string *s );
+
     public:
         
         //ctor
