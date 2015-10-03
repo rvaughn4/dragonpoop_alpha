@@ -139,17 +139,21 @@ namespace dragonpoop
     dpmutex_writelock *dpmutex_master::writeLock( dpmutex *m, uint64_t t )
     {
         dpmutex_writelock *l;
+        unsigned int i;
 
         l = this->genWriteLock( m, t );
         if( l )
             return l;
         while( t )
         {
+            for( i = 0; i < 20; i++ )
+            {
+                l = this->genWriteLock( m, t );
+                if( l )
+                    return l;
+            }
             std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
             t--;
-            l = this->genWriteLock( m, t );
-            if( l )
-                return l;
         }
 
         return 0;
@@ -159,17 +163,21 @@ namespace dragonpoop
     dpmutex_readlock *dpmutex_master::readLock( dpmutex *m, uint64_t t )
     {
         dpmutex_readlock *l;
-
+        unsigned int i;
+        
         l = this->genReadLock( m, t );
         if( l )
             return l;
         while( t )
         {
+            for( i = 0; i < 20; i++ )
+            {
+                l = this->genReadLock( m, t );
+                if( l )
+                    return l;
+            }
             std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
             t--;
-            l = this->genReadLock( m, t );
-            if( l )
-                return l;
         }
 
         return 0;

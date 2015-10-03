@@ -52,6 +52,12 @@ namespace dragonpoop
     //dtor
     gui::~gui( void )
     {
+        shared_obj_writelock *l;
+        shared_obj_guard o;
+        
+        l = o.tryWriteLock( this, 5000, "gui::~gui" );
+        o.unlock();
+        
         this->unlink();
         delete this->g;
         if( this->r )
@@ -83,15 +89,16 @@ namespace dragonpoop
     }
     
     //run gui
-    void gui::run( dpthread_lock *thd, gui_writelock *g, gfx_writelock *gl )
+    void gui::run( dpthread_lock *thd, gui_writelock *g )
     {
         shared_obj_guard o;
         renderer_gui_writelock *l;
         uint64_t t;
+        gfx_writelock *gl;
         
         t = thd->getTicks();
         if( this->z == 0 )
-            this->redraw_timer = 100;
+            this->redraw_timer = 300;
         if( this->z != 0 && !cur_flash )
             this->redraw_timer = 0;
         
@@ -101,7 +108,7 @@ namespace dragonpoop
             this->cur_flash = !this->cur_flash;
         }
         
-        if( this->bRedraw && t - this->t_last_redraw > 20 )
+        if( this->bRedraw && t - this->t_last_redraw > 100 )
         {
             this->t_last_redraw = t;
 
@@ -144,7 +151,12 @@ namespace dragonpoop
         if( this->bMouseInput )
         {
             if( this->bOldLb != this->bLb )
-                this->setFocus( gl );
+            {
+                gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "gui::run" );
+                if( gl )
+                    this->setFocus( gl );
+                o.unlock();
+            }
             if( this->bOldLb != this->bLb )
                 this->handleMouseClick( this->mx, this->my, 0, this->bLb );
             if( this->bOldRb != this->bRb )

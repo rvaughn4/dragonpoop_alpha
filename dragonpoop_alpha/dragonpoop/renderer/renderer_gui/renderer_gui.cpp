@@ -84,11 +84,11 @@ namespace dragonpoop
         {
 
             t = thd->getTicks();
-            if( !this->bSyncPos && t - this->t_last_tex_update < 20 )
+            if( !this->bSyncPos && t - this->t_last_tex_update < 100 )
                 return;
             this->t_last_tex_update = t;
             
-            pl = (gui_readlock *)o.tryReadLock( this->g, 200, "renderer_gui::run" );
+            pl = (gui_readlock *)o.tryReadLock( this->g, 3, "renderer_gui::run" );
             if( pl )
             {
                 
@@ -361,7 +361,7 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui::redoMatrix" );
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 3, "renderer_gui::redoMatrix" );
             if( !pl )
                 continue;
             pl->redoMatrix( thd, r, &this->mat );
@@ -391,7 +391,7 @@ namespace dragonpoop
         if( p.x >= this->pos.w || p.y >= this->pos.h )
             return 0;
         
-        g = (gui_writelock *)o.tryWriteLock( this->g, 300, "renderer_gui::processMouse" );
+        g = (gui_writelock *)o.tryWriteLock( this->g, 3, "renderer_gui::processMouse" );
         if( !g )
             return 1;
         g->processMouse( p.x, p.y, lb, rb );
@@ -405,7 +405,7 @@ namespace dragonpoop
         gui_writelock *g;
         shared_obj_guard o;
 
-        g = (gui_writelock *)o.tryWriteLock( this->g, 300, "renderer_gui::processKb" );
+        g = (gui_writelock *)o.tryWriteLock( this->g, 1000, "renderer_gui::processKb" );
         if( !g )
             return 1;
         
@@ -454,7 +454,7 @@ namespace dragonpoop
             p = *i;
             if( p->getZ() != 0 )
                 continue;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui::getFocusChild" );
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 3, "renderer_gui::getFocusChild" );
             if( !pl )
                 continue;
             if( pl->getFocusChild( r, fid ) )
@@ -484,7 +484,7 @@ namespace dragonpoop
         gui_writelock *g;
         shared_obj_guard o;
         
-        g = (gui_writelock *)o.tryWriteLock( this->g, 300, "renderer_gui::getSelectedText" );
+        g = (gui_writelock *)o.tryWriteLock( this->g, 1000, "renderer_gui::getSelectedText" );
         if( !g )
             return 0;
         
@@ -497,7 +497,7 @@ namespace dragonpoop
         gui_writelock *g;
         shared_obj_guard o;
         
-        g = (gui_writelock *)o.tryWriteLock( this->g, 300, "renderer_gui::setSelectedText" );
+        g = (gui_writelock *)o.tryWriteLock( this->g, 1000, "renderer_gui::setSelectedText" );
         if( !g )
             return 0;
         

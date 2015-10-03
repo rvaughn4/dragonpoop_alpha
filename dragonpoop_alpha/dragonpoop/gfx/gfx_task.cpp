@@ -45,11 +45,15 @@ namespace dragonpoop
             tl->kill();
             return;
         }
-        gl = (gfx_writelock *)g.tryWriteLock( this->g, 300, "gfx_task::run" );
+        gl = (gfx_writelock *)g.tryWriteLock( this->g, 100, "gfx_task::run" );
         if( !gl )
             return;
 
         gl->run( th );
+        g.unlock();
+        
+        gfx::runModels( th, this->g );
+        gfx::runGuis( th, this->g );
     }
     
 };

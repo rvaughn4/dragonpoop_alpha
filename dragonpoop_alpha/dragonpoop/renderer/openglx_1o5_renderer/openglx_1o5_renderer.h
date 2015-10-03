@@ -34,7 +34,7 @@ namespace dragonpoop
         int x, y;
         unsigned int width, height;
         unsigned int depth;
-        Atom wm_delete_window, selprop;
+        Atom wm_delete_window, selprop, a_targets, a_clipboard;
     };
 
     class openglx_1o5_renderer : public renderer

@@ -128,7 +128,7 @@ namespace dragonpoop
         t = thd->getTicks();
         if( this->r && t - this->last_r_poll > 4000 )
         {
-            l = (renderer_readlock *)o.tryReadLock( this->r, 100, "gfx::run" );
+            l = (renderer_readlock *)o.tryReadLock( this->r, 3, "gfx::run" );
             if( l )
             {
                 this->ms_each_frame = l->getMsPerFrame();
@@ -140,8 +140,7 @@ namespace dragonpoop
         
         this->runLoaders( thd );
         this->runSavers( thd );
-        this->runModels( thd );
-        this->runGuis( thd, g );
+
     }
 
     //delete all models
@@ -237,33 +236,69 @@ namespace dragonpoop
     }
     
     //delete old models
-    void gfx::runModels( dpthread_lock *thd )
+    void gfx::runModels( dpthread_lock *thd, gfx_ref *g )
     {
         std::list<model *> *l, d;
+        std::list<model_ref *> lr;
         std::list<model *>::iterator i;
+        std::list<model_ref *>::iterator ir;
         model *p;
+        model_ref *pr;
+        shared_obj_guard o, og;
         model_writelock *pl;
-        shared_obj_guard o;
+        gfx_readlock *grl;
+        gfx_writelock *gwl;
+        unsigned int ms_each_frame;
         
-        l = &this->models;
+        grl = (gfx_readlock *)og.tryReadLock( g, 100, "gfx::runModels" );
+        if( !grl )
+            return;
+        ms_each_frame = grl->t->ms_each_frame;
+        
+        l = &grl->t->models;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_writelock *)o.tryReadLock( p, 10, "gfx::runModels" );
-            if( !pl )
-                continue;
-            pl->run( thd, this->ms_each_frame );
-//            d.push_back( p );
+            if( !p->isLinked() )
+                d.push_back( p );
+            else
+            {
+                pl = (model_writelock *)o.tryWriteLock( p, 100, "gfx::runModels" );
+                if( pl )
+                {
+                    pr = (model_ref *)pl->getRef();
+                    if( pr )
+                        lr.push_back( pr );
+                }
+                o.unlock();
+            }
+        }
+        og.unlock();
+        
+        for( ir = lr.begin(); ir != lr.end(); ++ir )
+        {
+            pr = *ir;
+            pl = (model_writelock *)o.tryWriteLock( pr, 100, "gfx::runModels" );
+            if( pl )
+                pl->run( thd, ms_each_frame );
         }
         o.unlock();
+        
+        if( d.empty() )
+            return;
+        
+        gwl = (gfx_writelock *)og.tryReadLock( g, 100, "gfx::runModels" );
+        if( !gwl )
+            return;
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            this->models.remove( p );
+            gwl->t->models.remove( p );
             delete p;
         }
+        og.unlock();
     }
     
     //delete old loaders
@@ -279,7 +314,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_loader_writelock *)o.tryWriteLock( p, 100, "gfx::runLoaders" );
+            pl = (model_loader_writelock *)o.tryWriteLock( p, 3, "gfx::runLoaders" );
             if( !pl )
                 continue;
             pl->run( thd );
@@ -311,7 +346,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_saver_writelock *)o.tryWriteLock( p, 100, "gfx::runSavers" );
+            pl = (model_saver_writelock *)o.tryWriteLock( p, 3, "gfx::runSavers" );
             if( !pl )
                 continue;
             pl->run( thd );
@@ -331,15 +366,21 @@ namespace dragonpoop
     }
     
     //run all guis
-    void gfx::runGuis( dpthread_lock *thd, gfx_writelock *gl )
+    void gfx::runGuis( dpthread_lock *thd, gfx_ref *g )
     {
-        std::list<gui_ref *> *l, d;
+        std::list<gui_ref *> *l, ll, d;
         std::list<gui_ref *>::iterator i;
         gui_ref *p;
-        shared_obj_guard o;
+        shared_obj_guard o, og;
         gui_writelock *pl;
+        gfx_readlock *grl;
+        gfx_writelock *gwl;
         
-        l = &this->guis;
+        grl = (gfx_readlock *)og.tryReadLock( g, 100, "gfx::runGuis" );
+        if( !grl )
+            return;
+        
+        l = &grl->t->guis;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -349,18 +390,41 @@ namespace dragonpoop
             {
                 pl = (gui_writelock *)o.tryWriteLock( p, 100, "gfx::runGuis" );
                 if( pl )
-                    pl->run( thd, gl );
+                {
+                    p = (gui_ref *)pl->getRef();
+                    if( p )
+                    ll.push_back( p );
+                }
+                o.unlock();
             }
+        }
+        og.unlock();
+        
+        l = &ll;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (gui_writelock *)o.tryWriteLock( p, 100, "gfx::runGuis" );
+            if( pl )
+                pl->run( thd );
         }
         o.unlock();
         
+        if( d.empty() )
+            return;
+        
+        gwl = (gfx_writelock *)og.tryReadLock( g, 100, "gfx::runGuis" );
+        if( !gwl )
+            return;
+
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            this->guis.remove( p );
+            gwl->t->guis.remove( p );
             delete p;
         }
+        og.unlock();
     }
     
     //create model using name (if not exists, reuses if does), returns ref in pointer arg
@@ -427,7 +491,7 @@ namespace dragonpoop
         
         if( mldr )
         {
-            lw = (model_loader_writelock *)o.tryWriteLock( l, 100, "gfx::loadModel" );
+            lw = (model_loader_writelock *)o.tryWriteLock( l, 1000, "gfx::loadModel" );
             if( lw )
                 *mldr = (model_loader_ref *)lw->getRef();
             else
@@ -460,7 +524,7 @@ namespace dragonpoop
         
         if( msvr )
         {
-            lw = (model_saver_writelock *)o.tryWriteLock( l, 100, "gfx::saveModel" );
+            lw = (model_saver_writelock *)o.tryWriteLock( l, 1000, "gfx::saveModel" );
             if( lw )
                 *msvr = (model_saver_ref *)lw->getRef();
             o.unlock();
@@ -487,7 +551,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_readlock *)o.tryReadLock( p, 100, "gfx::findModel" );
+            pl = (model_readlock *)o.tryReadLock( p, 1000, "gfx::findModel" );
             if( !pl )
                 continue;
             
@@ -520,7 +584,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (model_readlock *)o.tryReadLock( p, 100, "gfx::findModel" );
+            pl = (model_readlock *)o.tryReadLock( p, 1000, "gfx::findModel" );
             if( !pl )
                 continue;
 
@@ -593,7 +657,7 @@ namespace dragonpoop
         ml = (model_writelock *)o.writeLock( m, "gfx::makeModelInstance" );
         if( !ml )
             return rid;
-        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 100, "gfx::makeModelInstance" );
+        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 1000, "gfx::makeModelInstance" );
         if( !tpl )
             return rid;
         

@@ -75,7 +75,7 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run gui
-        void run( dpthread_lock *thd, gui_writelock *g, gfx_writelock *gl );
+        void run( dpthread_lock *thd, gui_writelock *g );
         //returns id
         dpid getId( void );
         //compares id

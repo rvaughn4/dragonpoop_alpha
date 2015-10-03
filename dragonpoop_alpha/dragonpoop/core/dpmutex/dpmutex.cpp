@@ -25,7 +25,7 @@ namespace dragonpoop
         if( r )
             this->c_lock_loc = clock_location;
         else
-            std::cerr << "Lock failed: " << clock_location << "\r\n";
+            std::cerr << "Lock failed: " << clock_location << " because " << this->c_lock_loc << " has lock.\r\n";
         return r;
     }
 
@@ -36,7 +36,7 @@ namespace dragonpoop
         if( r )
             this->c_lock_loc = clock_location;
         else
-            std::cerr << "Lock failed: " << clock_location << "\r\n";
+            std::cerr << "Lock failed: " << clock_location << " because " << this->c_lock_loc << " has lock.\r\n";
         return r;
     }
 
@@ -47,7 +47,7 @@ namespace dragonpoop
         if( r )
             this->c_lock_loc = clock_location;
         else
-            std::cerr << "Lock failed: " << clock_location << "\r\n";
+            std::cerr << "Lock failed: " << clock_location << " because " << this->c_lock_loc << " has lock.\r\n";
         return r;
     }
 
@@ -58,7 +58,7 @@ namespace dragonpoop
         if( r )
             this->c_lock_loc = clock_location;
         else
-            std::cerr << "Lock failed: " << clock_location << "\r\n";
+            std::cerr << "Lock failed: " << clock_location << " because " << this->c_lock_loc << " has lock.\r\n";
         return r;
     }
 
@@ -69,7 +69,7 @@ namespace dragonpoop
         if( r )
             this->c_lock_loc = clock_location;
         else
-            std::cerr << "Lock failed: " << clock_location << "\r\n";
+            std::cerr << "Lock failed: " << clock_location << " because " << this->c_lock_loc << " has lock.\r\n";
         return r;
     }
 
@@ -80,7 +80,7 @@ namespace dragonpoop
         if( r )
             this->c_lock_loc = clock_location;
         else
-            std::cerr << "Lock failed: " << clock_location << "\r\n";
+            std::cerr << "Lock failed: " << clock_location << " because " << this->c_lock_loc << " has lock.\r\n";
         return r;
     }
 

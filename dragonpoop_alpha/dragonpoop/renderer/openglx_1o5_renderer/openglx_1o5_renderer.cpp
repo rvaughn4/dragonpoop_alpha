@@ -155,6 +155,8 @@ namespace dragonpoop
         
         //selection property
         this->gl.selprop = XInternAtom( this->gl.dpy, "SELECTION_PROPERTY", True );
+        this->gl.a_targets = XInternAtom( this->gl.dpy, "TARGETS", 1 );
+        this->gl.a_clipboard = XInternAtom( this->gl.dpy, "CLIPBOARD", 1 );
 
         //set title
         XSetStandardProperties( this->gl.dpy, this->gl.win, title, title, None, NULL, 0, NULL );
@@ -279,7 +281,6 @@ namespace dragonpoop
                 break;
             case SelectionRequest:
             {
-                Atom a;
                 XEvent rpy;
                 XSelectionEvent *r = &rpy.xselection;
                 
@@ -303,25 +304,41 @@ namespace dragonpoop
                     }
                 }
 
-                a = XInternAtom( this->gl.dpy, "TARGETS", True );
-                if( a && r->target == a )
+                if( this->gl.a_targets && r->target == this->gl.a_targets )
                 {
                     Atom supported[]={ XA_STRING };
                     r->property = this->gl.selprop;
-                    XChangeProperty( this->gl.dpy, this->gl.win, this->gl.selprop, a, 8, PropModeReplace, (unsigned char *)&supported, sizeof( supported ) );
+                    XChangeProperty( this->gl.dpy, this->gl.win, this->gl.selprop, this->gl.a_targets, 8, PropModeReplace, (unsigned char *)&supported, sizeof( supported ) );
                 }
             
                 XSendEvent( this->gl.dpy, this->gl.win, 0, PropertyChangeMask, &rpy );
                 break;
             }
             case SelectionNotify:
+                Atom act_type;
+                int act_fmt;
+                unsigned long itms_returned, itms_remain;
+                char *buf;
                 
+                if( event.xselection.target != XA_STRING || !event.xselection.property )
+                    break;
+
+                //event.xselection.property
+                if( XGetWindowProperty( event.xselection.display, event.xselection.requestor, event.xselection.property, 0, 4096, 1, XA_STRING, &act_type, &act_fmt, &itms_returned, &itms_remain, (unsigned char **)&buf ) != Success )
+                    break;
                 
+                if( act_fmt == 8 && act_type == XA_STRING && itms_returned )
+                {
+                    std::string s;
+                    s.assign( buf, itms_returned );
+                    this->setSelectedText( &s );
+                }
+                
+                XFree( buf );
                 break;
             case SelectionClear:
                 
                 break;
-                
             default:
                 break;
         }
@@ -518,7 +535,7 @@ namespace dragonpoop
             this->bdocut = 1;
             return;
         }
-        if( this->bctrl && k == XK_V )
+        if( this->bctrl && k == 118 ) //ctrl+v
         {
             XConvertSelection( this->gl.dpy, XA_PRIMARY, XA_STRING, None, this->gl.win, CurrentTime );
             return;

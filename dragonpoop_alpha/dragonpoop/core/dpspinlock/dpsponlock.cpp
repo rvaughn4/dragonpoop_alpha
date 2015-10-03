@@ -28,7 +28,7 @@ namespace dragonpoop
         {
             __asm volatile ("pause" ::: "memory");
             t++;
-            if( t > 20 )
+            if( t > 200 )
             {
                 std::this_thread::sleep_for( std::chrono::milliseconds( 3 ) );
                 t = 0;

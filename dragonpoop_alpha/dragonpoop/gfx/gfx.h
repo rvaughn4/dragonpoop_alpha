@@ -25,6 +25,7 @@ namespace dragonpoop
     class model_saver_ref;
     class gui;
     class gui_ref;
+    class gfx_ref;
 
     class gfx : public shared_obj
     {
@@ -54,13 +55,13 @@ namespace dragonpoop
         //delete all guis
         void deleteGuis( void );
         //delete old models
-        void runModels( dpthread_lock *thd );
+        static void runModels( dpthread_lock *thd, gfx_ref *g );
         //delete old loaders
         void runLoaders( dpthread_lock *thd );
         //delete old savers
         void runSavers( dpthread_lock *thd );
         //run all guis
-        void runGuis( dpthread_lock *thd, gfx_writelock *gl );
+        static void runGuis( dpthread_lock *thd, gfx_ref *g );
         
     protected:
 
@@ -122,6 +123,7 @@ namespace dragonpoop
 
         friend class gfx_readlock;
         friend class gfx_writelock;
+        friend class gfx_task;
     };
     
 };

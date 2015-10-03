@@ -328,7 +328,7 @@ namespace dragonpoop
         
         if( !this->bIsSynced )
         {
-            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300, "renderer_model_instance::run" );
+            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 3, "renderer_model_instance::run" );
             if( ml )
             {
                 this->gui_pos = *ml->getGuiDimensions();
@@ -344,7 +344,7 @@ namespace dragonpoop
 
         if( !this->bIsAnimated )
         {
-            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 300, "renderer_model_instance::run" );
+            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 3, "renderer_model_instance::run" );
             if( ml )
             {
                 this->syncJoints( ml, thd );

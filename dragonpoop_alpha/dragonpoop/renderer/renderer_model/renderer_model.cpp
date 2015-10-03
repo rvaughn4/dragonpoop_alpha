@@ -227,7 +227,7 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            pl = (model_instance_writelock *)o.tryWriteLock( p, 100, "renderer_model::syncInstances" );
+            pl = (model_instance_writelock *)o.tryWriteLock( p, 10, "renderer_model::syncInstances" );
             delete p;
             if( !pl )
                 continue;
@@ -273,7 +273,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_model_instance_writelock *)o.tryWriteLock( p, 100, "renderer_model::runInstances" );
+            pl = (renderer_model_instance_writelock *)o.tryWriteLock( p, 10, "renderer_model::runInstances" );
             if( !pl )
                 continue;
             pl->run( thd );
@@ -291,7 +291,7 @@ namespace dragonpoop
         t = thd->getTicks();
         if( !this->bIsSynced && this->m )
         {
-            ml = (model_writelock *)o.tryWriteLock( this->m, 100, "renderer_model::run" );
+            ml = (model_writelock *)o.tryWriteLock( this->m, 10, "renderer_model::run" );
             if( ml )
             {
                 ml->getSize( &this->size );

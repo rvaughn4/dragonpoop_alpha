@@ -43,7 +43,7 @@ namespace dragonpoop
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3/*14*/, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 6/*14*/, 1 );
         tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
     }
@@ -323,7 +323,7 @@ namespace dragonpoop
             p = *i;
             if( !p->compareParentId( nid ) )
                 continue;
-            ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::runGuis" );
+            ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 10, "renderer::runGuis" );
             if( !ppl )
                 continue;
             ppl->redoMatrix( thd, rl, &mat );
@@ -334,7 +334,7 @@ namespace dragonpoop
             return;
         this->t_last_gui_synced = tr;
         
-        gl = (gfx_readlock *)og.tryReadLock( this->g, 100, "renderer::runGuis" );
+        gl = (gfx_readlock *)og.tryReadLock( this->g, 30, "renderer::runGuis" );
         if( !gl )
             return;
         
@@ -352,7 +352,7 @@ namespace dragonpoop
         for( ii = li.begin(); ii != li.end(); ++ii )
         {
             pi = *ii;
-            pl = (gui_writelock *)o.tryWriteLock( pi, 100, "renderer::runGuis" );
+            pl = (gui_writelock *)o.tryWriteLock( pi, 300, "renderer::runGuis" );
             if( !pl )
                 continue;
             p = (renderer_gui *)t.findLeaf( pl->getId() );
@@ -366,7 +366,7 @@ namespace dragonpoop
             t.removeLeaf( p );
             if( !p )
                 continue;
-            ppl = (renderer_gui_writelock *)og.tryWriteLock( p, 100, "renderer::runGuis" );
+            ppl = (renderer_gui_writelock *)og.tryWriteLock( p, 300, "renderer::runGuis" );
             if( !ppl )
                 continue;
             ppl->run( thd );
@@ -385,7 +385,7 @@ namespace dragonpoop
             p = *i;
             if( t.findLeaf( p->getId() ) )
             {
-                ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::runGuis" );
+                ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 10, "renderer::runGuis" );
                 if( ppl )
                 {
                     ppl->kill();
@@ -445,7 +445,7 @@ namespace dragonpoop
                 p = *i;
                 if( z != p->getZ() )
                     continue;
-                pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer::processGuiMouseInput" );
+                pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer::renderGuis" );
                 if( !pl )
                     continue;
                 pl->render( thd, rl, m_world );
@@ -503,7 +503,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            ppl = (renderer_model_writelock *)o.tryWriteLock( p, 100, "renderer::runModels" );
+            ppl = (renderer_model_writelock *)o.tryWriteLock( p, 30, "renderer::runModels" );
             if( !ppl )
                 continue;
             ppl->run( thd );
@@ -513,7 +513,7 @@ namespace dragonpoop
             return;
         this->t_last_m_synced = tr;
         
-        gl = (gfx_readlock *)og.tryReadLock( this->g, 100, "renderer::runModels" );
+        gl = (gfx_readlock *)og.tryReadLock( this->g, 30, "renderer::runModels" );
         if( !gl )
             return;
         
@@ -530,7 +530,7 @@ namespace dragonpoop
         for( ii = li.begin(); ii != li.end(); ++ii )
         {
             pi = *ii;
-            pl = (model_writelock *)o.tryWriteLock( pi, 100, "renderer::runModels" );
+            pl = (model_writelock *)o.tryWriteLock( pi, 300, "renderer::runModels" );
             if( !pl )
                 continue;
             p = (renderer_model *)t.findLeaf( pl->getId() );
@@ -543,7 +543,7 @@ namespace dragonpoop
             t.removeLeaf( p );
             if( !p )
                 continue;
-            ppl = (renderer_model_writelock *)og.tryWriteLock( p, 100, "renderer::runModels" );
+            ppl = (renderer_model_writelock *)og.tryWriteLock( p, 300, "renderer::runModels" );
             if( !ppl )
                 continue;
         }
@@ -582,7 +582,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_model_readlock *)o.tryReadLock( p, 30, "renderer::renderModels" );
+            pl = (renderer_model_readlock *)o.tryReadLock( p, 100, "renderer::renderModels" );
             if( !pl )
                 continue;
             pl->render( thd, rl, doGui, m_world );
@@ -716,7 +716,7 @@ namespace dragonpoop
                 p = *i;
                 if( z != p->getZ() )
                     continue;
-                pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::processGuiMouseInput" );
+                pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiMouseInput" );
                 if( !pl )
                     continue;
                 if( pl->processMouse( t.x, t.y, lb, rb ) )
@@ -764,7 +764,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::processGuiKbInput" );
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiKbInput" );
             if( !pl )
                 return;
             if( !pl->compareId( this->focus_gui ) )
@@ -787,7 +787,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::getSelectedText" );
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::getSelectedText" );
             if( !pl )
                 return 0;
             if( !pl->compareId( this->focus_gui ) )
@@ -812,7 +812,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer::setSelectedText" );
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::setSelectedText" );
             if( !pl )
                 return 0;
             if( !pl->compareId( this->focus_gui ) )
