@@ -503,6 +503,18 @@ namespace dragonpoop
                         case 48: //0 to )
                             k = 41;
                             break;
+                            
+                            //- to _
+                            //= to +
+                            //[ to {
+                            //] to }
+                            //\ to |
+                            //; to :
+                            //' to "
+                            //, to <
+                            //. to >
+                            /// to ?
+                            
                         default:
                             break;
                     }
