@@ -1,6 +1,6 @@
 
 #include "root_gui.h"
-#include "../button_gui/button_gui.h"
+#include "../menu_gui/menu_gui.h"
 
 namespace dragonpoop
 {
@@ -13,7 +13,7 @@ namespace dragonpoop
         this->setPosition( 0, 0 );
         this->setWidthHeight( 1920, 1080 );
         
-        this->b = new button_gui( g, this->genId(), this->getId(), 100, 100, 400, 100, "testing..." );
+        this->b = new menu_gui( g, this->genId(), this->getId(), 100, 100, 400, 800, 100, "testing..." );
         this->addGui( this->b );
     }
     

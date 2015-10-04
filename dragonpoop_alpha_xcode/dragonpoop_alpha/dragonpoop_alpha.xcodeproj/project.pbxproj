@@ -36,6 +36,7 @@
 		7910B9891B92793A00D72A06 /* model_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9821B92793A00D72A06 /* model_matrix.cpp */; };
 		7910B98A1B92793A00D72A06 /* model_quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9851B92793A00D72A06 /* model_quaternion.cpp */; };
 		7910B98B1B92793A00D72A06 /* model_vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9871B92793A00D72A06 /* model_vector.cpp */; };
+		792323AF1BC1B2390030DF0F /* menu_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 792323AC1BC1B2390030DF0F /* menu_gui.cpp */; };
 		79291AD01B69A8BB00E85E62 /* model_vertex_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79291ACD1B69A8BB00E85E62 /* model_vertex_joint.cpp */; };
 		7936993D1B6780E400A725B1 /* model_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7936993A1B6780E400A725B1 /* model_joint.cpp */; };
 		793699421B67835900A725B1 /* model_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7936993F1B67835900A725B1 /* model_animation.cpp */; };
@@ -288,6 +289,9 @@
 		7910B9861B92793A00D72A06 /* model_quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_quaternion.h; sourceTree = "<group>"; };
 		7910B9871B92793A00D72A06 /* model_vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_vector.cpp; sourceTree = "<group>"; };
 		7910B9881B92793A00D72A06 /* model_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_vector.h; sourceTree = "<group>"; };
+		792323AC1BC1B2390030DF0F /* menu_gui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = menu_gui.cpp; sourceTree = "<group>"; };
+		792323AD1BC1B2390030DF0F /* menu_gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = menu_gui.h; sourceTree = "<group>"; };
+		792323AE1BC1B2390030DF0F /* menu_guis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = menu_guis.h; sourceTree = "<group>"; };
 		79291ACD1B69A8BB00E85E62 /* model_vertex_joint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_vertex_joint.cpp; sourceTree = "<group>"; };
 		79291ACE1B69A8BB00E85E62 /* model_vertex_joint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_vertex_joint.h; sourceTree = "<group>"; };
 		79291ACF1B69A8BB00E85E62 /* model_vertex_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_vertex_joints.h; sourceTree = "<group>"; };
@@ -807,6 +811,16 @@
 				7910B9881B92793A00D72A06 /* model_vector.h */,
 			);
 			path = model_matrix;
+			sourceTree = "<group>";
+		};
+		792323AB1BC1B2390030DF0F /* menu_gui */ = {
+			isa = PBXGroup;
+			children = (
+				792323AC1BC1B2390030DF0F /* menu_gui.cpp */,
+				792323AD1BC1B2390030DF0F /* menu_gui.h */,
+				792323AE1BC1B2390030DF0F /* menu_guis.h */,
+			);
+			path = menu_gui;
 			sourceTree = "<group>";
 		};
 		79291ACC1B69A8BB00E85E62 /* model_vertex_joint */ = {
@@ -1665,6 +1679,7 @@
 				79FFA0AA1BB54F7400584638 /* gui_writelock.cpp */,
 				79FFA0AB1BB54F7400584638 /* gui_writelock.h */,
 				79FFA0AC1BB54F7400584638 /* guis.h */,
+				792323AB1BC1B2390030DF0F /* menu_gui */,
 				79FE3BBA1BC18C8D0092CDAE /* button_gui */,
 				79FE3BB21BC17C800092CDAE /* root_gui */,
 			);
@@ -1897,6 +1912,7 @@
 				799FC1731B756F6F00E1A212 /* renderer_model_writelock.cpp in Sources */,
 				799FC16E1B756F6F00E1A212 /* renderer_model_instance_readlock.cpp in Sources */,
 				79020BCF1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp in Sources */,
+				792323AF1BC1B2390030DF0F /* menu_gui.cpp in Sources */,
 				7970E9781B64F26E008E8328 /* shared_obj_lock.cpp in Sources */,
 				7936993D1B6780E400A725B1 /* model_joint.cpp in Sources */,
 				7970E95F1B64F26E008E8328 /* dpid_multibytetree.cpp in Sources */,

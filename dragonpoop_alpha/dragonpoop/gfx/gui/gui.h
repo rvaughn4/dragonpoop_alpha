@@ -52,7 +52,7 @@ namespace dragonpoop
         gui_dims pos;
         gfx_ref *g;
         renderer_gui_ref *r;
-        unsigned int z, fnt_size;
+        unsigned int z, fnt_size, margin_size;
         dprgba fnt_clr;
         std::string stxt, skb;
         std::vector<gui_txt_loc> txt_loc;
@@ -188,6 +188,10 @@ namespace dragonpoop
         bool isHoverable( void );
         //generates new id
         dpid genId( void );
+        //set margin size
+        void setMargin( unsigned int m );
+        //get margin size
+        unsigned int getMargin( void );
         
     public:
         

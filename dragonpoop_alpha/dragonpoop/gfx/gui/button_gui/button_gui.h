@@ -20,7 +20,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        button_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, const char *txt );
+        button_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, const char *txt, bool bHasBg );
         //dtor
         virtual ~button_gui( void );
         

@@ -51,6 +51,7 @@ namespace dragonpoop
         this->redraw_timer = 0;
         this->bIsHover = 0;
         this->bIsEdit = 0;
+        this->margin_size = 0;
     }
     
     //dtor
@@ -367,7 +368,10 @@ namespace dragonpoop
         cb = (unsigned char *)this->stxt.c_str();
         this->resetTxtLoc();
         
-        x = y = 1;
+        w -= this->margin_size + this->margin_size;
+        h -= this->margin_size + this->margin_size;
+        
+        x = y = this->margin_size;
         cw = lch = 0;
         ln = 0;
         cur_drawn = this->cur_flash || ( this->z != 0 ) || !this->bIsEdit;
@@ -466,13 +470,13 @@ namespace dragonpoop
             // \r
             if( c == 13 )
             {
-                x = 0;
+                x = this->margin_size;
                 continue;
             }
             // \n
             if( c == 10 )
             {
-                x = 0;
+                x = this->margin_size;
                 if( lch < fnt_size )
                     lch = fnt_size;
                 y += lch;
@@ -490,9 +494,9 @@ namespace dragonpoop
             }
             
             f.draw( c, 0, 0, 0, &cw, &ch, 0 );
-            if( cw + x + 1 > w )
+            if( cw + x > w )
             {
-                x = 1;
+                x = this->margin_size;
                 if( lch < fnt_size )
                     lch = fnt_size;
                 y += lch;
@@ -1116,6 +1120,18 @@ namespace dragonpoop
             return dpid_null();
         
         return l->genId();
+    }
+
+    //set margin size
+    void gui::setMargin( unsigned int m )
+    {
+        this->margin_size = m;
+    }
+    
+    //get margin size
+    unsigned int gui::getMargin( void )
+    {
+        return this->margin_size;
     }
     
 };

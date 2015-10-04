@@ -11,4 +11,7 @@
 #include "gui_factory_readlock.h"
 #include "gui_factory_writelock.h"
 
+#include "button_gui/button_guis.h"
+#include "menu_gui/menu_guis.h"
+
 #endif
