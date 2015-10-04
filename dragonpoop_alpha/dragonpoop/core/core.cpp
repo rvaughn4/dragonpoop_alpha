@@ -92,4 +92,14 @@ namespace dragonpoop
         rl->addTask( t );
     }
 
+    //set root gui factory
+    void core::setRootGui( gui_factory *g )
+    {
+        gfx_writelock *gl;
+        shared_obj_guard o;
+        
+        gl = (gfx_writelock *)o.writeLock( this->g, "core::getGfx" );
+        gl->setRootGui( g );
+    }
+ 
 };

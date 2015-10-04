@@ -118,5 +118,11 @@ namespace dragonpoop
     {
         this->t->getGuis( l );
     }
+  
+    //set root gui factory
+    void gfx_writelock::setRootGui( gui_factory *g )
+    {
+        this->t->setRootGui( g );
+    }
     
 };

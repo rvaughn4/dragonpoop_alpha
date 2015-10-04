@@ -18,6 +18,7 @@ namespace dragonpoop
     class model_saver_ref;
     class gui;
     class gui_ref;
+    class gui_factory;
 
     class gfx_writelock : public shared_obj_writelock
     {
@@ -69,6 +70,8 @@ namespace dragonpoop
         void addGui( gui_ref *g );
         //get guis
         void getGuis( std::list<gui_ref *> *l );
+        //set root gui factory
+        void setRootGui( gui_factory *g );
 
         friend class gfx;
     };

@@ -27,6 +27,9 @@
 #include "gui/gui_ref.h"
 #include "gui/gui.h"
 #include "gui/gui_writelock.h"
+#include "gui/gui_factory.h"
+#include "gui/gui_factory_ref.h"
+#include "gui/gui_factory_writelock.h"
 
 namespace dragonpoop
 {
@@ -36,6 +39,9 @@ namespace dragonpoop
     {
         gfx_writelock *l;
         shared_obj_guard o;
+        
+        this->root_g = 0;
+        this->root_factory = 0;
 
         this->c = c;
         this->r = 0;
@@ -53,6 +59,13 @@ namespace dragonpoop
     {
         shared_obj_writelock *l;
         shared_obj_guard o;
+        
+        if( this->root_g )
+            delete this->root_g;
+        this->root_g = 0;
+        if( this->root_factory )
+            delete this->root_factory;
+        this->root_factory = 0;
 
         this->kill();
         delete this->gtsk;
@@ -124,6 +137,7 @@ namespace dragonpoop
         uint64_t t;
         shared_obj_guard o;
         renderer_readlock *l;
+        gui_factory_writelock *fl;
         
         t = thd->getTicks();
         if( this->r && t - this->last_r_poll > 4000 )
@@ -140,6 +154,18 @@ namespace dragonpoop
         
         this->runLoaders( thd );
         this->runSavers( thd );
+        
+        if( !this->root_g && this->root_factory )
+        {
+            fl = (gui_factory_writelock *)o.tryWriteLock( this->root_factory, 10, "gfx::run" );
+            if( fl )
+            {
+                this->root_g = fl->makeGui( thd, 0 );
+                if( this->root_g )
+                    this->addGui( this->root_g );
+            }
+            o.unlock();
+        }
 
     }
 
@@ -850,6 +876,25 @@ namespace dragonpoop
     unsigned int gfx::getMsEachFrame( void )
     {
         return this->ms_each_frame;
+    }
+    
+    //set root gui factory
+    void gfx::setRootGui( gui_factory *g )
+    {
+        shared_obj_guard o;
+        gui_factory_writelock *gl;
+        
+        if( this->root_g )
+            delete this->root_g;
+        this->root_g = 0;
+        if( this->root_factory )
+            delete this->root_factory;
+        this->root_factory = 0;
+        
+        gl = (gui_factory_writelock *)o.tryWriteLock( g, 2000, "gfx::setRootGui" );
+        if( !gl )
+            return;
+        this->root_factory = (gui_factory_ref *)gl->getRef();
     }
     
 };

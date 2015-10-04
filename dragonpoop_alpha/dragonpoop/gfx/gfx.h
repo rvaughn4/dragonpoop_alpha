@@ -26,6 +26,8 @@ namespace dragonpoop
     class gui;
     class gui_ref;
     class gfx_ref;
+    class gui_factory_ref;
+    class gui_factory;
 
     class gfx : public shared_obj
     {
@@ -40,6 +42,9 @@ namespace dragonpoop
         unsigned int ms_each_frame;
         float fps;
         uint64_t last_r_poll;
+        
+        gui_factory_ref *root_factory;
+        gui *root_g;
         
         std::list<model *> models;
         std::list<model_loader *> loaders;
@@ -109,6 +114,8 @@ namespace dragonpoop
         float getFps( void );
         //return ms each frame
         unsigned int getMsEachFrame( void );
+        //set root gui factory
+        void setRootGui( gui_factory *g );
 
     public:
 

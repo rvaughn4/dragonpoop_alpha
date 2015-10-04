@@ -15,6 +15,7 @@ namespace dragonpoop
     class gfx_ref;
     class dptask_ref;
     class dptask;
+    class gui_factory;
 
     class core
     {
@@ -48,6 +49,8 @@ namespace dragonpoop
         void addTask( dptask *t );
         //add task, will create ref so caller retains original
         void addTask( dptask_ref *t );
+        //set root gui factory
+        void setRootGui( gui_factory *g );
 
     };
 
