@@ -37,65 +37,6 @@ void main_wait_loader( dragonpoop::core *c, dragonpoop::model_loader_ref *lr )
     
 }
 
-class test_gui : public dragonpoop::gui
-{
-    
-protected:
-    
-    //override to paint background texture
-    virtual void repaintBg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
-    {
-        dragonpoop::dpbitmap b;
-        dragonpoop::dprgba c;
-        
-        c.r = 50;
-        c.g = 55;
-        c.b = 50;
-        c.a = 255;
-        
-        b.loadFile( "white_gui_box.bmp" );
-        bm->resize( b.getWidth(), b.getHeight() );
-        b.multiply( &c );
-        bm->blit( &b, 0 );
-    }
-
-    
-    //override to paint background texture
-    virtual void repaintFg( dragonpoop::gui_writelock *g, dragonpoop::dpbitmap *bm, float w, float h )
-    {
-        this->gui::repaintFg( g, bm, w, h );
-    }
-    
-    //override to handle mouse button
-    virtual void handleMouseClick( float x, float y, bool isRight, bool isDown )
-    {
-        this->gui::handleMouseClick( x, y, isRight, isDown );
-        //dragonpoop::gui_dims p;
-      //  this->getDimensions( &p );
-    //    if( !isRight && isDown )
-  //          this->setPosition( x + p.x, y + p.y );
-    }
-    
-public:
-    
-    //ctor
-    test_gui( dragonpoop::gfx_writelock *g, dragonpoop::dpid id, float x, float y, float w, float h ) : dragonpoop::gui( g, id )
-    {
-        this->enableBg( 1 );
-        this->enableFg( 1 );
-        this->setPosition( x, y );
-        this->setWidthHeight( w, h );
-        this->setText( " Hello! \t\tabcdefghi \n jklmopqrstuvwxyz \fancient !@#$%^&*() 1234567890" );
-    }
-    
-    //dtor
-    virtual ~test_gui( void )
-    {
-        
-    }
-
-
-};
 
 int main( int argc, const char * argv[] )
 {
@@ -106,7 +47,6 @@ int main( int argc, const char * argv[] )
     dragonpoop::gfx_writelock *gl;
     dragonpoop::shared_obj_guard o;
     dragonpoop::model_loader_ref *lr;
-    dragonpoop::gui *tg;//, *tg2;
     
     gr = c->getGfx();
     
@@ -125,16 +65,10 @@ int main( int argc, const char * argv[] )
     //mmid = gl->makeModelInstance( "low_dragon", 0 );
     o.unlock();
 
-    gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    tg = new test_gui( gl, mid, 40, 40, 400, 200 );
-    gl->addGui( tg );
-    //tg2 = new test_gui( gl, mmid, 1000, 1000, 800, 800 );
-    //gl->addGui( tg2 );
-    o.unlock();
     
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->startAnimation( "low_dragon", mid, "ms3d_all", 1, 4 );
+    gl->startAnimation( "low_dragon", mid, "ms3d_all", 1, 0.4f );
   //  gl->startAnimation( "low_dragon", mmid, "ms3d_all", 1, 1 );
     o.unlock();
     
@@ -144,12 +78,10 @@ int main( int argc, const char * argv[] )
     //gl->saveModel( "low_dragon", "", "3drt_felhound_high.dpmodel", 0 );
  
     o.unlock();
- //   delete tg2;
   
     while( c->isRunning() )
         std::this_thread::sleep_for( std::chrono::milliseconds( 2000 ) );
 
-    delete tg;
     delete c;
 
     return 0;

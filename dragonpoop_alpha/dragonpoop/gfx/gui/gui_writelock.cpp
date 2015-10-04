@@ -191,4 +191,28 @@ namespace dragonpoop
         return this->t->addGui( g );
     }
 
+    //set editable
+    void gui_writelock::setEditMode( bool b )
+    {
+        this->t->setEditMode( b );
+    }
+    
+    //returns true if editable
+    bool gui_writelock::isEditable( void )
+    {
+        return this->t->isEditable();
+    }
+    
+    //sets hoverable
+    void gui_writelock::setHoverMode( bool b )
+    {
+        this->t->setHoverMode( b );
+    }
+    
+    //returns true if hoverable
+    bool gui_writelock::isHoverable( void )
+    {
+        return this->t->isHoverable();
+    }
+    
 };

@@ -26,6 +26,8 @@ namespace dragonpoop
         g->getDimensions( &this->pos );
         this->bHasBg = g->hasBg();
         this->bHasFg = g->hasFg();
+        this->bIsHover = g->isHoverable();
+        this->bIsEdit = g->isEditable();
         this->bSyncBg = this->bSyncFg = 1;
         this->bSyncPos = 0;
         this->z = g->getZ();
@@ -98,6 +100,8 @@ namespace dragonpoop
                     pl->getDimensions( &this->pos );
                     this->bHasBg = pl->hasBg();
                     this->bHasFg = pl->hasFg();
+                    this->bIsHover = pl->isHoverable();
+                    this->bIsEdit = pl->isEditable();
                     this->z = pl->getZ();
                     this->updateVb( g, pl, &this->pos );
                     this->bSyncPos = 0;
@@ -327,32 +331,38 @@ namespace dragonpoop
         if( !this->bIsAlive )
             this->fade += ( 0.0f - this->fade ) * 0.3f;
         
-        hid = r->getHoverId();
-        if( this->compareId( hid ) )
-            this->hv += ( GUI_HOVER_MAX - this->hv ) * 0.3f;
-        else
-            this->hv += ( 0.0f - this->hv ) * 0.3f;
+        if( this->bIsHover )
+        {
+            hid = r->getHoverId();
+            if( this->compareId( hid ) )
+                this->hv += ( GUI_HOVER_MAX - this->hv ) * 0.3f;
+            else
+                this->hv += ( 0.0f - this->hv ) * 0.3f;
+        }
         
         this->mat.copy( p_matrix );
 
         z = (float)this->z / -8.0f;
         this->mat.translate( this->pos.x, this->pos.y, z );
 
-        z = 1.0f - this->fade * this->fade;
-        z += 0.05f * this->hv / GUI_HOVER_MAX;
-        if( z > 0.001f )
+        if( this->bIsHover )
         {
-            this->mat.translate( -this->pos.w * 0.5f * z, -this->pos.h * 0.5f * z, 0 );
-            this->mat.scale( z + 1, z + 1, 1 );
-        }
-        
-        z = 1.0f - this->fade;
-        if( z > 0.01f )
-        {
-            this->mat.translate( -this->pos.w * 0.5f, -this->pos.h * 0.5f, -z * 2 );
-            this->mat.rotateY( 5.0f * z );
-            this->mat.rotateZ( 10.0f * z );
-            this->mat.translate( this->pos.w * 0.5f, this->pos.h * 0.5f, 0 );
+            z = 1.0f - this->fade * this->fade;
+            z += 0.05f * this->hv / GUI_HOVER_MAX;
+            if( z > 0.001f )
+            {
+                this->mat.translate( -this->pos.w * 0.5f * z, -this->pos.h * 0.5f * z, 0 );
+                this->mat.scale( z + 1, z + 1, 1 );
+            }
+            
+            z = 1.0f - this->fade;
+            if( z > 0.01f )
+            {
+                this->mat.translate( -this->pos.w * 0.5f, -this->pos.h * 0.5f, -z * 2 );
+                this->mat.rotateY( 5.0f * z );
+                this->mat.rotateZ( 10.0f * z );
+                this->mat.translate( this->pos.w * 0.5f, this->pos.h * 0.5f, 0 );
+            }
         }
 
         this->undo_mat.inverse( &this->mat );
@@ -375,21 +385,42 @@ namespace dragonpoop
     }
     
     //process mouse input
-    bool renderer_gui::processMouse( float x, float y, bool lb, bool rb )
+    bool renderer_gui::processMouse( renderer_writelock *r, float x, float y, bool lb, bool rb )
     {
-        dpxyz_f p;
+        dpxyz_f p, pp;
         gui_writelock *g;
         shared_obj_guard o;
+        std::list<renderer_gui *> l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *pr;
+        renderer_gui_writelock *pl;
         
         p.x = x;
         p.y = y;
         p.z = (float)this->z / -8.0f;
         this->undo_mat.transform( &p );
         
+        this->hover_id = this->id;
         if( p.x < 0 || p.y < 0 )
             return 0;
         if( p.x >= this->pos.w || p.y >= this->pos.h )
             return 0;
+        pp.x = p.x - this->pos.x;
+        pp.y = p.y - this->pos.y;
+        
+        r->getChildrenGuis( &l, this->id );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            pr = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( pr, 100, "renderer_gui::processMouse" );
+            if( !pl )
+                continue;
+            if( pl->processMouse( r, pp.x, pp.y, lb, rb ) )
+            {
+                this->hover_id = pl->getHoverId();
+                return 1;
+            }
+        }
         
         g = (gui_writelock *)o.tryWriteLock( this->g, 3, "renderer_gui::processMouse" );
         if( !g )
@@ -416,6 +447,8 @@ namespace dragonpoop
     //returns opacity
     float renderer_gui::getOpacity( void )
     {
+        if( !this->bIsHover )
+            return this->fade * this->opacity;
         return this->fade * this->opacity * ( 0.9f + 0.1f * this->hv / GUI_HOVER_MAX );
     }
     
@@ -502,6 +535,12 @@ namespace dragonpoop
             return 0;
         
         return g->setSelectedText( s );
+    }
+    
+    //get hovering gui id
+    dpid renderer_gui::getHoverId( void )
+    {
+        return this->hover_id;
     }
     
 };

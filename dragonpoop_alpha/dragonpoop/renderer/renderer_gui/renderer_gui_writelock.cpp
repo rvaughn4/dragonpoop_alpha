@@ -96,9 +96,9 @@ namespace dragonpoop
     }
     
     //process mouse input
-    bool renderer_gui_writelock::processMouse( float x, float y, bool lb, bool rb )
+    bool renderer_gui_writelock::processMouse( renderer_writelock *r, float x, float y, bool lb, bool rb )
     {
-        return this->t->processMouse( x, y, lb, rb );
+        return this->t->processMouse( r, x, y, lb, rb );
     }
     
     //process kb input
@@ -141,6 +141,12 @@ namespace dragonpoop
     bool renderer_gui_writelock::setSelectedText( std::string *s )
     {
         return this->t->setSelectedText( s );
+    }
+  
+    //get hovering gui id
+    dpid renderer_gui_writelock::getHoverId( void )
+    {
+        return this->t->getHoverId();
     }
     
 };

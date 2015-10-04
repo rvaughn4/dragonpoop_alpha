@@ -26,6 +26,7 @@ namespace dragonpoop
         dpmutex_master *mm;
         dptaskpool *tp;
         gfx *g;
+        gui_factory *orig_root;
 
     protected:
 

@@ -30,6 +30,7 @@
 #include "gui/gui_factory.h"
 #include "gui/gui_factory_ref.h"
 #include "gui/gui_factory_writelock.h"
+#include "gui/root_gui/root_gui_factory.h"
 
 namespace dragonpoop
 {

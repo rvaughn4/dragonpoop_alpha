@@ -7,6 +7,7 @@
 #include "../gfx/gfx_ref.h"
 #include "../core/shared_obj/shared_obj_guard.h"
 #include "../core/dpmutex/dpmutex_lock.h"
+#include "../gfx/gui/root_gui/root_gui_factory.h"
 
 namespace dragonpoop
 {
@@ -23,11 +24,15 @@ namespace dragonpoop
 
         tpl = (dptaskpool_writelock *)g.writeLock( this->tp, "core::core" );
         this->g = new gfx( this, tpl );
+        
+        this->orig_root = new root_gui_factory( this );
+        this->setRootGui( this->orig_root );
     }
 
     //dtor
     core::~core( void )
     {
+        delete this->orig_root;
         delete g;
         delete this->tp;
         delete this->mm;

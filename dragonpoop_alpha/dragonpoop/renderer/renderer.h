@@ -80,7 +80,7 @@ namespace dragonpoop
         //deinit graphics api
         virtual void deinitApi( void );
         //do background graphics api processing
-        virtual bool runApi( dpthread_lock *thd );
+        virtual bool runApi( renderer_writelock *r, dpthread_lock *thd );
         //stop task and deinit api
         void _kill( void );
         //return screen/window width
@@ -112,9 +112,9 @@ namespace dragonpoop
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //process mouse input
-        void processMouseInput( float x, float y, bool lb, bool rb );
+        void processMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb );
         //process mouse input
-        bool processGuiMouseInput( float x, float y, bool lb, bool rb );
+        bool processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb );
         //get hovering gui id
         dpid getHoverId( void );
         //process keyboard input

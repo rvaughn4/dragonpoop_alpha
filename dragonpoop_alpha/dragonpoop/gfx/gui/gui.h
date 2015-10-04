@@ -47,7 +47,7 @@ namespace dragonpoop
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
         std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw, bMouseInput, bLb, bRb, bKeyDown, bKeyInput;
-        bool bOldLb, bOldRb, bShiftDown, cur_flash, bIsSel;
+        bool bOldLb, bOldRb, bShiftDown, cur_flash, bIsSel, bIsEdit, bIsHover, bWasSel;
         float mx, my;
         gui_dims pos;
         gfx_ref *g;
@@ -178,6 +178,16 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //add gui
         void addGui( gui *g );
+        //set editable
+        void setEditMode( bool b );
+        //returns true if editable
+        bool isEditable( void );
+        //sets hoverable
+        void setHoverMode( bool b );
+        //returns true if hoverable
+        bool isHoverable( void );
+        //generates new id
+        dpid genId( void );
         
     public:
         

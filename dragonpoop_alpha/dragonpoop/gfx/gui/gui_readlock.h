@@ -52,6 +52,10 @@ namespace dragonpoop
         bool hasFocus( void );
         //add gui
         void addGui( gui *g );
+        //returns true if editable
+        bool isEditable( void );
+        //returns true if hoverable
+        bool isHoverable( void );
 
         friend class gui;
     };

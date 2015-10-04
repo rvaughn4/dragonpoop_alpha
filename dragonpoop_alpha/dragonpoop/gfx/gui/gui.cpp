@@ -15,6 +15,8 @@
 #include <sstream>
 #include <string>
 #include "../../core/dpthread/dpthread_lock.h"
+#include "../../core/dptaskpool/dptaskpool_ref.h"
+#include "../../core/dptaskpool/dptaskpool_writelock.h"
 
 namespace dragonpoop
 {
@@ -47,6 +49,8 @@ namespace dragonpoop
         this->sz_div = 0;
         this->bShiftDown = 0;
         this->redraw_timer = 0;
+        this->bIsHover = 0;
+        this->bIsEdit = 0;
     }
     
     //dtor
@@ -98,14 +102,25 @@ namespace dragonpoop
         
         t = thd->getTicks();
         if( this->z == 0 )
-            this->redraw_timer = 300;
+        {
+            if( this->bIsEdit || this->bWasSel )
+            {
+                this->redraw_timer = 300;
+                this->bWasSel = 0;
+            }
+            else
+                this->redraw_timer = 0;
+        }
         if( this->z != 0 && !cur_flash )
             this->redraw_timer = 0;
         
         if( this->redraw_timer && t - this->t_last_redraw > this->redraw_timer )
         {
             this->redraw();
-            this->cur_flash = !this->cur_flash;
+            if( this->bIsEdit )
+                this->cur_flash = !this->cur_flash;
+            else
+                this->cur_flash = 0;
         }
         
         if( this->bRedraw && t - this->t_last_redraw > 100 )
@@ -355,7 +370,7 @@ namespace dragonpoop
         x = y = 1;
         cw = lch = 0;
         ln = 0;
-        cur_drawn = this->cur_flash || ( this->z != 0 );
+        cur_drawn = this->cur_flash || ( this->z != 0 ) || !this->bIsEdit;
         for( i = 0; i < e; i++ )
         {
             c = cb[ i ];
@@ -505,7 +520,7 @@ namespace dragonpoop
                 cur_pos.p.x = x;
                 cur_pos.p.y = y;
                 cur_pos.w = cw;
-                cur_pos.h = fnt_size;
+                cur_pos.h = fnt_size * 5 / 4;
                 bm->clear( &clr, &cur_pos );
                 cur_drawn = 1;
                 f.draw( c, x, y, bm, 0, 0, &clr_light );
@@ -528,8 +543,8 @@ namespace dragonpoop
         {
             cur_pos.p.x = x;
             cur_pos.p.y = y;
-            cur_pos.w = fnt_size;
-            cur_pos.h = fnt_size;
+            cur_pos.w = fnt_size / 3;
+            cur_pos.h = fnt_size * 5 / 4;
             bm->clear( &clr, &cur_pos );
         }
         
@@ -667,11 +682,13 @@ namespace dragonpoop
             }
             else
             {
+                this->bWasSel = this->bIsSel;
                 this->bIsSel = 0;
                 this->cursor = this->findCursor( x, y );
             }
             this->cur_flash = 1;
-            this->redraw();
+            if( this->bIsSel || this->bIsEdit )
+                this->redraw();
         }
     }
     
@@ -682,64 +699,76 @@ namespace dragonpoop
         if( isDown )
         {
 
-            if( skey->size() == 1 )
+            if( this->bIsEdit )
             {
-                this->insert( skey->c_str() );
-                this->redraw();
-                return;
-            }
-            
-            if( skey->compare( "Enter" ) == 0 || skey->compare( "Return" ) == 0 )
-            {
-                this->insert( "\n" );
-                this->redraw();
-                return;
-            }
-            
-            if( skey->compare( "Tab" ) == 0 )
-            {
-                this->insert( "\t" );
-                this->redraw();
-                return;
+                
+                if( skey->size() == 1 )
+                {
+                    this->insert( skey->c_str() );
+                    this->redraw();
+                    return;
+                }
+                
+                if( skey->compare( "Enter" ) == 0 || skey->compare( "Return" ) == 0 )
+                {
+                    this->insert( "\n" );
+                    this->redraw();
+                    return;
+                }
+                
+                if( skey->compare( "Tab" ) == 0 )
+                {
+                    this->insert( "\t" );
+                    this->redraw();
+                    return;
+                }
+                
+                if( skey->compare( "Backspace" ) == 0 )
+                {
+                    this->backspace();
+                    this->redraw();
+                    return;
+                }
+                
+                if( skey->compare( "Delete" ) == 0 )
+                {
+                    this->delete_();
+                    this->redraw();
+                    return;
+                }
             }
             
             if( skey->compare( "Left" ) == 0 )
             {
                 this->left();
-                this->redraw();
+                if( this->bIsEdit || this->bShiftDown || this->bIsSel )
+                    this->redraw();
                 return;
             }
             
             if( skey->compare( "Right" ) == 0 )
             {
                 this->right();
-                this->redraw();
+                if( this->bIsEdit || this->bShiftDown || this->bIsSel )
+                    this->redraw();
                 return;
             }
 
-            if( skey->compare( "Backspace" ) == 0 )
-            {
-                this->backspace();
-                this->redraw();
-                return;
-            }
-            
-            if( skey->compare( "Delete" ) == 0 )
-            {
-                this->delete_();
-                this->redraw();
-                return;
-            }
-            
             if( skey->compare( "Shift" ) == 0 )
+            {
                 this->bShiftDown = 1;
+                this->redraw();
+            }
         }
         else
         {
             
             if( skey->compare( "Shift" ) == 0 )
+            {
                 this->bShiftDown = 0;
-            
+                this->redraw();
+            }
+
         }
     }
     
@@ -821,6 +850,7 @@ namespace dragonpoop
                 b = this->cursor;
                 a = this->sel_cursor;
             }
+            this->bWasSel = this->bIsSel;
             this->bIsSel = 0;
         }
         else
@@ -858,6 +888,7 @@ namespace dragonpoop
                 b = this->cursor;
                 a = this->sel_cursor;
             }
+            this->bWasSel = this->bIsSel;
             this->bIsSel = 0;
         }
         else
@@ -902,6 +933,7 @@ namespace dragonpoop
         }
         else
         {
+            this->bWasSel = this->bIsSel;
             this->bIsSel = 0;
             if( this->cursor > 0 )
                 this->cursor--;
@@ -922,6 +954,7 @@ namespace dragonpoop
         }
         else
         {
+            this->bWasSel = this->bIsSel;
             this->bIsSel = 0;
             if( this->cursor < this->stxt.size() )
                 this->cursor++;
@@ -1042,6 +1075,47 @@ namespace dragonpoop
         o1.unlock();
         
         gl->addGui( g );
+    }
+    
+    //set editable
+    void gui::setEditMode( bool b )
+    {
+        this->bIsEdit = b;
+    }
+    
+    //returns true if editable
+    bool gui::isEditable( void )
+    {
+        return this->bIsEdit;
+    }
+    
+    //sets hoverable
+    void gui::setHoverMode( bool b )
+    {
+        this->bIsHover = b;
+    }
+    
+    //returns true if hoverable
+    bool gui::isHoverable( void )
+    {
+        return this->bIsHover;
+    }
+    
+    //generates new id
+    dpid gui::genId( void )
+    {
+        dptaskpool_ref *r;
+        dptaskpool_writelock *l;
+        shared_obj_guard o;
+        
+        r = this->c->getTaskpool();
+        if( !r )
+            return dpid_null();
+        l = (dptaskpool_writelock *)o.tryWriteLock( r, 2000, "gui::genId" );
+        if( !l )
+            return dpid_null();
+        
+        return l->genId();
     }
     
 };

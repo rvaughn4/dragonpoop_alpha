@@ -88,5 +88,17 @@ namespace dragonpoop
     {
         return this->t->addGui( g );
     }
+   
+    //returns true if editable
+    bool gui_readlock::isEditable( void )
+    {
+        return this->t->isEditable();
+    }
+    
+    //returns true if hoverable
+    bool gui_readlock::isHoverable( void )
+    {
+        return this->t->isHoverable();
+    }
     
 };

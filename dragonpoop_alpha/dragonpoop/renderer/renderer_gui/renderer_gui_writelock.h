@@ -59,7 +59,7 @@ namespace dragonpoop
         //redo matrix
         void redoMatrix( dpthread_lock *thd, renderer_writelock *r, dpmatrix *p_matrix );
         //process mouse input
-        bool processMouse( float x, float y, bool lb, bool rb );
+        bool processMouse( renderer_writelock *r, float x, float y, bool lb, bool rb );
         //process kb input
         bool processKb( std::string *sname, bool bIsDown );
         //returns true if alive
@@ -74,6 +74,8 @@ namespace dragonpoop
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)
         bool setSelectedText( std::string *s );
+        //get hovering gui id
+        dpid getHoverId( void );
 
         friend class renderer_gui;
     };

@@ -135,7 +135,7 @@ namespace dragonpoop
                 return;
             }
 
-            if( !this->runApi( thd ) )
+            if( !this->runApi( r, thd ) )
                 this->bDoRun = 0;
             else
             {
@@ -208,7 +208,7 @@ namespace dragonpoop
     }
 
     //do background graphics api processing
-    bool renderer::runApi( dpthread_lock *thd )
+    bool renderer::runApi( renderer_writelock *r, dpthread_lock *thd )
     {
         return 1;
     }
@@ -653,7 +653,7 @@ namespace dragonpoop
     }
 
     //process mouse input
-    void renderer::processMouseInput( float x, float y, bool lb, bool rb )
+    void renderer::processMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb )
     {
         float w, h;
         
@@ -666,12 +666,12 @@ namespace dragonpoop
         y = ( 2.0f * y ) - 1.0f;
         y = -y;
         
-        if( this->processGuiMouseInput( x, y, lb, rb ) )
+        if( this->processGuiMouseInput( r, x, y, lb, rb ) )
             return;
     }
     
     //process mouse input
-    bool renderer::processGuiMouseInput( float x, float y, bool lb, bool rb )
+    bool renderer::processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb )
     {
         std::list<renderer_gui *> *l, lz, d;
         std::list<renderer_gui *>::iterator i;
@@ -719,9 +719,9 @@ namespace dragonpoop
                 pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiMouseInput" );
                 if( !pl )
                     continue;
-                if( pl->processMouse( t.x, t.y, lb, rb ) )
+                if( pl->processMouse( r, t.x, t.y, lb, rb ) )
                 {
-                    this->hover_gui = pl->getId();
+                    this->hover_gui = pl->getHoverId();
                     return 1;
                 }
                 d.push_back( p );

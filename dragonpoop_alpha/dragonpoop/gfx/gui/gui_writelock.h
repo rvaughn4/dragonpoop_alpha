@@ -92,6 +92,14 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //add gui
         void addGui( gui *g );
+        //set editable
+        void setEditMode( bool b );
+        //returns true if editable
+        bool isEditable( void );
+        //sets hoverable
+        void setHoverMode( bool b );
+        //returns true if hoverable
+        bool isHoverable( void );
 
         friend class gui;
     };

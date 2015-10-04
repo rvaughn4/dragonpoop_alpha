@@ -73,9 +73,9 @@ namespace dragonpoop
     }
 
     //do background graphics api processing
-    bool openglx_1o5_renderer::runApi( dpthread_lock *thd )
+    bool openglx_1o5_renderer::runApi( renderer_writelock *r, dpthread_lock *thd )
     {
-        this->runWindow( thd );
+        this->runWindow( r, thd );
         return 1;
     }
 
@@ -219,7 +219,7 @@ namespace dragonpoop
     }
 
     //run window
-    void openglx_1o5_renderer::runWindow( dpthread_lock *thd )
+    void openglx_1o5_renderer::runWindow( renderer_writelock *r, dpthread_lock *thd )
     {
         XEvent event;
         uint64_t t;
@@ -255,19 +255,19 @@ namespace dragonpoop
                 t = thd->getTicks();
                 if( t - this->t_last_motion > 30 )
                 {
-                    this->processMouseInput( event.xbutton.x, event.xbutton.y, this->lb, this->rb );
+                    this->processMouseInput( r, event.xbutton.x, event.xbutton.y, this->lb, this->rb );
                     this->t_last_motion = t;
                 }
                 break;
             case ButtonPress:
                 this->lb |= event.xbutton.button == Button1;
                 this->rb |= event.xbutton.button == Button2;
-                this->processMouseInput( event.xbutton.x, event.xbutton.y, this->lb, this->rb );
+                this->processMouseInput( r, event.xbutton.x, event.xbutton.y, this->lb, this->rb );
                 break;
             case ButtonRelease:
                 this->lb &= event.xbutton.button != Button1;
                 this->rb &= event.xbutton.button != Button2;
-                this->processMouseInput( event.xbutton.x, event.xbutton.y, this->lb, this->rb );
+                this->processMouseInput( r, event.xbutton.x, event.xbutton.y, this->lb, this->rb );
                 break;
             case KeyPress:
                 this->processKb( XLookupKeysym( &event.xkey, 0 ), 1 );

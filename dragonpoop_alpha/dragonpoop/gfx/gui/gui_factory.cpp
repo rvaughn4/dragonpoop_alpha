@@ -57,8 +57,13 @@ namespace dragonpoop
         gui *r;
         gui_writelock *l;
         shared_obj_guard o;
+        gfx_writelock *fl;
         
-        r = this->genGui( this->g, thd->genId() );
+        fl = (gfx_writelock *)o.tryWriteLock( this->g, 2000, "gui_factory::makeGui" );
+        if( !fl )
+            return 0;
+        
+        r = this->genGui( fl, thd->genId() );
         if( !r || !p )
             return r;
         
@@ -71,7 +76,7 @@ namespace dragonpoop
     }
     
     //generate gui
-    gui *gui_factory::genGui( gfx_ref *g, dpid id )
+    gui *gui_factory::genGui( gfx_writelock *g, dpid id )
     {
         return 0;
     }

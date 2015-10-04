@@ -70,13 +70,13 @@ namespace dragonpoop
         //deinit graphics api
         virtual void deinitApi( void );
         //do background graphics api processing
-        virtual bool runApi( dpthread_lock *thd );
+        virtual bool runApi( renderer_writelock *r, dpthread_lock *thd );
         //create gl window
         bool makeWindow( char* title, int width, int height, int bits, bool fullscreenflag );
         //kill gl window
         void killWindow( void );
         //run window
-        void runWindow( dpthread_lock *thd );
+        void runWindow( renderer_writelock *r, dpthread_lock *thd );
         //return screen/window width
         virtual unsigned int getWidth( void );
         //return screen/window height

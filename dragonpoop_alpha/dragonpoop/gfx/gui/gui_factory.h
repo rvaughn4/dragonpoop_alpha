@@ -12,6 +12,7 @@ namespace dragonpoop
     class gfx_ref;
     class core;
     class dpthread_lock;
+    class gfx_writelock;
     
     class gui_factory : public shared_obj
     {
@@ -31,7 +32,7 @@ namespace dragonpoop
         //make gui
         gui *makeGui( dpthread_lock *thd, gui *p );
         //generate gui
-        virtual gui *genGui( gfx_ref *g, dpid id );
+        virtual gui *genGui( gfx_writelock *g, dpid id );
         
     public:
         
