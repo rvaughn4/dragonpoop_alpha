@@ -176,11 +176,13 @@ namespace dragonpoop
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)
         bool setSelectedText( std::string *s );
+        //add gui
+        void addGui( gui *g );
         
     public:
         
         //ctor
-        gui( gfx_writelock *g, dpid id, dpid parent_id );
+        gui( gfx_writelock *g, dpid id );
         //dtor
         virtual ~gui( void );
         //return core

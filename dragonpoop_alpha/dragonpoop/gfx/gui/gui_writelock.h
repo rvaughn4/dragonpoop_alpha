@@ -90,6 +90,8 @@ namespace dragonpoop
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)
         bool setSelectedText( std::string *s );
+        //add gui
+        void addGui( gui *g );
 
         friend class gui;
     };

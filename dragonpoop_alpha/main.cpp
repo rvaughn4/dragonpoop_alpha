@@ -79,7 +79,7 @@ protected:
 public:
     
     //ctor
-    test_gui( dragonpoop::gfx_writelock *g, dragonpoop::dpid id, float x, float y, float w, float h ) : dragonpoop::gui( g, id, dragonpoop::dpid_null() )
+    test_gui( dragonpoop::gfx_writelock *g, dragonpoop::dpid id, float x, float y, float w, float h ) : dragonpoop::gui( g, id )
     {
         this->enableBg( 1 );
         this->enableFg( 1 );

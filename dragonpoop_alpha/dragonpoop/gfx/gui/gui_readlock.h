@@ -50,6 +50,8 @@ namespace dragonpoop
         unsigned int getZ( void );
         //returns true if has focus
         bool hasFocus( void );
+        //add gui
+        void addGui( gui *g );
 
         friend class gui;
     };

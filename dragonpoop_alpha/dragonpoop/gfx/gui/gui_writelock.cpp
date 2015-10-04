@@ -185,4 +185,10 @@ namespace dragonpoop
         return this->t->setSelectedText( s );
     }
     
+    //add gui
+    void gui_writelock::addGui( gui *g )
+    {
+        return this->t->addGui( g );
+    }
+
 };

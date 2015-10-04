@@ -20,12 +20,12 @@ namespace dragonpoop
 {
     
     //ctor
-    gui::gui( gfx_writelock *g, dpid id, dpid parent_id ) : shared_obj( g->getCore()->getMutexMaster() )
+    gui::gui( gfx_writelock *g, dpid id ) : shared_obj( g->getCore()->getMutexMaster() )
     {
         this->c = g->getCore();
         this->g = (gfx_ref *)g->getRef();
         this->id = id;
-        this->pid = parent_id;
+        this->pid = dpid_null();
         this->bHasBg = this->bHasFg = 0;
         this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
         this->bRedraw = 1;
@@ -1022,6 +1022,26 @@ namespace dragonpoop
     {
         this->insert( s->c_str() );
         return 1;
+    }
+    
+    //add gui
+    void gui::addGui( gui *g )
+    {
+        gfx_writelock *gl;
+        shared_obj_guard o, o1;
+        gui_writelock *gul;
+        
+        gl = (gfx_writelock *)o.tryWriteLock( this->g, 2000, "gui::addGui" );
+        if( !gl )
+            return;
+        gul = (gui_writelock *)o1.tryWriteLock( g, 2000, "gui::addGui" );
+        if( !gul )
+            return;
+        
+        gul->setParentId( this->id );
+        o1.unlock();
+        
+        gl->addGui( g );
     }
     
 };

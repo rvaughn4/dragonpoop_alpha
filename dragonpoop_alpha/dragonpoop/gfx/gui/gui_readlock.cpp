@@ -83,4 +83,10 @@ namespace dragonpoop
         return this->t->hasFocus();
     }
 
+    //add gui
+    void gui_readlock::addGui( gui *g )
+    {
+        return this->t->addGui( g );
+    }
+    
 };
