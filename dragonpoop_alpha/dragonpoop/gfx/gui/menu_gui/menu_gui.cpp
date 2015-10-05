@@ -16,9 +16,9 @@ namespace dragonpoop
         this->setParentId( pid );
         this->setPosition( x, y );
         this->setWidthHeight( w, h );
-        this->setHoverMode( 0 );
+        this->setHoverMode( 1 );
         this->setEditMode( 0 );
-        this->enableBg( 0 );
+        this->enableBg( 1 );
         this->enableFg( 0 );
         
         this->sz = bh;

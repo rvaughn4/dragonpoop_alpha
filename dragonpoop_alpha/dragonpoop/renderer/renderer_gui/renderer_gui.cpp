@@ -35,6 +35,7 @@ namespace dragonpoop
         this->opacity = 1;
         this->fade = 0;
         this->bIsAlive = 1;
+        this->clickfade = 0;
     }
     
     //dtor
@@ -135,6 +136,10 @@ namespace dragonpoop
         shared_obj_guard o;
         dpmatrix mat;
         
+        mat.copy( m_world );
+        mat.multiply( &this->mat );
+        r->renderGui( thd, m, &mat );
+
         r->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -145,11 +150,6 @@ namespace dragonpoop
             if( !pl->compareId( this->id ) )
                 pl->render( thd, r, m_world );
         }
-        
-        mat.copy( m_world );
-        mat.multiply( &this->mat );
-        
-        r->renderGui( thd, m, &mat );
     }
     
     //returns id
@@ -333,11 +333,18 @@ namespace dragonpoop
         
         if( this->bIsHover )
         {
-            hid = r->getHoverId();
-            if( this->compareId( hid ) )
-                this->hv += ( GUI_HOVER_MAX - this->hv ) * 0.3f;
+            if( this->clickfade > 0.005f )
+                this->clickfade *= 0.2f;
+            if( this->clickfade > 0.01f )
+                this->hv += ( 0.0f - this->hv ) * 0.7f;
             else
-                this->hv += ( 0.0f - this->hv ) * 0.3f;
+            {
+                hid = r->getHoverId();
+                if( this->compareId( hid ) && this->clickfade <= 0.01f )
+                    this->hv += ( GUI_HOVER_MAX - this->hv ) * 0.3f;
+                else
+                    this->hv += ( 0.0f - this->hv ) * 0.3f;
+            }
         }
         
         this->mat.copy( p_matrix );
@@ -347,7 +354,10 @@ namespace dragonpoop
 
         if( this->bIsHover )
         {
-            z = 1.0f - this->fade * this->fade;
+            if( dpid_isZero( &this->pid ) )
+                z = 1.0f - this->fade * this->fade;
+            else
+                z = 0;
             z += 0.05f * this->hv / GUI_HOVER_MAX;
             if( z > 0.001f )
             {
@@ -355,13 +365,16 @@ namespace dragonpoop
                 this->mat.scale( z + 1, z + 1, 1 );
             }
             
-            z = 1.0f - this->fade;
-            if( z > 0.01f )
+            if( dpid_isZero( &this->pid ) )
             {
-                this->mat.translate( -this->pos.w * 0.5f, -this->pos.h * 0.5f, -z * 2 );
-                this->mat.rotateY( 5.0f * z );
-                this->mat.rotateZ( 10.0f * z );
-                this->mat.translate( this->pos.w * 0.5f, this->pos.h * 0.5f, 0 );
+                z = 1.0f - this->fade;
+                if( z > 0.01f )
+                {
+                    this->mat.translate( -this->pos.w * 0.5f, -this->pos.h * 0.5f, -z * 2 );
+                    this->mat.rotateY( 5.0f * z );
+                    this->mat.rotateZ( 10.0f * z );
+                    this->mat.translate( this->pos.w * 0.5f, this->pos.h * 0.5f, 0 );
+                }
             }
         }
 
@@ -387,7 +400,7 @@ namespace dragonpoop
     //process mouse input
     bool renderer_gui::processMouse( renderer_writelock *r, float x, float y, bool lb, bool rb )
     {
-        dpxyz_f p, pp;
+        dpxyz_f p;
         gui_writelock *g;
         shared_obj_guard o;
         std::list<renderer_gui *> l;
@@ -405,8 +418,6 @@ namespace dragonpoop
             return 0;
         if( p.x >= this->pos.w || p.y >= this->pos.h )
             return 0;
-        pp.x = p.x - this->pos.x;
-        pp.y = p.y - this->pos.y;
         
         r->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )
@@ -415,7 +426,7 @@ namespace dragonpoop
             pl = (renderer_gui_writelock *)o.tryWriteLock( pr, 100, "renderer_gui::processMouse" );
             if( !pl )
                 continue;
-            if( pl->processMouse( r, pp.x, pp.y, lb, rb ) )
+            if( pl->processMouse( r, x, y, lb, rb ) )
             {
                 this->hover_id = pl->getHoverId();
                 return 1;
@@ -426,6 +437,8 @@ namespace dragonpoop
         if( !g )
             return 1;
         g->processMouse( p.x, p.y, lb, rb );
+        if( lb )
+            this->clickfade = 100;
 
         return 1;
     }

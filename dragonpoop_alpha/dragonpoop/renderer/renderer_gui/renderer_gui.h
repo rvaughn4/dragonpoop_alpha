@@ -6,7 +6,7 @@
 #include "../../gfx/dpmatrix/dpmatrix.h"
 #include "../../gfx/dpvertex/dpvertexindex_buffer.h"
 
-#define GUI_HOVER_MAX 0.2f
+#define GUI_HOVER_MAX 0.1f
 
 namespace dragonpoop
 {
@@ -32,7 +32,7 @@ namespace dragonpoop
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg;
         dpmatrix mat, undo_mat;
         unsigned int z;
-        float hv, opacity, fade;
+        float hv, opacity, fade, clickfade;
         dpvertexindex_buffer bg_vb, fg_vb;
         uint64_t t_last_tex_update;
         

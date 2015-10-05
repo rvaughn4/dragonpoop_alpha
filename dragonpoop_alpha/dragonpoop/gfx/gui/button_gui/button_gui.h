@@ -16,7 +16,7 @@ namespace dragonpoop
         
         //override to paint background texture
         virtual void repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h );
-        
+
     public:
         
         //ctor

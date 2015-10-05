@@ -1,5 +1,6 @@
 
 #include "button_gui.h"
+#include <iostream>
 
 namespace dragonpoop
 {
@@ -15,8 +16,8 @@ namespace dragonpoop
         this->setPosition( x, y );
         this->setWidthHeight( w, h );
         this->setText( txt );
-        this->setHoverMode( 1 );
-        this->setEditMode( 1 );
+        this->setHoverMode( bHasBg );
+        this->setEditMode( 0 );
     }
     
     //dtor
@@ -30,5 +31,5 @@ namespace dragonpoop
     {
         bm->loadFile( "white_gui_box.bmp" );
     }
-    
+
 };
