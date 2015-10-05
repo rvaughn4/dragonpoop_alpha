@@ -50,7 +50,7 @@ namespace dragonpoop
     //set top left pos
     void gui_writelock::setPosition( float x, float y )
     {
-        this->setPosition( x, y );
+        this->t->setPosition( x, y );
     }
     
     //get dimensions

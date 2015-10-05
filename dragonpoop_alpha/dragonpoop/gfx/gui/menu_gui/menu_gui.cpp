@@ -18,7 +18,7 @@ namespace dragonpoop
         this->setWidthHeight( w, h );
         this->setHoverMode( 0 );
         this->setEditMode( 0 );
-        this->enableBg( 1 );
+        this->enableBg( 0 );
         this->enableFg( 0 );
         
         this->sz = bh;
@@ -35,6 +35,9 @@ namespace dragonpoop
             this->last_y = 0;
             this->btitle = 0;
         }
+        
+        this->addButton( "1" );
+        this->addButton( "2" );
     }
     
     //dtor
@@ -79,7 +82,9 @@ namespace dragonpoop
         this->getDimensions( &gp );
         np.s.assign( btn_name );
         np.b = new button_gui( g, this->genId(), this->getId(), 0, 0, gp.w, this->sz, btn_name, 1 );
+        this->addGui( np.b );
         o.unlock();
+        this->btns.push_back( np );
         
         this->redoButtons();
     }
@@ -136,7 +141,7 @@ namespace dragonpoop
         for( i = 0; i < e; i++ )
         {
             p = &this->btns[ i ];
-            if( p )
+            if( p->b )
                 ll.push_back( *p );
         }
         this->btns.clear();
