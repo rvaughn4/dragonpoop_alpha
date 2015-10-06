@@ -24,6 +24,8 @@ namespace dragonpoop
         
     protected:
         
+        //override to handle keyboard button
+        virtual void handleKbEvent( std::string *skey, bool isDown );
         //override to do processing
         virtual void doProcessing( dpthread_lock *thd, gui_writelock *g );
         //populate escape menu

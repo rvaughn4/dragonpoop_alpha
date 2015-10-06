@@ -37,6 +37,16 @@ namespace dragonpoop
         delete this->g;
     }
     
+    //override to handle keyboard button
+    void root_gui::handleKbEvent( std::string *skey, bool isDown )
+    {
+        this->gui::handleKbEvent( skey, isDown );
+        
+        if( skey->compare( "Escape" ) == 0 && isDown )
+            this->showEscapeMenu();
+        
+    }
+    
     //override to do processing
     void root_gui::doProcessing( dpthread_lock *thd, gui_writelock *g )
     {
@@ -45,6 +55,8 @@ namespace dragonpoop
         menu_gui_writelock *mw;
         gfx_writelock *gl;
         uint64_t t;
+        
+        this->gui::doProcessing( thd, g );
         
         if( this->esc_menu_do_show != this->esc_menu_is_show )
         {
@@ -79,7 +91,7 @@ namespace dragonpoop
         if( this->esc_menu_is_show && this->esc_menu )
         {
             t = thd->getTicks();
-            if( t - this->last_esc_menu_process > 400 )
+            if( t - this->last_esc_menu_process > 200 )
             {
                 this->last_esc_menu_process = t;
                 mr = (menu_gui_readlock *)o.tryReadLock( this->esc_menu, "root_gui::doProcessing" );
@@ -101,6 +113,7 @@ namespace dragonpoop
     {
         if( m->wasClicked( "Quit" ) )
         {
+            this->hideEscapeMenu();
             this->getCore()->kill();
             return;
         }
