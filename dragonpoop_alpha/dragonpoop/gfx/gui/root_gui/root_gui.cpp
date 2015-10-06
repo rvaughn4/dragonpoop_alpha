@@ -20,6 +20,7 @@ namespace dragonpoop
         
         this->enableBg( 0 );
         this->enableFg( 0 );
+        this->setEditMode( 0 );
         this->setFade( 0 );
         this->setPosition( 0, 0 );
         this->setWidthHeight( 1920, 1080 );
@@ -70,7 +71,7 @@ namespace dragonpoop
                 gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
                 if( gl )
                 {
-                    this->esc_menu = new menu_gui( gl, this->genId(), this->getId(), 0, 0, 400, 100, 70, "Escape Menu" );
+                    this->esc_menu = new menu_gui( gl, this->genId(), this->getId(), 0, 0, 200, 40, 40, "Escape Menu" );
                     this->addGui( this->esc_menu );
                     
                     mw = (menu_gui_writelock *)o.tryWriteLock( this->esc_menu, 1000, "root_gui::doProcessing" );
@@ -94,7 +95,7 @@ namespace dragonpoop
             if( t - this->last_esc_menu_process > 200 )
             {
                 this->last_esc_menu_process = t;
-                mr = (menu_gui_readlock *)o.tryReadLock( this->esc_menu, "root_gui::doProcessing" );
+                mr = (menu_gui_readlock *)o.tryReadLock( this->esc_menu, 100, "root_gui::doProcessing" );
                 if( mr )
                     this->processEscapeMenu( mr );
             }
