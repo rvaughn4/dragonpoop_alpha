@@ -28,8 +28,14 @@ namespace dragonpoop
         
     protected:
         
+        //generate read lock
+        virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
+        //generate write lock
+        virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //override to paint background texture
         virtual void repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h );
+        //override to do processing
+        virtual void doProcessing( dpthread_lock *thd, gui_writelock *g );
         //add button
         void addButton( const char *btn_name );
         //remove button
@@ -40,8 +46,6 @@ namespace dragonpoop
         void redoButtons( void );
         //returns true if button was clicked
         bool wasClicked( const char *btn_name );
-        //override to do processing
-        virtual void doProcessing( dpthread_lock *thd, gui_writelock *g );
         
     public:
         
@@ -50,6 +54,8 @@ namespace dragonpoop
         //dtor
         virtual ~menu_gui( void );
         
+        friend class menu_gui_readlock;
+        friend class menu_gui_writelock;
     };
     
 };

@@ -185,6 +185,8 @@
 		79F107231B6ED076000723E4 /* model_instance_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F107101B6ED076000723E4 /* model_instance_readlock.cpp */; };
 		79F107241B6ED076000723E4 /* model_instance_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F107121B6ED076000723E4 /* model_instance_ref.cpp */; };
 		79F107271B6ED076000723E4 /* model_instance_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F1071C1B6ED076000723E4 /* model_instance_writelock.cpp */; };
+		79F401621BC3EA3800DEC935 /* menu_gui_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F4015E1BC3EA3800DEC935 /* menu_gui_readlock.cpp */; };
+		79F401631BC3EA3800DEC935 /* menu_gui_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F401601BC3EA3800DEC935 /* menu_gui_writelock.cpp */; };
 		79F49A791B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F49A771B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp */; };
 		79F49A7E1B79704000CDF8A7 /* renderer_model_material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F49A7B1B79704000CDF8A7 /* renderer_model_material.cpp */; };
 		79F49A831B79785400CDF8A7 /* openglx_1o5_renderer_model_material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F49A801B79785400CDF8A7 /* openglx_1o5_renderer_model_material.cpp */; };
@@ -657,6 +659,10 @@
 		79F1071C1B6ED076000723E4 /* model_instance_writelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_instance_writelock.cpp; sourceTree = "<group>"; };
 		79F1071D1B6ED076000723E4 /* model_instance_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instance_writelock.h; sourceTree = "<group>"; };
 		79F1071E1B6ED076000723E4 /* model_instances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instances.h; sourceTree = "<group>"; };
+		79F4015E1BC3EA3800DEC935 /* menu_gui_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = menu_gui_readlock.cpp; sourceTree = "<group>"; };
+		79F4015F1BC3EA3800DEC935 /* menu_gui_readlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = menu_gui_readlock.h; sourceTree = "<group>"; };
+		79F401601BC3EA3800DEC935 /* menu_gui_writelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = menu_gui_writelock.cpp; sourceTree = "<group>"; };
+		79F401611BC3EA3800DEC935 /* menu_gui_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = menu_gui_writelock.h; sourceTree = "<group>"; };
 		79F49A771B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_materials.cpp; sourceTree = "<group>"; };
 		79F49A781B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_materials.h; sourceTree = "<group>"; };
 		79F49A7B1B79704000CDF8A7 /* renderer_model_material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_model_material.cpp; sourceTree = "<group>"; };
@@ -819,6 +825,10 @@
 				792323AC1BC1B2390030DF0F /* menu_gui.cpp */,
 				792323AD1BC1B2390030DF0F /* menu_gui.h */,
 				792323AE1BC1B2390030DF0F /* menu_guis.h */,
+				79F4015E1BC3EA3800DEC935 /* menu_gui_readlock.cpp */,
+				79F4015F1BC3EA3800DEC935 /* menu_gui_readlock.h */,
+				79F401601BC3EA3800DEC935 /* menu_gui_writelock.cpp */,
+				79F401611BC3EA3800DEC935 /* menu_gui_writelock.h */,
 			);
 			path = menu_gui;
 			sourceTree = "<group>";
@@ -1836,6 +1846,7 @@
 				7970E9991B64F26E008E8328 /* renderer.cpp in Sources */,
 				7970E96C1B64F26E008E8328 /* dptask_ref.cpp in Sources */,
 				79EC802A1B9877E90090D2D6 /* model_saver_state_sucess.cpp in Sources */,
+				79F401621BC3EA3800DEC935 /* menu_gui_readlock.cpp in Sources */,
 				7906ABE21B9B5AA1002C26A2 /* model_saver_ms3d_state_write_joints.cpp in Sources */,
 				7970E9811B64F26E008E8328 /* dpvertex.cpp in Sources */,
 				79F49A791B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp in Sources */,
@@ -1924,6 +1935,7 @@
 				7970E9601B64F26E008E8328 /* multibytetree.cpp in Sources */,
 				794610EF1B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.cpp in Sources */,
 				79BF2CB61B8A2590007C9BA2 /* dpid_btree.cpp in Sources */,
+				79F401631BC3EA3800DEC935 /* menu_gui_writelock.cpp in Sources */,
 				799FC16F1B756F6F00E1A212 /* renderer_model_instance_ref.cpp in Sources */,
 				799FC1711B756F6F00E1A212 /* renderer_model_readlock.cpp in Sources */,
 				7970E98B1B64F26E008E8328 /* model_component.cpp in Sources */,

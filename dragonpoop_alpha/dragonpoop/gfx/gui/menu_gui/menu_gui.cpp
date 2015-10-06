@@ -1,5 +1,7 @@
 
 #include "menu_gui.h"
+#include "menu_gui_readlock.h"
+#include "menu_gui_writelock.h"
 #include "../gui_writelock.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../../gfx_ref.h"
@@ -37,9 +39,6 @@ namespace dragonpoop
             this->last_y = 0;
             this->btitle = 0;
         }
-        
-        this->addButton( "1" );
-        this->addButton( "2" );
     }
     
     //dtor
@@ -56,6 +55,18 @@ namespace dragonpoop
         delete this->g;
         
         o.unlock();
+    }
+    
+    //generate read lock
+    shared_obj_readlock *menu_gui::genReadLock( shared_obj *p, dpmutex_readlock *l )
+    {
+        return new menu_gui_readlock( (menu_gui *)p, l );
+    }
+    
+    //generate write lock
+    shared_obj_writelock *menu_gui::genWriteLock( shared_obj *p, dpmutex_writelock *l )
+    {
+        return new menu_gui_writelock( (menu_gui *)p, l );
     }
     
     //override to paint background texture
@@ -196,11 +207,7 @@ namespace dragonpoop
     //do processing
     void menu_gui::doProcessing( dpthread_lock *thd, gui_writelock *g )
     {
-        
-        if( this->wasClicked( "1" ) )
-            this->addButton( "derp" );
-        if( this->wasClicked( "derp" ) )
-            this->getCore()->kill();
+
     }
     
 };
