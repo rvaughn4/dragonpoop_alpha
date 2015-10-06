@@ -10,6 +10,7 @@ namespace dragonpoop
     {
         this->enableBg( 0 );
         this->enableFg( 0 );
+        this->setFade( 0 );
         this->setPosition( 0, 0 );
         this->setWidthHeight( 1920, 1080 );
         

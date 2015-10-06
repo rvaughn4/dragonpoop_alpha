@@ -36,6 +36,7 @@ namespace dragonpoop
         this->fade = 0;
         this->bIsAlive = 1;
         this->clickfade = 0;
+        this->bIsFade = g->isFade();
     }
     
     //dtor
@@ -103,6 +104,7 @@ namespace dragonpoop
                     this->bHasFg = pl->hasFg();
                     this->bIsHover = pl->isHoverable();
                     this->bIsEdit = pl->isEditable();
+                    this->bIsFade = pl->isFade();
                     this->z = pl->getZ();
                     this->updateVb( g, pl, &this->pos );
                     this->bSyncPos = 0;
@@ -354,7 +356,7 @@ namespace dragonpoop
 
         if( this->bIsHover )
         {
-            if( dpid_isZero( &this->pid ) )
+            if( this->bIsFade )
                 z = 1.0f - this->fade * this->fade;
             else
                 z = 0;
@@ -365,7 +367,7 @@ namespace dragonpoop
                 this->mat.scale( z + 1, z + 1, 1 );
             }
             
-            if( dpid_isZero( &this->pid ) )
+            if( this->bIsFade )
             {
                 z = 1.0f - this->fade;
                 if( z > 0.01f )
@@ -413,12 +415,6 @@ namespace dragonpoop
         p.z = (float)this->z / -8.0f;
         this->undo_mat.transform( &p );
         
-        this->hover_id = this->id;
-        if( p.x < 0 || p.y < 0 )
-            return 0;
-        if( p.x >= this->pos.w || p.y >= this->pos.h )
-            return 0;
-        
         r->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -433,6 +429,12 @@ namespace dragonpoop
             }
         }
         
+        this->hover_id = this->id;
+        if( p.x < 0 || p.y < 0 )
+            return 0;
+        if( p.x >= this->pos.w || p.y >= this->pos.h )
+            return 0;
+
         g = (gui_writelock *)o.tryWriteLock( this->g, 3, "renderer_gui::processMouse" );
         if( !g )
             return 1;

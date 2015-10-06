@@ -47,7 +47,7 @@ namespace dragonpoop
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
         std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw, bMouseInput, bLb, bRb, bKeyDown, bKeyInput;
-        bool bOldLb, bOldRb, bShiftDown, cur_flash, bIsSel, bIsEdit, bIsHover, bWasSel;
+        bool bOldLb, bOldRb, bShiftDown, cur_flash, bIsSel, bIsEdit, bIsHover, bWasSel, bIsFade;
         float mx, my;
         gui_dims pos;
         gfx_ref *g;
@@ -76,6 +76,8 @@ namespace dragonpoop
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run gui
         void run( dpthread_lock *thd, gui_writelock *g );
+        //do processing
+        virtual void doProcessing( dpthread_lock *thd, gui_writelock *g );
         //returns id
         dpid getId( void );
         //compares id
@@ -192,6 +194,10 @@ namespace dragonpoop
         void setMargin( unsigned int m );
         //get margin size
         unsigned int getMargin( void );
+        //returns true if gui should swoosh in and out
+        bool isFade( void );
+        //sets fade mode
+        void setFade( bool b );
         
     public:
         

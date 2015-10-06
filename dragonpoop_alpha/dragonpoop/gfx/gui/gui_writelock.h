@@ -100,6 +100,10 @@ namespace dragonpoop
         void setHoverMode( bool b );
         //returns true if hoverable
         bool isHoverable( void );
+        //returns true if gui should swoosh in and out
+        bool isFade( void );
+        //sets fade mode
+        void setFade( bool b );
 
         friend class gui;
     };

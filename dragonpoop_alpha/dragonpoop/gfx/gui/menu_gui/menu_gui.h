@@ -38,6 +38,10 @@ namespace dragonpoop
         void removeButtons( void );
         //recreate all buttons
         void redoButtons( void );
+        //returns true if button was clicked
+        bool wasClicked( const char *btn_name );
+        //override to do processing
+        virtual void doProcessing( dpthread_lock *thd, gui_writelock *g );
         
     public:
         

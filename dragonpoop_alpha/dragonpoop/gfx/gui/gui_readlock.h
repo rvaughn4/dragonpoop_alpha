@@ -56,6 +56,8 @@ namespace dragonpoop
         bool isEditable( void );
         //returns true if hoverable
         bool isHoverable( void );
+        //returns true if gui should swoosh in and out
+        bool isFade( void );
 
         friend class gui;
     };

@@ -101,4 +101,10 @@ namespace dragonpoop
         return this->t->isHoverable();
     }
     
+    //returns true if gui should swoosh in and out
+    bool gui_readlock::isFade( void )
+    {
+        return this->t->isFade();
+    }
+    
 };

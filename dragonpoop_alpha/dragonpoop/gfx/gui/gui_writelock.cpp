@@ -215,4 +215,16 @@ namespace dragonpoop
         return this->t->isHoverable();
     }
     
+    //returns true if gui should swoosh in and out
+    bool gui_writelock::isFade( void )
+    {
+        return this->t->isFade();
+    }
+    
+    //sets fade mode
+    void gui_writelock::setFade( bool b )
+    {
+        this->t->setFade( b );
+    }
+
 };

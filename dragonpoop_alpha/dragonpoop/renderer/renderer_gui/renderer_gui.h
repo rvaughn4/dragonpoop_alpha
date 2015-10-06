@@ -26,7 +26,7 @@ namespace dragonpoop
         
         core *c;
         dpid id, pid, hover_id;
-        bool bHasFg, bHasBg, bIsAlive, bIsHover, bIsEdit;
+        bool bHasFg, bHasBg, bIsAlive, bIsHover, bIsEdit, bIsFade;
         gui_dims pos;
         gui_ref *g;
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg;

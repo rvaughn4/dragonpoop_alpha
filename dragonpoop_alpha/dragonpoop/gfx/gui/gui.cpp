@@ -52,6 +52,7 @@ namespace dragonpoop
         this->bIsHover = 0;
         this->bIsEdit = 0;
         this->margin_size = 0;
+        this->bIsFade = 1;
     }
     
     //dtor
@@ -187,6 +188,14 @@ namespace dragonpoop
             this->handleKbEvent( &this->skb, this->bKeyDown );
             this->bKeyInput = 0;
         }
+        
+        this->doProcessing( thd, g );
+    }
+    
+    //do processing
+    void gui::doProcessing( dpthread_lock *thd, gui_writelock *g )
+    {
+        
     }
     
     //returns id
@@ -1132,6 +1141,18 @@ namespace dragonpoop
     unsigned int gui::getMargin( void )
     {
         return this->margin_size;
+    }
+    
+    //returns true if gui should swoosh in and out
+    bool gui::isFade( void )
+    {
+        return this->bIsFade;
+    }
+    
+    //sets fade mode
+    void gui::setFade( bool b )
+    {
+        this->bIsFade = b;
     }
     
 };

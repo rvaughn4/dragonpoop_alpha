@@ -18,6 +18,8 @@ namespace dragonpoop
         this->setText( txt );
         this->setHoverMode( bHasBg );
         this->setEditMode( 0 );
+        this->setFade( 0 );
+        this->bWasClicked = 0;
     }
     
     //dtor
@@ -32,4 +34,19 @@ namespace dragonpoop
         bm->loadFile( "white_gui_box.bmp" );
     }
 
+    //returns true if clicked
+    bool button_gui::wasClicked( void )
+    {
+        bool r = this->bWasClicked;
+        this->bWasClicked = 0;
+        return r;
+    }
+    
+    //override to handle mouse button
+    void button_gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
+    {
+        this->gui::handleMouseClick( x, y, isRight, isDown );
+        this->bWasClicked = this->bWasClicked | isDown;
+    }
+    
 };

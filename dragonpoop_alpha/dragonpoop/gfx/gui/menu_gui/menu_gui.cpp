@@ -4,6 +4,7 @@
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../../gfx_ref.h"
 #include "../../gfx_writelock.h"
+#include "../../../core/core.h"
 
 namespace dragonpoop
 {
@@ -20,7 +21,8 @@ namespace dragonpoop
         this->setEditMode( 0 );
         this->enableBg( 1 );
         this->enableFg( 0 );
-        
+        this->setFade( 1 );
+
         this->sz = bh;
         if( txt )
         {
@@ -43,10 +45,17 @@ namespace dragonpoop
     //dtor
     menu_gui::~menu_gui( void )
     {
+        shared_obj_writelock *l;
+        shared_obj_guard o;
+        
+        l = (shared_obj_writelock *)o.tryWriteLock( this, 2000, "menu_gui::~menu_gui" );
+        
         this->removeButtons();
         if( this->btitle )
             delete this->btitle;
         delete this->g;
+        
+        o.unlock();
     }
     
     //override to paint background texture
@@ -163,6 +172,35 @@ namespace dragonpoop
         this->getDimensions( &gp );
         this->setWidthHeight( gp.w, this->last_y );
         this->redraw();
+    }
+    
+    //returns true if button was clicked
+    bool menu_gui::wasClicked( const char *btn_name )
+    {
+        unsigned int i, e;
+        menu_gui_btn *p;
+        bool r = 0;
+        
+        e = (unsigned int)this->btns.size();
+        for( i = 0; i < e; i++ )
+        {
+            p = &this->btns[ i ];
+            if( btn_name && p->s.compare( btn_name ) != 0 )
+                continue;
+            r |= p->b->wasClicked();
+        }
+        
+        return r;
+    }
+    
+    //do processing
+    void menu_gui::doProcessing( dpthread_lock *thd, gui_writelock *g )
+    {
+        
+        if( this->wasClicked( "1" ) )
+            this->addButton( "derp" );
+        if( this->wasClicked( "derp" ) )
+            this->getCore()->kill();
     }
     
 };
