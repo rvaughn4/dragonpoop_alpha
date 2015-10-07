@@ -18,7 +18,7 @@ namespace dragonpoop
     }
     
     //generate gui
-    gui *root_gui_factory::genGui( gfx_writelock *g, dpid id )
+    gui *root_gui_factory::genGui( gfx_writelock *g, dpid id, dpid pid )
     {
         return new root_gui( g, id );
     }

@@ -13,5 +13,7 @@
 
 #include "button_gui/button_guis.h"
 #include "menu_gui/menu_guis.h"
+#include "root_gui/root_guis.h"
+#include "perf_stats_gui/perf_stats_guis.h"
 
 #endif

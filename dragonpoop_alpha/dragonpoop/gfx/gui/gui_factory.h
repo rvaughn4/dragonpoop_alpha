@@ -32,7 +32,7 @@ namespace dragonpoop
         //make gui
         gui *makeGui( dpthread_lock *thd, gui *p );
         //generate gui
-        virtual gui *genGui( gfx_writelock *g, dpid id );
+        virtual gui *genGui( gfx_writelock *g, dpid id, dpid pid );
         
     public:
         

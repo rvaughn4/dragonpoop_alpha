@@ -63,7 +63,10 @@ namespace dragonpoop
         if( !fl )
             return 0;
         
-        r = this->genGui( fl, thd->genId() );
+        if( p )
+            r = this->genGui( fl, thd->genId(), p->getId() );
+        else
+            r = this->genGui( fl, thd->genId(), dpid_null() );
         if( !r || !p )
             return r;
         
@@ -76,7 +79,7 @@ namespace dragonpoop
     }
     
     //generate gui
-    gui *gui_factory::genGui( gfx_writelock *g, dpid id )
+    gui *gui_factory::genGui( gfx_writelock *g, dpid id, dpid pid )
     {
         return 0;
     }

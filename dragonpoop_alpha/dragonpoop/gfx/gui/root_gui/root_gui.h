@@ -19,7 +19,8 @@ namespace dragonpoop
         
         gfx_ref *g;
         menu_gui *esc_menu;
-        bool esc_menu_is_show, esc_menu_do_show;
+        gui *perf_stats;
+        bool esc_menu_is_show, esc_menu_do_show, perf_open;
         uint64_t last_esc_menu_process;
         
     protected:
@@ -36,6 +37,8 @@ namespace dragonpoop
         void hideEscapeMenu( void );
         //show escape menu
         void showEscapeMenu( void );
+        //show perf stats
+        void showPerfStats( void );
         
     public:
         

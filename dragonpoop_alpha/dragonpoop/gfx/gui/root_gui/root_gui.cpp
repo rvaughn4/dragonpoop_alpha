@@ -9,6 +9,7 @@
 #include "../../gfx_writelock.h"
 #include "../../../core/dpthread/dpthread_lock.h"
 #include "../../../core/core.h"
+#include "../perf_stats_gui/perf_stats_gui.h"
 
 namespace dragonpoop
 {
@@ -25,6 +26,9 @@ namespace dragonpoop
         this->setPosition( 0, 0 );
         this->setWidthHeight( 1920, 1080 );
         
+        this->perf_stats = 0;
+        
+        this->perf_open = 0;
         this->esc_menu = 0;
         this->esc_menu_is_show = 0;
         this->esc_menu_do_show = 0;
@@ -35,6 +39,8 @@ namespace dragonpoop
     {
         if( this->esc_menu )
             delete this->esc_menu;
+        if( this->perf_stats )
+            delete this->perf_stats;
         delete this->g;
     }
     
@@ -71,7 +77,7 @@ namespace dragonpoop
                 gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
                 if( gl )
                 {
-                    this->esc_menu = new menu_gui( gl, this->genId(), this->getId(), 0, 0, 200, 40, 40, "Escape Menu" );
+                    this->esc_menu = new menu_gui( gl, this->genId(), this->getId(), 0, 0, 300, 40, 40, "Escape Menu" );
                     this->addGui( this->esc_menu );
                     
                     mw = (menu_gui_writelock *)o.tryWriteLock( this->esc_menu, 1000, "root_gui::doProcessing" );
@@ -100,25 +106,48 @@ namespace dragonpoop
                     this->processEscapeMenu( mr );
             }
         }
+        
+        if( this->perf_open )
+        {
+            if( this->perf_stats )
+                delete this->perf_stats;
+            this->perf_stats = 0;
+            
+            gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
+            if( gl )
+            {
+                this->perf_stats = new perf_stats_gui( gl, this->genId(), this->getId() );
+                this->addGui( this->perf_stats );
+            }
+            this->perf_open = 0;
+        }
     }
     
     //populate escape menu
     void root_gui::populateEscapeMenu( menu_gui_writelock *m )
     {
-        m->addButton( "Quit" );
-        m->addButton( "Close" );
+        m->addButton( "Performance Stats" );
+        m->addButton( "Graphics Options" );
+        m->addButton( "Quit Game" );
+        m->addButton( "Close This Menu" );
     }
     
     //process escape menu clicks
     void root_gui::processEscapeMenu( menu_gui_readlock *m )
     {
-        if( m->wasClicked( "Quit" ) )
+        if( m->wasClicked( "Performance Stats" ) )
+        {
+            this->hideEscapeMenu();
+            this->showPerfStats();
+            return;
+        }
+        if( m->wasClicked( "Quit Game" ) )
         {
             this->hideEscapeMenu();
             this->getCore()->kill();
             return;
         }
-        if( m->wasClicked( "Close" ) )
+        if( m->wasClicked( "Close This Menu" ) )
         {
             this->hideEscapeMenu();
             return;
@@ -135,6 +164,12 @@ namespace dragonpoop
     void root_gui::showEscapeMenu( void )
     {
         this->esc_menu_do_show = 1;
+    }
+    
+    //show perf stats
+    void root_gui::showPerfStats( void )
+    {
+        this->perf_open = 1;
     }
     
 };

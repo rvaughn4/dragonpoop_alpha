@@ -211,6 +211,7 @@ namespace dragonpoop
         friend class gui_readlock;
         friend class gui_writelock;
         friend class gfx;
+        friend class gui_factory;
         
     };
     
