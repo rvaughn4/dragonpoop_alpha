@@ -11,6 +11,7 @@ namespace dragonpoop
     class menu_gui_writelock;
     class menu_gui_readlock;
     class gfx_ref;
+    class perf_stats_gui;
     
     class root_gui : public gui
     {
@@ -19,7 +20,7 @@ namespace dragonpoop
         
         gfx_ref *g;
         menu_gui *esc_menu;
-        gui *perf_stats;
+        perf_stats_gui *perf_stats;
         bool esc_menu_is_show, esc_menu_do_show, perf_open;
         uint64_t last_esc_menu_process;
         

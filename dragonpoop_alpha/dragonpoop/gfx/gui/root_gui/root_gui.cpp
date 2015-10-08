@@ -121,6 +121,12 @@ namespace dragonpoop
             }
             this->perf_open = 0;
         }
+        if( this->perf_stats && this->perf_stats->wasClosed() )
+        {
+            delete this->perf_stats;
+            this->perf_stats = 0;
+        }
+        
     }
     
     //populate escape menu

@@ -53,4 +53,16 @@ namespace dragonpoop
         this->t->getGuis( l );
     }
     
+    //return fps
+    float gfx_readlock::getFps( void )
+    {
+        return this->t->getFps();
+    }
+    
+    //return ms each frame
+    unsigned int gfx_readlock::getMsEachFrame( void )
+    {
+        return this->t->getMsEachFrame();
+    }
+    
 };

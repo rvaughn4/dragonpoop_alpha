@@ -42,6 +42,10 @@ namespace dragonpoop
         void getModels( std::list<model *> *l );
         //get guis
         void getGuis( std::list<gui_ref *> *l );
+        //return fps
+        float getFps( void );
+        //return ms each frame
+        unsigned int getMsEachFrame( void );
 
         friend class gfx;
     };
