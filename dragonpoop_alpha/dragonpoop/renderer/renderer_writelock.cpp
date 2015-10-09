@@ -65,6 +65,12 @@ namespace dragonpoop
         return this->t->getMsPerFrame();
     }
 
+    //get renderer name
+    void renderer_writelock::getName( std::string *s )
+    {
+        this->t->getName( s );
+    }
+    
     //return guis
     void renderer_writelock::getChildrenGuis( std::list<renderer_gui *> *l, dpid pid )
     {

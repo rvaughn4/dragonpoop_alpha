@@ -7,6 +7,8 @@
 #include "../../gfx_writelock.h"
 #include "../../gfx_ref.h"
 #include "../button_gui/button_gui.h"
+#include "../../../renderer/renderer_ref.h"
+#include "../../../renderer/renderer_readlock.h"
 
 #include <sstream>
 
@@ -54,25 +56,38 @@ namespace dragonpoop
     {
         uint64_t t;
         std::stringstream ss;
-        shared_obj_guard o;
+        std::string s;
+        shared_obj_guard og, o;
         gfx_readlock *gl;
+        renderer_ref *rr;
+        renderer_readlock *rl;
         
         if( this->bclose->wasClicked() )
             this->bDoClose = 1;
         
         t = thd->getTicks();
-        if( t - this->t_last_update < 2000 )
+        if( t - this->t_last_update < 4000 )
             return;
         this->t_last_update = t;
         
-        gl = (gfx_readlock *)o.tryReadLock( this->g, 1000, "perf_stats_gui::doProcessing" );
+        gl = (gfx_readlock *)og.tryReadLock( this->g, 1000, "perf_stats_gui::doProcessing" );
         if( !gl )
             return;
-        
         ss << "Performance Statistics\r\n";
-        ss << "\r\nRenderer\r\n";
-        ss << "\t" << gl->getFps() << " frames per second\r\n";
-        ss << "\t" << gl->getMsEachFrame() << " ms per frame\r\n";
+        
+        rr = gl->getRenderer();
+        if( rr )
+        {
+            rl = (renderer_readlock *)o.tryReadLock( rr, 100, "perf_stats_gui::doProcessing" );
+            if( rl )
+            {
+                rl->getName( &s );
+                ss << "\r\nRenderer ( " << s << " )\r\n";
+                ss << "\t" << rl->getFps() << " frames per second\r\n";
+                ss << "\t" << rl->getMsPerFrame() << " ms per frame\r\n";
+            }
+        }
+        
         
         this->setText( ss.str().c_str() );
         this->redraw();

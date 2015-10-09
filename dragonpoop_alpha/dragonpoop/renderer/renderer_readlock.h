@@ -3,6 +3,7 @@
 #define dragonpoop_renderer_readlock_h
 
 #include "../core/shared_obj/shared_obj_readlock.h"
+#include <string>
 
 namespace dragonpoop
 {
@@ -33,6 +34,8 @@ namespace dragonpoop
         float getFps( void );
         //return ms each frame
         unsigned int getMsPerFrame( void );
+        //get renderer name
+        void getName( std::string *s );
 
         friend class renderer;
     };

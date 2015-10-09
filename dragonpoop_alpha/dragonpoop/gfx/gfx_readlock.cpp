@@ -65,4 +65,10 @@ namespace dragonpoop
         return this->t->getMsEachFrame();
     }
     
+    //return renderer
+    renderer_ref *gfx_readlock::getRenderer( void )
+    {
+        return this->t->getRenderer();
+    }
+
 };

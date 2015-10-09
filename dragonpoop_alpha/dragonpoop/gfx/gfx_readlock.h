@@ -13,6 +13,7 @@ namespace dragonpoop
     class model_ref;
     class model;
     class gui_ref;
+    class renderer_ref;
 
     class gfx_readlock : public shared_obj_readlock
     {
@@ -46,6 +47,8 @@ namespace dragonpoop
         float getFps( void );
         //return ms each frame
         unsigned int getMsEachFrame( void );
+        //return renderer
+        renderer_ref *getRenderer( void );
 
         friend class gfx;
     };

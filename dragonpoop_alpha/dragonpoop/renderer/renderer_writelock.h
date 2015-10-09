@@ -4,6 +4,7 @@
 
 #include "../core/shared_obj/shared_obj_writelock.h"
 #include <list>
+#include <string>
 #include "../core/dpid/dpid.h"
 
 namespace dragonpoop
@@ -54,6 +55,8 @@ namespace dragonpoop
         float getFps( void );
         //return ms each frame
         unsigned int getMsPerFrame( void );
+        //get renderer name
+        void getName( std::string *s );
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //get hovering gui id

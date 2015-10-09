@@ -636,6 +636,12 @@ namespace dragonpoop
         return (unsigned int)this->ms_each_frame;
     }
     
+    //get renderer name
+    void renderer::getName( std::string *s )
+    {
+        
+    }
+    
     //return guis
     void renderer::getChildrenGuis( std::list<renderer_gui *> *ll, dpid pid )
     {

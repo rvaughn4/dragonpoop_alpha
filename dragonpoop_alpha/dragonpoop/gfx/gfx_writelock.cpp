@@ -125,4 +125,10 @@ namespace dragonpoop
         this->t->setRootGui( g );
     }
     
+    //return renderer
+    renderer_ref *gfx_writelock::getRenderer( void )
+    {
+        return this->t->getRenderer();
+    }
+    
 };

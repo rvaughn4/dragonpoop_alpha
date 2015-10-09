@@ -105,6 +105,8 @@ namespace dragonpoop
         float getFps( void );
         //return ms each frame
         unsigned int getMsPerFrame( void );
+        //get renderer name
+        virtual void getName( std::string *s );
         //render model instance group
         virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world ) = 0;
         //render gui

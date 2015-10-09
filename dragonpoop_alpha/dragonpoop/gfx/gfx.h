@@ -28,6 +28,7 @@ namespace dragonpoop
     class gfx_ref;
     class gui_factory_ref;
     class gui_factory;
+    class renderer_ref;
 
     class gfx : public shared_obj
     {
@@ -116,6 +117,8 @@ namespace dragonpoop
         unsigned int getMsEachFrame( void );
         //set root gui factory
         void setRootGui( gui_factory *g );
+        //return renderer
+        renderer_ref *getRenderer( void );
 
     public:
 

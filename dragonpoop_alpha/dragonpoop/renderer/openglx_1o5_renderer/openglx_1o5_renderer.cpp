@@ -345,6 +345,12 @@ namespace dragonpoop
 
     }
 
+    //get renderer name
+    void openglx_1o5_renderer::getName( std::string *s )
+    {
+        s->assign( "X11 OpenGL 1.5" );
+    }
+    
     //return screen/window width
     unsigned int openglx_1o5_renderer::getWidth( void )
     {

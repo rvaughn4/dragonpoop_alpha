@@ -99,6 +99,8 @@ namespace dragonpoop
         virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world );
         //render gui
         virtual void renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world );
+        //get renderer name
+        virtual void getName( std::string *s );
 
     public:
 

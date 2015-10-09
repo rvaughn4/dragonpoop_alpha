@@ -41,4 +41,10 @@ namespace dragonpoop
         return this->t->getMsPerFrame();
     }
     
+    //get renderer name
+    void renderer_readlock::getName( std::string *s )
+    {
+        this->t->getName( s );
+    }
+    
 };

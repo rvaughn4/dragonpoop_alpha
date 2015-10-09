@@ -898,4 +898,19 @@ namespace dragonpoop
         this->root_factory = (gui_factory_ref *)gl->getRef();
     }
     
+    //return renderer
+    renderer_ref *gfx::getRenderer( void )
+    {
+        shared_obj_guard o;
+        renderer_writelock *l;
+        
+        if( !this->r )
+            return 0;
+        l = (renderer_writelock *)o.tryWriteLock( this->r, 1000, "gfx::getRenderer" );
+        if( !l )
+            return 0;
+        
+        return (renderer_ref *)l->getRef();
+    }
+    
 };
