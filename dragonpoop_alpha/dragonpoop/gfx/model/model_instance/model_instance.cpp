@@ -839,4 +839,16 @@ namespace dragonpoop
         return this->bIsGui;
     }
     
+    //get position
+    void model_instance::getPosition( dpposition *p )
+    {
+        p->copy( &this->pos );
+    }
+    
+    //set position
+    void model_instance::setPosition( dpposition *p )
+    {
+        this->pos.copy( p );
+    }
+    
 };

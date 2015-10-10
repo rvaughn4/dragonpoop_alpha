@@ -68,7 +68,7 @@ int main( int argc, const char * argv[] )
     
     main_pause( c, 5 );
     gl = (dragonpoop::gfx_writelock *)o.writeLock( gr, "main" );
-    gl->startAnimation( "low_dragon", mid, "ms3d_all", 1, 2.0f );
+    gl->startAnimation( "low_dragon", mid, "ms3d_all", 0, 4.0f );
   //  gl->startAnimation( "low_dragon", mmid, "ms3d_all", 1, 1 );
     o.unlock();
     

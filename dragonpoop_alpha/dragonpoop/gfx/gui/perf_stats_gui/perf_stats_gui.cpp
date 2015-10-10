@@ -9,6 +9,7 @@
 #include "../button_gui/button_gui.h"
 #include "../../../renderer/renderer_ref.h"
 #include "../../../renderer/renderer_readlock.h"
+#include "../../dpposition/dpposition.h"
 
 #include <sstream>
 
@@ -62,6 +63,8 @@ namespace dragonpoop
         gfx_readlock *gl;
         renderer_ref *rr;
         renderer_readlock *rl;
+        dpposition pp;
+        dpposition_inner ppi;
         int i;
         
         if( this->bclose->wasClicked() )
@@ -81,6 +84,14 @@ namespace dragonpoop
         ss << "\e020\fsans \r\nGraphics \flcd \r\n";
         ss << "\t" << gl->getModelCount() << " models open\r\n";
         ss << "\t" << gl->getGuiCount() << " guis open\r\n";
+
+        //camera
+        gl->getCameraPosition( &pp );
+        pp.getData( &ppi );
+        ss << "\e020\fsans \r\nCamera \flcd \r\n";
+        ss << "\tX " << ppi.end.whole.x << " +  " << ppi.end.fract.x << " meters\r\n";
+        ss << "\tY " << ppi.end.whole.y << " +  " << ppi.end.fract.y << " meters\r\n";
+        ss << "\tZ " << ppi.end.whole.z << " +  " << ppi.end.fract.z << " meters\r\n";
         
         //renderer stats
         rr = gl->getRenderer();

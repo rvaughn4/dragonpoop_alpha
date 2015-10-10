@@ -153,6 +153,15 @@ namespace dragonpoop
                 this->last_r_poll = t;
             }
             o.unlock();
+            
+            dpxyz_f aa;
+            dpposition pp;
+            this->getCameraPosition( &pp );
+            aa.x = 0;
+            aa.y = 1;
+            aa.z = 0;
+            pp.move( &aa, thd->getTicks(), thd->getTicks() + 4000, 0 );
+            this->setCameraPosition( &pp );
         }
         
         this->runLoaders( thd );

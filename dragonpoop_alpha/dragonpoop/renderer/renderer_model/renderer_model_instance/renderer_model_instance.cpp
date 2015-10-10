@@ -15,6 +15,8 @@
 #include "../../renderer_writelock.h"
 #include "../renderer_model_material/renderer_model_material.h"
 #include "../renderer_model_readlock.h"
+#include "../../../core/dpthread/dpthread_lock.h"
+
 #include <math.h>
 
 namespace dragonpoop
@@ -26,6 +28,7 @@ namespace dragonpoop
         this->m = (model_instance_ref *)ml->getRef();
         this->id = ml->getId();
         this->bIsSynced = 0;
+        this->bIsPosSynced = 0;
         ml->setRenderer( this );
     }
     
@@ -352,6 +355,16 @@ namespace dragonpoop
                 this->bIsAnimated = 1;
             }
         }
+        
+        if( !this->bIsPosSynced )
+        {
+            ml = (model_instance_writelock *)o.tryWriteLock( this->m, 3, "renderer_model_instance::run" );
+            if( ml )
+            {
+                ml->getPosition( &this->pos );
+                this->bIsPosSynced = 1;
+            }
+        }
     }
     
     //sync
@@ -577,59 +590,19 @@ namespace dragonpoop
     }
     
     //get model view matrix
-    void renderer_model_instance::getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
+    void renderer_model_instance::getModelViewMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
-        dpxyz_f sz, ct;
-        float f, sw, sh, x, y, z;
+        dpxyz_f pp;
 
-        static float rr;
-        rr += 0.1f;
-        
-        m->getSize( &sz );
-        m->getCenter( &ct );
-        
         out_model_matrix->copy( in_world_matrix );
         
         if( !this->isGui() )
         {
-            f = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
-            f = sqrtf( f );
-            f = 1.0f / f;
-
-            out_model_matrix->translate( 0, 0, -1 );
-            
-            out_model_matrix->scale( f, f, f );
-            out_model_matrix->translate( -ct.x, -ct.y, -ct.z - sz.z );
-            out_model_matrix->rotateY( rr );
+            r->getPositionRelativeToCamera( &this->pos, thd->getTicks(), &pp );
+            out_model_matrix->translate( pp.x, pp.y, pp.z - 80 );
             return;
         }
         
-        sw = 1980;
-        sh = 1080;
-        
-        x = this->gui_pos.x;
-        y = this->gui_pos.y;
-        if( 1 )
-        {
-            x = ( sw - this->gui_pos.w ) / 2;
-            y = ( sh - this->gui_pos.h ) / 2;
-        }
-
-        x = ( ( x * 2.0f / sw ) - 1.0f ) + ( this->gui_pos.w / sw );
-        y = ( ( y * 2.0f / sh ) - 1.0f ) + ( this->gui_pos.h / sh );
-        z = ( 1.0f / sz.z ) + 1;
-        out_model_matrix->translate( x, -y, -z );
-        
-        x = this->gui_pos.w / sw;
-        y = this->gui_pos.h / sh;
-        x *= 1.0f / sz.x;
-        y *= 1.0f / sz.y;
-        z = 1.0f / sz.z;
-        out_model_matrix->scale( x, y, z );
-        
-        out_model_matrix->translate( -ct.x, -ct.y, -ct.z );
-        
-        //out_model_matrix->rotateY( rr );
     }
     
     //get dimensions
@@ -642,6 +615,24 @@ namespace dragonpoop
     bool renderer_model_instance::isGui( void )
     {
         return this->bIsGui;
+    }
+    
+    //get position
+    void renderer_model_instance::getPosition( dpposition *p )
+    {
+        p->copy( &this->pos );
+    }
+    
+    //get position
+    dpposition *renderer_model_instance::_getPosition( void )
+    {
+        return &this->pos;
+    }
+    
+    //sync position
+    void renderer_model_instance::syncPosition( void )
+    {
+        this->bIsPosSynced = 0;
     }
     
 };

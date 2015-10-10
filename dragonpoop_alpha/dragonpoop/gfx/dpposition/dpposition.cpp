@@ -34,13 +34,13 @@ namespace dragonpoop
         arg->getDiff( &dx1, &dy1, &dz1, tm_epoch_now );
         this->getDiff( &dx2, &dy2, &dz2, arg );
         
-        dx0 += dx1 + dx2;
-        dy0 += dy1 + dy2;
-        dz0 += dz1 + dz2;
+        dx2 -= dx1 + dx0;
+        dy2 -= dy1 + dy0;
+        dz2 -= dz1 + dz0;
         
-        pout->x = dx0;
-        pout->y = dy0;
-        pout->z = dz0;
+        pout->x = -dx2;
+        pout->y = -dy2;
+        pout->z = -dz2;
     }
     
     //set location
@@ -160,9 +160,25 @@ namespace dragonpoop
         this->i.end.whole.x += ix;
         this->i.end.whole.y += iy;
         this->i.end.whole.z += iz;
-        this->i.end.fract.x += dx;
-        this->i.end.fract.y += dy;
-        this->i.end.fract.z += dz;
+
+        dx += this->i.start.fract.x;
+        ix = (int64_t)dx;
+        dx -= (double)ix;
+        this->i.start.fract.x = dx;
+        this->i.start.whole.x += ix;
+        
+        dy += this->i.start.fract.y;
+        iy = (int64_t)dy;
+        dy -= (double)iy;
+        this->i.start.fract.y = dy;
+        this->i.start.whole.y += iy;
+        
+        dz += this->i.start.fract.z;
+        iz = (int64_t)dz;
+        dz -= (double)iz;
+        this->i.start.fract.z = dz;
+        this->i.start.whole.z += iz;
+
         this->i.end.bReverse = doReverse;
     }
     
@@ -186,12 +202,28 @@ namespace dragonpoop
         dy -= (double)iy;
         dz -= (double)iz;
         
-        this->i.start.whole.x = ix;
-        this->i.start.whole.y = iy;
-        this->i.start.whole.z = iz;
+        this->i.start.whole.x += ix;
+        this->i.start.whole.y += iy;
+        this->i.start.whole.z += iz;
+        
+        dx += this->i.start.fract.x;
+        ix = (int64_t)dx;
+        dx -= (double)ix;
         this->i.start.fract.x = dx;
+        this->i.start.whole.x += ix;
+        
+        dy += this->i.start.fract.y;
+        iy = (int64_t)dy;
+        dy -= (double)iy;
         this->i.start.fract.y = dy;
+        this->i.start.whole.y += iy;
+        
+        dz += this->i.start.fract.z;
+        iz = (int64_t)dz;
+        dz -= (double)iz;
         this->i.start.fract.z = dz;
+        this->i.start.whole.z += iz;
+
         this->i.start.bReverse = this->i.end.bReverse;
         this->i.start.t = t_epoch_now;
         

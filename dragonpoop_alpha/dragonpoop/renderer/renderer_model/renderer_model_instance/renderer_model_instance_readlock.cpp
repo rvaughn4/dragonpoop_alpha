@@ -108,9 +108,9 @@ namespace dragonpoop
     }
     
     //get model view matrix
-    void renderer_model_instance_readlock::getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
+    void renderer_model_instance_readlock::getModelViewMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
-        this->t->getModelViewMatrix( r, m, in_world_matrix, out_model_matrix );
+        this->t->getModelViewMatrix( thd, r, m, in_world_matrix, out_model_matrix );
     }
 
     //get dimensions

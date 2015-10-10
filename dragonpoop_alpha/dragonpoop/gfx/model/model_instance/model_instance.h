@@ -4,11 +4,13 @@
 
 #include "../../../core/shared_obj/shared_obj.h"
 #include "../../../core/dpid/dpid.h"
-#include <string>
 #include "../model_component/model_components.h"
 #include "../../../core/dpbtree/dpid_btree.h"
 #include "../../../core/dpbtree/dpid_multibtree.h"
 #include "../../../core/dpbtree/dpmultibtree.h"
+#include "../../dpposition/dpposition.h"
+
+#include <string>
 #include <atomic>
 
 namespace dragonpoop
@@ -65,6 +67,7 @@ namespace dragonpoop
         std::atomic<bool> bIsSynced, bIsGui;
         int16_t j_ctr;
         model_gui_pos gui_pos;
+        dpposition pos;
         
         //delete all components
         void deleteComponents( void );
@@ -198,6 +201,10 @@ namespace dragonpoop
         void setGuiMode( bool b );
         //returns true if gui
         bool isGui( void );
+        //get position
+        void getPosition( dpposition *p );
+        //set position
+        void setPosition( dpposition *p );
         
     public:
         

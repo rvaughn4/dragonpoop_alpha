@@ -480,7 +480,7 @@ namespace dragonpoop
         dpmatrix wmat;
         uint64_t t, ot;
 
-        mi->getModelViewMatrix( r, m, m_world, &wmat );
+        mi->getModelViewMatrix( thd, r, m, m_world, &wmat );
         glLoadMatrixf( wmat.getRaw4by4() );
 
         gmat = (openglx_1o5_renderer_model_material *)mat;

@@ -23,6 +23,7 @@ namespace dragonpoop
     class renderer_gui_readlock;
     class renderer_gui;
     class dpposition;
+    struct dpxyz_f;
 
     class renderer_writelock : public shared_obj_writelock
     {
@@ -70,6 +71,8 @@ namespace dragonpoop
         void getCameraPosition( dpposition *p );
         //sync camera position
         void syncCamera( void );
+        //get position difference from camera
+        void getPositionRelativeToCamera( dpposition *in_obj_pos, uint64_t t_epoch_now, dpxyz_f *out_xyz );
 
         friend class renderer;
     };

@@ -16,6 +16,7 @@ namespace dragonpoop
     class model_instance_animation;
     class model_instance_joint;
     struct model_gui_pos;
+    class dpposition;
     
     class model_instance_readlock : public shared_obj_readlock
     {
@@ -73,6 +74,8 @@ namespace dragonpoop
         model_gui_pos *getGuiDimensions( void );
         //returns true if gui
         bool isGui( void );
+        //get position
+        void getPosition( dpposition *p );
 
         friend class model_instance;
     };

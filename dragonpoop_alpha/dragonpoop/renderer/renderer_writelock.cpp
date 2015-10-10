@@ -107,4 +107,10 @@ namespace dragonpoop
         this->t->syncCamera();
     }
     
+    //get position difference from camera
+    void renderer_writelock::getPositionRelativeToCamera( dpposition *in_obj_pos, uint64_t t_epoch_now, dpxyz_f *out_xyz )
+    {
+        this->t->getPositionRelativeToCamera( in_obj_pos, t_epoch_now, out_xyz );
+    }
+    
 };

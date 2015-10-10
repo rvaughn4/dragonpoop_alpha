@@ -141,7 +141,7 @@ namespace dragonpoop
                 this->bDoRun = 0;
             else
             {
-                this->syncCamera();
+                this->_syncCam();
                 this->runModels( thd, r );
                 this->runGuis( thd, r );
                 this->render( thd, r );
@@ -855,6 +855,12 @@ namespace dragonpoop
     void renderer::syncCamera( void )
     {
         this->bCamSync = 1;
+    }
+    
+    //get position difference from camera
+    void renderer::getPositionRelativeToCamera( dpposition *in_obj_pos, uint64_t t_epoch_now, dpxyz_f *out_xyz )
+    {
+        this->cam_pos.getDifference( in_obj_pos, t_epoch_now, out_xyz );
     }
     
     //sync camera

@@ -20,6 +20,7 @@ namespace dragonpoop
     class model_instance_animation;
     class model_instance_joint;
     struct model_gui_pos;
+    class dpposition;
     
     class model_instance_writelock : public shared_obj_writelock
     {
@@ -105,6 +106,10 @@ namespace dragonpoop
         void setGuiMode( bool b );
         //returns true if gui
         bool isGui( void );
+        //get position
+        void getPosition( dpposition *p );
+        //set position
+        void setPosition( dpposition *p );
 
         friend class model_instance;
     };

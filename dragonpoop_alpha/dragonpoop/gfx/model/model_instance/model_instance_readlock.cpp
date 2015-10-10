@@ -136,5 +136,11 @@ namespace dragonpoop
     {
         return this->t->isGui();
     }
+    
+    //get position
+    void model_instance_readlock::getPosition( dpposition *p )
+    {
+        this->t->getPosition( p );
+    }
 
 };

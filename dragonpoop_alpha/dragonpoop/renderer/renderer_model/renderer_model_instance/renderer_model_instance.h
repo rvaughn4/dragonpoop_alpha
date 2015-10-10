@@ -4,7 +4,6 @@
 
 #include "../../../core/shared_obj/shared_obj.h"
 #include "../../../core/dpid/dpid.h"
-#include <string>
 #include "../../../gfx/model/model_component/model_components.h"
 #include "../../../core/dpbtree/dpid_btree.h"
 #include "../../../core/dpbtree/dpid_multibtree.h"
@@ -12,6 +11,9 @@
 #include "../../../core/bytetree/dpid_bytetree.h"
 #include "../../../gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.h"
 #include "../../../gfx/model/model_instance/model_instance.h"
+#include "../../../gfx/dpposition/dpposition.h"
+
+#include <string>
 
 namespace dragonpoop
 {
@@ -46,10 +48,11 @@ namespace dragonpoop
             dpid_multibtree byowner;
             dpmultibtree bytype;
         } comps;
-        std::atomic<bool> bIsSynced, bIsAnimated, bIsGui;
+        std::atomic<bool> bIsSynced, bIsAnimated, bIsGui, bIsPosSynced;
         model_instance_ref *m;
         model_instance_joint_cache jnts;
         model_gui_pos gui_pos;
+        dpposition pos;
 
         //delete all components
         void deleteComponents( void );
@@ -119,11 +122,17 @@ namespace dragonpoop
         //recompute animation joint matrixes
         void redoMatrixes( renderer_model_instance_writelock *m, uint64_t t );
         //get model view matrix
-        void getModelViewMatrix( renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix );
+        void getModelViewMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix );
         //get dimensions
         model_gui_pos *getGuiDimensions( void );
         //returns true if gui
         bool isGui( void );
+        //get position
+        void getPosition( dpposition *p );
+        //get position
+        dpposition *_getPosition( void );
+        //sync position
+        void syncPosition( void );
 
     public:
         

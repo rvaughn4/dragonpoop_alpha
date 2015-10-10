@@ -221,4 +221,16 @@ namespace dragonpoop
         return this->t->isGui();
     }
 
+    //get position
+    void model_instance_writelock::getPosition( dpposition *p )
+    {
+        this->t->getPosition( p );
+    }
+    
+    //set position
+    void model_instance_writelock::setPosition( dpposition *p )
+    {
+        this->t->setPosition( p );
+    }
+    
 };
