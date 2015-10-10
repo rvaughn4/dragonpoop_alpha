@@ -47,6 +47,7 @@ namespace dragonpoop
         float fps;
         bool lb, rb, bshift, bctrl, bcaps, bdocut;
         uint64_t t_last_motion;
+        unsigned int tex_mem;
         
         //draw vb
         void drawVb( dpvertexindex_buffer *vb );
@@ -101,6 +102,12 @@ namespace dragonpoop
         virtual void renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world );
         //get renderer name
         virtual void getName( std::string *s );
+        //add texture memory
+        void addTexMemory( unsigned int m );
+        //subtract texture memory
+        void subTexMemory( unsigned int m );
+        //get texture memory used
+        virtual unsigned int getTextureMemory( void );
 
     public:
 
@@ -112,6 +119,9 @@ namespace dragonpoop
         friend class openglx_1o5_renderer_readlock;
         friend class openglx_1o5_renderer_writelock;
         friend class openglx_1o5_renderer_ref;
+        friend class openglx_1o5_renderer_model_material;
+        friend class openglx_1o5_renderer_gui;
+        
     };
 
 };

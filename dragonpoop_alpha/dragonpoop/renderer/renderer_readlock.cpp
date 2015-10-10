@@ -47,4 +47,16 @@ namespace dragonpoop
         this->t->getName( s );
     }
     
+    //get texture memory used
+    unsigned int renderer_readlock::getTextureMemory( void )
+    {
+        return this->t->getTextureMemory();
+    }
+    
+    //get vertex memory used
+    unsigned int renderer_readlock::getVertexMemory( void )
+    {
+        return this->t->getVertexMemory();
+    }
+    
 };

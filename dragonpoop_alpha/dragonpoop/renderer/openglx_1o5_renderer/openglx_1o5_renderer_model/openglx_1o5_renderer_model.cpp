@@ -10,9 +10,9 @@ namespace dragonpoop
 {
     
     //ctor
-    openglx_1o5_renderer_model::openglx_1o5_renderer_model( model_writelock *ml ) : renderer_model( ml )
+    openglx_1o5_renderer_model::openglx_1o5_renderer_model( model_writelock *ml, openglx_1o5_renderer *r ) : renderer_model( ml )
     {
-        
+        this->r = r;
     }
     
     //dtor
@@ -53,7 +53,7 @@ namespace dragonpoop
     //generate material
     renderer_model_material *openglx_1o5_renderer_model::genMaterial( model_writelock *ml, model_material *m )
     {
-        return new openglx_1o5_renderer_model_material( ml, m );
+        return new openglx_1o5_renderer_model_material( ml, m, this->r );
     }
     
 };

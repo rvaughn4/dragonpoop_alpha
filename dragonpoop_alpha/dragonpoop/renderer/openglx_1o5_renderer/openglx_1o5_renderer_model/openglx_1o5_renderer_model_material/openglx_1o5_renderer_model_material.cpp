@@ -1,6 +1,8 @@
 
 #include "openglx_1o5_renderer_model_material.h"
 #include "../../../../gfx/model/model_material/model_material.h"
+#include "../../openglx_1o5_renderer.h"
+
 #include <GL/glx.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -9,12 +11,13 @@ namespace dragonpoop
 {
     
     //ctor
-    openglx_1o5_renderer_model_material::openglx_1o5_renderer_model_material( model_writelock *ml, model_material *m ) : renderer_model_material( ml, m )
+    openglx_1o5_renderer_model_material::openglx_1o5_renderer_model_material( model_writelock *ml, model_material *m, openglx_1o5_renderer *r ) : renderer_model_material( ml, m )
     {
         this->tex.diffuse = 0;
         this->tex.alphamask = 0;
         this->tex.bumpmap = 0;
         this->tex.specularmap = 0;
+        this->r = r;
         
         this->sync( ml, m );
     }
@@ -22,10 +25,10 @@ namespace dragonpoop
     //dtor
     openglx_1o5_renderer_model_material::~openglx_1o5_renderer_model_material( void )
     {
-        this->killTex( &this->tex.diffuse );
-        this->killTex( &this->tex.alphamask );
-        this->killTex( &this->tex.bumpmap );
-        this->killTex( &this->tex.specularmap );
+        this->killTex( &this->tex.diffuse, &this->tex.diffuse_sz );
+        this->killTex( &this->tex.alphamask, &this->tex.alphamask_sz );
+        this->killTex( &this->tex.bumpmap, &this->tex.bumpmap_sz );
+        this->killTex( &this->tex.specularmap, &this->tex.specularmap_sz );
     }
     
     //sync with group
@@ -33,10 +36,10 @@ namespace dragonpoop
     {
         this->renderer_model_material::sync( ml, m );
         
-        this->makeTex( &this->tex.diffuse, m->getDiffuseTexture() );
-        this->makeTex( &this->tex.alphamask, m->getAlphaMaskTexture() );
-        this->makeTex( &this->tex.bumpmap, m->getBumpMapTexture() );
-        this->makeTex( &this->tex.specularmap, m->getSpecularMapTexture() );
+        this->makeTex( &this->tex.diffuse, &this->tex.diffuse_sz, m->getDiffuseTexture() );
+        this->makeTex( &this->tex.alphamask, &this->tex.alphamask_sz, m->getAlphaMaskTexture() );
+        this->makeTex( &this->tex.bumpmap, &this->tex.bumpmap_sz, m->getBumpMapTexture() );
+        this->makeTex( &this->tex.specularmap, &this->tex.specularmap_sz, m->getSpecularMapTexture() );
     }
 
     //return diffuse tex
@@ -64,30 +67,35 @@ namespace dragonpoop
     }
     
     //release texture
-    void openglx_1o5_renderer_model_material::killTex( unsigned int *t )
+    void openglx_1o5_renderer_model_material::killTex( unsigned int *t, unsigned int *sz )
     {
         if( !t )
             return;
         if( *t )
+        {
             glDeleteTextures( 1, t );
+            this->r->subTexMemory( *sz );
+        }
+        *sz = 0;
         *t = 0;
     }
     
     //create and load texture
-    void openglx_1o5_renderer_model_material::makeTex( unsigned int *p_tex, dpbitmap *img )
+    void openglx_1o5_renderer_model_material::makeTex( unsigned int *p_tex, unsigned int *psz, dpbitmap *img )
     {
         unsigned int sz, bits, w, h, d, l, m;
         char *buffer;
         bool doMip, doLin;
         dpbitmap ci;
 
-        this->killTex( p_tex );
+        this->killTex( p_tex, psz );
         
         sz = img->getSize();
         w = img->getWidth();
         h = img->getHeight();
         bits = img->getBitsPerPixel();
         buffer = img->getBuffer();
+        *psz = 0;
         
         if( !p_tex || !buffer || !sz || !w || !h || ( bits != 24 && bits != 32 ) )
             return;
@@ -155,6 +163,7 @@ namespace dragonpoop
                 {
                     ci.blit( img, 0 );
                     buffer = ci.getBuffer();
+                    *psz += ci.getSize();
                     glTexImage2D( GL_TEXTURE_2D, l, GL_RGBA8, d, d, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
                     l++;
                 }
@@ -174,9 +183,12 @@ namespace dragonpoop
                 
                 ci.blit( img, 0 );
                 buffer = ci.getBuffer();
+                *psz += ci.getSize();
                 glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, d, d, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
             }
         }
+        
+        this->r->addTexMemory( *psz );
     }
     
 };

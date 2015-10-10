@@ -10,18 +10,20 @@ namespace dragonpoop
     class openglx_1o5_renderer_gui_writelock;
     class openglx_1o5_renderer_gui_readlock;
     class openglx_1o5_renderer_writelock;
+    class openglx_1o5_renderer;
     
     class openglx_1o5_renderer_gui : public renderer_gui
     {
         
     private:
         
-        unsigned int bg_tex, fg_tex;
+        unsigned int bg_tex, bg_tex_sz, fg_tex, fg_tex_sz;
+        openglx_1o5_renderer *r;
         
         //release texture
-        void killTex( unsigned int *t );
+        void killTex( unsigned int *t, unsigned int *sz );
         //create and load texture
-        void makeTex( unsigned int *t, dpbitmap *bm, bool isBg );
+        void makeTex( unsigned int *t, unsigned int *sz, dpbitmap *bm );
 
     protected:
         
@@ -43,7 +45,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        openglx_1o5_renderer_gui( gui_writelock *g );
+        openglx_1o5_renderer_gui( gui_writelock *g, openglx_1o5_renderer *r );
         //dtor
         virtual ~openglx_1o5_renderer_gui( void );
         

@@ -57,6 +57,10 @@ namespace dragonpoop
         unsigned int getMsPerFrame( void );
         //get renderer name
         void getName( std::string *s );
+        //get texture memory used
+        unsigned int getTextureMemory( void );
+        //get vertex memory used
+        unsigned int getVertexMemory( void );
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //get hovering gui id

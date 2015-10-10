@@ -8,6 +8,7 @@ namespace dragonpoop
 {
     
     class dpbitmap;
+    class openglx_1o5_renderer;
     
     class openglx_1o5_renderer_model_material : public renderer_model_material
     {
@@ -17,19 +18,21 @@ namespace dragonpoop
         struct
         {
             unsigned int diffuse, alphamask, bumpmap, specularmap;
+            unsigned int diffuse_sz, alphamask_sz, bumpmap_sz, specularmap_sz;
         } tex;
+        openglx_1o5_renderer *r;
         
     protected:
         
         //release texture
-        void killTex( unsigned int *t );
+        void killTex( unsigned int *t, unsigned int *sz );
         //create and load texture
-        void makeTex( unsigned int *t, dpbitmap *bm );
+        void makeTex( unsigned int *t, unsigned int *sz, dpbitmap *bm );
         
     public:
         
         //ctor
-        openglx_1o5_renderer_model_material( model_writelock *ml, model_material *m );
+        openglx_1o5_renderer_model_material( model_writelock *ml, model_material *m, openglx_1o5_renderer *r );
         //dtor
         virtual ~openglx_1o5_renderer_model_material( void );
         //sync with group

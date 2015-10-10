@@ -6,12 +6,14 @@
 
 namespace dragonpoop
 {
-    
+    class openglx_1o5_renderer;
    
     class openglx_1o5_renderer_model : public renderer_model
     {
         
     private:
+        
+        openglx_1o5_renderer *r;
         
     protected:
         
@@ -31,7 +33,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        openglx_1o5_renderer_model( model_writelock *ml );
+        openglx_1o5_renderer_model( model_writelock *ml, openglx_1o5_renderer *r );
         //dtor
         virtual ~openglx_1o5_renderer_model( void );
         

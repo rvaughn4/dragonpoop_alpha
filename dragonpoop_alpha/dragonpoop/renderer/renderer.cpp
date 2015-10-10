@@ -642,6 +642,18 @@ namespace dragonpoop
         
     }
     
+    //get texture memory used
+    unsigned int renderer::getTextureMemory( void )
+    {
+        return 0;
+    }
+    
+    //get vertex memory used
+    unsigned int renderer::getVertexMemory( void )
+    {
+        return 0;
+    }
+    
     //return guis
     void renderer::getChildrenGuis( std::list<renderer_gui *> *ll, dpid pid )
     {

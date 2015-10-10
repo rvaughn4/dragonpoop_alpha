@@ -36,6 +36,10 @@ namespace dragonpoop
         unsigned int getMsPerFrame( void );
         //get renderer name
         void getName( std::string *s );
+        //get texture memory used
+        unsigned int getTextureMemory( void );
+        //get vertex memory used
+        unsigned int getVertexMemory( void );
 
         friend class renderer;
     };

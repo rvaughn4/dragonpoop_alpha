@@ -61,6 +61,7 @@ namespace dragonpoop
         gfx_readlock *gl;
         renderer_ref *rr;
         renderer_readlock *rl;
+        int i;
         
         if( this->bclose->wasClicked() )
             this->bDoClose = 1;
@@ -83,8 +84,12 @@ namespace dragonpoop
             {
                 rl->getName( &s );
                 ss << "\r\nRenderer ( " << s << " )\r\n";
-                ss << "\t" << rl->getFps() << " frames per second\r\n";
+                ss << "\t" << (int)rl->getFps() << " frames per second\r\n";
                 ss << "\t" << rl->getMsPerFrame() << " ms per frame\r\n";
+                i = rl->getTextureMemory() / 1048576;
+                ss << "\t" << i << " MB texture memory\r\n";
+                i = rl->getVertexMemory() / 1048576;
+                ss << "\t" << i << " MB vertex memory\r\n";
             }
         }
         

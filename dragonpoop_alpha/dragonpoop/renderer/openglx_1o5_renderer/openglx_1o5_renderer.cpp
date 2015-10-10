@@ -410,13 +410,13 @@ namespace dragonpoop
     //generate renderer model
     renderer_model *openglx_1o5_renderer::genModel( model_writelock *ml )
     {
-        return new openglx_1o5_renderer_model( ml );
+        return new openglx_1o5_renderer_model( ml, this );
     }
     
     //generate renderer gui
     renderer_gui *openglx_1o5_renderer::genGui( gui_writelock *ml )
     {
-        return new openglx_1o5_renderer_gui( ml );
+        return new openglx_1o5_renderer_gui( ml, this );
     }
 
     //draw vb
@@ -770,6 +770,24 @@ namespace dragonpoop
         
         if( s.size() > 0 )
             this->renderer::processKbInput( &s, isDown );
+    }
+    
+    //add texture memory
+    void openglx_1o5_renderer::addTexMemory( unsigned int m )
+    {
+        this->tex_mem += m;
+    }
+    
+    //subtract texture memory
+    void openglx_1o5_renderer::subTexMemory( unsigned int m )
+    {
+        this->tex_mem -= m;
+    }
+    
+    //get texture memory used
+    unsigned int openglx_1o5_renderer::getTextureMemory( void )
+    {
+        return this->tex_mem;
     }
     
 };
