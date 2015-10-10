@@ -75,6 +75,10 @@ namespace dragonpoop
         void setRootGui( gui_factory *g );
         //return renderer
         renderer_ref *getRenderer( void );
+        //return model count
+        unsigned int getModelCount( void );
+        //return gui count
+        unsigned int getGuiCount( void );
 
         friend class gfx;
     };

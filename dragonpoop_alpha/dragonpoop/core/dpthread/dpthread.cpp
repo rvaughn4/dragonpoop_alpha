@@ -456,8 +456,8 @@ namespace dragonpoop
             }
 
             td = rl->getDelay();
-            if( !t->b_hipri && td < 16 )
-                td = 16;
+            if( !t->b_hipri && td < 3 )
+                td = 3;
             if( lowest_delay > td )
                 lowest_delay = td;
             td = rl->getLastTime();
@@ -465,14 +465,14 @@ namespace dragonpoop
                 td = t->ticks - rl->getLastTime();
             else
                 td = rl->getDelay();
-     /*       if( td < rl->getDelay() )
+            if( td < rl->getDelay() )
             {
                 t->pushBeenRan( r );
                 delete tl;
                 g.unlock();
                 continue;
             }
-*/
+
             if( !rl->isAlive() )
             {
                 delete tl;

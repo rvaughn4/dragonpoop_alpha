@@ -43,11 +43,13 @@ namespace dragonpoop
         
         this->root_g = 0;
         this->root_factory = 0;
+        this->gui_cnt = 0;
+        this->model_cnt = 0;
 
         this->c = c;
         this->r = 0;
         this->gtsk = new gfx_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 10, 1 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 10, 0 );
         tp->addTask( this->tsk );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 
@@ -324,6 +326,7 @@ namespace dragonpoop
             p = *i;
             gwl->t->models.remove( p );
             delete p;
+            gwl->t->model_cnt--;
         }
         og.unlock();
     }
@@ -450,6 +453,7 @@ namespace dragonpoop
             p = *i;
             gwl->t->guis.remove( p );
             delete p;
+            gwl->t->gui_cnt--;
         }
         og.unlock();
     }
@@ -482,11 +486,17 @@ namespace dragonpoop
         otp.unlock();
         
         p = new model( this->c, nid );
-        this->models.push_back( p );
+        this->model_cnt++;
         
         pl = (model_writelock *)o.writeLock( p, "gfx::createModel" );
         if( !pl )
+        {
+            delete p;
             return 0;
+        }
+
+        this->models.push_back( p );
+        
         s.assign( mname );
         pl->setName( &s );
         
@@ -833,7 +843,10 @@ namespace dragonpoop
         
         r = (gui_ref *)l->getRef();
         if( r )
+        {
             this->guis.push_back( r );
+            this->gui_cnt++;
+        }
     }
     
     //add gui
@@ -849,7 +862,10 @@ namespace dragonpoop
         
         r = (gui_ref *)l->getRef();
         if( r )
+        {
             this->guis.push_back( r );
+            this->gui_cnt++;
+        }
     }
     
     //get guis
@@ -911,6 +927,18 @@ namespace dragonpoop
             return 0;
         
         return (renderer_ref *)l->getRef();
+    }
+    
+    //return model count
+    unsigned int gfx::getModelCount( void )
+    {
+        return this->model_cnt;
+    }
+    
+    //return gui count
+    unsigned int gfx::getGuiCount( void )
+    {
+        return this->gui_cnt;
     }
     
 };

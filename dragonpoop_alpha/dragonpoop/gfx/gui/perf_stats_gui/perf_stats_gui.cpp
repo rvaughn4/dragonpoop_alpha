@@ -27,8 +27,9 @@ namespace dragonpoop
         this->enableBg( 1 );
         this->enableFg( 1 );
         this->setFontSize( 20 );
-        this->setMargin( 2 );
+        this->setMargin( 20 );
         this->setFade( 1 );
+        this->setHoverMode( 1 );
         this->bDoClose = 0;
         
         this->bclose = new button_gui( g, this->genId(), id, 400 - 42, 2, 40, 40, "X", 1 );
@@ -74,8 +75,14 @@ namespace dragonpoop
         gl = (gfx_readlock *)og.tryReadLock( this->g, 1000, "perf_stats_gui::doProcessing" );
         if( !gl )
             return;
-        ss << "Performance Statistics\r\n";
+        ss << "\e028Performance Statistics\r\n";
         
+        //gfx stats
+        ss << "\e020\fsans \r\nGraphics \flcd \r\n";
+        ss << "\t" << gl->getModelCount() << " models open\r\n";
+        ss << "\t" << gl->getGuiCount() << " guis open\r\n";
+        
+        //renderer stats
         rr = gl->getRenderer();
         if( rr )
         {

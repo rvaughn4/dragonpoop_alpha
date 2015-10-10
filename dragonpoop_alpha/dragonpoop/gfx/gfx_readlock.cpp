@@ -70,5 +70,17 @@ namespace dragonpoop
     {
         return this->t->getRenderer();
     }
+    
+    //return model count
+    unsigned int gfx_readlock::getModelCount( void )
+    {
+        return this->t->getModelCount();
+    }
+    
+    //return gui count
+    unsigned int gfx_readlock::getGuiCount( void )
+    {
+        return this->t->getGuiCount();
+    }
 
 };

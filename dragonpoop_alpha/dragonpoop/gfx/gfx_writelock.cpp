@@ -131,4 +131,16 @@ namespace dragonpoop
         return this->t->getRenderer();
     }
     
+    //return model count
+    unsigned int gfx_writelock::getModelCount( void )
+    {
+        return this->t->getModelCount();
+    }
+    
+    //return gui count
+    unsigned int gfx_writelock::getGuiCount( void )
+    {
+        return this->t->getGuiCount();
+    }
+    
 };

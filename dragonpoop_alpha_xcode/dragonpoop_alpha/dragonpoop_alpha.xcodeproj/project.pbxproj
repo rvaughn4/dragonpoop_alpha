@@ -36,6 +36,7 @@
 		7910B9891B92793A00D72A06 /* model_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9821B92793A00D72A06 /* model_matrix.cpp */; };
 		7910B98A1B92793A00D72A06 /* model_quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9851B92793A00D72A06 /* model_quaternion.cpp */; };
 		7910B98B1B92793A00D72A06 /* model_vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9871B92793A00D72A06 /* model_vector.cpp */; };
+		79203D971BC92B7300FD8C6B /* dpposition.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79203D941BC92B7300FD8C6B /* dpposition.cpp */; };
 		792323AF1BC1B2390030DF0F /* menu_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 792323AC1BC1B2390030DF0F /* menu_gui.cpp */; };
 		79291AD01B69A8BB00E85E62 /* model_vertex_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79291ACD1B69A8BB00E85E62 /* model_vertex_joint.cpp */; };
 		7936993D1B6780E400A725B1 /* model_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7936993A1B6780E400A725B1 /* model_joint.cpp */; };
@@ -293,6 +294,9 @@
 		7910B9861B92793A00D72A06 /* model_quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_quaternion.h; sourceTree = "<group>"; };
 		7910B9871B92793A00D72A06 /* model_vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_vector.cpp; sourceTree = "<group>"; };
 		7910B9881B92793A00D72A06 /* model_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_vector.h; sourceTree = "<group>"; };
+		79203D941BC92B7300FD8C6B /* dpposition.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpposition.cpp; sourceTree = "<group>"; };
+		79203D951BC92B7300FD8C6B /* dpposition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpposition.h; sourceTree = "<group>"; };
+		79203D961BC92B7300FD8C6B /* dppositions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dppositions.h; sourceTree = "<group>"; };
 		792323AC1BC1B2390030DF0F /* menu_gui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = menu_gui.cpp; sourceTree = "<group>"; };
 		792323AD1BC1B2390030DF0F /* menu_gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = menu_gui.h; sourceTree = "<group>"; };
 		792323AE1BC1B2390030DF0F /* menu_guis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = menu_guis.h; sourceTree = "<group>"; };
@@ -826,6 +830,16 @@
 			path = model_matrix;
 			sourceTree = "<group>";
 		};
+		79203D931BC92B7300FD8C6B /* dpposition */ = {
+			isa = PBXGroup;
+			children = (
+				79203D941BC92B7300FD8C6B /* dpposition.cpp */,
+				79203D951BC92B7300FD8C6B /* dpposition.h */,
+				79203D961BC92B7300FD8C6B /* dppositions.h */,
+			);
+			path = dpposition;
+			sourceTree = "<group>";
+		};
 		792323AB1BC1B2390030DF0F /* menu_gui */ = {
 			isa = PBXGroup;
 			children = (
@@ -1073,8 +1087,9 @@
 				7970E8F61B64F26E008E8328 /* dpbitmap */,
 				7970E8FC1B64F26E008E8328 /* dpmatrix */,
 				7970E9001B64F26E008E8328 /* dpvertex */,
-				7970E9161B64F26E008E8328 /* gfx.cpp */,
+				79203D931BC92B7300FD8C6B /* dpposition */,
 				7970E9171B64F26E008E8328 /* gfx.h */,
+				7970E9161B64F26E008E8328 /* gfx.cpp */,
 				7970E9181B64F26E008E8328 /* gfx_readlock.cpp */,
 				7970E9191B64F26E008E8328 /* gfx_readlock.h */,
 				7970E91A1B64F26E008E8328 /* gfx_ref.cpp */,
@@ -1816,6 +1831,7 @@
 				79EC80271B9877E90090D2D6 /* model_saver_ref.cpp in Sources */,
 				79FE3BB11BC156B60092CDAE /* gui_factory.cpp in Sources */,
 				79E7447C1B6D02D9005BFDE0 /* model_loader_state.cpp in Sources */,
+				79203D971BC92B7300FD8C6B /* dpposition.cpp in Sources */,
 				79B931621B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp in Sources */,
 				790006491BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.cpp in Sources */,
 				79F107221B6ED076000723E4 /* model_instance_joint.cpp in Sources */,

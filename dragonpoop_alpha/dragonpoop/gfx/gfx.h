@@ -40,7 +40,7 @@ namespace dragonpoop
         core *c;
         renderer *r;
         dptaskpool_ref *tpr;
-        unsigned int ms_each_frame;
+        unsigned int ms_each_frame, model_cnt, gui_cnt;
         float fps;
         uint64_t last_r_poll;
         
@@ -119,6 +119,10 @@ namespace dragonpoop
         void setRootGui( gui_factory *g );
         //return renderer
         renderer_ref *getRenderer( void );
+        //return model count
+        unsigned int getModelCount( void );
+        //return gui count
+        unsigned int getGuiCount( void );
 
     public:
 

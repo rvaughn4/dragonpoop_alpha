@@ -92,7 +92,7 @@ namespace dragonpoop
                 return;
             this->t_last_tex_update = t;
             
-            pl = (gui_readlock *)o.tryReadLock( this->g, 3, "renderer_gui::run" );
+            pl = (gui_readlock *)o.tryReadLock( this->g, 100, "renderer_gui::run" );
             if( pl )
             {
                 

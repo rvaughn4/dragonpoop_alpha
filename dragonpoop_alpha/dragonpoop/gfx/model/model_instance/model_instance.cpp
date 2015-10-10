@@ -129,6 +129,9 @@ namespace dragonpoop
         t = thd->getTicks();
         if( t - this->t_last_animate > this->t_frame_time )
         {
+            ms_each_frame *= 2;
+            if( ms_each_frame < 10 )
+                ms_each_frame = 10;
             this->animate( g, m, thd, ms_each_frame );
             this->t_last_animate = t;
         }
