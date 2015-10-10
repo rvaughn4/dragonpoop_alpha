@@ -22,7 +22,7 @@ namespace dragonpoop
         menu_gui *esc_menu;
         perf_stats_gui *perf_stats;
         bool esc_menu_is_show, esc_menu_do_show, perf_open;
-        uint64_t last_esc_menu_process;
+        uint64_t last_esc_menu_process, t;
         
     protected:
         

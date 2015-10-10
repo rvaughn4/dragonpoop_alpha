@@ -44,16 +44,17 @@ namespace dragonpoop
     //dtor
     menu_gui::~menu_gui( void )
     {
-        shared_obj_writelock *l;
         shared_obj_guard o;
         
-        l = (shared_obj_writelock *)o.tryWriteLock( this, 2000, "menu_gui::~menu_gui" );
+        o.tryWriteLock( this, 5000, "menu_gui::~menu_gui" );
+        o.unlock();
+        this->unlink();
         
+        o.tryWriteLock( this, 5000, "menu_gui::~menu_gui" );
         this->removeButtons();
         if( this->btitle )
             delete this->btitle;
         delete this->g;
-        
         o.unlock();
     }
     

@@ -54,19 +54,20 @@ namespace dragonpoop
     renderer::~renderer( void )
     {
         shared_obj_guard o;
-        shared_obj_writelock *l;
 
         this->_kill();
 
+        o.tryWriteLock( this, 3000, "renderer::~renderer" );
+        o.unlock();
+        this->unlink();
+
+        o.tryWriteLock( this, 3000, "renderer::~renderer" );
         delete this->tsk;
         delete this->gtsk;
-
-        l = o.tryWriteLock( this, 3000, "renderer::~renderer" );
         this->deleteModels();
         this->deleteGuis();
-        o.unlock();
-
         delete this->g;
+        o.unlock();
     }
 
     //stop task and deinit api

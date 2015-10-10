@@ -15,6 +15,7 @@
 #include "../renderer_model/renderer_model_instance/renderer_model_instance_readlock.h"
 #include "../renderer_model/renderer_model_instance/renderer_model_joint_instance/renderer_model_joint_instance.h"
 #include "../renderer_model/renderer_model_readlock.h"
+#include "../../core/shared_obj/shared_obj_guard.h"
 
 #include <sstream>
 #include <vector>
@@ -36,7 +37,13 @@ namespace dragonpoop
     //dtor
     openglx_1o5_renderer::~openglx_1o5_renderer( void )
     {
+        shared_obj_guard o;
+        
         this->_kill();
+
+        o.tryWriteLock( this, 5000, "openglx_1o5_renderer::~openglx_1o5_renderer" );
+        o.unlock();
+        this->unlink();
     }
 
     //generate read lock

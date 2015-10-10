@@ -11,6 +11,8 @@
 #include "../../../core/core.h"
 #include "../perf_stats_gui/perf_stats_gui.h"
 
+#include "../../dpposition/dpposition.h"
+
 namespace dragonpoop
 {
     
@@ -37,21 +39,58 @@ namespace dragonpoop
     //dtor
     root_gui::~root_gui( void )
     {
+        shared_obj_guard o;
+
+        o.tryWriteLock( this, 5000, "root_gui::~root_gui" );
+        o.unlock();
+        this->unlink();
+        
+        o.tryWriteLock( this, 5000, "root_gui::~root_gui" );
         if( this->esc_menu )
             delete this->esc_menu;
         if( this->perf_stats )
             delete this->perf_stats;
-        delete this->g;
+        delete this->g;        
+        o.unlock();
     }
     
     //override to handle keyboard button
     void root_gui::handleKbEvent( std::string *skey, bool isDown )
     {
+        shared_obj_guard o;
+        gfx_writelock *gl;
+        dpposition pp;
+        dpxyz_f x;
+        
         this->gui::handleKbEvent( skey, isDown );
         
         if( skey->compare( "Escape" ) == 0 && isDown )
             this->showEscapeMenu();
         
+        if( isDown && ( skey->compare( "Up" ) == 0 || skey->compare( "Left" ) == 0 || skey->compare( "Right" ) == 0 || skey->compare( "Down" ) == 0 ) )
+        {
+            gl = (gfx_writelock *)o.tryWriteLock( this->g, 100, "" );
+            if( gl )
+                gl->getCameraPosition( &pp );
+            x.x = 0;
+            x.y = 0;
+            x.z = 0;
+            
+            if( skey->compare( "Up" ) == 0 )
+                x.y = 2;
+            if( skey->compare( "Down" ) == 0 )
+                x.y = -2;
+            if( skey->compare( "Left" ) == 0 )
+                x.x = 2;
+            if( skey->compare( "Right" ) == 0 )
+                x.x = -2;
+            pp.move( &x, this->t, this->t + 1000, 0 );
+            
+            if( gl )
+                gl->setCameraPosition( &pp );
+            o.unlock();
+        }
+    
     }
     
     //override to do processing
@@ -63,6 +102,7 @@ namespace dragonpoop
         gfx_writelock *gl;
         uint64_t t;
         
+        this->t = thd->getTicks();
         this->gui::doProcessing( thd, g );
         
         if( this->esc_menu_do_show != this->esc_menu_is_show )

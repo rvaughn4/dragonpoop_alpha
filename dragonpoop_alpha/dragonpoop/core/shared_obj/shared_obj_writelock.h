@@ -31,6 +31,7 @@ namespace dragonpoop
         //unlink ref
         virtual void unlink( void );
 
+        friend class shared_obj;
     };
     
 };

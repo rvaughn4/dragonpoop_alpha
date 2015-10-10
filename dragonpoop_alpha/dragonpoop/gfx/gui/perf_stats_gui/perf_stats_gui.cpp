@@ -42,9 +42,17 @@ namespace dragonpoop
     //dtor
     perf_stats_gui::~perf_stats_gui( void )
     {
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "root_gui::~root_gui" );
+        o.unlock();
+        this->unlink();
+        
+        o.tryWriteLock( this, 5000, "root_gui::~root_gui" );
         delete this->bclose;
         delete this->bhide;
-        delete this->g;
+        delete this->g;        
+        o.unlock();
     }
     
     //override to paint background texture

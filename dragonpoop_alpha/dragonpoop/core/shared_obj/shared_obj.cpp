@@ -4,6 +4,7 @@
 #include "shared_obj_readlock.h"
 #include "shared_obj_writelock.h"
 #include "shared_obj_ref.h"
+#include "shared_obj_guard.h"
 
 namespace dragonpoop
 {
@@ -18,13 +19,14 @@ namespace dragonpoop
     //dtor
     shared_obj::~shared_obj( void )
     {
-        dpmutex_writelock *wl;
-
-        wl = this->l->tryWriteLock( "shared_obj::~shared_obj", 3000 );
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "shared_obj::~shared_obj" );
+        o.unlock();
         this->unlink();
-        if( wl )
-            dpmutex_lock::unlock( &wl );
 
+        o.tryWriteLock( this, 5000, "shared_obj::~shared_obj" );
+        o.unlock();
         this->mm->destroyMutex( &this->l );
     }
 
@@ -147,7 +149,7 @@ namespace dragonpoop
         std::list<std::shared_ptr<shared_obj_refkernal>> *l;
         std::list<std::shared_ptr<shared_obj_refkernal>>::iterator i;
         std::shared_ptr<shared_obj_refkernal> p;
-
+        
         l = &this->refs;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -194,4 +196,22 @@ namespace dragonpoop
         return 1;
     }
 
+    //generate read lock
+    shared_obj_readlock *shared_obj::genReadLock( shared_obj *p, dpmutex_readlock *l )
+    {
+        return new shared_obj_readlock( p, l );
+    }
+    
+    //generate write lock
+    shared_obj_writelock *shared_obj::genWriteLock( shared_obj *p, dpmutex_writelock *l )
+    {
+        return new shared_obj_writelock( p, l );
+    }
+    
+    //generate ref
+    shared_obj_ref *shared_obj::genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k )
+    {
+        return new shared_obj_ref( p, k );
+    }
+    
 };

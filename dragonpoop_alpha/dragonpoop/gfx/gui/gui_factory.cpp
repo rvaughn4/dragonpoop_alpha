@@ -22,14 +22,15 @@ namespace dragonpoop
     //dtor
     gui_factory::~gui_factory( void )
     {
-        shared_obj_writelock *l;
         shared_obj_guard o;
-        
-        l = o.tryWriteLock( this, 2000, "gui_factory::~gui_factory" );
-        
-        this->unlink();
-        delete this->g;
 
+        o.tryWriteLock( this, 2000, "gui_factory::~gui_factory" );
+        o.unlock();
+        this->unlink();
+        
+        o.tryWriteLock( this, 2000, "gui_factory::~gui_factory" );
+        o.unlock();
+        delete this->g;
         o.unlock();
     }
     

@@ -32,11 +32,11 @@ namespace dragonpoop
         //ctor
         shared_obj( dpmutex_master *mm );
         //generate read lock
-        virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l ) = 0;
+        virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
-        virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l ) = 0;
+        virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
-        virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k ) = 0;
+        virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //return a new ref
         virtual shared_obj_ref *getRef( void );
         //blocking read lock

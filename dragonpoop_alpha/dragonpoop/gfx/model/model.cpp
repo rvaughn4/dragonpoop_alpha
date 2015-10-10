@@ -46,9 +46,17 @@ namespace dragonpoop
     //dtor
     model::~model( void )
     {
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "model::~model" );
+        o.unlock();
+        this->unlink();
+
+        o.tryWriteLock( this, 5000, "model::~model" );
         this->deleteInstances();
         this->deleteComponents();
         delete this->r;
+        o.unlock();
     }
 
     //return core

@@ -4,6 +4,7 @@
 #include "openglx_1o5_renderer_model_instance_readlock.h"
 #include "openglx_1o5_renderer_model_instance_writelock.h"
 #include "openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
+#include "../../../../core/shared_obj/shared_obj_guard.h"
 
 namespace dragonpoop
 {
@@ -17,7 +18,11 @@ namespace dragonpoop
     //dtor
     openglx_1o5_renderer_model_instance::~openglx_1o5_renderer_model_instance( void )
     {
+        shared_obj_guard o;
         
+        o.tryWriteLock( this, 5000, "openglx_1o5_renderer_model_instance::~openglx_1o5_renderer_model_instance" );
+        o.unlock();
+        this->unlink();
     }
     
     //generate read lock

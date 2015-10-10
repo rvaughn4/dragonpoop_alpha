@@ -60,29 +60,30 @@ namespace dragonpoop
     //dtor
     gfx::~gfx( void )
     {
-        shared_obj_writelock *l;
         shared_obj_guard o;
         
+        o.tryWriteLock( this, 5000, "gfx::~gfx" );
         if( this->root_g )
             delete this->root_g;
         this->root_g = 0;
         if( this->root_factory )
             delete this->root_factory;
         this->root_factory = 0;
-
+        o.unlock();
+        this->unlink();
+        
         this->kill();
         delete this->gtsk;
         delete this->tpr;
 
-        l = o.tryWriteLock( this, 3000, "gfx::~gfx" );
+        o.tryWriteLock( this, 5000, "gfx::~gfx" );
         this->deleteGuis();
         this->deleteLoaders();
         this->deleteSavers();
         this->deleteModels();
-        o.unlock();
-        
         delete this->r;
         this->r = 0;
+        o.unlock();
     }
 
     //returns true if running
@@ -153,15 +154,6 @@ namespace dragonpoop
                 this->last_r_poll = t;
             }
             o.unlock();
-            
-            dpxyz_f aa;
-            dpposition pp;
-            this->getCameraPosition( &pp );
-            aa.x = 0;
-            aa.y = 1;
-            aa.z = 0;
-            pp.move( &aa, thd->getTicks(), thd->getTicks() + 4000, 0 );
-            this->setCameraPosition( &pp );
         }
         
         this->runLoaders( thd );

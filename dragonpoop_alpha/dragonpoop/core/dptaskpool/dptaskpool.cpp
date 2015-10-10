@@ -33,11 +33,12 @@ namespace dragonpoop
     {
         dptask_ref *r;
         dpthread *t;
-        dptaskpool_writelock *wl;
-
-        wl = (dptaskpool_writelock *)this->writeLock( "dptaskpool::~dptaskpool 1" );
-        delete wl;
-
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "dptaskpool::~dptaskpool" );
+        o.unlock();
+        this->unlink();
+        
         t = this->popThread();
         while( t )
         {
@@ -46,22 +47,19 @@ namespace dragonpoop
             t = this->popThread();
         }
 
-        wl = (dptaskpool_writelock *)this->writeLock( "dptaskpool::~dptaskpool 2" );
-        if( this->threads.buffer )
-            free( this->threads.buffer );
-
         r = this->popTask();
         while( r )
         {
             delete r;
             r = this->popTask();
         }
+
+        o.tryWriteLock( this, 5000, "dptaskpool::~dptaskpool" );
+        if( this->threads.buffer )
+            free( this->threads.buffer );
         if( this->tasks.buffer )
             free( this->tasks.buffer );
-
-        this->unlink();
-
-        delete wl;
+        o.unlock();
     }
 
     //generate read lock

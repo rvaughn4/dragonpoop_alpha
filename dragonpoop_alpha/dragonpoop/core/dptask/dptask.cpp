@@ -4,6 +4,7 @@
 #include "dptask_readlock.h"
 #include "dptask_writelock.h"
 #include "dptask_ref.h"
+#include "../shared_obj/shared_obj_guard.h"
 
 namespace dragonpoop
 {
@@ -21,6 +22,9 @@ namespace dragonpoop
     //dtor
     dptask::~dptask( void )
     {
+        shared_obj_guard o;
+        o.tryWriteLock( this, 5000, "dptask::~dptask" );
+        o.unlock();
         this->unlink();
     }
 

@@ -1,5 +1,7 @@
 
 #include "button_gui.h"
+#include "../../../core/shared_obj/shared_obj_guard.h"
+
 #include <iostream>
 
 namespace dragonpoop
@@ -38,7 +40,10 @@ namespace dragonpoop
     //dtor
     button_gui::~button_gui( void )
     {
-        
+        shared_obj_guard o;
+        o.tryWriteLock( this, 5000, "button_gui::~button_gui" );        
+        o.unlock();
+        this->unlink();
     }
     
     //override to paint background texture

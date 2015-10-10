@@ -58,16 +58,17 @@ namespace dragonpoop
     //dtor
     gui::~gui( void )
     {
-        shared_obj_writelock *l;
         shared_obj_guard o;
-        
-        l = o.tryWriteLock( this, 5000, "gui::~gui" );
+
+        o.tryWriteLock( this, 5000, "gui::~gui" );
         o.unlock();
-        
         this->unlink();
+
+        o.tryWriteLock( this, 5000, "gui::~gui" );
         delete this->g;
         if( this->r )
             delete this->r;
+        o.unlock();
     }
     
     //return core

@@ -35,8 +35,16 @@ namespace dragonpoop
     //dtor
     renderer_model_instance::~renderer_model_instance( void )
     {
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "renderer_model_instance::~renderer_model_instance" );
+        o.unlock();
+        this->unlink();
+        
+        o.tryWriteLock( this, 5000, "renderer_model_instance::~renderer_model_instance" );
         this->deleteComponents();
         delete this->m;
+        o.unlock();
     }
     
     //generate read lock

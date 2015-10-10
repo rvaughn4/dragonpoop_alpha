@@ -4,6 +4,7 @@
 #include "openglx_1o5_renderer_gui_readlock.h"
 #include "openglx_1o5_renderer_gui_writelock.h"
 #include "../openglx_1o5_renderer.h"
+#include "../../../core/shared_obj/shared_obj_guard.h"
 
 #include <GL/glx.h>
 #include <GL/gl.h>
@@ -22,8 +23,16 @@ namespace dragonpoop
     //dtor
     openglx_1o5_renderer_gui::~openglx_1o5_renderer_gui( void )
     {
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "openglx_1o5_renderer_gui::~openglx_1o5_renderer_gui" );
+        o.unlock();
+        this->unlink();
+        
+        o.tryWriteLock( this, 5000, "openglx_1o5_renderer_gui::~openglx_1o5_renderer_gui" );
         this->killTex( &this->fg_tex, &this->fg_tex_sz );
         this->killTex( &this->bg_tex, &this->bg_tex_sz );
+        o.unlock();
     }
     
     //generate read lock

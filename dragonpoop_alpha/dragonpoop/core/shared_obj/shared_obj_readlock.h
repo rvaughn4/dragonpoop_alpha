@@ -26,7 +26,7 @@ namespace dragonpoop
 
     public:
 
-
+        friend class shared_obj;
     };
     
 };
