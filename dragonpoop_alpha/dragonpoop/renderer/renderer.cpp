@@ -46,6 +46,8 @@ namespace dragonpoop
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3/*14*/, 1 );
         tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
+        g->getCameraPosition( &this->cam_pos );
+        this->bCamSync = 0;
     }
 
     //dtor
@@ -139,6 +141,7 @@ namespace dragonpoop
                 this->bDoRun = 0;
             else
             {
+                this->syncCamera();
                 this->runModels( thd, r );
                 this->runGuis( thd, r );
                 this->render( thd, r );
@@ -840,6 +843,34 @@ namespace dragonpoop
         }
         
         return 0;
+    }
+    
+    //gets camera position
+    void renderer::getCameraPosition( dpposition *p )
+    {
+        p->copy( &this->cam_pos );
+    }
+    
+    //sync camera position
+    void renderer::syncCamera( void )
+    {
+        this->bCamSync = 1;
+    }
+    
+    //sync camera
+    void renderer::_syncCam( void )
+    {
+        shared_obj_guard o;
+        gfx_readlock *gl;
+        
+        if( !this->bCamSync )
+            return;
+        gl = (gfx_readlock *)o.tryReadLock( this->g, 100, "renderer::_syncCam" );
+        if( !gl )
+            return;
+        
+        this->bCamSync = 0;
+        gl->getCameraPosition( &this->cam_pos );
     }
     
 };

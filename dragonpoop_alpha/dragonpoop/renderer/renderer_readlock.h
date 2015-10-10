@@ -9,6 +9,7 @@ namespace dragonpoop
 {
     class renderer;
     class core;
+    class dpposition;
 
     class renderer_readlock : public shared_obj_readlock
     {
@@ -40,6 +41,8 @@ namespace dragonpoop
         unsigned int getTextureMemory( void );
         //get vertex memory used
         unsigned int getVertexMemory( void );
+        //gets camera position
+        void getCameraPosition( dpposition *p );
 
         friend class renderer;
     };

@@ -22,6 +22,7 @@ namespace dragonpoop
     class dpmatrix;
     class renderer_gui_readlock;
     class renderer_gui;
+    class dpposition;
 
     class renderer_writelock : public shared_obj_writelock
     {
@@ -65,6 +66,10 @@ namespace dragonpoop
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //get hovering gui id
         dpid getHoverId( void );
+        //gets camera position
+        void getCameraPosition( dpposition *p );
+        //sync camera position
+        void syncCamera( void );
 
         friend class renderer;
     };

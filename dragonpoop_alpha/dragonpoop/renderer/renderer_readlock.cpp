@@ -59,4 +59,10 @@ namespace dragonpoop
         return this->t->getVertexMemory();
     }
     
+    //gets camera position
+    void renderer_readlock::getCameraPosition( dpposition *p )
+    {
+        this->t->getCameraPosition( p );
+    }
+
 };

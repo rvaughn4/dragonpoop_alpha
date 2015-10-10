@@ -95,4 +95,16 @@ namespace dragonpoop
         return this->t->getHoverId();
     }
     
+    //gets camera position
+    void renderer_writelock::getCameraPosition( dpposition *p )
+    {
+        this->t->getCameraPosition( p );
+    }
+    
+    //sync camera position
+    void renderer_writelock::syncCamera( void )
+    {
+        this->t->syncCamera();
+    }
+    
 };

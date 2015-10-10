@@ -950,7 +950,17 @@ namespace dragonpoop
     //set camera position
     void gfx::setCameraPosition( dpposition *p )
     {
+        shared_obj_guard o;
+        renderer_writelock *l;
+        
         this->cam_pos.copy( p );
+
+        if( !this->r )
+            return;
+        l = (renderer_writelock *)o.tryWriteLock( this->r, 1000, "gfx::setCameraPosition" );
+        if( !l )
+            return;
+        l->syncCamera();
     }
     
 };

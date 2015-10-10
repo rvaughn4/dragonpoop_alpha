@@ -4,6 +4,7 @@
 
 #include "../core/shared_obj/shared_obj.h"
 #include "../gfx/dpmatrix/dpmatrix.h"
+#include "../gfx/dpposition/dpposition.h"
 
 namespace dragonpoop
 {
@@ -44,9 +45,10 @@ namespace dragonpoop
         
         uint64_t t_last_m_ran, t_last_m_synced, t_last_gui_ran, t_last_gui_synced, t_last_fps, ms_each_frame;
         float fps, fthiss;
-        bool bActive, bActiveOld;
+        bool bActive, bActiveOld, bCamSync;
         dpmatrix m_world, m_gui, m_gui_undo;
         dpid hover_gui, focus_gui;
+        dpposition cam_pos;
 
         //run models
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
@@ -62,6 +64,8 @@ namespace dragonpoop
         void render( dpthread_lock *thd, renderer_writelock *rl );
         //render models
         void renderModels( dpthread_lock *thd, renderer_writelock *rl, bool doGui, dpmatrix *m_world );
+        //sync camera
+        void _syncCam( void );
         
     protected:
 
@@ -131,6 +135,10 @@ namespace dragonpoop
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)
         bool setSelectedText( std::string *s );
+        //gets camera position
+        void getCameraPosition( dpposition *p );
+        //sync camera position
+        void syncCamera( void );
         
     public:
 
