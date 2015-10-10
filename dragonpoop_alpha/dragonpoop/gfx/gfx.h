@@ -4,6 +4,7 @@
 
 #include "../core/shared_obj/shared_obj.h"
 #include "../core/bytetree/dpid_bytetree.h"
+#include "dpposition/dpposition.h"
 
 namespace dragonpoop
 {
@@ -43,6 +44,7 @@ namespace dragonpoop
         unsigned int ms_each_frame, model_cnt, gui_cnt;
         float fps;
         uint64_t last_r_poll;
+        dpposition cam_pos;
         
         gui_factory_ref *root_factory;
         gui *root_g;
@@ -123,6 +125,10 @@ namespace dragonpoop
         unsigned int getModelCount( void );
         //return gui count
         unsigned int getGuiCount( void );
+        //get camera position
+        void getCameraPosition( dpposition *p );
+        //set camera position
+        void setCameraPosition( dpposition *p );
 
     public:
 

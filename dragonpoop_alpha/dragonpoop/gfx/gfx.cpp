@@ -941,4 +941,16 @@ namespace dragonpoop
         return this->gui_cnt;
     }
     
+    //get camera position
+    void gfx::getCameraPosition( dpposition *p )
+    {
+        p->copy( &this->cam_pos );
+    }
+    
+    //set camera position
+    void gfx::setCameraPosition( dpposition *p )
+    {
+        this->cam_pos.copy( p );
+    }
+    
 };

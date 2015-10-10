@@ -143,4 +143,16 @@ namespace dragonpoop
         return this->t->getGuiCount();
     }
     
+    //get camera position
+    void gfx_writelock::getCameraPosition( dpposition *p )
+    {
+        this->t->getCameraPosition( p );
+    }
+    
+    //set camera position
+    void gfx_writelock::setCameraPosition( dpposition *p )
+    {
+        this->t->setCameraPosition( p );
+    }
+    
 };

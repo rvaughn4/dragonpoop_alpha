@@ -14,6 +14,7 @@ namespace dragonpoop
     class model;
     class gui_ref;
     class renderer_ref;
+    class dpposition;
 
     class gfx_readlock : public shared_obj_readlock
     {
@@ -53,6 +54,8 @@ namespace dragonpoop
         unsigned int getModelCount( void );
         //return gui count
         unsigned int getGuiCount( void );
+        //get camera position
+        void getCameraPosition( dpposition *p );
 
         friend class gfx;
     };

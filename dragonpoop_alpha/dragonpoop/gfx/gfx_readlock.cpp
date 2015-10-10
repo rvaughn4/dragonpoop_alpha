@@ -82,5 +82,11 @@ namespace dragonpoop
     {
         return this->t->getGuiCount();
     }
+    
+    //get camera position
+    void gfx_readlock::getCameraPosition( dpposition *p )
+    {
+        this->t->getCameraPosition( p );
+    }
 
 };
