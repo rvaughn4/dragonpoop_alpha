@@ -143,8 +143,7 @@ namespace dragonpoop
     //draw bitmap
     void dpfont::drawBitmap( dpbitmap *bm, int sx, int sy, int *osx, int *osy, dprgba *clr )
     {
-        unsigned int x, y, mx, my, by, bh;
-        unsigned char c;
+        unsigned int x, y, mx, my, by, bh, c;
         dpxy xy;
         dprgba rg;
         
@@ -163,9 +162,22 @@ namespace dragonpoop
                 
                 c = this->fc->glyph->bitmap.buffer[ y * abs( this->fc->glyph->bitmap.pitch ) + x ];
 
+                if( c > 220 )
+                    c = 255;
+                else
+                {
+                    if( c < 20 )
+                        c = 0;
+                    else
+                    {
+                        c = c - 20;
+                        c = ( c * 255 ) / 200;
+                    }
+                }
+                
                 if( clr )
                 {
-                    if( c > 20 )
+                    if( c > 5 )
                     {
                         rg.r = clr->r;
                         rg.g = clr->g;

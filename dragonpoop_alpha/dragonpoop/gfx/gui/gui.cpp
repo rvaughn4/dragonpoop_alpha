@@ -425,7 +425,7 @@ namespace dragonpoop
                     continue;
                 s = s.substr( 0, loc_sp );
                 i += loc_sp + 1;
-                if( s.size() < 4 )
+                if( s.size() < 1 )
                     continue;
                 if( f.openFont( s.c_str(), fnt_size ) )
                     fnt_face = s;

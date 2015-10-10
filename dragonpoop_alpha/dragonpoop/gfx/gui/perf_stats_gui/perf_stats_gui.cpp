@@ -83,7 +83,7 @@ namespace dragonpoop
             if( rl )
             {
                 rl->getName( &s );
-                ss << "\r\nRenderer ( " << s << " )\r\n";
+                ss << "\fsans \r\nRenderer \flcd ( " << s << " )\r\n";
                 ss << "\t" << (int)rl->getFps() << " frames per second\r\n";
                 ss << "\t" << rl->getMsPerFrame() << " ms per frame\r\n";
                 i = rl->getTextureMemory() / 1048576;
