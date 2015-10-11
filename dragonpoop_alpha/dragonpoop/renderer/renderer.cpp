@@ -13,8 +13,6 @@
 #include "../gfx/gfx_readlock.h"
 #include "../gfx/gfx_ref.h"
 #include "../gfx/gfx.h"
-#include <thread>
-#include <random>
 #include "renderer_model/renderer_model.h"
 #include "renderer_model/renderer_model_writelock.h"
 #include "renderer_model/renderer_model_readlock.h"
@@ -28,6 +26,9 @@
 #include "renderer_gui/renderer_gui_ref.h"
 #include "../gfx/gui/gui_ref.h"
 #include "../gfx/gui/gui_writelock.h"
+
+#include <thread>
+#include <random>
 
 namespace dragonpoop
 {
