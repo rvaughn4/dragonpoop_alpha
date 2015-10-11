@@ -217,6 +217,7 @@ namespace dragonpoop
         std::list<model_instance_ref *> l;
         std::list<model_instance_ref *>::iterator i;
         renderer_model_instance *pi;
+        renderer_model_instance_writelock *pil;
         model_instance_ref *p;
         dpid_btree t;
         shared_obj_guard o;
@@ -237,7 +238,7 @@ namespace dragonpoop
             p = *i;
             pl = (model_instance_writelock *)o.tryWriteLock( p, 10, "renderer_model::syncInstances" );
             delete p;
-            if( !pl )
+            if( !pl || !pl->isAlive() )
                 continue;
             pi = (renderer_model_instance *)t.findLeaf( pl->getId() );
             if( pi )
@@ -262,9 +263,12 @@ namespace dragonpoop
         for( ii = li->begin(); ii != li->end(); ++ii )
         {
             pi = *ii;
-            this->instances.remove( pi );
-            delete pi;
-        }        
+            pil = (renderer_model_instance_writelock *)o.tryWriteLock( pi, 100, "renderer_model::syncInstances" );
+            if( !pil )
+                continue;
+            pil->kill();
+            o.unlock();
+        }
     }
     
     //run instances
@@ -285,8 +289,18 @@ namespace dragonpoop
             if( !pl )
                 continue;
             pl->run( thd );
+            if( !pl->isAlive() )
+                d.push_back( p );
         }
+        o.unlock();
         
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->instances.remove( p );
+            delete p;
+        }
     }
     
     //run model from task

@@ -316,5 +316,17 @@ namespace dragonpoop
     {
         return this->t->findInstance( id );
     }
-
+    
+    //return instance count
+    unsigned int model_readlock::getInstanceCount( void )
+    {
+        return this->t->getInstanceCount();
+    }
+    
+    //get ref count
+    int model_readlock::getRefCount( void )
+    {
+        return this->t->getRefCount();
+    }
+    
 };

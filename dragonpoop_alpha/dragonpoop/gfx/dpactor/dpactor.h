@@ -39,6 +39,13 @@ namespace dragonpoop
         uint64_t t_dis, t_model_state, t_anim_state;
         dpactor_model_state *model_state;
         
+        //load model
+        bool _load( model_ref **m, model_instance_ref **mi, model_loader_ref **ldr );
+        //make model instance
+        bool _make( model_ref **m, model_instance_ref **mi, dpthread_lock *thd );
+        //destroy model instance
+        void _kill( model_ref **m, model_instance_ref **mi );
+        
     protected:
         
         //generate read lock
@@ -61,6 +68,20 @@ namespace dragonpoop
         bool loadLow( model_loader_ref **ldr );
         //make low model instance
         bool makeLow( dpthread_lock *thd );
+        //destroy low
+        void killLow( void );
+        //load med model
+        bool loadMed( model_loader_ref **ldr );
+        //make med model instance
+        bool makeMed( dpthread_lock *thd );
+        //destroy med
+        void killMed( void );
+        //load high model
+        bool loadHigh( model_loader_ref **ldr );
+        //make high model instance
+        bool makeHigh( dpthread_lock *thd );
+        //destroy high
+        void killHigh( void );
         
     public:
         

@@ -202,6 +202,14 @@ namespace dragonpoop
         void reduceFrames( unsigned int ms_res );
         //find instance
         model_instance_ref *findInstance( dpid id );
+        //return instance count
+        unsigned int getInstanceCount( void );
+        //add ref count
+        void addRefCount( void );
+        //remove ref count
+        void decRefCount( void );
+        //get ref count
+        int getRefCount( void );
 
         friend class model;
     };

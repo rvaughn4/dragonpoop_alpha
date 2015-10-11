@@ -34,9 +34,9 @@ namespace dragonpoop
         arg->getDiff( &dx1, &dy1, &dz1, tm_epoch_now );
         this->getDiff( &dx2, &dy2, &dz2, arg );
         
-        dx2 -= dx1 + dx0;
-        dy2 -= dy1 + dy0;
-        dz2 -= dz1 + dz0;
+        dx2 += dx1 - dx0;
+        dy2 += dy1 - dy0;
+        dz2 += dz1 - dz0;
         
         pout->x = dx2;
         pout->y = dy2;

@@ -119,4 +119,28 @@ namespace dragonpoop
         return this->t->isGui();
     }
     
+    //sync position
+    void renderer_model_instance_writelock::syncPosition( void )
+    {
+        this->t->syncPosition();
+    }
+   
+    //returns true if alive
+    bool renderer_model_instance_writelock::isAlive( void )
+    {
+        return this->t->isAlive();
+    }
+    
+    //kills instance
+    void renderer_model_instance_writelock::kill( void )
+    {
+        this->t->kill();
+    }
+    
+    //retuns opacity
+    float renderer_model_instance_writelock::getAlpha( void )
+    {
+        return this->t->getAlpha();
+    }
+    
 };

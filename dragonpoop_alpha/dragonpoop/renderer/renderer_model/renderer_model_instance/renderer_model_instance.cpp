@@ -29,6 +29,8 @@ namespace dragonpoop
         this->id = ml->getId();
         this->bIsSynced = 0;
         this->bIsPosSynced = 0;
+        this->fade_val = 0;
+        this->bIsAlive = 1;
         ml->setRenderer( this );
     }
     
@@ -337,6 +339,26 @@ namespace dragonpoop
         model_instance_writelock *ml;
         shared_obj_guard o;
         
+        if( this->bIsAlive )
+        {
+            if( this->fade_val < 0.95f )
+                this->fade_val += ( 1.0f - this->fade_val ) * 0.1f;
+            else
+                this->fade_val = 1;
+        }
+        else
+        {
+            if( this->fade_val > 0.05f )
+            {
+                if( this->fade_val > 0.85f )
+                    this->fade_val *= 0.95f;
+                else
+                    this->fade_val *= 0.9f;
+            }
+            else
+                this->fade_val = 0;
+        }
+        
         if( !this->bIsSynced )
         {
             ml = (model_instance_writelock *)o.tryWriteLock( this->m, 3, "renderer_model_instance::run" );
@@ -350,6 +372,7 @@ namespace dragonpoop
                 this->onSync( thd, g, ml );
                 this->syncJoints( ml, thd );
                 this->syncGroups( ml, thd );
+                this->bIsAlive = ml->isAlive();
             }
         }
 
@@ -619,7 +642,7 @@ namespace dragonpoop
         
         if( !this->isGui() )
         {
-            out_model_matrix->translate( pp.x, pp.y, pp.z );
+            out_model_matrix->translate( pp.x, pp.y, pp.z - 3 );
             out_model_matrix->scale( rsz, rsz, rsz );
             out_model_matrix->translate( -ctr.x, -ctr.y, -ctr.z );
             return;
@@ -655,6 +678,26 @@ namespace dragonpoop
     void renderer_model_instance::syncPosition( void )
     {
         this->bIsPosSynced = 0;
+    }
+    
+    //returns true if alive
+    bool renderer_model_instance::isAlive( void )
+    {
+        if( this->bIsAlive )
+            return 1;
+        return this->fade_val > 0.01f;
+    }
+    
+    //kills instance
+    void renderer_model_instance::kill( void )
+    {
+        this->bIsAlive = 0;
+    }
+    
+    //retuns opacity
+    float renderer_model_instance::getAlpha( void )
+    {
+        return this->fade_val;
     }
     
 };

@@ -337,7 +337,11 @@ namespace dragonpoop
             pr = *ir;
             pl = (model_writelock *)o.tryWriteLock( pr, 100, "gfx::runModels" );
             if( pl )
+            {
                 pl->run( thd, ms_each_frame );
+                if( !pl->getRefCount() && !pl->getInstanceCount() && !pl->isLinked() )
+                    d.push_back( p );
+            }
         }
         o.unlock();
         
@@ -690,6 +694,7 @@ namespace dragonpoop
             if( !pwl )
                 continue;
             
+            pwl->addRefCount();
             r = (model_ref *)pwl->getRef();
             return r;
         }

@@ -53,6 +53,8 @@ namespace dragonpoop
         model_instance_joint_cache jnts;
         model_gui_pos gui_pos;
         dpposition pos;
+        bool bIsAlive;
+        float fade_val;
 
         //delete all components
         void deleteComponents( void );
@@ -133,6 +135,12 @@ namespace dragonpoop
         dpposition *_getPosition( void );
         //sync position
         void syncPosition( void );
+        //returns true if alive
+        bool isAlive( void );
+        //kills instance
+        void kill( void );
+        //retuns opacity
+        float getAlpha( void );
 
     public:
         

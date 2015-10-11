@@ -1,6 +1,7 @@
 
 #include "dpactor_model_state_run_low.h"
 #include "dpactor_model_state_load_low.h"
+#include "dpactor_model_state_run_med.h"
 
 namespace dragonpoop
 {
@@ -24,13 +25,13 @@ namespace dragonpoop
         
         d = this->getDistance();
         *next_state = 0;
-        /*
-        if( d < 20.0f )
+        
+        if( d < 2.0f )
         {
-            *next_state = 0; //load med
+            *next_state = new dpactor_model_state_run_med( a );
             return;
         }
-        */
+        
         if( !this->isLow() )
         {
             *next_state = new dpactor_model_state_load_low( a );

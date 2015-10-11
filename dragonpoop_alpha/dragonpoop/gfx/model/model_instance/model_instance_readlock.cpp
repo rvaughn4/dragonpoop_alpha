@@ -142,5 +142,11 @@ namespace dragonpoop
     {
         this->t->getPosition( p );
     }
+    
+    //returns true if alive
+    bool model_instance_readlock::isAlive( void )
+    {
+        return this->t->isAlive();
+    }
 
 };

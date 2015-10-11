@@ -196,6 +196,8 @@ namespace dragonpoop
 
         glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);             // Setup The Ambient Light
         glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);             // Setup The Diffuse Light
+        glLightfv(GL_LIGHT1, GL_SPECULAR, LightDiffuse);             // Setup The Diffuse Light
+        
         glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
         glEnable(GL_LIGHT1);
 
@@ -206,6 +208,7 @@ namespace dragonpoop
         glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient2);             // Setup The Ambient Light
         glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse2);             // Setup The Diffuse Light
         glLightfv(GL_LIGHT2, GL_POSITION,LightPosition2);
+        glLightfv(GL_LIGHT2, GL_SPECULAR, LightDiffuse2);             // Setup The Diffuse Light
         glEnable(GL_LIGHT2);
 
         glEnableClientState( GL_NORMAL_ARRAY );
@@ -390,12 +393,26 @@ namespace dragonpoop
     //prepare for rendering world
     void openglx_1o5_renderer::prepareWorldRender( unsigned int w, unsigned int h )
     {
+        union
+        {
+            dprgba clr;
+            float fclr[ 4 ];
+        };
+        
         this->renderer::prepareWorldRender( w, h );
-
+        
         glClearDepth( 1.0f );
         glClear( GL_DEPTH_BUFFER_BIT );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        glEnable( GL_BLEND );
         glEnable( GL_LIGHTING );
         glEnable( GL_DEPTH_TEST );
+        
+        clr.r = clr.b = clr.g = clr.a = 0;
+        glLightModelfv( GL_LIGHT_MODEL_AMBIENT, fclr );
+        glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR );
+        glLightModelf( GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f );
+        glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0 );
     }
 
     //prepare for rendering gui
@@ -508,6 +525,14 @@ namespace dragonpoop
         std::vector<uint16_t> *indicies;
         dpmatrix wmat;
         uint64_t t, ot;
+        float a;
+        union
+        {
+            dprgba clr;
+            float fclr[ 4 ];
+        };
+        
+        a = mi->getAlpha();
 
         mi->getModelViewMatrix( thd, r, m, m_world, &wmat );
         glLoadMatrixf( wmat.getRaw4by4() );
@@ -520,7 +545,26 @@ namespace dragonpoop
 
         mi->redoMatrixes( thd->getTicks() );
         ( (openglx_1o5_renderer_model_instance_group *)g )->setLastFrameTime( t );
-            
+        
+        
+        glMaterialf( GL_FRONT, GL_SHININESS, mat->getShine() );
+        
+        mat->getAmbientColor( &clr );
+        clr.a = a;
+        glMaterialfv( GL_FRONT, GL_AMBIENT, fclr );
+        
+        mat->getDiffuseColor( &clr );
+        clr.a = a;
+        glMaterialfv( GL_FRONT, GL_DIFFUSE, fclr );
+        
+        mat->getSpecularColor( &clr );
+        clr.a = a;
+        glMaterialfv( GL_FRONT, GL_SPECULAR, fclr );
+        
+        mat->getEmissiveColor( &clr );
+        clr.a = a;
+        glMaterialfv( GL_FRONT, GL_EMISSION, fclr );
+        
         vb = g->getTransformedBuffer( mi, &indicies );
         this->drawVb( vb, indicies );
     }

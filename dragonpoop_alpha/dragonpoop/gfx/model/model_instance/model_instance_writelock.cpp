@@ -232,5 +232,17 @@ namespace dragonpoop
     {
         this->t->setPosition( p );
     }
+  
+    //returns true if alive
+    bool model_instance_writelock::isAlive( void )
+    {
+        return this->t->isAlive();
+    }
+    
+    //kill instance
+    void model_instance_writelock::kill( void )
+    {
+        this->t->kill();
+    }
     
 };

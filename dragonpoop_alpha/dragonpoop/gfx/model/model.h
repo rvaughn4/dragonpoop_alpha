@@ -88,6 +88,7 @@ namespace dragonpoop
         uint32_t cnt_verts, cnt_triangles, cnt_frames, cnt_joints, cnt_animations;
         uint32_t sz_verts, sz_triangles, sz_frames, sz_joints, sz_animations;
         bool bSync;
+        std::atomic<int> ref_ctr;
 
         //delete all components
         void deleteComponents( void );
@@ -266,6 +267,14 @@ namespace dragonpoop
         void getCenter( dpxyz_f *x );
         //eliminate excess frames to bring animations down in resolution
         void reduceFrames( model_writelock *ml, unsigned int ms_res );
+        //return instance count
+        unsigned int getInstanceCount( void );
+        //add ref count
+        void addRefCount( void );
+        //remove ref count
+        void decRefCount( void );
+        //get ref count
+        int getRefCount( void );
         
     public:
 

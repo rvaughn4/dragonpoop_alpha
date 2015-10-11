@@ -110,6 +110,10 @@ namespace dragonpoop
         void getPosition( dpposition *p );
         //set position
         void setPosition( dpposition *p );
+        //returns true if alive
+        bool isAlive( void );
+        //kill instance
+        void kill( void );
 
         friend class model_instance;
     };

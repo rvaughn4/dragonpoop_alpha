@@ -29,6 +29,24 @@ namespace dragonpoop
         bool loadLow( model_loader_ref **ldr );
         //make low model instance
         bool makeLow( dpthread_lock *thd );
+        //destroy low model
+        void killLow( void );
+        //returns true if med is created
+        bool isMed( void );
+        //load med model
+        bool loadMed( model_loader_ref **ldr );
+        //make med model instance
+        bool makeMed( dpthread_lock *thd );
+        //destroy med model
+        void killMed( void );
+        //returns true if high is created
+        bool isHigh( void );
+        //load low model
+        bool loadHigh( model_loader_ref **ldr );
+        //make low model instance
+        bool makeHigh( dpthread_lock *thd );
+        //destroy high model
+        void killHigh( void );
 
     public:
         

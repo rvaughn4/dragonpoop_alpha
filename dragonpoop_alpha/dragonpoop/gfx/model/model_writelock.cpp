@@ -486,4 +486,28 @@ namespace dragonpoop
         return this->t->findInstance( id );
     }
     
+    //return instance count
+    unsigned int model_writelock::getInstanceCount( void )
+    {
+        return this->t->getInstanceCount();
+    }
+
+    //add ref count
+    void model_writelock::addRefCount( void )
+    {
+        this->t->addRefCount();
+    }
+    
+    //remove ref count
+    void model_writelock::decRefCount( void )
+    {
+        this->t->decRefCount();
+    }
+    
+    //get ref count
+    int model_writelock::getRefCount( void )
+    {
+        return this->t->getRefCount();
+    }
+    
 };

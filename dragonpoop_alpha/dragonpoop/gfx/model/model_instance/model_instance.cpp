@@ -51,6 +51,7 @@ namespace dragonpoop
         this->t_start = this->t_end = 0;
         this->t_play = 0;
         this->bIsGui = 0;
+        this->bIsAlive = 1;
         
         l = (model_instance_writelock *)g.tryWriteLock( this, 400, "model_instance::model_instance" );
         if( !l )
@@ -856,7 +857,29 @@ namespace dragonpoop
     //set position
     void model_instance::setPosition( dpposition *p )
     {
+        renderer_model_instance_writelock *rl;
+        shared_obj_guard o;
+        
         this->pos.copy( p );
+        
+        if( !this->r )
+            return;
+        rl = (renderer_model_instance_writelock *)o.tryWriteLock( this->r, 30, "model_instance::setPosition" );
+        if( !rl )
+            return;
+        rl->syncPosition();
+    }
+    
+    //returns true if alive
+    bool model_instance::isAlive( void )
+    {
+        return this->bIsAlive;
+    }
+    
+    //kill instance
+    void model_instance::kill( void )
+    {
+        this->bIsAlive = 0;
     }
     
 };

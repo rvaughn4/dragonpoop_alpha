@@ -68,6 +68,7 @@ namespace dragonpoop
         int16_t j_ctr;
         model_gui_pos gui_pos;
         dpposition pos;
+        bool bIsAlive;
         
         //delete all components
         void deleteComponents( void );
@@ -205,6 +206,10 @@ namespace dragonpoop
         void getPosition( dpposition *p );
         //set position
         void setPosition( dpposition *p );
+        //returns true if alive
+        bool isAlive( void );
+        //kill instance
+        void kill( void );
         
     public:
         

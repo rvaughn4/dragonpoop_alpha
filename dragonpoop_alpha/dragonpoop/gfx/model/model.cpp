@@ -41,6 +41,7 @@ namespace dragonpoop
         this->c = c;
         this->id = id;
         this->r = 0;
+        this->ref_ctr = 1;
     }
 
     //dtor
@@ -506,15 +507,17 @@ namespace dragonpoop
             if( !pl )
                 continue;
             pl->run( thd, g, ms_each_frame );
-            //
-            //d.push_back( p );
+            if( !pl->isAlive() )
+                d.push_back( p );
         }
+        o.unlock();
 
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
             delete p;
+            this->instances.remove( p );
         }
     }
 
@@ -1138,6 +1141,30 @@ namespace dragonpoop
             p = *i;
             p->reduceFrames( ml, ms_res );
         }
+    }
+    
+    //return instance count
+    unsigned int model::getInstanceCount( void )
+    {
+        return (unsigned int)this->instances.size();
+    }
+    
+    //add ref count
+    void model::addRefCount( void )
+    {
+        this->ref_ctr = this->ref_ctr + 1;
+    }
+    
+    //remove ref count
+    void model::decRefCount( void )
+    {
+        this->ref_ctr = this->ref_ctr - 1;
+    }
+    
+    //get ref count
+    int model::getRefCount( void )
+    {
+        return this->ref_ctr;
     }
     
 };

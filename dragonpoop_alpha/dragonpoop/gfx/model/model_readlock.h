@@ -144,6 +144,10 @@ namespace dragonpoop
         void getCenter( dpxyz_f *x );
         //find instance
         model_instance_ref *findInstance( dpid id );
+        //return instance count
+        unsigned int getInstanceCount( void );
+        //get ref count
+        int getRefCount( void );
 
         friend class model;
     };

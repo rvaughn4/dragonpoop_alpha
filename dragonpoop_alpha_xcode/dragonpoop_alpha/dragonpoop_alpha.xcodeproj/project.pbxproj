@@ -48,9 +48,6 @@
 		79145C4D1BCA7DE900DC5434 /* dpactor_model_state_run_high.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C2F1BCA7DE900DC5434 /* dpactor_model_state_run_high.cpp */; };
 		79145C4E1BCA7DE900DC5434 /* dpactor_model_state_run_low.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C311BCA7DE900DC5434 /* dpactor_model_state_run_low.cpp */; };
 		79145C4F1BCA7DE900DC5434 /* dpactor_model_state_run_med.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C331BCA7DE900DC5434 /* dpactor_model_state_run_med.cpp */; };
-		79145C501BCA7DE900DC5434 /* dpactor_model_state_unload_high.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C351BCA7DE900DC5434 /* dpactor_model_state_unload_high.cpp */; };
-		79145C511BCA7DE900DC5434 /* dpactor_model_state_unload_low.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C371BCA7DE900DC5434 /* dpactor_model_state_unload_low.cpp */; };
-		79145C521BCA7DE900DC5434 /* dpactor_model_state_unload_med.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C391BCA7DE900DC5434 /* dpactor_model_state_unload_med.cpp */; };
 		79145C531BCA7DE900DC5434 /* dpactor_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C3B1BCA7DE900DC5434 /* dpactor_readlock.cpp */; };
 		79145C541BCA7DE900DC5434 /* dpactor_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C3D1BCA7DE900DC5434 /* dpactor_ref.cpp */; };
 		79145C551BCA7DE900DC5434 /* dpactor_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C3F1BCA7DE900DC5434 /* dpactor_state.cpp */; };
@@ -337,12 +334,6 @@
 		79145C321BCA7DE900DC5434 /* dpactor_model_state_run_low.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_model_state_run_low.h; sourceTree = "<group>"; };
 		79145C331BCA7DE900DC5434 /* dpactor_model_state_run_med.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_model_state_run_med.cpp; sourceTree = "<group>"; };
 		79145C341BCA7DE900DC5434 /* dpactor_model_state_run_med.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_model_state_run_med.h; sourceTree = "<group>"; };
-		79145C351BCA7DE900DC5434 /* dpactor_model_state_unload_high.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_model_state_unload_high.cpp; sourceTree = "<group>"; };
-		79145C361BCA7DE900DC5434 /* dpactor_model_state_unload_high.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_model_state_unload_high.h; sourceTree = "<group>"; };
-		79145C371BCA7DE900DC5434 /* dpactor_model_state_unload_low.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_model_state_unload_low.cpp; sourceTree = "<group>"; };
-		79145C381BCA7DE900DC5434 /* dpactor_model_state_unload_low.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_model_state_unload_low.h; sourceTree = "<group>"; };
-		79145C391BCA7DE900DC5434 /* dpactor_model_state_unload_med.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_model_state_unload_med.cpp; sourceTree = "<group>"; };
-		79145C3A1BCA7DE900DC5434 /* dpactor_model_state_unload_med.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_model_state_unload_med.h; sourceTree = "<group>"; };
 		79145C3B1BCA7DE900DC5434 /* dpactor_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_readlock.cpp; sourceTree = "<group>"; };
 		79145C3C1BCA7DE900DC5434 /* dpactor_readlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_readlock.h; sourceTree = "<group>"; };
 		79145C3D1BCA7DE900DC5434 /* dpactor_ref.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_ref.cpp; sourceTree = "<group>"; };
@@ -911,24 +902,18 @@
 				79145C251BCA7DE900DC5434 /* dpactor_model_state_load_low.cpp */,
 				79145C2B1BCA7DE900DC5434 /* dpactor_model_state_make_low.cpp */,
 				79145C2C1BCA7DE900DC5434 /* dpactor_model_state_make_low.h */,
+				79145C341BCA7DE900DC5434 /* dpactor_model_state_run_med.h */,
+				79145C331BCA7DE900DC5434 /* dpactor_model_state_run_med.cpp */,
+				79145C281BCA7DE900DC5434 /* dpactor_model_state_load_med.h */,
+				79145C271BCA7DE900DC5434 /* dpactor_model_state_load_med.cpp */,
+				79145C2E1BCA7DE900DC5434 /* dpactor_model_state_make_med.h */,
+				79145C2D1BCA7DE900DC5434 /* dpactor_model_state_make_med.cpp */,
+				79145C301BCA7DE900DC5434 /* dpactor_model_state_run_high.h */,
+				79145C2F1BCA7DE900DC5434 /* dpactor_model_state_run_high.cpp */,
 				79145C231BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp */,
 				79145C241BCA7DE900DC5434 /* dpactor_model_state_load_high.h */,
-				79145C271BCA7DE900DC5434 /* dpactor_model_state_load_med.cpp */,
-				79145C281BCA7DE900DC5434 /* dpactor_model_state_load_med.h */,
 				79145C291BCA7DE900DC5434 /* dpactor_model_state_make_high.cpp */,
 				79145C2A1BCA7DE900DC5434 /* dpactor_model_state_make_high.h */,
-				79145C2D1BCA7DE900DC5434 /* dpactor_model_state_make_med.cpp */,
-				79145C2E1BCA7DE900DC5434 /* dpactor_model_state_make_med.h */,
-				79145C2F1BCA7DE900DC5434 /* dpactor_model_state_run_high.cpp */,
-				79145C301BCA7DE900DC5434 /* dpactor_model_state_run_high.h */,
-				79145C331BCA7DE900DC5434 /* dpactor_model_state_run_med.cpp */,
-				79145C341BCA7DE900DC5434 /* dpactor_model_state_run_med.h */,
-				79145C351BCA7DE900DC5434 /* dpactor_model_state_unload_high.cpp */,
-				79145C361BCA7DE900DC5434 /* dpactor_model_state_unload_high.h */,
-				79145C371BCA7DE900DC5434 /* dpactor_model_state_unload_low.cpp */,
-				79145C381BCA7DE900DC5434 /* dpactor_model_state_unload_low.h */,
-				79145C391BCA7DE900DC5434 /* dpactor_model_state_unload_med.cpp */,
-				79145C3A1BCA7DE900DC5434 /* dpactor_model_state_unload_med.h */,
 				79145C431BCA7DE900DC5434 /* dpactors.h */,
 			);
 			path = dpactor;
@@ -2054,7 +2039,6 @@
 				79BF2CC21B8A3ECB007C9BA2 /* dpid_tree_wrapper.cpp in Sources */,
 				7970E9611B64F26E008E8328 /* core.cpp in Sources */,
 				7970E9931B64F26E008E8328 /* model_vertex.cpp in Sources */,
-				79145C511BCA7DE900DC5434 /* dpactor_model_state_unload_low.cpp in Sources */,
 				79FE3BAE1BC156B60092CDAE /* gui_factory_readlock.cpp in Sources */,
 				79FFA0AD1BB54F7400584638 /* gui.cpp in Sources */,
 				7906ABE11B9B5AA1002C26A2 /* model_saver_ms3d_state_write_groups.cpp in Sources */,
@@ -2068,7 +2052,6 @@
 				7900CFC21BB70EE200F1CE55 /* openglx_1o5_renderer_gui_writelock.cpp in Sources */,
 				79E7446D1B6CE616005BFDE0 /* model_loader_readlock.cpp in Sources */,
 				79291AD01B69A8BB00E85E62 /* model_vertex_joint.cpp in Sources */,
-				79145C521BCA7DE900DC5434 /* dpactor_model_state_unload_med.cpp in Sources */,
 				79EC80291B9877E90090D2D6 /* model_saver_state_fail.cpp in Sources */,
 				79145C551BCA7DE900DC5434 /* dpactor_state.cpp in Sources */,
 				794610F31B6D42CE00311E86 /* model_loader_ms3d_state_parse_header.cpp in Sources */,
@@ -2089,7 +2072,6 @@
 				79EEECF61BB6C1BD00FD3AD8 /* renderer_gui_ref.cpp in Sources */,
 				79145C451BCA7DE900DC5434 /* dpactor_animation_state.cpp in Sources */,
 				79F107271B6ED076000723E4 /* model_instance_writelock.cpp in Sources */,
-				79145C501BCA7DE900DC5434 /* dpactor_model_state_unload_high.cpp in Sources */,
 				7970E99C1B64F26E008E8328 /* renderer_task.cpp in Sources */,
 				7970E9601B64F26E008E8328 /* multibytetree.cpp in Sources */,
 				794610EF1B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.cpp in Sources */,

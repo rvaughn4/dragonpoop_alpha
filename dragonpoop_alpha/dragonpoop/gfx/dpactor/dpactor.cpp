@@ -95,7 +95,7 @@ namespace dragonpoop
         
         t = thd->getTicks();
         
-        if( t - this->t_dis > 1000 )
+        if( t - this->t_dis > 200 )
         {
             this->t_dis = t;
             this->dis = this->_getCameraDistance( t );
@@ -107,7 +107,7 @@ namespace dragonpoop
             //
         }
         
-        if( t - this->t_model_state > 2000 )
+        if( t - this->t_model_state > 400 )
         {
             this->t_model_state = t;
             if( this->model_state )
@@ -218,35 +218,165 @@ namespace dragonpoop
     //make low model instance
     bool dpactor::makeLow( dpthread_lock *thd )
     {
+        return this->_make( &this->models.low.m, &this->models.low.mi, thd );
+    }
+    
+    //destroy low
+    void dpactor::killLow( void )
+    {
+        this->_kill( &this->models.low.m, &this->models.low.mi );
+    }
+    
+    //load med model
+    bool dpactor::loadMed( model_loader_ref **ldr )
+    {
+        gfx_writelock *gl;
         shared_obj_guard o;
+        
+        *ldr = 0;
+        if( !this->g )
+            return 0;
+        gl = (gfx_writelock *)o.tryWriteLock( this->g, 3000, "dpactor::loadMed" );
+        
+        if( this->models.med.m )
+            delete this->models.med.m;
+        this->models.med.m = gl->findModel( "test_med" );
+        if( this->models.med.m )
+            return 1;
+        
+        if( gl->loadModel( "test_med", "", "3drt_dragon_medium.dpmodel", &this->models.med.m, ldr ) )
+            return 1;
+        
+        if( this->models.med.m )
+            delete this->models.med.m;
+        this->models.med.m = 0;
+        return 0;
+    }
+    
+    //make med model instance
+    bool dpactor::makeMed( dpthread_lock *thd )
+    {
+        return this->_make( &this->models.med.m, &this->models.med.mi, thd );
+    }
+    
+    //destroy med
+    void dpactor::killMed( void )
+    {
+        this->_kill( &this->models.med.m, &this->models.med.mi );
+    }
+    
+    //load high model
+    bool dpactor::loadHigh( model_loader_ref **ldr )
+    {
+        gfx_writelock *gl;
+        shared_obj_guard o;
+        
+        *ldr = 0;
+        if( !this->g )
+            return 0;
+        gl = (gfx_writelock *)o.tryWriteLock( this->g, 3000, "dpactor::loadHigh" );
+        
+        if( this->models.high.m )
+            delete this->models.high.m;
+        this->models.high.m = gl->findModel( "test_high" );
+        if( this->models.high.m )
+            return 1;
+        
+        if( gl->loadModel( "test_high", "", "3drt_dragon_high.dpmodel", &this->models.high.m, ldr ) )
+            return 1;
+        
+        if( this->models.high.m )
+            delete this->models.high.m;
+        this->models.high.m = 0;
+        return 0;
+    }
+    
+    //make high model instance
+    bool dpactor::makeHigh( dpthread_lock *thd )
+    {
+        return this->_make( &this->models.high.m, &this->models.high.mi, thd );
+    }
+    
+    //destroy high
+    void dpactor::killHigh( void )
+    {
+        this->_kill( &this->models.high.m, &this->models.high.mi );
+    }
+    
+    //load model
+    bool dpactor::_load( model_ref **m, model_instance_ref **mi, model_loader_ref **ldr )
+    {
+        return 0;
+    }
+    
+    //make model instance
+    bool dpactor::_make( model_ref **m, model_instance_ref **mi, dpthread_lock *thd )
+    {
+        shared_obj_guard o, o1;
         model_writelock *l;
         model_instance_writelock *il;
         
-        if( this->models.low.mi )
-            delete this->models.low.mi;
-        this->models.low.mi = 0;
+        if( *mi )
+            delete *mi;
+        *mi = 0;
         
-        if( !this->models.low.m )
+        if( !*m )
             return 0;
-        l = (model_writelock *)o.tryWriteLock( this->models.low.m, 1000, "dpactor::makeLow" );
+        l = (model_writelock *)o.tryWriteLock( *m, 1000, "dpactor::makeHigh" );
         if( !l )
             return 0;
         
-        this->models.low.mi = l->makeInstance( thd, thd->genId() );
-        if( !this->models.low.mi )
+        *mi = l->makeInstance( thd, thd->genId() );
+        if( !*mi )
             return 0;
-
-        il = (model_instance_writelock *)o.tryWriteLock( this->models.low.mi, 1000, "dpactor::makeLow" );
+        
+        il = (model_instance_writelock *)o1.tryWriteLock( *mi, 1000, "dpactor::makeHigh" );
         if( !il )
         {
-            if( this->models.low.mi )
-                delete this->models.low.mi;
-            this->models.low.mi = 0;
+            if( *mi )
+                delete *mi;
+            *mi = 0;
             return 0;
         }
         il->setPosition( &this->pos );
+        il->sync();
+        l->sync();
         
         return 1;
     }
- 
+    
+    //destroy model instance
+    void dpactor::_kill( model_ref **m, model_instance_ref **mi )
+    {
+        shared_obj_guard o;
+        model_writelock *ml;
+        model_instance_writelock *mil;
+        
+        if( *mi )
+        {
+            mil = (model_instance_writelock *)o.tryWriteLock( *mi, 2000, "dpactor::_kill" );
+            if( mil )
+            {
+                mil->kill();
+                mil->sync();
+            }
+        }
+        if( *m )
+        {
+            ml = (model_writelock *)o.tryWriteLock( *m, 2000, "dpactor::_kill" );
+            if( ml )
+            {
+                //ml->decRefCount();
+                ml->sync();
+            }
+        }
+  
+        if( *mi )
+            delete *mi;
+        *mi = 0;
+        if( *m )
+            delete *m;
+        *m = 0;
+    }
+    
 };

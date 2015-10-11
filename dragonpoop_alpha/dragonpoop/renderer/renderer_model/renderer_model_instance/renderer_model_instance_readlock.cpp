@@ -125,4 +125,16 @@ namespace dragonpoop
         return this->t->isGui();
     }
     
+    //returns true if alive
+    bool renderer_model_instance_readlock::isAlive( void )
+    {
+        return this->t->isAlive();
+    }
+    
+    //retuns opacity
+    float renderer_model_instance_readlock::getAlpha( void )
+    {
+        return this->t->getAlpha();
+    }
+
 };

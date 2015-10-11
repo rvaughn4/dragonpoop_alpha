@@ -74,6 +74,10 @@ namespace dragonpoop
         model_gui_pos *getGuiDimensions( void );
         //returns true if gui
         bool isGui( void );
+        //returns true if alive
+        bool isAlive( void );
+        //retuns opacity
+        float getAlpha( void );
 
         friend class renderer_model_instance;
     };

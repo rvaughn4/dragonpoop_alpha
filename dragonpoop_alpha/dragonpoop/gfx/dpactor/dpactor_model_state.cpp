@@ -53,4 +53,58 @@ namespace dragonpoop
         return this->a->makeLow( thd );
     }
     
+    //destroy low model
+    void dpactor_model_state::killLow( void )
+    {
+        this->a->killLow();
+    }
+    
+    //returns true if med is created
+    bool dpactor_model_state::isMed( void )
+    {
+        return this->a->models.med.mi != 0;
+    }
+    
+    //load med model
+    bool dpactor_model_state::loadMed( model_loader_ref **ldr )
+    {
+        return this->a->loadMed( ldr );
+    }
+    
+    //make med model instance
+    bool dpactor_model_state::makeMed( dpthread_lock *thd )
+    {
+        return this->a->makeMed( thd );
+    }
+    
+    //destroy low model
+    void dpactor_model_state::killMed( void )
+    {
+        this->a->killMed();
+    }
+
+    //returns true if high is created
+    bool dpactor_model_state::isHigh( void )
+    {
+        return this->a->models.high.mi != 0;
+    }
+    
+    //load low model
+    bool dpactor_model_state::loadHigh( model_loader_ref **ldr )
+    {
+        return this->a->loadHigh( ldr );
+    }
+    
+    //make low model instance
+    bool dpactor_model_state::makeHigh( dpthread_lock *thd )
+    {
+        return this->a->makeHigh( thd );
+    }
+    
+    //destroy low model
+    void dpactor_model_state::killHigh( void )
+    {
+        this->a->killHigh();
+    }
+    
 };

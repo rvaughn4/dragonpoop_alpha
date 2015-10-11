@@ -76,6 +76,8 @@ namespace dragonpoop
         bool isGui( void );
         //get position
         void getPosition( dpposition *p );
+        //returns true if alive
+        bool isAlive( void );
 
         friend class model_instance;
     };

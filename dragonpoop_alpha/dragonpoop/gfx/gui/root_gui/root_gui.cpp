@@ -98,9 +98,26 @@ namespace dragonpoop
             if( skey->compare( "Right" ) == 0 )
                 x.x = 1.1;
             pp.move( &x, this->t, this->t + 200, 0 );
+
+            x.x = 0;
+            x.y = 0;
+            x.z = 0;
+            if( skey->compare( "Page Up" ) == 0 )
+                x.y = 1.1;
+            if( skey->compare( "Page Down" ) == 0 )
+                x.y = -1.1;
+            if( skey->compare( "Up" ) == 0 )
+                x.z = -1.1;
+            if( skey->compare( "Down" ) == 0 )
+                x.z = 1.1;
+            if( skey->compare( "Left" ) == 0 )
+                x.x = -1.1;
+            if( skey->compare( "Right" ) == 0 )
+                x.x = 1.1;
+            pa.move( &x, this->t, this->t + 200, 0 );
             
-            if( gl )
-                gl->setCameraPosition( &pp );
+            //if( gl )
+             //   gl->setCameraPosition( &pp );
             if( al )
                 al->setPosition( &pa );
             o.unlock();
