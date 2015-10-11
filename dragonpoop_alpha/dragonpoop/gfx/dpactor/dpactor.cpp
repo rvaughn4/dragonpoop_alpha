@@ -7,11 +7,14 @@
 #include "../../core/dpthread/dpthread_lock.h"
 #include "../gfx_ref.h"
 #include "../gfx_readlock.h"
+#include "../gfx_writelock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 #include "../model/model_ref.h"
 #include "../model/model_instance/model_instance_ref.h"
 #include "../model/model_instance/model_instance_writelock.h"
 #include "../dpvertex/dpxyz_f.h"
+#include "dpactor_model_state.h"
+#include "dpactor_model_state_run_low.h"
 
 #include <math.h>
 
@@ -24,6 +27,7 @@ namespace dragonpoop
         this->c = c;
         this->g = 0;
         memset( &this->models, 0, sizeof( this->models ) );
+        this->model_state = new dpactor_model_state_run_low( this );
     }
     
     //dtor
@@ -36,6 +40,8 @@ namespace dragonpoop
         this->unlink();
         
         o.tryWriteLock( this, 5000, "dpactor::~dpactor" );
+        if( this->model_state )
+            delete this->model_state;
         if( this->models.low.m )
             delete this->models.low.m;
         if( this->models.low.mi )
@@ -81,6 +87,7 @@ namespace dragonpoop
     void dpactor::run( dpthread_lock *thd, dpactor_writelock *g )
     {
         uint64_t t;
+        dpactor_model_state *nms;
         
         if( !this->g )
             this->g = this->c->getGfx();
@@ -102,7 +109,15 @@ namespace dragonpoop
         if( t - this->t_model_state > 2000 )
         {
             this->t_model_state = t;
-            //
+            if( this->model_state )
+            {
+                this->model_state->run( this, &nms );
+                if( nms )
+                {
+                    delete this->model_state;
+                    this->model_state = nms;
+                }
+            }
         }
     }
     
@@ -170,6 +185,32 @@ namespace dragonpoop
             d = 0;
         
         return d;
+    }
+    
+    //load low model
+    bool dpactor::loadLow( model_loader_ref **ldr )
+    {
+        gfx_writelock *gl;
+        shared_obj_guard o;
+        
+        *ldr = 0;
+        if( !this->g )
+            return 0;
+        gl = (gfx_writelock *)o.tryWriteLock( this->g, 3000, "dpactor::loadLow" );
+        
+        if( this->models.low.m )
+            delete this->models.low.m;
+        this->models.low.m = gl->findModel( "test_low" );
+        if( this->models.low.m )
+            return 1;
+        
+        if( gl->loadModel( "test_low", "", "3drt_dragon_low.dpmodel", &this->models.low.m, ldr ) )
+            return 1;
+        
+        if( this->models.low.m )
+            delete this->models.low.m;
+        this->models.low.m = 0;
+        return 0;
     }
     
 };

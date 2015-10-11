@@ -1,0 +1,50 @@
+
+#include "dpactor_model_state.h"
+#include "dpactor.h"
+
+namespace dragonpoop
+{
+    
+    //ctor
+    dpactor_model_state::dpactor_model_state( dpactor *a ) : dpactor_state( a )
+    {
+        this->a = a;
+    }
+    
+    //dtor
+    dpactor_model_state::~dpactor_model_state( void )
+    {
+        
+    }
+    
+    //run state
+    void dpactor_model_state::run( dpactor *a, dpactor_state **next_state )
+    {
+        return this->run( a, (dpactor_model_state **)next_state );
+    }
+    
+    //run state
+    void dpactor_model_state::run( dpactor *a, dpactor_model_state **next_state )
+    {
+        next_state = 0;
+    }
+    
+    //return camera distance
+    float dpactor_model_state::getDistance( void )
+    {
+        return this->a->getCameraDistance();
+    }
+    
+    //returns true if low is created
+    bool dpactor_model_state::isLow( void )
+    {
+        return this->a->models.low.mi != 0;
+    }
+    
+    //load low model
+    bool dpactor_model_state::loadLow( model_loader_ref **ldr )
+    {
+        return this->a->loadLow( ldr );
+    }
+    
+};

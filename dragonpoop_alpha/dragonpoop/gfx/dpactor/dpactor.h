@@ -16,6 +16,8 @@ namespace dragonpoop
     class model_ref;
     class model_instance_ref;
     class gfx_ref;
+    class dpactor_model_state;
+    class model_loader_ref;
     
     class dpactor : public shared_obj
     {
@@ -35,6 +37,7 @@ namespace dragonpoop
         dpposition pos;
         float dis;
         uint64_t t_dis, t_model_state, t_anim_state;
+        dpactor_model_state *model_state;
         
     protected:
         
@@ -54,6 +57,8 @@ namespace dragonpoop
         float getCameraDistance( void );
         //returns distance from camera
         float _getCameraDistance( uint64_t t );
+        //load low model
+        bool loadLow( model_loader_ref **ldr );
         
     public:
         
@@ -66,6 +71,7 @@ namespace dragonpoop
         
         friend class dpactor_readlock;
         friend class dpactor_writelock;
+        friend class dpactor_model_state;
         
     };
     
