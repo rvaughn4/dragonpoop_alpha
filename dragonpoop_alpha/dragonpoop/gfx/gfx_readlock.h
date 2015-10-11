@@ -56,6 +56,8 @@ namespace dragonpoop
         unsigned int getGuiCount( void );
         //get camera position
         void getCameraPosition( dpposition *p );
+        //return actor count
+        unsigned int getActorCount( void );
 
         friend class gfx;
     };

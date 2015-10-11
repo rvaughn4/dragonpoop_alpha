@@ -12,5 +12,6 @@
 #include "gui/guis.h"
 #include "dpbitmap/dpbitmaps.h"
 #include "dpfont/dpfonts.h"
+#include "dpactor/dpactors.h"
 
 #endif

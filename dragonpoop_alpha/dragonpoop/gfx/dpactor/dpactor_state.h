@@ -6,6 +6,7 @@ namespace dragonpoop
 {
 
     class dpactor;
+    class dpthread_lock;
     
     class dpactor_state
     {
@@ -21,7 +22,7 @@ namespace dragonpoop
         //dtor
         virtual ~dpactor_state( void );
         //run state
-        virtual void run( dpactor *a, dpactor_state **next_state );
+        virtual void run( dpthread_lock *thd, dpactor *a, dpactor_state **next_state );
         
     };
     

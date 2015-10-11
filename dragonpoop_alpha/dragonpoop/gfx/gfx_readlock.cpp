@@ -89,4 +89,10 @@ namespace dragonpoop
         this->t->getCameraPosition( p );
     }
 
+    //return actor count
+    unsigned int gfx_readlock::getActorCount( void )
+    {
+        return this->t->getActorCount();
+    }
+    
 };

@@ -18,13 +18,13 @@ namespace dragonpoop
     }
     
     //run state
-    void dpactor_model_state::run( dpactor *a, dpactor_state **next_state )
+    void dpactor_model_state::run( dpthread_lock *thd, dpactor *a, dpactor_state **next_state )
     {
-        return this->run( a, (dpactor_model_state **)next_state );
+        return this->run( thd, a, (dpactor_model_state **)next_state );
     }
     
     //run state
-    void dpactor_model_state::run( dpactor *a, dpactor_model_state **next_state )
+    void dpactor_model_state::run( dpthread_lock *thd, dpactor *a, dpactor_model_state **next_state )
     {
         next_state = 0;
     }
@@ -45,6 +45,12 @@ namespace dragonpoop
     bool dpactor_model_state::loadLow( model_loader_ref **ldr )
     {
         return this->a->loadLow( ldr );
+    }
+    
+    //make low model instance
+    bool dpactor_model_state::makeLow( dpthread_lock *thd )
+    {
+        return this->a->makeLow( thd );
     }
     
 };

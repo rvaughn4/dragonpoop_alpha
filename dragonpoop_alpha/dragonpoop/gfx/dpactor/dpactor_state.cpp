@@ -18,7 +18,7 @@ namespace dragonpoop
     }
     
     //run state
-    void dpactor_state::run( dpactor *a, dpactor_state **next_state )
+    void dpactor_state::run( dpthread_lock *thd, dpactor *a, dpactor_state **next_state )
     {
         *next_state = 0;
     }

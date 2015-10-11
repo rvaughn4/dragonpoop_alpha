@@ -10,8 +10,9 @@
 #include "../../../core/dpthread/dpthread_lock.h"
 #include "../../../core/core.h"
 #include "../perf_stats_gui/perf_stats_gui.h"
-
 #include "../../dpposition/dpposition.h"
+
+#include "../../dpactor/dpactors.h"
 
 namespace dragonpoop
 {
@@ -34,6 +35,9 @@ namespace dragonpoop
         this->esc_menu = 0;
         this->esc_menu_is_show = 0;
         this->esc_menu_do_show = 0;
+        
+        this->a = new dpactor( g->getCore() );
+        g->addActor( this->a );
     }
     
     //dtor
@@ -46,6 +50,7 @@ namespace dragonpoop
         this->unlink();
         
         o.tryWriteLock( this, 5000, "root_gui::~root_gui" );
+        delete this->a;
         if( this->esc_menu )
             delete this->esc_menu;
         if( this->perf_stats )
@@ -57,10 +62,11 @@ namespace dragonpoop
     //override to handle keyboard button
     void root_gui::handleKbEvent( std::string *skey, bool isDown )
     {
-        shared_obj_guard o;
+        shared_obj_guard o, o1;
         gfx_writelock *gl;
-        dpposition pp;
+        dpposition pp, pa;
         dpxyz_f x;
+        dpactor_writelock *al;
         
         this->gui::handleKbEvent( skey, isDown );
         
@@ -72,6 +78,9 @@ namespace dragonpoop
             gl = (gfx_writelock *)o.tryWriteLock( this->g, 100, "" );
             if( gl )
                 gl->getCameraPosition( &pp );
+            al = (dpactor_writelock *)o1.tryWriteLock( this->a, 100, "" );
+            if( al )
+                al->getPosition( &pa );
             x.x = 0;
             x.y = 0;
             x.z = 0;
@@ -92,6 +101,8 @@ namespace dragonpoop
             
             if( gl )
                 gl->setCameraPosition( &pp );
+            if( al )
+                al->setPosition( &pa );
             o.unlock();
         }
     

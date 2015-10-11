@@ -12,6 +12,7 @@ namespace dragonpoop
     class menu_gui_readlock;
     class gfx_ref;
     class perf_stats_gui;
+    class dpactor;
     
     class root_gui : public gui
     {
@@ -23,6 +24,7 @@ namespace dragonpoop
         perf_stats_gui *perf_stats;
         bool esc_menu_is_show, esc_menu_do_show, perf_open;
         uint64_t last_esc_menu_process, t;
+        dpactor *a;
         
     protected:
         

@@ -155,4 +155,22 @@ namespace dragonpoop
         this->t->setCameraPosition( p );
     }
     
+    //add actor
+    void gfx_writelock::addActor( dpactor *a )
+    {
+        this->t->addActor( a );
+    }
+    
+    //add actor
+    void gfx_writelock::addActor( dpactor_ref *a )
+    {
+        this->t->addActor( a );
+    }
+    
+    //return actor count
+    unsigned int gfx_writelock::getActorCount( void )
+    {
+        return this->t->getActorCount();
+    }
+    
 };

@@ -26,7 +26,7 @@ namespace dragonpoop
         //dtor
         virtual ~dpactor_model_state_load_low( void );
         //load state
-        virtual void load( dpactor *a, dpactor_model_state **next_state );
+        virtual void run( dpthread_lock *thd, dpactor *a, dpactor_model_state **next_state );
         
     };
     

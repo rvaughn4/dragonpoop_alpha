@@ -10,6 +10,7 @@ namespace dragonpoop
     class core;
     class dpactor;
     class dpposition;
+    class dpthread_lock;
     
     class dpactor_writelock : public shared_obj_writelock
     {
@@ -27,6 +28,8 @@ namespace dragonpoop
         
     public:
         
+        //run actor
+        void run( dpthread_lock *thd );
         //return core
         core *getCore( void );
         //get position

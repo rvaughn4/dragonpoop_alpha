@@ -21,6 +21,8 @@ namespace dragonpoop
     class gui_factory;
     class renderer_ref;
     class dpposition;
+    class dpactor;
+    class dpactor_ref;
 
     class gfx_writelock : public shared_obj_writelock
     {
@@ -84,6 +86,12 @@ namespace dragonpoop
         void getCameraPosition( dpposition *p );
         //set camera position
         void setCameraPosition( dpposition *p );
+        //add actor
+        void addActor( dpactor *a );
+        //add actor
+        void addActor( dpactor_ref *a );
+        //return actor count
+        unsigned int getActorCount( void );
 
         friend class gfx;
     };

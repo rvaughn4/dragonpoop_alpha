@@ -54,6 +54,7 @@ namespace dragonpoop
         
         gfx::runModels( th, this->g );
         gfx::runGuis( th, this->g );
+        gfx::runActors( th, this->g );
     }
     
 };

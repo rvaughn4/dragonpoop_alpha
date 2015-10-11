@@ -10,6 +10,7 @@
 #include "../gfx_writelock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 #include "../model/model_ref.h"
+#include "../model/model_writelock.h"
 #include "../model/model_instance/model_instance_ref.h"
 #include "../model/model_instance/model_instance_writelock.h"
 #include "../dpvertex/dpxyz_f.h"
@@ -111,7 +112,8 @@ namespace dragonpoop
             this->t_model_state = t;
             if( this->model_state )
             {
-                this->model_state->run( this, &nms );
+                nms = 0;
+                this->model_state->run( thd, this, &nms );
                 if( nms )
                 {
                     delete this->model_state;
@@ -213,4 +215,38 @@ namespace dragonpoop
         return 0;
     }
     
+    //make low model instance
+    bool dpactor::makeLow( dpthread_lock *thd )
+    {
+        shared_obj_guard o;
+        model_writelock *l;
+        model_instance_writelock *il;
+        
+        if( this->models.low.mi )
+            delete this->models.low.mi;
+        this->models.low.mi = 0;
+        
+        if( !this->models.low.m )
+            return 0;
+        l = (model_writelock *)o.tryWriteLock( this->models.low.m, 1000, "dpactor::makeLow" );
+        if( !l )
+            return 0;
+        
+        this->models.low.mi = l->makeInstance( thd, thd->genId() );
+        if( !this->models.low.mi )
+            return 0;
+
+        il = (model_instance_writelock *)o.tryWriteLock( this->models.low.mi, 1000, "dpactor::makeLow" );
+        if( !il )
+        {
+            if( this->models.low.mi )
+                delete this->models.low.mi;
+            this->models.low.mi = 0;
+            return 0;
+        }
+        il->setPosition( &this->pos );
+        
+        return 1;
+    }
+ 
 };

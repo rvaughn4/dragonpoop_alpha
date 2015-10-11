@@ -47,7 +47,7 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
-        //run gui
+        //run actor
         void run( dpthread_lock *thd, dpactor_writelock *g );
         //get position
         void getPosition( dpposition *p );
@@ -59,6 +59,8 @@ namespace dragonpoop
         float _getCameraDistance( uint64_t t );
         //load low model
         bool loadLow( model_loader_ref **ldr );
+        //make low model instance
+        bool makeLow( dpthread_lock *thd );
         
     public:
         

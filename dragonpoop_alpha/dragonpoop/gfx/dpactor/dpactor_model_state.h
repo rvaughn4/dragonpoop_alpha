@@ -20,14 +20,15 @@ namespace dragonpoop
     protected:
         
         //run state
-        virtual void run( dpactor *a, dpactor_state **next_state );
+        virtual void run( dpthread_lock *thd, dpactor *a, dpactor_state **next_state );
         //return camera distance
         float getDistance( void );
         //returns true if low is created
         bool isLow( void );
         //load low model
         bool loadLow( model_loader_ref **ldr );
-
+        //make low model instance
+        bool makeLow( dpthread_lock *thd );
 
     public:
         
@@ -36,7 +37,7 @@ namespace dragonpoop
         //dtor
         virtual ~dpactor_model_state( void );
         //run state
-        virtual void run( dpactor *a, dpactor_model_state **next_state );
+        virtual void run( dpthread_lock *thd, dpactor *a, dpactor_model_state **next_state );
         
     };
     

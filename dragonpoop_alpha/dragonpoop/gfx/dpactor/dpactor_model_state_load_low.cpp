@@ -1,6 +1,6 @@
 
 #include "dpactor_model_state_load_low.h"
-#include "dpactor_model_state_run_low.h"
+#include "dpactor_model_state_make_low.h"
 #include "../model/model_loader/model_loader_ref.h"
 #include "../model/model_loader/model_loader_readlock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
@@ -21,14 +21,14 @@ namespace dragonpoop
     }
     
     //load state
-    void dpactor_model_state_load_low::load( dpactor *a, dpactor_model_state **next_state )
+    void dpactor_model_state_load_low::run( dpthread_lock *thd, dpactor *a, dpactor_model_state **next_state )
     {
         shared_obj_guard o;
         model_loader_readlock *l;
         
         if( !this->ldr || !this->ldr->isLinked() )
         {
-            *next_state = new dpactor_model_state_run_low( a );
+            *next_state = new dpactor_model_state_make_low( a );
             return;
         }
         
@@ -39,7 +39,7 @@ namespace dragonpoop
         if( l->isRunning() )
             return;
         
-        *next_state = new dpactor_model_state_run_low( a );
+        *next_state = new dpactor_model_state_make_low( a );
     }
     
 };

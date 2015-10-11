@@ -31,6 +31,9 @@
 #include "gui/gui_factory_ref.h"
 #include "gui/gui_factory_writelock.h"
 #include "gui/root_gui/root_gui_factory.h"
+#include "dpactor/dpactor.h"
+#include "dpactor/dpactor_ref.h"
+#include "dpactor/dpactor_writelock.h"
 
 namespace dragonpoop
 {
@@ -77,6 +80,7 @@ namespace dragonpoop
         delete this->tpr;
 
         o.tryWriteLock( this, 5000, "gfx::~gfx" );
+        this->deleteActors();
         this->deleteGuis();
         this->deleteLoaders();
         this->deleteSavers();
@@ -250,6 +254,29 @@ namespace dragonpoop
         gui_ref *p;
         
         l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+
+    //delete all actors
+    void gfx::deleteActors( void )
+    {
+        std::list<dpactor_ref *> *l, d;
+        std::list<dpactor_ref *>::iterator i;
+        dpactor_ref *p;
+        
+        l = &this->actors;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -455,6 +482,69 @@ namespace dragonpoop
             gwl->t->guis.remove( p );
             delete p;
             gwl->t->gui_cnt--;
+        }
+        og.unlock();
+    }
+
+    //run all actors
+    void gfx::runActors( dpthread_lock *thd, gfx_ref *g )
+    {
+        std::list<dpactor_ref *> *l, ll, d;
+        std::list<dpactor_ref *>::iterator i;
+        dpactor_ref *p;
+        shared_obj_guard o, og;
+        dpactor_writelock *pl;
+        gfx_readlock *grl;
+        gfx_writelock *gwl;
+        
+        grl = (gfx_readlock *)og.tryReadLock( g, 100, "gfx::runActors" );
+        if( !grl )
+            return;
+        
+        l = &grl->t->actors;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+                d.push_back( p );
+            else
+            {
+                pl = (dpactor_writelock *)o.tryWriteLock( p, 100, "gfx::runActors" );
+                if( pl )
+                {
+                    p = (dpactor_ref *)pl->getRef();
+                    if( p )
+                        ll.push_back( p );
+                }
+                o.unlock();
+            }
+        }
+        og.unlock();
+        
+        l = &ll;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (dpactor_writelock *)o.tryWriteLock( p, 100, "gfx::runActors" );
+            if( pl )
+                pl->run( thd );
+        }
+        o.unlock();
+        
+        if( d.empty() )
+            return;
+        
+        gwl = (gfx_writelock *)og.tryReadLock( g, 100, "gfx::runActors" );
+        if( !gwl )
+            return;
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            gwl->t->actors.remove( p );
+            gwl->t->actor_cnt--;
+            delete p;
         }
         og.unlock();
     }
@@ -962,6 +1052,50 @@ namespace dragonpoop
         if( !l )
             return;
         l->syncCamera();
+    }
+    
+    //add actor
+    void gfx::addActor( dpactor *a )
+    {
+        shared_obj_guard o;
+        dpactor_writelock *l;
+        dpactor_ref *r;
+        
+        l = (dpactor_writelock *)o.writeLock( a, "gfx::addActor" );
+        if( !l )
+            return;
+        
+        r = (dpactor_ref *)l->getRef();
+        if( r )
+        {
+            this->actors.push_back( r );
+            this->actor_cnt++;
+        }
+    }
+    
+    //add actor
+    void gfx::addActor( dpactor_ref *a )
+    {
+        shared_obj_guard o;
+        dpactor_writelock *l;
+        dpactor_ref *r;
+        
+        l = (dpactor_writelock *)o.writeLock( a, "gfx::addActor" );
+        if( !l )
+            return;
+        
+        r = (dpactor_ref *)l->getRef();
+        if( r )
+        {
+            this->actors.push_back( r );
+            this->actor_cnt++;
+        }
+    }
+    
+    //return actor count
+    unsigned int gfx::getActorCount( void )
+    {
+        return this->actor_cnt;
     }
     
 };

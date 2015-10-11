@@ -30,6 +30,8 @@ namespace dragonpoop
     class gui_factory_ref;
     class gui_factory;
     class renderer_ref;
+    class dpactor;
+    class dpactor_ref;
 
     class gfx : public shared_obj
     {
@@ -41,7 +43,7 @@ namespace dragonpoop
         core *c;
         renderer *r;
         dptaskpool_ref *tpr;
-        unsigned int ms_each_frame, model_cnt, gui_cnt;
+        unsigned int ms_each_frame, model_cnt, gui_cnt, actor_cnt;
         float fps;
         uint64_t last_r_poll;
         dpposition cam_pos;
@@ -53,6 +55,7 @@ namespace dragonpoop
         std::list<model_loader *> loaders;
         std::list<model_saver *> savers;
         std::list<gui_ref *> guis;
+        std::list<dpactor_ref *> actors;
         
         //delete all models
         void deleteModels( void );
@@ -62,6 +65,8 @@ namespace dragonpoop
         void deleteSavers( void );
         //delete all guis
         void deleteGuis( void );
+        //delete all actors
+        void deleteActors( void );
         //delete old models
         static void runModels( dpthread_lock *thd, gfx_ref *g );
         //delete old loaders
@@ -70,6 +75,8 @@ namespace dragonpoop
         void runSavers( dpthread_lock *thd );
         //run all guis
         static void runGuis( dpthread_lock *thd, gfx_ref *g );
+        //run all actors
+        static void runActors( dpthread_lock *thd, gfx_ref *g );
         
     protected:
 
@@ -129,6 +136,12 @@ namespace dragonpoop
         void getCameraPosition( dpposition *p );
         //set camera position
         void setCameraPosition( dpposition *p );
+        //add actor
+        void addActor( dpactor *a );
+        //add actor
+        void addActor( dpactor_ref *a );
+        //return actor count
+        unsigned int getActorCount( void );
 
     public:
 

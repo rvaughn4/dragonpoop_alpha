@@ -17,6 +17,12 @@ namespace dragonpoop
         
     }
     
+    //run actor
+    void dpactor_writelock::run( dpthread_lock *thd )
+    {
+        this->t->run( thd, this );
+    }
+    
     //return core
     core *dpactor_writelock::getCore( void )
     {
