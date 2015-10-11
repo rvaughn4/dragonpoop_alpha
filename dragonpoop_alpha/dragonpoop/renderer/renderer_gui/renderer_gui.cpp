@@ -329,14 +329,26 @@ namespace dragonpoop
         dpid hid;
         
         if( this->bIsAlive )
-            this->fade += ( 1.0f - this->fade ) * 0.3f;
-        if( !this->bIsAlive )
-            this->fade += ( 0.0f - this->fade ) * 0.3f;
+        {
+            if( this->fade < 0.95f )
+                this->fade += ( 1.0f - this->fade ) * 0.3f;
+            else
+                this->fade = 1.0f;
+        }
+        else
+        {
+            if( this->fade > 0.1f )
+                this->fade *= 0.3f;
+            else
+                this->fade = 0;
+        }
         
         if( this->bIsHover )
         {
             if( this->clickfade > 0.005f )
                 this->clickfade *= 0.2f;
+            else
+                this->clickfade = 0;
             if( this->clickfade > 0.01f )
                 this->hv += ( 0.0f - this->hv ) * 0.7f;
             else

@@ -312,6 +312,7 @@ namespace dragonpoop
         uint64_t tr;
         dpid nid;
         dpmatrix mat;
+        bool bDidFail;
         
         //run guis
         tr = thd->getTicks();
@@ -343,6 +344,7 @@ namespace dragonpoop
             return;
         
         //build id index
+        bDidFail = 0;
         l = &this->guis;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -358,7 +360,10 @@ namespace dragonpoop
             pi = *ii;
             pl = (gui_writelock *)o.tryWriteLock( pi, 300, "renderer::runGuis" );
             if( !pl )
+            {
+                bDidFail = 1;
                 continue;
+            }
             p = (renderer_gui *)t.findLeaf( pl->getId() );
             if( !p )
             {
@@ -382,6 +387,9 @@ namespace dragonpoop
         }
         o.unlock();
         og.unlock();
+        
+        if( bDidFail )
+            return;
         
         l = &this->guis;
         for( i = l->begin(); i != l->end(); ++i )
@@ -497,6 +505,7 @@ namespace dragonpoop
         shared_obj_guard o, og;
         gfx_readlock *gl;
         uint64_t tr;
+        bool bDidFail;
 
         tr = thd->getTicks();
         if( tr - this->t_last_m_ran < 10 )
@@ -522,6 +531,7 @@ namespace dragonpoop
             return;
         
         //build id index
+        bDidFail = 0;
         l = &this->models;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -536,7 +546,10 @@ namespace dragonpoop
             pi = *ii;
             pl = (model_writelock *)o.tryWriteLock( pi, 300, "renderer::runModels" );
             if( !pl )
+            {
+                bDidFail = 1;
                 continue;
+            }
             p = (renderer_model *)t.findLeaf( pl->getId() );
             if( !p )
             {
@@ -553,6 +566,9 @@ namespace dragonpoop
         }
         o.unlock();
         og.unlock();
+        
+        if( bDidFail )
+            return;
         
         l = &this->models;
         for( i = l->begin(); i != l->end(); ++i )
