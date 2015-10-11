@@ -208,6 +208,9 @@ namespace dragonpoop
         glLightfv(GL_LIGHT2, GL_POSITION,LightPosition2);
         glEnable(GL_LIGHT2);
 
+        glEnableClientState( GL_NORMAL_ARRAY );
+        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+        glEnableClientState( GL_VERTEX_ARRAY );
         return 1;
     }
 
@@ -457,7 +460,26 @@ namespace dragonpoop
     {
         dpvertex *v;
         uint16_t in;
+        char *ibb;
         unsigned int i;
+        
+        if( ib_stride == sizeof( uint16_t ) )
+        {
+            ibb = ib;
+            for( i = 0; i < ib_size; i++ )
+            {
+                in = *( (uint16_t *)ibb );
+                ibb += ib_stride;
+                if( in >= vb_size )
+                    *( (uint16_t *)ibb ) = 0;
+            }
+            
+            glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &vb->normal );
+            glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &vb->texcoords[ 0 ] );
+            glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &vb->pos );
+            glDrawElements( GL_TRIANGLES, ib_size, GL_UNSIGNED_SHORT, ib );
+            return;
+        }
         
         glBegin( GL_TRIANGLES );
         
