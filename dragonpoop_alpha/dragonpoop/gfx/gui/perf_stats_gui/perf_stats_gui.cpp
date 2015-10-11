@@ -79,7 +79,7 @@ namespace dragonpoop
             this->bDoClose = 1;
         
         t = thd->getTicks();
-        if( t - this->t_last_update < 4000 )
+        if( t - this->t_last_update < 1500 )
             return;
         this->t_last_update = t;
         

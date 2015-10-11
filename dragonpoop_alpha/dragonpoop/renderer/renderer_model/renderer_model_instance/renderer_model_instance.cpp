@@ -600,14 +600,28 @@ namespace dragonpoop
     //get model view matrix
     void renderer_model_instance::getModelViewMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
-        dpxyz_f pp;
+        dpxyz_f pp, sz, ctr;
+        float fsz, rsz;
 
+        r->getPositionRelativeToCamera( &this->pos, thd->getTicks(), &pp );
+        m->getCenter( &ctr );
+        m->getSize( &sz );
+        fsz = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
+        if( fsz > 0.0f )
+            fsz = sqrtf( fsz );
+        else
+            fsz = 1;
+        rsz = 1.0f / fsz;
+        
         out_model_matrix->copy( in_world_matrix );
+        
+        
         
         if( !this->isGui() )
         {
-            r->getPositionRelativeToCamera( &this->pos, thd->getTicks(), &pp );
-            out_model_matrix->translate( pp.x, pp.y, pp.z - 80 );
+            out_model_matrix->translate( pp.x, pp.y, pp.z );
+            out_model_matrix->scale( rsz, rsz, rsz );
+            out_model_matrix->translate( -ctr.x, -ctr.y, -ctr.z );
             return;
         }
         

@@ -67,7 +67,7 @@ namespace dragonpoop
         if( skey->compare( "Escape" ) == 0 && isDown )
             this->showEscapeMenu();
         
-        if( isDown && ( skey->compare( "Up" ) == 0 || skey->compare( "Left" ) == 0 || skey->compare( "Right" ) == 0 || skey->compare( "Down" ) == 0 ) )
+        if( isDown && ( skey->compare( "Up" ) == 0 || skey->compare( "Left" ) == 0 || skey->compare( "Right" ) == 0 || skey->compare( "Down" ) == 0 || skey->compare( "Page Up" ) == 0 || skey->compare( "Page Down" ) == 0 ) )
         {
             gl = (gfx_writelock *)o.tryWriteLock( this->g, 100, "" );
             if( gl )
@@ -76,15 +76,19 @@ namespace dragonpoop
             x.y = 0;
             x.z = 0;
             
+            if( skey->compare( "Page Up" ) == 0 )
+                x.y = 1.1;
+            if( skey->compare( "Page Down" ) == 0 )
+                x.y = -1.1;
             if( skey->compare( "Up" ) == 0 )
-                x.y = 2;
+                x.z = -1.1;
             if( skey->compare( "Down" ) == 0 )
-                x.y = -2;
+                x.z = 1.1;
             if( skey->compare( "Left" ) == 0 )
-                x.x = 2;
+                x.x = -1.1;
             if( skey->compare( "Right" ) == 0 )
-                x.x = -2;
-            pp.move( &x, this->t, this->t + 1000, 0 );
+                x.x = 1.1;
+            pp.move( &x, this->t, this->t + 200, 0 );
             
             if( gl )
                 gl->setCameraPosition( &pp );

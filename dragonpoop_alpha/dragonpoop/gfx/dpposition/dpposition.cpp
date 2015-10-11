@@ -38,9 +38,9 @@ namespace dragonpoop
         dy2 -= dy1 + dy0;
         dz2 -= dz1 + dz0;
         
-        pout->x = -dx2;
-        pout->y = -dy2;
-        pout->z = -dz2;
+        pout->x = dx2;
+        pout->y = dy2;
+        pout->z = dz2;
     }
     
     //set location
