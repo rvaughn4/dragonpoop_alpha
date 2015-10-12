@@ -38,8 +38,15 @@ namespace dragonpoop
 
     private:
 
-        dptask *tsk;
-        gfx_task *gtsk;
+        struct
+        {
+            struct
+            {
+                dptask *tsk;
+                gfx_task *gtsk;
+            } tgfx, tmodels, tguis, tactors;
+        } tasks;
+        
         core *c;
         renderer *r;
         dptaskpool_ref *tpr;
@@ -47,6 +54,7 @@ namespace dragonpoop
         float fps;
         uint64_t last_r_poll;
         dpposition cam_pos;
+        bool bIsRun;
         
         gui_factory_ref *root_factory;
         gui *root_g;
@@ -56,6 +64,19 @@ namespace dragonpoop
         std::list<model_saver *> savers;
         std::list<gui_ref *> guis;
         std::list<dpactor_ref *> actors;
+        
+        //start all tasks
+        void _startTasks( core *c, dptaskpool_writelock *tp );
+        //start task
+        void _startTask( core *c, dptaskpool_writelock *tp, gfx_task **pgtsk, dptask **ptsk, bool bRunGfx, bool bRunModels, bool bRunGuis, bool bRunActors, unsigned int ms_delay );
+        //kill all tasks
+        void _killTasks( void );
+        //kill task
+        void _killTask( gfx_task **pgtsk, dptask **ptsk );
+        //delete all tasks
+        void _deleteTasks( void );
+        //delete task
+        void _deleteTask( gfx_task **pgtsk, dptask **ptsk );
         
         //delete all models
         void deleteModels( void );

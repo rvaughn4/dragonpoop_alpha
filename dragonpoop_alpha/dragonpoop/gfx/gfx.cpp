@@ -51,9 +51,7 @@ namespace dragonpoop
 
         this->c = c;
         this->r = 0;
-        this->gtsk = new gfx_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 10, 0 );
-        tp->addTask( this->tsk );
+        this->_startTasks( c, tp );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 
         l = (gfx_writelock *)o.writeLock( this, "gfx::gfx" );
@@ -76,9 +74,8 @@ namespace dragonpoop
         this->unlink();
         
         this->kill();
-        delete this->gtsk;
-        delete this->tpr;
-
+        this->_deleteTasks();
+        
         o.tryWriteLock( this, 5000, "gfx::~gfx" );
         this->deleteActors();
         this->deleteGuis();
@@ -90,12 +87,72 @@ namespace dragonpoop
         o.unlock();
     }
 
+    //start all tasks
+    void gfx::_startTasks( core *c, dptaskpool_writelock *tp )
+    {
+        this->_startTask( c, tp, &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk, 1, 0, 0, 0, 100 );
+        this->_startTask( c, tp, &this->tasks.tmodels.gtsk, &this->tasks.tmodels.tsk, 0, 1, 0, 0, 10 );
+        this->_startTask( c, tp, &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk, 0, 0, 1, 0, 50 );
+        this->_startTask( c, tp, &this->tasks.tactors.gtsk, &this->tasks.tactors.tsk, 0, 0, 0, 1, 200 );
+        this->bIsRun = 1;
+    }
+    
+    //start task
+    void gfx::_startTask( core *c, dptaskpool_writelock *tp, gfx_task **pgtsk, dptask **ptsk, bool bRunGfx, bool bRunModels, bool bRunGuis, bool bRunActors, unsigned int ms_delay )
+    {
+        *pgtsk = new gfx_task( this, bRunGfx, bRunModels, bRunGuis, bRunActors );
+        *ptsk = new dptask( c->getMutexMaster(), *pgtsk, ms_delay, 0 );
+        tp->addTask( *ptsk );
+    }
+    
+    //kill all tasks
+    void gfx::_killTasks( void )
+    {
+        this->_killTask( &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk );
+        this->_killTask( &this->tasks.tmodels.gtsk, &this->tasks.tmodels.tsk );
+        this->_killTask( &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk );
+        this->_killTask( &this->tasks.tactors.gtsk, &this->tasks.tactors.tsk );
+        this->bIsRun = 0;
+    }
+    
+    //kill task
+    void gfx::_killTask( gfx_task **pgtsk, dptask **ptsk )
+    {
+        dptask_writelock *tl;
+        shared_obj_guard o;
+        
+        if( !*ptsk )
+            return;
+        
+        tl = (dptask_writelock *)o.writeLock( *ptsk, "gfx::genRef" );
+        tl->kill();
+        o.unlock();
+    }
+    
+    //delete all tasks
+    void gfx::_deleteTasks( void )
+    {
+        this->_deleteTask( &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk );
+        this->_deleteTask( &this->tasks.tmodels.gtsk, &this->tasks.tmodels.tsk );
+        this->_deleteTask( &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk );
+        this->_deleteTask( &this->tasks.tactors.gtsk, &this->tasks.tactors.tsk );
+    }
+    
+    //delete task
+    void gfx::_deleteTask( gfx_task **pgtsk, dptask **ptsk )
+    {
+        if( *ptsk )
+            delete *ptsk;
+        *ptsk = 0;
+        if( *pgtsk )
+            delete *pgtsk;
+        *pgtsk = 0;
+    }
+    
     //returns true if running
     bool gfx::isRunning( void )
     {
-        if( !this->tsk )
-            return 0;
-        return this->tsk->isLinked();
+        return this->bIsRun;
     }
 
     //return core
@@ -125,18 +182,7 @@ namespace dragonpoop
     //stop gfx task
     void gfx::kill( void )
     {
-        dptask_writelock *tl;
-        shared_obj_guard o;
-
-        if( !this->tsk )
-            return;
-
-        tl = (dptask_writelock *)o.writeLock( this->tsk, "gfx::genRef" );
-        tl->kill();
-        o.unlock();
-
-        delete this->tsk;
-        this->tsk = 0;
+        this->_killTasks();
     }
 
     //run gfx from task

@@ -10,11 +10,16 @@ namespace dragonpoop
 {
 
     //ctor
-    gfx_task::gfx_task( gfx *g )
+    gfx_task::gfx_task( gfx *g, bool bRunGfx, bool bRunModels, bool bRunGuis, bool bRunActors )
     {
         gfx_writelock *gl;
         shared_obj_guard sg;
 
+        this->bRunGfx = bRunGfx;
+        this->bRunGuis = bRunGuis;
+        this->bRunModels = bRunModels;
+        this->bRunActors = bRunActors;
+        
         this->g = 0;
         gl = (gfx_writelock *)sg.writeLock( g, "gfx_task::gfx_task" );
         if( !gl )
@@ -45,16 +50,23 @@ namespace dragonpoop
             tl->kill();
             return;
         }
-        gl = (gfx_writelock *)g.tryWriteLock( this->g, 100, "gfx_task::run" );
-        if( !gl )
-            return;
-
-        gl->run( th );
-        g.unlock();
         
-        gfx::runModels( th, this->g );
-        gfx::runGuis( th, this->g );
-        gfx::runActors( th, this->g );
+        if( this->bRunGfx )
+        {
+            gl = (gfx_writelock *)g.tryWriteLock( this->g, 100, "gfx_task::run" );
+            if( gl )
+                gl->run( th );
+            g.unlock();
+        }
+        
+        if( this->bRunModels )
+            gfx::runModels( th, this->g );
+        
+        if( this->bRunGuis )
+            gfx::runGuis( th, this->g );
+        
+        if( this->bRunActors )
+            gfx::runActors( th, this->g );
     }
     
 };
