@@ -1,6 +1,8 @@
 
 #include "dpactor_animate_state_walk.h"
 #include "dpactor_animate_state_idle.h"
+#include "dpactor_animate_state_fly_start.h"
+#include "dpactor_animate_state_fly_stop.h"
 #include "dpactor.h"
 #include "../../core/dpthread/dpthread_lock.h"
 
@@ -12,7 +14,7 @@ namespace dragonpoop
     {
         this->t_start = 0;
         this->stopAnimations();
-        this->playAnimation( "walk", 1, 1 );
+        this->playAnimation( "walk", 3, 1 );
     }
     
     //dtor
@@ -39,19 +41,23 @@ namespace dragonpoop
         
         this->getPosition( &p );
         p.getData( &pi );
-      /*
-        if( pi.end.whole.y > pi.start.whole.y )
-        {
-            *next_state = 0;
-            return;
-        }
-        */
+      
         if( !p.isMoving( t ) )
         {
             *next_state = new dpactor_animate_state_idle( a );
             return;
         }
-        
+        if( pi.end.whole.y > pi.start.whole.y )
+        {
+            *next_state = new dpactor_animate_state_fly_start( a );
+            return;
+        }
+        if( pi.end.whole.y < pi.start.whole.y )
+        {
+            *next_state = new dpactor_animate_state_fly_stop( a );
+            return;
+        }
+                
         *next_state = 0;
     }
     

@@ -47,4 +47,10 @@ namespace dragonpoop
         this->a->getPosition( p );
     }
     
+    //returns true if animation is playing
+    bool dpactor_animate_state::isPlaying( const char *cname )
+    {
+        return this->a->isPlaying( cname );
+    }
+    
 };

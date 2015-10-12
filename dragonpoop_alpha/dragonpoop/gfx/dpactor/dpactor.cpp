@@ -406,17 +406,31 @@ namespace dragonpoop
             this->_stopAnimations( this->models.high.mi );
     }
     
+    //convert animation name
+    bool dpactor::convertName( std::string *sin, std::string *sout )
+    {
+        if( sin->compare( "idle" ) == 0 )
+            sout->assign( "idle-ground" );
+        if( sin->compare( "walk" ) == 0 )
+            sout->assign( "walk-1" );
+        if( sin->compare( "fly_start" ) == 0 )
+            sout->assign( "fly start" );
+        if( sin->compare( "fly_stop" ) == 0 )
+            sout->assign( "fly end" );
+        if( sin->compare( "fly_idle" ) == 0 )
+            sout->assign( "flying idle" );
+        if( sin->compare( "fly" ) == 0 )
+            sout->assign( "fly_forward" );
+        return 1;
+    }
+    
     //play animation
     void dpactor::playAnimation( const char *cname, float spd, bool doRepeat )
     {
         std::string sname, sres;
         
         sname.assign( cname );
-        
-        if( sname.compare( "idle" ) == 0 )
-            sres.assign( "idle-ground" );
-        if( sname.compare( "walk" ) == 0 )
-            sres.assign( "walk-1" );
+        this->convertName( &sname, &sres );
         
         if( this->models.low.m && this->models.low.mi )
             this->_playAnimation( this->models.low.m, this->models.low.mi, sres.c_str(), spd, doRepeat );
@@ -424,6 +438,23 @@ namespace dragonpoop
             this->_playAnimation( this->models.med.m, this->models.med.mi, sres.c_str(), spd, doRepeat );
         if( this->models.high.m && this->models.high.mi )
             this->_playAnimation( this->models.high.m, this->models.high.mi, sres.c_str(), spd, doRepeat );
+    }
+    
+    //returns true if animation is playing
+    bool dpactor::isPlaying( const char *cname )
+    {
+        std::string sname, sres;
+        
+        sname.assign( cname );
+        this->convertName( &sname, &sres );
+        
+        if( this->models.low.m && this->models.low.mi )
+            return this->_isPlaying( this->models.low.mi, sres.c_str() );
+        if( this->models.med.m && this->models.med.mi )
+            return this->_isPlaying( this->models.med.mi, sres.c_str() );
+        if( this->models.high.m && this->models.high.mi )
+            return this->_isPlaying( this->models.high.mi, sres.c_str() );
+        return 0;
     }
     
     //stop all animations
@@ -455,6 +486,19 @@ namespace dragonpoop
             return;
         
         mil->playAnimation( ml->getId(), ml, cname, doRepeat, spd );
+    }
+  
+    //returns true if animation is playing
+    bool dpactor::_isPlaying( model_instance_ref *mi, const char *cname )
+    {
+        shared_obj_guard o;
+        model_instance_writelock *mil;
+        
+        mil = (model_instance_writelock *)o.tryWriteLock( mi, 2000, "dpactor::_kill" );
+        if( !mil )
+            return 0;
+        
+        return mil->isAnimationPlaying( cname );
     }
     
 };

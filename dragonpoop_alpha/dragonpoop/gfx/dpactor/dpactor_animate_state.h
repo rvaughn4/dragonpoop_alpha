@@ -28,6 +28,8 @@ namespace dragonpoop
         void playAnimation( const char *cname, float spd, bool doRepeat );
         //get position
         void getPosition( dpposition *p );
+        //returns true if animation is playing
+        bool isPlaying( const char *cname );
 
     public:
         

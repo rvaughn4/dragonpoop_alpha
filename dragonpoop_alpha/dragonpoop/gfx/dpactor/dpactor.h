@@ -51,6 +51,10 @@ namespace dragonpoop
         void _stopAnimations( model_instance_ref *mi );
         //play animation
         void _playAnimation( model_ref *m, model_instance_ref *mi, const char *cname, float spd, bool doRepeat );
+        //returns true if animation is playing
+        bool _isPlaying( model_instance_ref *mi, const char *cname );
+        //convert animation name
+        bool convertName( std::string *sin, std::string *sout );
 
     protected:
         
@@ -92,6 +96,8 @@ namespace dragonpoop
         void stopAnimations( void );
         //play animation
         void playAnimation( const char *cname, float spd, bool doRepeat );
+        //returns true if animation is playing
+        bool isPlaying( const char *cname );
         
     public:
         
