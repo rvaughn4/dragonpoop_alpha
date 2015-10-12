@@ -102,13 +102,13 @@ namespace dragonpoop
         
         t = thd->getTicks();
         
-        if( t - this->t_dis > 200 )
+        if( t - this->t_dis > 100 )
         {
             this->t_dis = t;
             this->dis = this->_getCameraDistance( t );
         }
         
-        if( t - this->t_anim_state > 200 )
+        if( t - this->t_anim_state > 100 )
         {
             this->t_anim_state = t;
             if( this->anim_state )

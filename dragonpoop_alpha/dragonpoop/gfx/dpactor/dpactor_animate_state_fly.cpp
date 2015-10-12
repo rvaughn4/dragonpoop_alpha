@@ -1,6 +1,7 @@
 
 #include "dpactor_animate_state_fly.h"
 #include "dpactor_animate_state_fly_idle.h"
+#include "dpactor_animate_state_walk.h"
 #include "dpactor.h"
 #include "../../core/dpthread/dpthread_lock.h"
 
@@ -43,6 +44,11 @@ namespace dragonpoop
         if( !p.isMoving( t ) )
         {
             *next_state = new dpactor_animate_state_fly_idle( a );
+            return;
+        }
+        if( pi.end.whole.y == 0 )
+        {
+            *next_state = new dpactor_animate_state_walk( a );
             return;
         }
         
