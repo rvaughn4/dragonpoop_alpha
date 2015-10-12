@@ -97,7 +97,7 @@ namespace dragonpoop
                 x.x = -1.1;
             if( skey->compare( "Right" ) == 0 )
                 x.x = 1.1;
-            pp.move( &x, this->t, this->t + 200, 0 );
+            pp.move( &x, this->t, this->t + 1000, 0 );
 
             x.x = 0;
             x.y = 0;
@@ -114,7 +114,7 @@ namespace dragonpoop
                 x.x = -1.1;
             if( skey->compare( "Right" ) == 0 )
                 x.x = 1.1;
-            pa.move( &x, this->t, this->t + 200, 0 );
+            pa.move( &x, this->t, this->t + 1000, 0 );
             
             //if( gl )
              //   gl->setCameraPosition( &pp );

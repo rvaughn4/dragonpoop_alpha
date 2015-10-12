@@ -189,28 +189,6 @@ namespace dragonpoop
         glLoadIdentity();
         glEnable( GL_TEXTURE_2D );
 
-        glEnable(GL_LIGHTING);
-        GLfloat LightAmbient[]= { 0.5f, 0.5f, 0.5f, 1.0f };
-        GLfloat LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };
-        GLfloat LightPosition[]= { 0.0f, 0.0f, 20.0f, -10.0f };
-
-        glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);             // Setup The Ambient Light
-        glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);             // Setup The Diffuse Light
-        glLightfv(GL_LIGHT1, GL_SPECULAR, LightDiffuse);             // Setup The Diffuse Light
-        
-        glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);
-        glEnable(GL_LIGHT1);
-
-        GLfloat LightAmbient2[]= { 0.5f, 0.5f, 0.5f, 1.0f };
-        GLfloat LightDiffuse2[]= { 1.0f, 0.8f, 0.3f, 1.0f };
-        GLfloat LightPosition2[]= { 0.0f, 0.0f, 10.0f, -5.0f };
-
-        glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient2);             // Setup The Ambient Light
-        glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse2);             // Setup The Diffuse Light
-        glLightfv(GL_LIGHT2, GL_POSITION,LightPosition2);
-        glLightfv(GL_LIGHT2, GL_SPECULAR, LightDiffuse2);             // Setup The Diffuse Light
-        glEnable(GL_LIGHT2);
-
         glEnableClientState( GL_NORMAL_ARRAY );
         glEnableClientState( GL_TEXTURE_COORD_ARRAY );
         glEnableClientState( GL_VERTEX_ARRAY );
@@ -396,8 +374,10 @@ namespace dragonpoop
         union
         {
             dprgba clr;
+            dpxyz_f xy;
             float fclr[ 4 ];
         };
+        dpmatrix m;
         
         this->renderer::prepareWorldRender( w, h );
         
@@ -410,9 +390,40 @@ namespace dragonpoop
         
         clr.r = clr.b = clr.g = clr.a = 0;
         glLightModelfv( GL_LIGHT_MODEL_AMBIENT, fclr );
-        glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR );
-        glLightModelf( GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f );
+       // glLightModeli( GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR );
+       // glLightModelf( GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f );
         glLightModeli( GL_LIGHT_MODEL_TWO_SIDE, 0 );
+        
+        
+        static float rr;
+        rr += 0.1f;
+        m.setRotationY( rr );
+        
+        GLfloat LightAmbient[]= { 0.0f, 0.0f, 0.0f, 1.0f };
+        GLfloat LightDiffuse[]= { 0.0f, 0.0f, 0.4f, 1.0f };
+        xy.x = 0; xy.y = 20; xy.z = 20;
+        m.transform( &xy );
+        fclr[ 3 ] = 0;
+        glLightfv(GL_LIGHT1, GL_POSITION, fclr );
+        glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);             // Setup The Ambient Light
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);             // Setup The Diffuse Light
+        glLightfv(GL_LIGHT1, GL_SPECULAR, LightDiffuse);             // Setup The Diffuse Light
+        
+        glEnable(GL_LIGHT1);
+        
+        GLfloat LightAmbient2[]= { 0.0f, 0.0f, 0.0f, 1.0f };
+        GLfloat LightDiffuse2[]= { 0.4f, 0.4f, 0.0f, 1.0f };
+        
+        xy.x = 20; xy.y = 0; xy.z = 20;
+        m.transform( &xy );
+        fclr[ 3 ] = 0;
+        glLightfv(GL_LIGHT2, GL_POSITION, fclr );
+        glLightfv(GL_LIGHT2, GL_AMBIENT, LightAmbient2);             // Setup The Ambient Light
+        glLightfv(GL_LIGHT2, GL_DIFFUSE, LightDiffuse2);             // Setup The Diffuse Light
+        glLightfv(GL_LIGHT2, GL_SPECULAR, LightDiffuse2);             // Setup The Diffuse Light
+        glEnable(GL_LIGHT2);
+        
+        glPopMatrix();
     }
 
     //prepare for rendering gui
@@ -546,8 +557,8 @@ namespace dragonpoop
         mi->redoMatrixes( thd->getTicks() );
         ( (openglx_1o5_renderer_model_instance_group *)g )->setLastFrameTime( t );
         
-        
-        glMaterialf( GL_FRONT, GL_SHININESS, mat->getShine() );
+        a *= mat->getOpacity();
+        glMaterialf( GL_FRONT, GL_SHININESS, mat->getShine() * 0.5f );
         
         mat->getAmbientColor( &clr );
         clr.a = a;

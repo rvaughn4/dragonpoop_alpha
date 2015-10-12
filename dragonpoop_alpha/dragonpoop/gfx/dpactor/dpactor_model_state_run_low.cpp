@@ -26,7 +26,7 @@ namespace dragonpoop
         d = this->getDistance();
         *next_state = 0;
         
-        if( d < 2.0f )
+        if( d < 10.0f )
         {
             *next_state = new dpactor_model_state_run_med( a );
             return;

@@ -26,7 +26,7 @@ namespace dragonpoop
     //run state
     void dpactor_model_state::run( dpthread_lock *thd, dpactor *a, dpactor_model_state **next_state )
     {
-        next_state = 0;
+        *next_state = 0;
     }
     
     //return camera distance

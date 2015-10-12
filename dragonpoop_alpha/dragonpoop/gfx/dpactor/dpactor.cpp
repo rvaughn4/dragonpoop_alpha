@@ -11,11 +11,14 @@
 #include "../../core/shared_obj/shared_obj_guard.h"
 #include "../model/model_ref.h"
 #include "../model/model_writelock.h"
+#include "../model/model_readlock.h"
 #include "../model/model_instance/model_instance_ref.h"
 #include "../model/model_instance/model_instance_writelock.h"
 #include "../dpvertex/dpxyz_f.h"
 #include "dpactor_model_state.h"
 #include "dpactor_model_state_run_low.h"
+#include "dpactor_animate_state.h"
+#include "dpactor_animate_state_idle.h"
 
 #include <math.h>
 
@@ -29,6 +32,7 @@ namespace dragonpoop
         this->g = 0;
         memset( &this->models, 0, sizeof( this->models ) );
         this->model_state = new dpactor_model_state_run_low( this );
+        this->anim_state = new dpactor_animate_state_idle( this );
     }
     
     //dtor
@@ -43,6 +47,8 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "dpactor::~dpactor" );
         if( this->model_state )
             delete this->model_state;
+        if( this->anim_state )
+            delete this->anim_state;
         if( this->models.low.m )
             delete this->models.low.m;
         if( this->models.low.mi )
@@ -89,6 +95,7 @@ namespace dragonpoop
     {
         uint64_t t;
         dpactor_model_state *nms;
+        dpactor_animate_state *nas;
         
         if( !this->g )
             this->g = this->c->getGfx();
@@ -101,13 +108,22 @@ namespace dragonpoop
             this->dis = this->_getCameraDistance( t );
         }
         
-        if( t - this->t_anim_state > 500 )
+        if( t - this->t_anim_state > 200 )
         {
             this->t_anim_state = t;
-            //
+            if( this->anim_state )
+            {
+                nas = 0;
+                this->anim_state->run( thd, this, &nas );
+                if( nas )
+                {
+                    delete this->anim_state;
+                    this->anim_state = nas;
+                }
+            }
         }
         
-        if( t - this->t_model_state > 400 )
+        if( t - this->t_model_state > 2000 )
         {
             this->t_model_state = t;
             if( this->model_state )
@@ -377,6 +393,68 @@ namespace dragonpoop
         if( *m )
             delete *m;
         *m = 0;
+    }
+    
+    //stop all animations
+    void dpactor::stopAnimations( void )
+    {
+        if( this->models.low.mi )
+            this->_stopAnimations( this->models.low.mi );
+        if( this->models.med.mi )
+            this->_stopAnimations( this->models.med.mi );
+        if( this->models.high.mi )
+            this->_stopAnimations( this->models.high.mi );
+    }
+    
+    //play animation
+    void dpactor::playAnimation( const char *cname, float spd, bool doRepeat )
+    {
+        std::string sname, sres;
+        
+        sname.assign( cname );
+        
+        if( sname.compare( "idle" ) == 0 )
+            sres.assign( "idle-ground" );
+        if( sname.compare( "walk" ) == 0 )
+            sres.assign( "walk-1" );
+        
+        if( this->models.low.m && this->models.low.mi )
+            this->_playAnimation( this->models.low.m, this->models.low.mi, sres.c_str(), spd, doRepeat );
+        if( this->models.med.m && this->models.med.mi )
+            this->_playAnimation( this->models.med.m, this->models.med.mi, sres.c_str(), spd, doRepeat );
+        if( this->models.high.m && this->models.high.mi )
+            this->_playAnimation( this->models.high.m, this->models.high.mi, sres.c_str(), spd, doRepeat );
+    }
+    
+    //stop all animations
+    void dpactor::_stopAnimations( model_instance_ref *mi )
+    {
+        shared_obj_guard o;
+        model_instance_writelock *mil;
+
+        mil = (model_instance_writelock *)o.tryWriteLock( mi, 2000, "dpactor::_kill" );
+        if( !mil )
+            return;
+        
+        mil->stopAllAnimations();
+    }
+    
+    //play animation
+    void dpactor::_playAnimation( model_ref *m, model_instance_ref *mi, const char *cname, float spd, bool doRepeat )
+    {
+        shared_obj_guard o, o1;
+        model_readlock *ml;
+        model_instance_writelock *mil;
+        
+        ml = (model_readlock *)o.tryReadLock( m, 2000, "dpactor::_kill" );
+        if( !ml )
+            return;
+        
+        mil = (model_instance_writelock *)o1.tryWriteLock( mi, 2000, "dpactor::_kill" );
+        if( !mil )
+            return;
+        
+        mil->playAnimation( ml->getId(), ml, cname, doRepeat, spd );
     }
     
 };

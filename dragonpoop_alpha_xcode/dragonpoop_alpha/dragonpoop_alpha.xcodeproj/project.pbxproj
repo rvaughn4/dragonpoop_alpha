@@ -37,7 +37,6 @@
 		7910B98A1B92793A00D72A06 /* model_quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9851B92793A00D72A06 /* model_quaternion.cpp */; };
 		7910B98B1B92793A00D72A06 /* model_vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9871B92793A00D72A06 /* model_vector.cpp */; };
 		79145C441BCA7DE900DC5434 /* dpactor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C1D1BCA7DE900DC5434 /* dpactor.cpp */; };
-		79145C451BCA7DE900DC5434 /* dpactor_animation_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C1F1BCA7DE900DC5434 /* dpactor_animation_state.cpp */; };
 		79145C461BCA7DE900DC5434 /* dpactor_model_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C211BCA7DE900DC5434 /* dpactor_model_state.cpp */; };
 		79145C471BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C231BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp */; };
 		79145C481BCA7DE900DC5434 /* dpactor_model_state_load_low.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C251BCA7DE900DC5434 /* dpactor_model_state_load_low.cpp */; };
@@ -157,6 +156,9 @@
 		799FC1731B756F6F00E1A212 /* renderer_model_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 799FC1681B756F6F00E1A212 /* renderer_model_writelock.cpp */; };
 		79A2BCE81BA5EBF4001F2C6B /* renderer_model_joint_instance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79A2BCE51BA5EBF4001F2C6B /* renderer_model_joint_instance.cpp */; };
 		79A3A7321BA4E1AF00125A85 /* dpquaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79A3A7301BA4E1AF00125A85 /* dpquaternion.cpp */; };
+		79B4C4B41BCB207F0003C080 /* dpactor_animate_state_idle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B4C4B01BCB207F0003C080 /* dpactor_animate_state_idle.cpp */; };
+		79B4C4B51BCB207F0003C080 /* dpactor_animate_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B4C4B21BCB207F0003C080 /* dpactor_animate_state.cpp */; };
+		79B4C4B81BCB2F950003C080 /* dpactor_animate_state_walk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B4C4B61BCB2F950003C080 /* dpactor_animate_state_walk.cpp */; };
 		79B9315B1B6E72F20054295B /* model_loader_ms3d_state_make_model.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B931571B6E72F20054295B /* model_loader_ms3d_state_make_model.cpp */; };
 		79B9315C1B6E72F20054295B /* model_loader_ms3d_state_make_verts.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B931591B6E72F20054295B /* model_loader_ms3d_state_make_verts.cpp */; };
 		79B9315F1B6E76C70054295B /* model_loader_ms3d_state_cleanup.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79B9315D1B6E76C70054295B /* model_loader_ms3d_state_cleanup.cpp */; };
@@ -312,8 +314,6 @@
 		7910B9881B92793A00D72A06 /* model_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_vector.h; sourceTree = "<group>"; };
 		79145C1D1BCA7DE900DC5434 /* dpactor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor.cpp; sourceTree = "<group>"; };
 		79145C1E1BCA7DE900DC5434 /* dpactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor.h; sourceTree = "<group>"; };
-		79145C1F1BCA7DE900DC5434 /* dpactor_animation_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_animation_state.cpp; sourceTree = "<group>"; };
-		79145C201BCA7DE900DC5434 /* dpactor_animation_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_animation_state.h; sourceTree = "<group>"; };
 		79145C211BCA7DE900DC5434 /* dpactor_model_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_model_state.cpp; sourceTree = "<group>"; };
 		79145C221BCA7DE900DC5434 /* dpactor_model_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_model_state.h; sourceTree = "<group>"; };
 		79145C231BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_model_state_load_high.cpp; sourceTree = "<group>"; };
@@ -605,6 +605,12 @@
 		79A2BCE71BA5EBF4001F2C6B /* renderer_model_joint_instances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_model_joint_instances.h; sourceTree = "<group>"; };
 		79A3A7301BA4E1AF00125A85 /* dpquaternion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpquaternion.cpp; sourceTree = "<group>"; };
 		79A3A7311BA4E1AF00125A85 /* dpquaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpquaternion.h; sourceTree = "<group>"; };
+		79B4C4B01BCB207F0003C080 /* dpactor_animate_state_idle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_animate_state_idle.cpp; sourceTree = "<group>"; };
+		79B4C4B11BCB207F0003C080 /* dpactor_animate_state_idle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_animate_state_idle.h; sourceTree = "<group>"; };
+		79B4C4B21BCB207F0003C080 /* dpactor_animate_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_animate_state.cpp; sourceTree = "<group>"; };
+		79B4C4B31BCB207F0003C080 /* dpactor_animate_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_animate_state.h; sourceTree = "<group>"; };
+		79B4C4B61BCB2F950003C080 /* dpactor_animate_state_walk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_animate_state_walk.cpp; sourceTree = "<group>"; };
+		79B4C4B71BCB2F950003C080 /* dpactor_animate_state_walk.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_animate_state_walk.h; sourceTree = "<group>"; };
 		79B931571B6E72F20054295B /* model_loader_ms3d_state_make_model.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_model.cpp; sourceTree = "<group>"; };
 		79B931581B6E72F20054295B /* model_loader_ms3d_state_make_model.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_model.h; sourceTree = "<group>"; };
 		79B931591B6E72F20054295B /* model_loader_ms3d_state_make_verts.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_verts.cpp; sourceTree = "<group>"; };
@@ -884,8 +890,6 @@
 			children = (
 				79145C1D1BCA7DE900DC5434 /* dpactor.cpp */,
 				79145C1E1BCA7DE900DC5434 /* dpactor.h */,
-				79145C1F1BCA7DE900DC5434 /* dpactor_animation_state.cpp */,
-				79145C201BCA7DE900DC5434 /* dpactor_animation_state.h */,
 				79145C3B1BCA7DE900DC5434 /* dpactor_readlock.cpp */,
 				79145C3C1BCA7DE900DC5434 /* dpactor_readlock.h */,
 				79145C411BCA7DE900DC5434 /* dpactor_writelock.cpp */,
@@ -894,6 +898,12 @@
 				79145C3E1BCA7DE900DC5434 /* dpactor_ref.h */,
 				79145C3F1BCA7DE900DC5434 /* dpactor_state.cpp */,
 				79145C401BCA7DE900DC5434 /* dpactor_state.h */,
+				79B4C4B01BCB207F0003C080 /* dpactor_animate_state_idle.cpp */,
+				79B4C4B11BCB207F0003C080 /* dpactor_animate_state_idle.h */,
+				79B4C4B61BCB2F950003C080 /* dpactor_animate_state_walk.cpp */,
+				79B4C4B71BCB2F950003C080 /* dpactor_animate_state_walk.h */,
+				79B4C4B21BCB207F0003C080 /* dpactor_animate_state.cpp */,
+				79B4C4B31BCB207F0003C080 /* dpactor_animate_state.h */,
 				79145C211BCA7DE900DC5434 /* dpactor_model_state.cpp */,
 				79145C221BCA7DE900DC5434 /* dpactor_model_state.h */,
 				79145C321BCA7DE900DC5434 /* dpactor_model_state_run_low.h */,
@@ -1994,9 +2004,11 @@
 				7970E9961B64F26E008E8328 /* openglx_1o5_renderer_readlock.cpp in Sources */,
 				799FC16D1B756F6F00E1A212 /* renderer_model_instance.cpp in Sources */,
 				79145C471BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp in Sources */,
+				79B4C4B41BCB207F0003C080 /* dpactor_animate_state_idle.cpp in Sources */,
 				79F49A7E1B79704000CDF8A7 /* renderer_model_material.cpp in Sources */,
 				7970E9651B64F26E008E8328 /* dpmutex_master.cpp in Sources */,
 				79EC80251B9877E90090D2D6 /* model_saver.cpp in Sources */,
+				79B4C4B51BCB207F0003C080 /* dpactor_animate_state.cpp in Sources */,
 				7970E97A1B64F26E008E8328 /* shared_obj_ref.cpp in Sources */,
 				79F107241B6ED076000723E4 /* model_instance_ref.cpp in Sources */,
 				7970E9941B64F26E008E8328 /* model_writelock.cpp in Sources */,
@@ -2070,9 +2082,9 @@
 				7970E99B1B64F26E008E8328 /* renderer_ref.cpp in Sources */,
 				79B9315B1B6E72F20054295B /* model_loader_ms3d_state_make_model.cpp in Sources */,
 				79EEECF61BB6C1BD00FD3AD8 /* renderer_gui_ref.cpp in Sources */,
-				79145C451BCA7DE900DC5434 /* dpactor_animation_state.cpp in Sources */,
 				79F107271B6ED076000723E4 /* model_instance_writelock.cpp in Sources */,
 				7970E99C1B64F26E008E8328 /* renderer_task.cpp in Sources */,
+				79B4C4B81BCB2F950003C080 /* dpactor_animate_state_walk.cpp in Sources */,
 				7970E9601B64F26E008E8328 /* multibytetree.cpp in Sources */,
 				794610EF1B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.cpp in Sources */,
 				79145C4E1BCA7DE900DC5434 /* dpactor_model_state_run_low.cpp in Sources */,
