@@ -55,6 +55,7 @@ namespace dragonpoop
         dpposition pos;
         bool bIsAlive;
         float fade_val;
+        dpxyz_f smooth_rot;
 
         //delete all components
         void deleteComponents( void );

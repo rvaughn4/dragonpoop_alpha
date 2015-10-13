@@ -31,6 +31,7 @@ namespace dragonpoop
         this->bIsPosSynced = 0;
         this->fade_val = 0;
         this->bIsAlive = 1;
+        this->smooth_rot.x = this->smooth_rot.y = this->smooth_rot.z = 0;
         ml->setRenderer( this );
     }
     
@@ -623,8 +624,9 @@ namespace dragonpoop
     //get model view matrix
     void renderer_model_instance::getModelViewMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
-        dpxyz_f pp, sz, ctr;
+        dpxyz_f pp, sz, ctr, rot;
         float fsz, rsz;
+        dpquaternion qa, qb, qc;
 
         r->getPositionRelativeToCamera( &this->pos, thd->getTicks(), &pp );
         m->getCenter( &ctr );
@@ -636,15 +638,25 @@ namespace dragonpoop
             fsz = 1;
         rsz = 1.0f / fsz;
         
+        this->pos.getDirection( &rot );
+        qa.setAngle( &this->smooth_rot );
+        qb.setAngle( &rot );
+        qc.slerp( &qa, &qb, 0.125f );
+        qc.getAngle( &rot );
+        this->smooth_rot = rot;
+
         out_model_matrix->copy( in_world_matrix );
-        
-        
         
         if( !this->isGui() )
         {
             out_model_matrix->translate( pp.x, pp.y, pp.z - 3 );
             out_model_matrix->scale( rsz, rsz, rsz );
             out_model_matrix->translate( -ctr.x, -ctr.y, -ctr.z );
+            
+            out_model_matrix->rotateYrad( rot.y );
+            out_model_matrix->rotateXrad( rot.x );
+            out_model_matrix->rotateZrad( rot.z );
+            
             return;
         }
         

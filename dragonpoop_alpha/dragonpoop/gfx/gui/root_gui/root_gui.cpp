@@ -65,6 +65,7 @@ namespace dragonpoop
         shared_obj_guard o, o1;
         gfx_writelock *gl;
         dpposition pp, pa;
+        dpposition_inner pi;
         dpxyz_f x;
         dpactor_writelock *al;
         
@@ -81,6 +82,7 @@ namespace dragonpoop
             al = (dpactor_writelock *)o1.tryWriteLock( this->a, 100, "" );
             if( al )
                 al->getPosition( &pa );
+            pa.getData( &pi );
             x.x = 0;
             x.y = 0;
             x.z = 0;
@@ -88,7 +90,7 @@ namespace dragonpoop
             if( skey->compare( "Page Up" ) == 0 )
                 x.y = 1.1;
             if( skey->compare( "Page Down" ) == 0 )
-                x.y = -1.1;
+                x.y = -pi.end.whole.y - pi.end.fract.y;
             if( skey->compare( "Up" ) == 0 )
                 x.z = -1.1;
             if( skey->compare( "Down" ) == 0 )
@@ -105,7 +107,7 @@ namespace dragonpoop
             if( skey->compare( "Page Up" ) == 0 )
                 x.y = 1.1;
             if( skey->compare( "Page Down" ) == 0 )
-                x.y = -1.1;
+                x.y = -pi.end.whole.y - pi.end.fract.y;
             if( skey->compare( "Up" ) == 0 )
                 x.z = -1.1;
             if( skey->compare( "Down" ) == 0 )
@@ -116,8 +118,8 @@ namespace dragonpoop
                 x.x = 1.1;
             pa.move( &x, this->t, this->t + 1000, 0 );
             
-            //if( gl )
-             //   gl->setCameraPosition( &pp );
+          //  if( gl )
+              //  gl->setCameraPosition( &pp );
             if( al )
                 al->setPosition( &pa );
             o.unlock();

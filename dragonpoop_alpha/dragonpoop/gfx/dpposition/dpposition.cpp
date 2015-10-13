@@ -138,7 +138,19 @@ namespace dragonpoop
     //get rotational direction
     void dpposition::getDirection( dpxyz_f *pout )
     {
+        double dx, dy, dz;
+        float f;
         
+        this->getDiff( &dx, &dy, &dz );
+        
+        pout->y = atan2f( dx, dz );
+        f = dx * dx + dz * dz;
+        if( f <= 0.0f )
+            f = 0.0f;
+        else
+            f = sqrtf( f );
+        pout->x = atan2f( -dy, f );
+        pout->z = 0;//atan2f( -dx, -dz );
     }
     
     //move position incrementally
