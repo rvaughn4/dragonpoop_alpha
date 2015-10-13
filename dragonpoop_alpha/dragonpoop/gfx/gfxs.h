@@ -13,5 +13,6 @@
 #include "dpbitmap/dpbitmaps.h"
 #include "dpfont/dpfonts.h"
 #include "dpactor/dpactors.h"
+#include "dpland/dplands.h"
 
 #endif
