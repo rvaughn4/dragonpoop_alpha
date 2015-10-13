@@ -21,6 +21,7 @@ namespace dragonpoop
     class model_instance_joint;
     struct model_gui_pos;
     class dpposition;
+    class model_instance_ref;
     
     class model_instance_writelock : public shared_obj_writelock
     {
@@ -114,6 +115,8 @@ namespace dragonpoop
         bool isAlive( void );
         //kill instance
         void kill( void );
+        //clone animations
+        void cloneAnimations( model_instance_ref *mi );
 
         friend class model_instance;
     };

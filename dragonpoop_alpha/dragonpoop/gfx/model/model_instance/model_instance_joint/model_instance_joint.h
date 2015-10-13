@@ -60,6 +60,8 @@ namespace dragonpoop
         int16_t getIndex( void );
         //return parent id
         dpid getParentId( void );
+        //clone joint instance
+        void clone( model_instance_joint *j );
 
     };
     

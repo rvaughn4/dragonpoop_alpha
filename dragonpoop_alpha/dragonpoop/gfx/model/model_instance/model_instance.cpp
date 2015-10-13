@@ -32,6 +32,8 @@
 #include "../model_vertex/model_vertex.h"
 #include "../../dpmatrix/dpmatrix.h"
 
+#include <math.h>
+
 namespace dragonpoop
 {
     
@@ -880,6 +882,104 @@ namespace dragonpoop
     void model_instance::kill( void )
     {
         this->bIsAlive = 0;
+    }
+    
+    //clone animations
+    void model_instance::cloneAnimations( model_instance_ref *mi )
+    {
+        model_readlock *ml;
+        model_instance_readlock *mil;
+        shared_obj_guard om, omi;
+        std::list<model_instance_animation *> l;
+        std::list<model_instance_animation *>::iterator i;
+        model_instance_animation *a;
+        std::list<model_instance_joint *> lj;
+        std::list<model_instance_joint *>::iterator ij;
+        model_instance_joint *j, *nj;
+        
+        mil = (model_instance_readlock *)omi.tryReadLock( mi, 1000, "model_instance::cloneAnimations" );
+        if( !mil )
+            return;
+        ml = (model_readlock *)om.tryReadLock( this->m, 1000, "model_instance::cloneAnimations" );
+        if( !ml )
+            return;
+        
+        mil->getAnimations( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            a = *i;
+            this->cloneAnimation( ml, a );
+        }
+        
+        mil->getJoints( &lj );
+        for( ij = lj.begin(); ij != lj.end(); ++ij )
+        {
+            j = *ij;
+            nj = this->findClosestJoint( j );
+            if( !nj )
+                continue;
+            nj->clone( j );
+        }
+    }
+
+    //clone animation
+    bool model_instance::cloneAnimation( model_readlock *ml, model_instance_animation *a )
+    {
+        model_animation *ma;
+        std::string sname;
+        model_instance_animation *na;
+        
+        a->getName( &sname );
+        ma = ml->findAnimation( sname.c_str() );
+        if( !ma )
+            return 0;
+        
+        na = this->makeAnimation( a->getId(), ma );
+        if( !na )
+            return 0;
+        
+        na->clone( a );
+        return 1;
+    }
+    
+    //find closest joint
+    model_instance_joint *model_instance::findClosestJoint( model_instance_joint *j )
+    {
+        model_instance_joint *r, *p;
+        std::list<model_instance_joint *> l;
+        std::list<model_instance_joint *>::iterator i;
+        dpxyz_f jp, pp;
+        float last_d, d;
+        
+        j->getPosition( &jp );
+        r = 0;
+        last_d = 0;
+        
+        this->getJoints( &l );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            p->getPosition( &pp );
+            
+            d = ( jp.x - pp.x ) * ( jp.x - pp.x );
+            d += ( jp.y - pp.y ) * ( jp.y - pp.y );
+            d += ( jp.z - pp.z ) * ( jp.z - pp.z );
+            if( d > 0 )
+                d = sqrtf( d );
+            
+            if( !r )
+            {
+                r = p;
+                last_d = d;
+                continue;
+            }
+            if( d > last_d )
+                continue;
+            r = p;
+            last_d = d;
+        }
+        
+        return r;
     }
     
 };

@@ -264,4 +264,15 @@ namespace dragonpoop
         return this->parent_id;
     }
     
+    //clone joint instance
+    void model_instance_joint::clone( model_instance_joint *j )
+    {
+        this->start.pos = j->start.pos;
+        this->end.pos = j->end.pos;
+        this->start.rot = j->start.rot;
+        this->end.rot = j->start.rot;
+        this->start.t = j->start.t;
+        this->end.t = j->end.t;
+    }
+    
 };

@@ -245,4 +245,10 @@ namespace dragonpoop
         this->t->kill();
     }
     
+    //clone animations
+    void model_instance_writelock::cloneAnimations( model_instance_ref *mi )
+    {
+        this->t->cloneAnimations( mi );
+    }
+    
 };

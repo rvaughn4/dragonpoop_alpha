@@ -355,6 +355,14 @@ namespace dragonpoop
             return 0;
         }
         il->setPosition( &this->pos );
+        
+        if( this->models.low.m && this->models.low.mi && *mi != this->models.low.mi )
+            il->cloneAnimations( this->models.low.mi );
+        if( this->models.med.m && this->models.med.mi && *mi != this->models.med.mi )
+            il->cloneAnimations( this->models.med.mi );
+        if( this->models.high.m && this->models.high.mi && *mi != this->models.high.mi )
+            il->cloneAnimations( this->models.high.mi );
+        
         il->sync();
         l->sync();
         

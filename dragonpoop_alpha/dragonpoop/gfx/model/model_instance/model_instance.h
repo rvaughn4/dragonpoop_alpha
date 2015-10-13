@@ -23,6 +23,7 @@ namespace dragonpoop
     class core;
     class model_instance_writelock;
     class model_instance_group;
+    class model_instance_ref;
     class model_writelock;
     class model_readlock;
     class model_ref;
@@ -95,6 +96,10 @@ namespace dragonpoop
         void runAnimations( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd );
         //run joints
         void runJoints( model_instance_writelock *mi, model_writelock *ml, dpthread_lock *thd );
+        //clone animation
+        bool cloneAnimation( model_readlock *ml, model_instance_animation *a );
+        //find closest joint
+        model_instance_joint *findClosestJoint( model_instance_joint *j );
 
     protected:
         
@@ -210,6 +215,8 @@ namespace dragonpoop
         bool isAlive( void );
         //kill instance
         void kill( void );
+        //clone animations
+        void cloneAnimations( model_instance_ref *mi );
         
     public:
         

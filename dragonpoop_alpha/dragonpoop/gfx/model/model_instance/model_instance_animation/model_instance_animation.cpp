@@ -18,6 +18,8 @@ namespace dragonpoop
     //ctor
     model_instance_animation::model_instance_animation( dpid id, model_animation *m ) : model_component( id, model_component_type_animation )
     {
+        std::string s;
+        
         this->anim_id = m->getId();
         this->bIsRepeat = m->isRepeated();
         this->bIsAutplay = m->isAutoPlay();
@@ -32,6 +34,9 @@ namespace dragonpoop
         this->end_frame_time = this->start_frame_time = 0;
         dpid_zero( &this->start_frame );
         this->old_end_frame = this->end_frame = this->start_frame;
+        
+        m->getName( &s );
+        this->setName( &s );
     }
     
     //dtor
@@ -241,6 +246,22 @@ namespace dragonpoop
     void model_instance_animation::setSpeed( float f )
     {
         this->speed = f;
+    }
+    
+    //clone animation
+    void model_instance_animation::clone( model_instance_animation *a )
+    {
+        this->bIsRepeat = a->bIsRepeat;
+        this->bIsPlay = a->bIsPlay;
+        this->bIsAutplay = a->bIsAutplay;
+        this->bDoPlay = a->bDoPlay;
+        this->speed = a->speed;
+        this->start_time = a->start_time;
+        this->end_time = a->end_time;
+        this->current_time = a->current_time;
+        this->current_frame_time = a->current_frame_time;
+        this->start_frame_time = a->start_frame_time;
+        this->end_frame_time = a->end_frame_time;
     }
     
 };

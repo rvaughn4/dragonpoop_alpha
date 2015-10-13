@@ -74,7 +74,9 @@ namespace dragonpoop
         dpid getAnimationId( void );
         //set speed
         void setSpeed( float f );
-
+        //clone animation
+        void clone( model_instance_animation *a );
+        
     };
     
 };
