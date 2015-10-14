@@ -3,11 +3,10 @@
 #define dragonpoop_dpposition_h
 
 #include <stdint.h>
+#include "../dpvertex/dpxyz_f.h"
 
 namespace dragonpoop
 {
-    
-    struct dpxyz_f;
     
 #pragma pack( 1 )
     struct dpposition_inner
@@ -34,6 +33,7 @@ namespace dragonpoop
     private:
         
         dpposition_inner i;
+        dpxyz_f old_rot;
         
         //get pos difference
         void getDiff( double *dx, double *dy, double *dz );

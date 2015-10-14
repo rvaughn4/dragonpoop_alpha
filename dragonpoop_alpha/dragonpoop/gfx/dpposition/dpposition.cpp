@@ -11,6 +11,7 @@ namespace dragonpoop
     dpposition::dpposition( void )
     {
         memset( &this->i, 0, sizeof( this->i ) );
+        this->old_rot.x = this->old_rot.y = this->old_rot.z = 0;
     }
     
     //ctor
@@ -139,18 +140,28 @@ namespace dragonpoop
     void dpposition::getDirection( dpxyz_f *pout )
     {
         double dx, dy, dz;
+        float fx, fy, fz;
         float f;
         
         this->getDiff( &dx, &dy, &dz );
         
-        pout->y = atan2f( dx, dz );
-        f = dx * dx + dz * dz;
-        if( f <= 0.0f )
-            f = 0.0f;
+        pout->x = pout->y = pout->z = 0;
+
+        
+        f = dx * dx + dy * dy + dz * dz;
+        if( f > 0 )
+            f = sqrt( f );
         else
-            f = sqrtf( f );
-        pout->x = atan2f( -dy, f );
-        pout->z = 0;//atan2f( -dx, -dz );
+            f = 1;
+        fx = dx / f;
+        fy = dy / f;
+        fz = dz / f;
+        
+        pout->x = acos( fy ) - 1.57f;
+        if( dz < 0 )
+            pout->y = acos( -fx ) - 1.57f + 3.14f;
+        else
+            pout->y = acos( -fx ) - 1.57f;
     }
     
     //move position incrementally

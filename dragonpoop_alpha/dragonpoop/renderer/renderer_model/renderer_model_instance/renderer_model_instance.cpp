@@ -653,9 +653,9 @@ namespace dragonpoop
             out_model_matrix->scale( rsz, rsz, rsz );
             out_model_matrix->translate( -ctr.x, -ctr.y, -ctr.z );
             
-            out_model_matrix->rotateYrad( rot.y );
             out_model_matrix->rotateXrad( rot.x );
             out_model_matrix->rotateZrad( rot.z );
+            out_model_matrix->rotateYrad( rot.y );
             
             return;
         }

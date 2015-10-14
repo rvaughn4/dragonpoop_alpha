@@ -742,6 +742,7 @@
 		79F1071C1B6ED076000723E4 /* model_instance_writelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_instance_writelock.cpp; sourceTree = "<group>"; };
 		79F1071D1B6ED076000723E4 /* model_instance_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instance_writelock.h; sourceTree = "<group>"; };
 		79F1071E1B6ED076000723E4 /* model_instances.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_instances.h; sourceTree = "<group>"; };
+		79F260001BCE5C2E003F4791 /* dpland_defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpland_defines.h; sourceTree = "<group>"; };
 		79F26F181BCC91A40025418D /* dpland.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpland.cpp; sourceTree = "<group>"; };
 		79F26F191BCC91A40025418D /* dpland.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpland.h; sourceTree = "<group>"; };
 		79F26F1A1BCC91A40025418D /* dpland_man.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpland_man.cpp; sourceTree = "<group>"; };
@@ -1800,6 +1801,7 @@
 		79F26F171BCC91A40025418D /* dpland */ = {
 			isa = PBXGroup;
 			children = (
+				79F260001BCE5C2E003F4791 /* dpland_defines.h */,
 				79F26F181BCC91A40025418D /* dpland.cpp */,
 				79F26F191BCC91A40025418D /* dpland.h */,
 				79F26F1A1BCC91A40025418D /* dpland_man.cpp */,
