@@ -32,6 +32,8 @@ namespace dragonpoop
     class renderer_ref;
     class dpactor;
     class dpactor_ref;
+    class dpland_man;
+    class dpactor_man;
 
     class gfx : public shared_obj
     {
@@ -46,6 +48,9 @@ namespace dragonpoop
                 gfx_task *gtsk;
             } tgfx, tmodels, tguis, tactors;
         } tasks;
+        
+        dpland_man *land_mgr;
+        dpactor_man *actor_mgr;
         
         core *c;
         renderer *r;

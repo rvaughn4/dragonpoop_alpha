@@ -1,53 +1,39 @@
 
-#ifndef dragonpoop_dpland_man_h
-#define dragonpoop_dpland_man_h
+#ifndef dragonpoop_dpactor_man_h
+#define dragonpoop_dpactor_man_h
 
 #include "../../core/shared_obj/shared_obj.h"
-#include "../dpposition/dpposition.h"
-#include "dpland_defines.h"
 
-#include <stdint.h>
- 
 namespace dragonpoop
 {
     
     class dpthread_lock;
     class core;
-    class dpland_man_ref;
-    class dpland_man_readlock;
-    class dpland_man_writelock;
+    class dpactor_man_ref;
+    class dpactor_man_readlock;
+    class dpactor_man_writelock;
     class gfx_ref;
     class dptask;
-    class dpland_man_task;
+    class dpactor_man_task;
     class dptaskpool_writelock;
     class gfx;
     
-    class dpland_man : public shared_obj
+    class dpactor_man : public shared_obj
     {
         
     private:
         
         core *c;
         gfx_ref *g;
-        struct
-        {
-            int64_t x, z;
-        } pos;
         dptask *tsk;
-        dpland_man_task *gtsk;
-
+        dpactor_man_task *gtsk;
+        
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
         void _killTask( void );
         //delete task
         void _deleteTask( void );
-        //run tiles
-        void runTiles( dpthread_lock *thd, dpland_man_writelock *g );
-        //create new tiles
-        void makeTiles( dpthread_lock *thd, dpland_man_writelock *g );
-        //returns true if tile exists
-        bool hasTile( int64_t x, int64_t z );
         
     protected:
         
@@ -58,19 +44,19 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run
-        void run( dpthread_lock *thd, dpland_man_writelock *g );
+        void run( dpthread_lock *thd, dpactor_man_writelock *g );
         
     public:
         
         //ctor
-        dpland_man( core *c, gfx *g, dptaskpool_writelock *tp );
+        dpactor_man( core *c, gfx *g, dptaskpool_writelock *tp );
         //dtor
-        virtual ~dpland_man( void );
+        virtual ~dpactor_man( void );
         //return core
         core *getCore( void );
         
-        friend class dpland_man_readlock;
-        friend class dpland_man_writelock;
+        friend class dpactor_man_readlock;
+        friend class dpactor_man_writelock;
         
     };
     

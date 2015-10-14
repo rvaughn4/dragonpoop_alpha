@@ -34,6 +34,8 @@
 #include "dpactor/dpactor.h"
 #include "dpactor/dpactor_ref.h"
 #include "dpactor/dpactor_writelock.h"
+#include "dpland/dpland_man.h"
+#include "dpactor/dpactor_man.h"
 
 namespace dragonpoop
 {
@@ -54,6 +56,9 @@ namespace dragonpoop
         this->_startTasks( c, tp );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 
+        this->land_mgr = new dpland_man( c, this, tp );
+        this->actor_mgr = new dpactor_man( c, this, tp );
+        
         l = (gfx_writelock *)o.writeLock( this, "gfx::gfx" );
         this->r = new openglx_1o5_renderer( c, l, tp );
     }
@@ -77,6 +82,10 @@ namespace dragonpoop
         this->_deleteTasks();
         
         o.tryWriteLock( this, 5000, "gfx::~gfx" );
+        
+        delete this->actor_mgr;
+        delete this->land_mgr;
+        
         this->deleteActors();
         this->deleteGuis();
         this->deleteLoaders();
