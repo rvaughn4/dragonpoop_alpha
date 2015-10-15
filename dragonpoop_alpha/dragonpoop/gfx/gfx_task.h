@@ -17,14 +17,13 @@ namespace dragonpoop
     private:
 
         std::atomic<gfx_ref *> g;
-        bool bRunGfx, bRunModels, bRunGuis, bRunActors;
 
     protected:
 
     public:
 
         //ctor
-        gfx_task( gfx *g, bool bRunGfx, bool bRunModels, bool bRunGuis, bool bRunActors );
+        gfx_task( gfx *g );
         //dtor
         virtual ~gfx_task( void );
         //run by task

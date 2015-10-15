@@ -32,9 +32,14 @@
 #include "dpactor/dpactor_man.h"
 #include "dpactor/dpactor_man_readlock.h"
 #include "dpactor/dpactor_man_writelock.h"
+
 #include "model/model_man.h"
 #include "model/model_man_readlock.h"
 #include "model/model_man_writelock.h"
+
+#include "gui/gui_man.h"
+#include "gui/gui_man_readlock.h"
+#include "gui/gui_man_writelock.h"
 
 namespace dragonpoop
 {
@@ -52,12 +57,13 @@ namespace dragonpoop
 
         this->c = c;
         this->r = 0;
-        this->_startTasks( c, tp );
+        this->_startTask( c, tp );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 
         this->model_mgr = new model_man( c, this, tp );
         this->land_mgr = new dpland_man( c, this, tp );
         this->actor_mgr = new dpactor_man( c, this, tp );
+        this->gui_mgr = new gui_man( c, this, tp );
         
         l = (gfx_writelock *)o.writeLock( this, "gfx::gfx" );
         this->r = new openglx_1o5_renderer( c, l, tp );
@@ -72,17 +78,16 @@ namespace dragonpoop
         o.unlock();
         this->unlink();
         
-        this->kill();
-        this->_deleteTasks();
+        this->_killTask();
+        this->_deleteTask();
         
         o.tryWriteLock( this, 5000, "gfx::~gfx" );
         
+        delete this->gui_mgr;
         delete this->actor_mgr;
         delete this->land_mgr;
         delete this->model_mgr;
         
-        this->deleteGuis();
-
         if( this->root_g )
             delete this->root_g;
         this->root_g = 0;
@@ -95,60 +100,43 @@ namespace dragonpoop
         o.unlock();
     }
 
-    //start all tasks
-    void gfx::_startTasks( core *c, dptaskpool_writelock *tp )
-    {
-        this->_startTask( c, tp, &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk, 1, 0, 0, 0, 100 );
-        this->_startTask( c, tp, &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk, 0, 0, 1, 0, 50 );
-        this->bIsRun = 1;
-    }
-    
     //start task
-    void gfx::_startTask( core *c, dptaskpool_writelock *tp, gfx_task **pgtsk, dptask **ptsk, bool bRunGfx, bool bRunModels, bool bRunGuis, bool bRunActors, unsigned int ms_delay )
+    void gfx::_startTask( core *c, dptaskpool_writelock *tp )
     {
-        *pgtsk = new gfx_task( this, bRunGfx, bRunModels, bRunGuis, bRunActors );
-        *ptsk = new dptask( c->getMutexMaster(), *pgtsk, ms_delay, 0, "gfx" );
-        tp->addTask( *ptsk );
+        this->gtsk = new gfx_task( this );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 100, 0, "gfx" );
+        tp->addTask( this->tsk );
     }
     
-    //kill all tasks
-    void gfx::_killTasks( void )
+    //stop gfx task
+    void gfx::kill( void )
     {
-        this->_killTask( &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk );
-        this->_killTask( &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk );
-        this->bIsRun = 0;
+        this->_killTask();
     }
     
     //kill task
-    void gfx::_killTask( gfx_task **pgtsk, dptask **ptsk )
+    void gfx::_killTask( void )
     {
         dptask_writelock *tl;
         shared_obj_guard o;
         
-        if( !*ptsk )
+        if( !this->tsk )
             return;
         
-        tl = (dptask_writelock *)o.writeLock( *ptsk, "gfx::genRef" );
+        tl = (dptask_writelock *)o.writeLock( this->tsk, "_gfx::killTask" );
         tl->kill();
         o.unlock();
     }
     
-    //delete all tasks
-    void gfx::_deleteTasks( void )
-    {
-        this->_deleteTask( &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk );
-        this->_deleteTask( &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk );
-    }
-    
     //delete task
-    void gfx::_deleteTask( gfx_task **pgtsk, dptask **ptsk )
+    void gfx::_deleteTask( void )
     {
-        if( *ptsk )
-            delete *ptsk;
-        *ptsk = 0;
-        if( *pgtsk )
-            delete *pgtsk;
-        *pgtsk = 0;
+        if( this->tsk )
+            delete this->tsk;
+        this->tsk = 0;
+        if( this->gtsk )
+            delete this->gtsk;
+        this->gtsk = 0;
     }
     
     //returns true if running
@@ -181,19 +169,12 @@ namespace dragonpoop
         return new gfx_ref( (gfx *)p, k );
     }
 
-    //stop gfx task
-    void gfx::kill( void )
-    {
-        this->_killTasks();
-    }
-
     //run gfx from task
     void gfx::run( dpthread_lock *thd, gfx_writelock *g )
     {
         uint64_t t;
         shared_obj_guard o;
         renderer_readlock *l;
-        gui_factory_writelock *fl;
         
         t = thd->getTicks();
         if( this->r && t - this->last_r_poll > 4000 )
@@ -206,159 +187,6 @@ namespace dragonpoop
                 this->last_r_poll = t;
             }
             o.unlock();
-        }
-        
-        if( !this->root_g && this->root_factory )
-        {
-            fl = (gui_factory_writelock *)o.tryWriteLock( this->root_factory, 10, "gfx::run" );
-            if( fl )
-            {
-                this->root_g = fl->makeGui( thd, 0 );
-                if( this->root_g )
-                    this->addGui( this->root_g );
-            }
-            o.unlock();
-        }
-
-    }
-
-
-    //delete all guis
-    void gfx::deleteGuis( void )
-    {
-        std::list<gui_ref *> *l, d;
-        std::list<gui_ref *>::iterator i;
-        gui_ref *p;
-        
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            d.push_back( p );
-        }
-        l->clear();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            delete p;
-        }
-    }
-    
-    //run all guis
-    void gfx::runGuis( dpthread_lock *thd, gfx_ref *g )
-    {
-        std::list<gui_ref *> *l, ll, d;
-        std::list<gui_ref *>::iterator i;
-        gui_ref *p;
-        shared_obj_guard o, og;
-        gui_writelock *pl;
-        gfx_readlock *grl;
-        gfx_writelock *gwl;
-        
-        grl = (gfx_readlock *)og.tryReadLock( g, 100, "gfx::runGuis" );
-        if( !grl )
-            return;
-        
-        l = &grl->t->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( !p->isLinked() )
-                d.push_back( p );
-            else
-            {
-                pl = (gui_writelock *)o.tryWriteLock( p, 100, "gfx::runGuis" );
-                if( pl )
-                {
-                    p = (gui_ref *)pl->getRef();
-                    if( p )
-                    ll.push_back( p );
-                }
-                o.unlock();
-            }
-        }
-        og.unlock();
-        
-        l = &ll;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (gui_writelock *)o.tryWriteLock( p, 100, "gfx::runGuis" );
-            if( pl )
-                pl->run( thd );
-        }
-        o.unlock();
-        
-        if( d.empty() )
-            return;
-        
-        gwl = (gfx_writelock *)og.tryReadLock( g, 100, "gfx::runGuis" );
-        if( !gwl )
-            return;
-
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            gwl->t->guis.remove( p );
-            delete p;
-            gwl->t->gui_cnt--;
-        }
-        og.unlock();
-    }
-    
-    //add gui
-    void gfx::addGui( gui *g )
-    {
-        shared_obj_guard o;
-        gui_writelock *l;
-        gui_ref *r;
-        
-        l = (gui_writelock *)o.writeLock( g, "gfx::addGui" );
-        if( !l )
-            return;
-        
-        r = (gui_ref *)l->getRef();
-        if( r )
-        {
-            this->guis.push_back( r );
-            this->gui_cnt++;
-        }
-    }
-    
-    //add gui
-    void gfx::addGui( gui_ref *g )
-    {
-        shared_obj_guard o;
-        gui_writelock *l;
-        gui_ref *r;
-        
-        l = (gui_writelock *)o.writeLock( g, "gfx::addGui" );
-        if( !l )
-            return;
-        
-        r = (gui_ref *)l->getRef();
-        if( r )
-        {
-            this->guis.push_back( r );
-            this->gui_cnt++;
-        }
-    }
-    
-    //get guis
-    void gfx::getGuis( std::list<gui_ref *> *ll )
-    {
-        std::list<gui_ref *> *l;
-        std::list<gui_ref *>::iterator i;
-        gui_ref *p;
-        
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            ll->push_back( p );
         }
     }
     
@@ -374,25 +202,6 @@ namespace dragonpoop
         return this->ms_each_frame;
     }
     
-    //set root gui factory
-    void gfx::setRootGui( gui_factory *g )
-    {
-        shared_obj_guard o;
-        gui_factory_writelock *gl;
-        
-        if( this->root_g )
-            delete this->root_g;
-        this->root_g = 0;
-        if( this->root_factory )
-            delete this->root_factory;
-        this->root_factory = 0;
-        
-        gl = (gui_factory_writelock *)o.tryWriteLock( g, 2000, "gfx::setRootGui" );
-        if( !gl )
-            return;
-        this->root_factory = (gui_factory_ref *)gl->getRef();
-    }
-    
     //return renderer
     renderer_ref *gfx::getRenderer( void )
     {
@@ -406,18 +215,6 @@ namespace dragonpoop
             return 0;
         
         return (renderer_ref *)l->getRef();
-    }
-    
-    //return model count
-    unsigned int gfx::getModelCount( void )
-    {
-        return this->model_cnt;
-    }
-    
-    //return gui count
-    unsigned int gfx::getGuiCount( void )
-    {
-        return this->gui_cnt;
     }
     
     //get camera position
@@ -442,46 +239,6 @@ namespace dragonpoop
         l->syncCamera();
     }
     
-    //add actor
-    void gfx::addActor( dpactor *a )
-    {
-        shared_obj_guard o;
-        dpactor_man_writelock *l;
-        
-        l = (dpactor_man_writelock *)o.tryWriteLock( this->actor_mgr, 500, "gfx::addActor" );
-        if( !l )
-            return;
-        
-        return l->addActor( a );
-    }
-    
-    //add actor
-    void gfx::addActor( dpactor_ref *a )
-    {
-        shared_obj_guard o;
-        dpactor_man_writelock *l;
-        
-        l = (dpactor_man_writelock *)o.tryWriteLock( this->actor_mgr, 500, "gfx::addActor" );
-        if( !l )
-            return;
-        
-        return l->addActor( a );
-    }
-    
-    //return actor count
-    unsigned int gfx::getActorCount( void )
-    {
-        shared_obj_guard o;
-        dpactor_man_readlock *l;
-        
-        l = (dpactor_man_readlock *)o.tryReadLock( this->actor_mgr, 500, "gfx::getActorCount" );
-        if( !l )
-            return 0;
-        
-        return l->getActorCount();
-    }
-    
-    
     //get models
     bool gfx::getModels( model_man_ref **r )
     {
@@ -504,6 +261,56 @@ namespace dragonpoop
     bool gfx::getModels( model_man_writelock **r, shared_obj_guard *o )
     {
         *r = (model_man_writelock *)o->tryWriteLock( this->model_mgr, 1000, "gfx::getModels" );
+        return *r != 0;
+    }
+    
+    //get guis
+    bool gfx::getGuis( gui_man_ref **r )
+    {
+        shared_obj_guard o;
+        gui_man_writelock *l;
+        if( !this->getGuis( &l, &o ) )
+            return 0;
+        *r = (gui_man_ref *)l->getRef();
+        return 1;
+    }
+    
+    //get guis
+    bool gfx::getGuis( gui_man_readlock **r, shared_obj_guard *o )
+    {
+        *r = (gui_man_readlock *)o->tryReadLock( this->gui_mgr, 1000, "gfx::getGuis" );
+        return *r != 0;
+    }
+    
+    //get guis
+    bool gfx::getGuis( gui_man_writelock **r, shared_obj_guard *o )
+    {
+        *r = (gui_man_writelock *)o->tryWriteLock( this->gui_mgr, 1000, "gfx::getGuis" );
+        return *r != 0;
+    }
+ 
+    //get actors
+    bool gfx::getActors( dpactor_man_ref **r )
+    {
+        shared_obj_guard o;
+        dpactor_man_writelock *l;
+        if( !this->getActors( &l, &o ) )
+            return 0;
+        *r = (dpactor_man_ref *)l->getRef();
+        return 1;
+    }
+    
+    //get actors
+    bool gfx::getActors( dpactor_man_readlock **r, shared_obj_guard *o )
+    {
+        *r = (dpactor_man_readlock *)o->tryReadLock( this->actor_mgr, 1000, "gfx::getActors" );
+        return *r != 0;
+    }
+    
+    //get actors
+    bool gfx::getActors( dpactor_man_writelock **r, shared_obj_guard *o )
+    {
+        *r = (dpactor_man_writelock *)o->tryWriteLock( this->actor_mgr, 1000, "gfx::getActors" );
         return *r != 0;
     }
     

@@ -19,6 +19,12 @@ namespace dragonpoop
     class model_man_readlock;
     class model_man_ref;
     class shared_obj_guard;
+    class gui_man_ref;
+    class gui_man_readlock;
+    class gui_man_writelock;
+    class dpactor_man_ref;
+    class dpactor_man_readlock;
+    class dpactor_man_writelock;
 
     class gfx_readlock : public shared_obj_readlock
     {
@@ -40,29 +46,32 @@ namespace dragonpoop
         bool isRunning( void );
         //return core
         core *getCore( void );
-        //get guis
-        void getGuis( std::list<gui_ref *> *l );
         //return fps
         float getFps( void );
         //return ms each frame
         unsigned int getMsEachFrame( void );
         //return renderer
         renderer_ref *getRenderer( void );
-        //return model count
-        unsigned int getModelCount( void );
-        //return gui count
-        unsigned int getGuiCount( void );
         //get camera position
         void getCameraPosition( dpposition *p );
-        //return actor count
-        unsigned int getActorCount( void );
-        
         //get models
         bool getModels( model_man_ref **r );
         //get models
         bool getModels( model_man_readlock **r, shared_obj_guard *o );
         //get models
         bool getModels( model_man_writelock **r, shared_obj_guard *o );
+        //get guis
+        bool getGuis( gui_man_ref **r );
+        //get guis
+        bool getGuis( gui_man_readlock **r, shared_obj_guard *o );
+        //get guis
+        bool getGuis( gui_man_writelock **r, shared_obj_guard *o );
+        //get actors
+        bool getActors( dpactor_man_ref **r );
+        //get actors
+        bool getActors( dpactor_man_readlock **r, shared_obj_guard *o );
+        //get actors
+        bool getActors( dpactor_man_writelock **r, shared_obj_guard *o );
 
         friend class gfx;
     };

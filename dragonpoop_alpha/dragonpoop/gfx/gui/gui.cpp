@@ -17,6 +17,9 @@
 #include "../../core/dpthread/dpthread_lock.h"
 #include "../../core/dptaskpool/dptaskpool_ref.h"
 #include "../../core/dptaskpool/dptaskpool_writelock.h"
+#include "gui_man_ref.h"
+#include "gui_man_writelock.h"
+#include "gui_man_readlock.h"
 
 namespace dragonpoop
 {
@@ -26,6 +29,7 @@ namespace dragonpoop
     {
         this->c = g->getCore();
         this->g = (gfx_ref *)g->getRef();
+        g->getGuis( &this->mgr );
         this->id = id;
         this->pid = dpid_null();
         this->bHasBg = this->bHasFg = 0;
@@ -68,6 +72,7 @@ namespace dragonpoop
         delete this->g;
         if( this->r )
             delete this->r;
+        delete this->mgr;
         o.unlock();
     }
     
@@ -101,7 +106,6 @@ namespace dragonpoop
         shared_obj_guard o;
         renderer_gui_writelock *l;
         uint64_t t;
-        gfx_writelock *gl;
         
         t = thd->getTicks();
         if( this->z == 0 )
@@ -169,12 +173,7 @@ namespace dragonpoop
         if( this->bMouseInput )
         {
             if( this->bOldLb != this->bLb )
-            {
-                gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "gui::run" );
-                if( gl )
-                    this->setFocus( gl );
-                o.unlock();
-            }
+               this->setFocus();
             if( this->bOldLb != this->bLb )
                 this->handleMouseClick( this->mx, this->my, 0, this->bLb );
             if( this->bOldRb != this->bRb )
@@ -619,30 +618,20 @@ namespace dragonpoop
     }
     
     //sets focus
-    void gui::setFocus( gfx_readlock *g )
+    void gui::setFocus( void )
     {
+        shared_obj_guard o1, o;
+        gui_man_readlock *ml;
         std::list<gui_ref *> l;
-        g->getGuis( &l );
-        this->setFocus( &l );
-    }
-    
-    //sets focus
-    void gui::setFocus( gfx_writelock *g )
-    {
-        std::list<gui_ref *> l;
-        g->getGuis( &l );
-        this->setFocus( &l );
-    }
-    
-    //sets focus
-    void gui::setFocus( std::list<gui_ref *> *l )
-    {
-        shared_obj_guard o;
         gui_writelock *pl;
         gui_ref *p;
         std::list<gui_ref *>::iterator i;
         
-        for( i = l->begin(); i != l->end(); ++i )
+        ml = (gui_man_readlock *)o1.tryReadLock( this->mgr, 1000, "gui::setFocus" );
+        if( !ml )
+            return;
+        
+        for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
             pl = (gui_writelock *)o.tryWriteLock( p, 100, "gui::setFocus" );
@@ -1074,11 +1063,11 @@ namespace dragonpoop
     //add gui
     void gui::addGui( gui *g )
     {
-        gfx_writelock *gl;
+        gui_man_writelock *gl;
         shared_obj_guard o, o1;
         gui_writelock *gul;
         
-        gl = (gfx_writelock *)o.tryWriteLock( this->g, 2000, "gui::addGui" );
+        gl = (gui_man_writelock *)o.tryWriteLock( this->mgr, 2000, "gui::addGui" );
         if( !gl )
             return;
         gul = (gui_writelock *)o1.tryWriteLock( g, 2000, "gui::addGui" );

@@ -28,6 +28,8 @@
 #include "../gfx/gui/gui_writelock.h"
 #include "../gfx/model/model_man_ref.h"
 #include "../gfx/model/model_man_readlock.h"
+#include "../gfx/gui/gui_man_ref.h"
+#include "../gfx/gui/gui_man_readlock.h"
 
 #include <thread>
 #include <random>
@@ -46,6 +48,7 @@ namespace dragonpoop
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
         g->getModels( &this->m );
+        g->getGuis( &this->gui_mgr );
         this->gtsk = new renderer_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3/*14*/, 1, "renderer" );
         tp->addTask( this->tsk );
@@ -70,6 +73,7 @@ namespace dragonpoop
         delete this->gtsk;
         this->deleteModels();
         this->deleteGuis();
+        delete this->gui_mgr;
         delete this->m;
         delete this->g;
         o.unlock();
@@ -313,7 +317,7 @@ namespace dragonpoop
         gui_writelock *pl;
         renderer_gui_writelock *ppl;
         shared_obj_guard o, og;
-        gfx_readlock *gl;
+        gui_man_readlock *gl;
         uint64_t tr;
         dpid nid;
         dpmatrix mat;
@@ -344,7 +348,7 @@ namespace dragonpoop
             return;
         this->t_last_gui_synced = tr;
         
-        gl = (gfx_readlock *)og.tryReadLock( this->g, 30, "renderer::runGuis" );
+        gl = (gui_man_readlock *)og.tryReadLock( this->gui_mgr, 30, "renderer::runGuis" );
         if( !gl )
             return;
         

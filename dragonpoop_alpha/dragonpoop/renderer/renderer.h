@@ -29,6 +29,7 @@ namespace dragonpoop
     class gui_writelock;
     class renderer_gui_readlock;
     class model_man_ref;
+    class gui_man_ref;
 
     class renderer : public shared_obj
     {
@@ -40,6 +41,7 @@ namespace dragonpoop
         core *c;
         gfx_ref *g;
         model_man_ref *m;
+        gui_man_ref *gui_mgr;
         
         std::atomic<bool> bDoRun, bIsRun;
         std::list<renderer_model *> models;

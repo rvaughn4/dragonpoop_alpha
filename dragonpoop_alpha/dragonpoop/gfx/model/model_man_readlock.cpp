@@ -46,5 +46,17 @@ namespace dragonpoop
     {
         this->t->getModels( l );
     }
+
+    //return count of loaded models
+    unsigned int model_man_readlock::getModelCount( void )
+    {
+        return this->t->getModelCount();
+    }
+    
+    //return model instance count
+    unsigned int model_man_readlock::getInstanceCount( void )
+    {
+        return this->t->getInstanceCount();
+    }
     
 };

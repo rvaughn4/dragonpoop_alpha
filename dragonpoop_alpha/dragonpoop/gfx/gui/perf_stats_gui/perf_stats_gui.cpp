@@ -11,6 +11,11 @@
 #include "../../../renderer/renderer_readlock.h"
 #include "../../dpposition/dpposition.h"
 
+#include "../gui_man_readlock.h"
+#include "../../model/model_man_readlock.h"
+#include "../gui_man_ref.h"
+#include "../../model/model_man_ref.h"
+
 #include <sstream>
 
 namespace dragonpoop
@@ -67,13 +72,15 @@ namespace dragonpoop
         uint64_t t;
         std::stringstream ss;
         std::string s;
-        shared_obj_guard og, o;
+        shared_obj_guard og, o, ogui, omod;
         gfx_readlock *gl;
         renderer_ref *rr;
         renderer_readlock *rl;
         dpposition pp;
         dpposition_inner ppi;
         int i;
+        gui_man_readlock *guil;
+        model_man_readlock *modl;
         
         if( this->bclose->wasClicked() )
             this->bDoClose = 1;
@@ -86,12 +93,18 @@ namespace dragonpoop
         gl = (gfx_readlock *)og.tryReadLock( this->g, 1000, "perf_stats_gui::doProcessing" );
         if( !gl )
             return;
+        if( !gl->getModels( &modl, &omod ) )
+            return;
+        if( !gl->getGuis( &guil, &ogui ) )
+            return;
+        
         ss << "\e028Performance Statistics\r\n";
         
         //gfx stats
         ss << "\e020\fsans \r\nGraphics \flcd \r\n";
-        ss << "\t" << gl->getModelCount() << " models open\r\n";
-        ss << "\t" << gl->getGuiCount() << " guis open\r\n";
+        ss << "\t" << modl->getModelCount() << " models open\r\n";
+        ss << "\t" << modl->getInstanceCount() << " model instances\r\n";
+        ss << "\t" << guil->getGuiCount() << " guis open\r\n";
 
         //camera
         gl->getCameraPosition( &pp );

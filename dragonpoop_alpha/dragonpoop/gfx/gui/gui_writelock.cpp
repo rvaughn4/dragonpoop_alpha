@@ -132,15 +132,9 @@ namespace dragonpoop
     }
     
     //sets focus
-    void gui_writelock::setFocus( gfx_readlock *g )
+    void gui_writelock::setFocus( void )
     {
-        this->t->setFocus( g );
-    }
-    
-    //sets focus
-    void gui_writelock::setFocus( gfx_writelock *g )
-    {
-        this->t->setFocus( g );
+        this->t->setFocus();
     }
     
     //returns true if has focus

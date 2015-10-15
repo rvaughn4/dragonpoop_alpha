@@ -27,6 +27,12 @@ namespace dragonpoop
     class model_man_readlock;
     class model_man_ref;
     class shared_obj_guard;
+    class gui_man_ref;
+    class gui_man_readlock;
+    class gui_man_writelock;
+    class dpactor_man_ref;
+    class dpactor_man_readlock;
+    class dpactor_man_writelock;
 
     class gfx_writelock : public shared_obj_writelock
     {
@@ -52,38 +58,31 @@ namespace dragonpoop
         void kill( void );
         //run gfx from task
         void run( dpthread_lock *thd );
-        //add gui
-        void addGui( gui *g );
-        //add gui
-        void addGui( gui_ref *g );
-        //get guis
-        void getGuis( std::list<gui_ref *> *l );
-        //set root gui factory
-        void setRootGui( gui_factory *g );
         //return renderer
         renderer_ref *getRenderer( void );
-        //return model count
-        unsigned int getModelCount( void );
-        //return gui count
-        unsigned int getGuiCount( void );
         //get camera position
         void getCameraPosition( dpposition *p );
         //set camera position
         void setCameraPosition( dpposition *p );
-        //add actor
-        void addActor( dpactor *a );
-        //add actor
-        void addActor( dpactor_ref *a );
-        //return actor count
-        unsigned int getActorCount( void );
-
         //get models
         bool getModels( model_man_ref **r );
         //get models
         bool getModels( model_man_readlock **r, shared_obj_guard *o );
         //get models
         bool getModels( model_man_writelock **r, shared_obj_guard *o );
-        
+        //get guis
+        bool getGuis( gui_man_ref **r );
+        //get guis
+        bool getGuis( gui_man_readlock **r, shared_obj_guard *o );
+        //get guis
+        bool getGuis( gui_man_writelock **r, shared_obj_guard *o );
+        //get actors
+        bool getActors( dpactor_man_ref **r );
+        //get actors
+        bool getActors( dpactor_man_readlock **r, shared_obj_guard *o );
+        //get actors
+        bool getActors( dpactor_man_writelock **r, shared_obj_guard *o );
+
         friend class gfx;
     };
     

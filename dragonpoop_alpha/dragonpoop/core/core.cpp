@@ -8,6 +8,7 @@
 #include "../core/shared_obj/shared_obj_guard.h"
 #include "../core/dpmutex/dpmutex_lock.h"
 #include "../gfx/gui/root_gui/root_gui_factory.h"
+#include "../gfx/gui/gui_man_writelock.h"
 
 namespace dragonpoop
 {
@@ -101,10 +102,15 @@ namespace dragonpoop
     void core::setRootGui( gui_factory *g )
     {
         gfx_writelock *gl;
-        shared_obj_guard o;
+        gui_man_writelock *guil;
+        shared_obj_guard o, o1;
         
         gl = (gfx_writelock *)o.writeLock( this->g, "core::getGfx" );
-        gl->setRootGui( g );
+        if( !gl )
+            return;
+        if( !gl->getGuis( &guil, &o1 ) )
+            return;
+        guil->setRootGui( g );
     }
  
 };

@@ -49,6 +49,10 @@ namespace dragonpoop
         model_ref *findModel( dpid id );
         //get models
         void getModels( std::list<model *> *l );
+        //return count of loaded models
+        unsigned int getModelCount( void );
+        //return model instance count
+        unsigned int getInstanceCount( void );
 
         friend class model_man;
     };

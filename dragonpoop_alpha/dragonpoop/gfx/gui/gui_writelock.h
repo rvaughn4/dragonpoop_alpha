@@ -73,9 +73,7 @@ namespace dragonpoop
         //returns z order
         unsigned int getZ( void );
         //sets focus
-        void setFocus( gfx_readlock *g );
-        //sets focus
-        void setFocus( gfx_writelock *g );
+        void setFocus( void );
         //returns true if has focus
         bool hasFocus( void );
         //process mouse input

@@ -24,6 +24,7 @@ namespace dragonpoop
     class gui_ref;
     class renderer_gui;
     class renderer_gui_ref;
+    class gui_man_ref;
     
     struct gui_dims
     {
@@ -51,6 +52,7 @@ namespace dragonpoop
         float mx, my;
         gui_dims pos;
         gfx_ref *g;
+        gui_man_ref *mgr;
         renderer_gui_ref *r;
         unsigned int z, fnt_size, margin_size;
         dprgba fnt_clr;
@@ -123,11 +125,7 @@ namespace dragonpoop
         //returns z order
         unsigned int getZ( void );
         //sets focus
-        void setFocus( gfx_readlock *g );
-        //sets focus
-        void setFocus( gfx_writelock *g );
-        //sets focus
-        void setFocus( std::list<gui_ref *> *l );
+        void setFocus( void );
         //returns true if has focus
         bool hasFocus( void );
         //process mouse input

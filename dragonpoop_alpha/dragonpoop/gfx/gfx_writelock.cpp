@@ -41,46 +41,10 @@ namespace dragonpoop
         this->t->run( thd, this );
     }
   
-    //add gui
-    void gfx_writelock::addGui( gui *g )
-    {
-        this->t->addGui( g );
-    }
-    
-    //add gui
-    void gfx_writelock::addGui( gui_ref *g )
-    {
-        this->t->addGui( g );
-    }
-    
-    //get guis
-    void gfx_writelock::getGuis( std::list<gui_ref *> *l )
-    {
-        this->t->getGuis( l );
-    }
-  
-    //set root gui factory
-    void gfx_writelock::setRootGui( gui_factory *g )
-    {
-        this->t->setRootGui( g );
-    }
-    
     //return renderer
     renderer_ref *gfx_writelock::getRenderer( void )
     {
         return this->t->getRenderer();
-    }
-    
-    //return model count
-    unsigned int gfx_writelock::getModelCount( void )
-    {
-        return this->t->getModelCount();
-    }
-    
-    //return gui count
-    unsigned int gfx_writelock::getGuiCount( void )
-    {
-        return this->t->getGuiCount();
     }
     
     //get camera position
@@ -93,24 +57,6 @@ namespace dragonpoop
     void gfx_writelock::setCameraPosition( dpposition *p )
     {
         this->t->setCameraPosition( p );
-    }
-    
-    //add actor
-    void gfx_writelock::addActor( dpactor *a )
-    {
-        this->t->addActor( a );
-    }
-    
-    //add actor
-    void gfx_writelock::addActor( dpactor_ref *a )
-    {
-        this->t->addActor( a );
-    }
-    
-    //return actor count
-    unsigned int gfx_writelock::getActorCount( void )
-    {
-        return this->t->getActorCount();
     }
     
     //get models
@@ -129,6 +75,42 @@ namespace dragonpoop
     bool gfx_writelock::getModels( model_man_writelock **r, shared_obj_guard *o )
     {
         return this->t->getModels( r, o );
+    }
+    
+    //get guis
+    bool gfx_writelock::getGuis( gui_man_ref **r )
+    {
+        return this->t->getGuis( r );
+    }
+    
+    //get guis
+    bool gfx_writelock::getGuis( gui_man_readlock **r, shared_obj_guard *o )
+    {
+        return this->t->getGuis( r, o );
+    }
+    
+    //get guis
+    bool gfx_writelock::getGuis( gui_man_writelock **r, shared_obj_guard *o )
+    {
+        return this->t->getGuis( r, o );
+    }
+
+    //get actors
+    bool gfx_writelock::getActors( dpactor_man_ref **r )
+    {
+        return this->t->getActors( r );
+    }
+    
+    //get actors
+    bool gfx_writelock::getActors( dpactor_man_readlock **r, shared_obj_guard *o )
+    {
+        return this->t->getActors( r, o );
+    }
+    
+    //get actors
+    bool gfx_writelock::getActors( dpactor_man_writelock **r, shared_obj_guard *o )
+    {
+        return this->t->getActors( r, o );
     }
     
 };

@@ -12,7 +12,9 @@
 #include "../perf_stats_gui/perf_stats_gui.h"
 #include "../../dpposition/dpposition.h"
 
-#include "../../dpactor/dpactors.h"
+#include "../../dpactor/dpactor.h"
+#include "../../dpactor/dpactor_writelock.h"
+#include "../../dpactor/dpactor_man_writelock.h"
 
 namespace dragonpoop
 {
@@ -20,6 +22,9 @@ namespace dragonpoop
     //ctor
     root_gui::root_gui( gfx_writelock *g, dpid id ) : gui( g, id )
     {
+        dpactor_man_writelock *al;
+        shared_obj_guard o;
+        
         this->g = (gfx_ref *)g->getRef();
         
         this->enableBg( 0 );
@@ -36,8 +41,9 @@ namespace dragonpoop
         this->esc_menu_is_show = 0;
         this->esc_menu_do_show = 0;
         
+        g->getActors( &al, &o );
         this->a = new dpactor( g->getCore() );
-        g->addActor( this->a );
+        al->addActor( this->a );
     }
     
     //dtor

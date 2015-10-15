@@ -67,6 +67,7 @@ namespace dragonpoop
         this->deleteModels();
         delete this->loader_mgr;
         delete this->g;
+        delete this->tpr;
         o.unlock();
     }
     
@@ -382,6 +383,18 @@ namespace dragonpoop
             p = *i;
             ll->push_back( p );
         }
+    }
+    
+    //return count of loaded models
+    unsigned int model_man::getModelCount( void )
+    {
+        return this->model_cnt;
+    }
+    
+    //return model instance count
+    unsigned int model_man::getInstanceCount( void )
+    {
+        return this->instance_cnt;
     }
     
 };
