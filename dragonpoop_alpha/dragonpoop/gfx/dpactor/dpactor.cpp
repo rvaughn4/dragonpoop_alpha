@@ -259,7 +259,7 @@ namespace dragonpoop
     //load med model
     bool dpactor::loadMed( model_loader_ref **ldr )
     {
-        return this->_load( &this->models.med.m, &this->models.med.mi, ldr, "test_med", "", "3drt_dragon_med.dpmodel" );
+        return this->_load( &this->models.med.m, &this->models.med.mi, ldr, "test_med", "", "3drt_dragon_medium.dpmodel" );
     }
     
     //make med model instance
@@ -385,7 +385,7 @@ namespace dragonpoop
             ml = (model_writelock *)o.tryWriteLock( *m, 2000, "dpactor::_kill" );
             if( ml )
             {
-                //ml->decRefCount();
+                ml->decRefCount();
                 ml->sync();
             }
         }
