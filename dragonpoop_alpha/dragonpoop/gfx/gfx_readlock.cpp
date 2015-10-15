@@ -29,24 +29,6 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
-    //find model by name
-    model_ref *gfx_readlock::findModel( const char *cname )
-    {
-        return this->t->findModel( cname );
-    }
-    
-    //find model by id
-    model_ref *gfx_readlock::findModel( dpid id )
-    {
-        return this->t->findModel( id );
-    }
-    
-    //get models
-    void gfx_readlock::getModels( std::list<model *> *l )
-    {
-        this->t->getModels( l );
-    }
-
     //get guis
     void gfx_readlock::getGuis( std::list<gui_ref *> *l )
     {
@@ -93,6 +75,24 @@ namespace dragonpoop
     unsigned int gfx_readlock::getActorCount( void )
     {
         return this->t->getActorCount();
+    }
+  
+    //get models
+    bool gfx_readlock::getModels( model_man_ref **r )
+    {
+        return this->t->getModels( r );
+    }
+    
+    //get models
+    bool gfx_readlock::getModels( model_man_readlock **r, shared_obj_guard *o )
+    {
+        return this->t->getModels( r, o );
+    }
+    
+    //get models
+    bool gfx_readlock::getModels( model_man_writelock **r, shared_obj_guard *o )
+    {
+        return this->t->getModels( r, o );
     }
     
 };

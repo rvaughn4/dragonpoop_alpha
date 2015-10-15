@@ -26,6 +26,8 @@
 #include "renderer_gui/renderer_gui_ref.h"
 #include "../gfx/gui/gui_ref.h"
 #include "../gfx/gui/gui_writelock.h"
+#include "../gfx/model/model_man_ref.h"
+#include "../gfx/model/model_man_readlock.h"
 
 #include <thread>
 #include <random>
@@ -43,6 +45,7 @@ namespace dragonpoop
         this->bActive = 1;
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
+        g->getModels( &this->m );
         this->gtsk = new renderer_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3/*14*/, 1, "renderer" );
         tp->addTask( this->tsk );
@@ -67,6 +70,7 @@ namespace dragonpoop
         delete this->gtsk;
         this->deleteModels();
         this->deleteGuis();
+        delete this->m;
         delete this->g;
         o.unlock();
     }
@@ -504,7 +508,7 @@ namespace dragonpoop
         model_writelock *pl;
         renderer_model_writelock *ppl;
         shared_obj_guard o, og;
-        gfx_readlock *gl;
+        model_man_readlock *ml;
         uint64_t tr;
         bool bDidFail;
 
@@ -527,8 +531,8 @@ namespace dragonpoop
             return;
         this->t_last_m_synced = tr;
         
-        gl = (gfx_readlock *)og.tryReadLock( this->g, 30, "renderer::runModels" );
-        if( !gl )
+        ml = (model_man_readlock *)og.tryReadLock( this->m, 30, "renderer::runModels" );
+        if( !ml )
             return;
         
         //build id index
@@ -541,7 +545,7 @@ namespace dragonpoop
         }
         
         //sync models and create if not exist
-        gl->getModels( &li );
+        ml->getModels( &li );
         for( ii = li.begin(); ii != li.end(); ++ii )
         {
             pi = *ii;

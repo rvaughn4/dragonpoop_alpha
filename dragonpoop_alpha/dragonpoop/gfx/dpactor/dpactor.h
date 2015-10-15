@@ -19,6 +19,7 @@ namespace dragonpoop
     class dpactor_model_state;
     class dpactor_animate_state;
     class model_loader_ref;
+    class model_man_ref;
     
     class dpactor : public shared_obj
     {
@@ -27,6 +28,7 @@ namespace dragonpoop
         
         core *c;
         gfx_ref *g;
+        model_man_ref *m;
         struct
         {
             struct
@@ -41,8 +43,12 @@ namespace dragonpoop
         dpactor_model_state *model_state;
         dpactor_animate_state *anim_state;
         
+        //get model man ref
+        void _getModelMan( void );
+        //get gfx ref
+        void _getGfxMan( void );
         //load model
-        bool _load( model_ref **m, model_instance_ref **mi, model_loader_ref **ldr );
+        bool _load( model_ref **m, model_instance_ref **mi, model_loader_ref **ldr, const char *mname, const char *path_name, const char *file_name );
         //make model instance
         bool _make( model_ref **m, model_instance_ref **mi, dpthread_lock *thd );
         //destroy model instance

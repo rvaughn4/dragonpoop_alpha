@@ -34,7 +34,11 @@ namespace dragonpoop
     class dpactor_ref;
     class dpland_man;
     class dpactor_man;
-    class model_loader_man;
+    class model_man;
+    class model_man_ref;
+    class model_man_readlock;
+    class model_man_writelock;
+    class shared_obj_guard;
 
     class gfx : public shared_obj
     {
@@ -52,7 +56,7 @@ namespace dragonpoop
         
         dpland_man *land_mgr;
         dpactor_man *actor_mgr;
-        model_loader_man *loader_mgr;
+        model_man *model_mgr;
         
         core *c;
         renderer *r;
@@ -66,7 +70,6 @@ namespace dragonpoop
         gui_factory_ref *root_factory;
         gui *root_g;
         
-        std::list<model *> models;
         std::list<gui_ref *> guis;
         
         //start all tasks
@@ -82,12 +85,8 @@ namespace dragonpoop
         //delete task
         void _deleteTask( gfx_task **pgtsk, dptask **ptsk );
         
-        //delete all models
-        void deleteModels( void );
         //delete all guis
         void deleteGuis( void );
-        //delete old models
-        static void runModels( dpthread_lock *thd, gfx_ref *g );
         //run all guis
         static void runGuis( dpthread_lock *thd, gfx_ref *g );
         
@@ -103,30 +102,6 @@ namespace dragonpoop
         void kill( void );
         //run gfx from task
         void run( dpthread_lock *thd, gfx_writelock *g );
-        //create model using name (if not exists, reuses if does), returns ref in pointer arg
-        bool createModel( const char *mname, model_ref **r );
-        //create model and load model file into it
-        bool loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader_ref **mldr );
-        //find model and save model file
-        bool saveModel( const char *mname, const char *path_name, const char *file_name, model_saver_ref **msvr );
-        //find model by name
-        model_ref *findModel( const char *cname );
-        //find model by id
-        model_ref *findModel( dpid id );
-        //get a model instance by name (returns instance id)
-        dpid makeModelInstance( const char *cname, model_instance_ref **r );
-        //get a model instance by id (returns instance id)
-        dpid makeModelInstance( dpid id, model_instance_ref **r );
-        //get a model instance (returns instance id)
-        dpid makeModelInstance( model_ref *m, model_instance_ref **r );
-        //get models
-        void getModels( std::list<model *> *l );
-        //start animation by name (returns animation instance id)
-        dpid startAnimation( const char *mname, dpid minstance_id, const char *anim_name, bool do_repeat, float speed );
-        //stop animation by name
-        void stopAnimation( const char *mname, dpid minstance_id, const char *anim_name );
-        //stop all animations
-        void stopAllAnimations( const char *mname, dpid minstance_id );
         //add gui
         void addGui( gui *g );
         //add gui
@@ -155,6 +130,13 @@ namespace dragonpoop
         void addActor( dpactor_ref *a );
         //return actor count
         unsigned int getActorCount( void );
+        
+        //get models
+        bool getModels( model_man_ref **r );
+        //get models
+        bool getModels( model_man_readlock **r, shared_obj_guard *o );
+        //get models
+        bool getModels( model_man_writelock **r, shared_obj_guard *o );
 
     public:
 

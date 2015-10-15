@@ -33,7 +33,7 @@ namespace dragonpoop
     core::~core( void )
     {
         delete this->orig_root;
-        delete g;
+        delete this->g;
         delete this->tp;
         delete this->mm;
     }

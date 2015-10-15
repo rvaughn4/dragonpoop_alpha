@@ -24,6 +24,8 @@ namespace dragonpoop
     shared_obj_readlock *shared_obj_guard::readLock( shared_obj_interface *o, const char *c_lock_location )
     {
         this->unlock();
+        if( !o )
+            return 0;
         this->l = o->readLock( c_lock_location );
         return (shared_obj_readlock *)this->l;
     }
@@ -32,6 +34,8 @@ namespace dragonpoop
     shared_obj_writelock *shared_obj_guard::writeLock( shared_obj_interface *o, const char *c_lock_location )
     {
         this->unlock();
+        if( !o )
+            return 0;
         this->l = o->writeLock( c_lock_location );
         return (shared_obj_writelock *)this->l;
     }
@@ -40,6 +44,8 @@ namespace dragonpoop
     shared_obj_readlock *shared_obj_guard::tryReadLock( shared_obj_interface *o, uint64_t ms, const char *c_lock_location )
     {
         this->unlock();
+        if( !o )
+            return 0;
         this->l = o->tryReadLock( c_lock_location, ms );
         return (shared_obj_readlock *)this->l;
     }
@@ -48,6 +54,8 @@ namespace dragonpoop
     shared_obj_writelock *shared_obj_guard::tryWriteLock( shared_obj_interface *o, uint64_t ms, const char *c_lock_location )
     {
         this->unlock();
+        if( !o )
+            return 0;
         this->l = o->tryWriteLock( c_lock_location, ms );
         return (shared_obj_writelock *)this->l;
     }
@@ -56,6 +64,8 @@ namespace dragonpoop
     shared_obj_readlock *shared_obj_guard::tryReadLock( shared_obj_interface *o, const char *c_lock_location )
     {
         this->unlock();
+        if( !o )
+            return 0;
         this->l = o->tryReadLock( c_lock_location );
         return (shared_obj_readlock *)this->l;
     }
@@ -64,6 +74,8 @@ namespace dragonpoop
     shared_obj_writelock *shared_obj_guard::tryWriteLock( shared_obj_interface *o, const char *c_lock_location )
     {
         this->unlock();
+        if( !o )
+            return 0;
         this->l = o->tryWriteLock( c_lock_location );
         return (shared_obj_writelock *)this->l;
     }

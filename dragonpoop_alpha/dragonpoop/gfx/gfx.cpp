@@ -32,10 +32,9 @@
 #include "dpactor/dpactor_man.h"
 #include "dpactor/dpactor_man_readlock.h"
 #include "dpactor/dpactor_man_writelock.h"
-#include "model/model_loader/model_loader_man.h"
-#include "model/model_loader/model_loader_man_readlock.h"
-#include "model/model_loader/model_loader_man_writelock.h"
-
+#include "model/model_man.h"
+#include "model/model_man_readlock.h"
+#include "model/model_man_writelock.h"
 
 namespace dragonpoop
 {
@@ -56,7 +55,7 @@ namespace dragonpoop
         this->_startTasks( c, tp );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 
-        this->loader_mgr = new model_loader_man( c, this, tp );
+        this->model_mgr = new model_man( c, this, tp );
         this->land_mgr = new dpland_man( c, this, tp );
         this->actor_mgr = new dpactor_man( c, this, tp );
         
@@ -70,12 +69,6 @@ namespace dragonpoop
         shared_obj_guard o;
         
         o.tryWriteLock( this, 5000, "gfx::~gfx" );
-        if( this->root_g )
-            delete this->root_g;
-        this->root_g = 0;
-        if( this->root_factory )
-            delete this->root_factory;
-        this->root_factory = 0;
         o.unlock();
         this->unlink();
         
@@ -86,10 +79,17 @@ namespace dragonpoop
         
         delete this->actor_mgr;
         delete this->land_mgr;
-        delete this->loader_mgr;
+        delete this->model_mgr;
         
         this->deleteGuis();
-        this->deleteModels();
+
+        if( this->root_g )
+            delete this->root_g;
+        this->root_g = 0;
+        if( this->root_factory )
+            delete this->root_factory;
+        this->root_factory = 0;
+        
         delete this->r;
         this->r = 0;
         o.unlock();
@@ -99,9 +99,7 @@ namespace dragonpoop
     void gfx::_startTasks( core *c, dptaskpool_writelock *tp )
     {
         this->_startTask( c, tp, &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk, 1, 0, 0, 0, 100 );
-        this->_startTask( c, tp, &this->tasks.tmodels.gtsk, &this->tasks.tmodels.tsk, 0, 1, 0, 0, 10 );
         this->_startTask( c, tp, &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk, 0, 0, 1, 0, 50 );
-        this->_startTask( c, tp, &this->tasks.tactors.gtsk, &this->tasks.tactors.tsk, 0, 0, 0, 1, 200 );
         this->bIsRun = 1;
     }
     
@@ -117,9 +115,7 @@ namespace dragonpoop
     void gfx::_killTasks( void )
     {
         this->_killTask( &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk );
-        this->_killTask( &this->tasks.tmodels.gtsk, &this->tasks.tmodels.tsk );
         this->_killTask( &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk );
-        this->_killTask( &this->tasks.tactors.gtsk, &this->tasks.tactors.tsk );
         this->bIsRun = 0;
     }
     
@@ -141,9 +137,7 @@ namespace dragonpoop
     void gfx::_deleteTasks( void )
     {
         this->_deleteTask( &this->tasks.tgfx.gtsk, &this->tasks.tgfx.tsk );
-        this->_deleteTask( &this->tasks.tmodels.gtsk, &this->tasks.tmodels.tsk );
         this->_deleteTask( &this->tasks.tguis.gtsk, &this->tasks.tguis.tsk );
-        this->_deleteTask( &this->tasks.tactors.gtsk, &this->tasks.tactors.tsk );
     }
     
     //delete task
@@ -228,28 +222,6 @@ namespace dragonpoop
 
     }
 
-    //delete all models
-    void gfx::deleteModels( void )
-    {
-        std::list<model *> *l, d;
-        std::list<model *>::iterator i;
-        model *p;
-        
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            d.push_back( p );
-        }
-        l->clear();
-
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            delete p;
-        }
-    }
 
     //delete all guis
     void gfx::deleteGuis( void )
@@ -272,77 +244,6 @@ namespace dragonpoop
             p = *i;
             delete p;
         }
-    }
-    
-    //delete old models
-    void gfx::runModels( dpthread_lock *thd, gfx_ref *g )
-    {
-        std::list<model *> *l, d;
-        std::list<model_ref *> lr;
-        std::list<model *>::iterator i;
-        std::list<model_ref *>::iterator ir;
-        model *p;
-        model_ref *pr;
-        shared_obj_guard o, og;
-        model_writelock *pl;
-        gfx_readlock *grl;
-        gfx_writelock *gwl;
-        unsigned int ms_each_frame;
-        
-        grl = (gfx_readlock *)og.tryReadLock( g, 100, "gfx::runModels" );
-        if( !grl )
-            return;
-        ms_each_frame = grl->t->ms_each_frame;
-        
-        l = &grl->t->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( !p->isLinked() )
-                d.push_back( p );
-            else
-            {
-                pl = (model_writelock *)o.tryWriteLock( p, 100, "gfx::runModels" );
-                if( pl )
-                {
-                    pr = (model_ref *)pl->getRef();
-                    if( pr )
-                        lr.push_back( pr );
-                }
-                o.unlock();
-            }
-        }
-        og.unlock();
-        
-        for( ir = lr.begin(); ir != lr.end(); ++ir )
-        {
-            pr = *ir;
-            pl = (model_writelock *)o.tryWriteLock( pr, 100, "gfx::runModels" );
-            if( pl )
-            {
-                pl->run( thd, ms_each_frame );
-                if( !pl->getRefCount() && !pl->getInstanceCount() && !pl->isLinked() )
-                    d.push_back( p );
-            }
-        }
-        o.unlock();
-        
-        if( d.empty() )
-            return;
-        
-        gwl = (gfx_writelock *)og.tryReadLock( g, 100, "gfx::runModels" );
-        if( !gwl )
-            return;
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            gwl->t->models.remove( p );
-            delete p;
-            gwl->t->model_cnt--;
-        }
-        og.unlock();
     }
     
     //run all guis
@@ -406,365 +307,6 @@ namespace dragonpoop
             gwl->t->gui_cnt--;
         }
         og.unlock();
-    }
-    
-    //create model using name (if not exists, reuses if does), returns ref in pointer arg
-    bool gfx::createModel( const char *mname, model_ref **r )
-    {
-        model_ref *pr;
-        model *p;
-        model_writelock *pl;
-        shared_obj_guard o, otp;
-        std::string s;
-        dpid nid;
-        dptaskpool_writelock *tp;
-
-        pr = this->findModel( mname );
-        if( pr )
-        {
-            if( r )
-                *r = pr;
-            else
-                delete pr;
-            return 1;
-        }
-        
-        tp = (dptaskpool_writelock *)otp.tryWriteLock( this->tpr, 1000, "gfx::createModel" );
-        if( !tp )
-            return 0;
-        nid = tp->genId();
-        otp.unlock();
-        
-        p = new model( this->c, nid );
-        this->model_cnt++;
-        
-        pl = (model_writelock *)o.writeLock( p, "gfx::createModel" );
-        if( !pl )
-        {
-            delete p;
-            return 0;
-        }
-
-        this->models.push_back( p );
-        
-        s.assign( mname );
-        pl->setName( &s );
-        
-        if( r )
-            *r = (model_ref *)pl->getRef();
-        
-        return 1;
-    }
-    
-    //create model and load model file into it
-    bool gfx::loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader_ref **mldr )
-    {
-        model_ref *pr;
-        shared_obj_guard o;
-        model_loader_man_writelock *l;
-
-        l = (model_loader_man_writelock *)o.tryWriteLock( this->loader_mgr, 3000, "gfx::loadModel" );
-        if( !l )
-            return 0;
-        
-        if( !this->createModel( mname, &pr ) )
-            return 0;
-        
-        if( !l->load( pr, path_name, file_name, mldr ) )
-        {
-            delete pr;
-            return 0;
-        }
-        
-        if( r )
-            *r = pr;
-        else
-            delete pr;
-        
-        return 1;
-    }
-    
-    //find model and save model file
-    bool gfx::saveModel( const char *mname, const char *path_name, const char *file_name, model_saver_ref **msvr )
-    {
-        model_ref *pr;
-        shared_obj_guard o;
-        model_loader_man_writelock *l;
-        
-        l = (model_loader_man_writelock *)o.tryWriteLock( this->loader_mgr, 3000, "gfx::loadModel" );
-        if( !l )
-            return 0;
-
-        pr = this->findModel( mname );
-        if( !pr )
-            return 0;
-
-        if( !l->save( pr, path_name, file_name, msvr ) )
-        {
-            delete pr;
-            return 0;
-        }
-
-        return 1;
-    }
-    
-    //find model by name
-    model_ref *gfx::findModel( const char *cname )
-    {
-        std::list<model *> *l;
-        std::list<model *>::iterator i;
-        model *p;
-        model_ref *r;
-        model_readlock *pl;
-        model_writelock *pwl;
-        shared_obj_guard o;
-        std::string s( cname );
-        
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (model_readlock *)o.tryReadLock( p, 1000, "gfx::findModel" );
-            if( !pl )
-                continue;
-            
-            if( !pl->compareName( &s ) )
-                continue;
-            
-            pwl = (model_writelock *)o.tryWriteLock( p, 1000, "gfx::findModel" );
-            if( !pwl )
-                continue;
-            
-            pwl->addRefCount();
-            r = (model_ref *)pwl->getRef();
-            return r;
-        }
-        
-        return 0;
-    }
-    
-    //find model by id
-    model_ref *gfx::findModel( dpid id )
-    {
-        std::list<model *> *l;
-        std::list<model *>::iterator i;
-        model *p;
-        model_ref *r;
-        model_readlock *pl;
-        model_writelock *pwl;
-        shared_obj_guard o;
-        
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (model_readlock *)o.tryReadLock( p, 1000, "gfx::findModel" );
-            if( !pl )
-                continue;
-
-            if( !pl->compareId( id ) )
-                continue;
-            
-            pwl = (model_writelock *)o.tryWriteLock( p, 1000, "gfx::findModel" );
-            if( !pwl )
-                continue;
-            
-            r = (model_ref *)pwl->getRef();
-            return r;
-        }
-        
-        return 0;
-    }
-    
-    //get a model instance by name
-    dpid gfx::makeModelInstance( const char *cname, model_instance_ref **r )
-    {
-        model_ref *m;
-        dpid rid;
-        
-        m = this->findModel( cname );
-        if( !m )
-        {
-            dpid_zero( &rid );
-            return rid;
-        }
-        
-        rid = this->makeModelInstance( m, r );
-        
-        delete m;
-        return rid;
-    }
-    
-    //get a model instance by id
-    dpid gfx::makeModelInstance( dpid id, model_instance_ref **r )
-    {
-        model_ref *m;
-        dpid rid;
-        
-        m = this->findModel( id );
-        if( !m )
-        {
-            dpid_zero( &rid );
-            return rid;
-        }
-        
-        rid = this->makeModelInstance( m, r );
-        
-        delete m;
-        return rid;
-    }
-    
-    //get a model instance (returns instance id)
-    dpid gfx::makeModelInstance( model_ref *m, model_instance_ref **rr )
-    {
-        dpid rid, nid;
-        model_writelock *ml;
-        shared_obj_guard o, ot;
-        dptaskpool_readlock *tpl;
-        dpthread_lock *tl;
-        model_instance_ref *r;
-
-        dpid_zero( &rid );
-        if( !m )
-            return rid;
-
-        ml = (model_writelock *)o.writeLock( m, "gfx::makeModelInstance" );
-        if( !ml )
-            return rid;
-        tpl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 1000, "gfx::makeModelInstance" );
-        if( !tpl )
-            return rid;
-        
-        tl = tpl->lockThread();
-        if( !tl )
-            return rid;
-        nid = tl->genId();
-        
-        r = ml->makeInstance( tl, nid );
-        delete tl;
-
-        if( !r )
-            return rid;
-        if( rr )
-            *rr = r;
-        else
-            delete r;
-        
-        return nid;
-    }
-    
-    //get models
-    void gfx::getModels( std::list<model *> *ll )
-    {
-        std::list<model *> *l;
-        std::list<model *>::iterator i;
-        model *p;
-        
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            ll->push_back( p );
-        }
-    }
-    
-    //start animation by name (returns animation instance id)
-    dpid gfx::startAnimation( const char *mname, dpid minstance_id, const char *anim_name, bool do_repeat, float speed )
-    {
-        dpid rid;
-        model_instance_ref *mr;
-        model_instance_writelock *mil;
-        model_ref *m;
-        model_readlock *ml;
-        shared_obj_guard om, omr, ot;
-        dptaskpool_readlock *tl;
-        
-        dpid_zero( &rid );
-        m = this->findModel( mname );
-        if( !m )
-            return rid;
-        
-        ml = (model_readlock *)om.tryWriteLock( m, 300, "gfx::startAnimation" );
-        delete m;
-        if( !ml )
-            return rid;
-        
-        mr = ml->findInstance( minstance_id );
-        if( !mr )
-            return rid;
-        
-        mil = (model_instance_writelock *)omr.tryWriteLock( mr, 300, "gfx::startAnimation" );
-        delete mr;
-        if( !mil )
-            return rid;
-        
-        tl = (dptaskpool_readlock *)ot.tryReadLock( this->tpr, 300, "gfx::startAnimation" );
-        if( !tl )
-            return rid;
-        
-        rid = mil->playAnimation( tl->genId(), ml, anim_name, do_repeat, speed );
-     
-        return rid;
-    }
-    
-    //stop animation by name
-    void gfx::stopAnimation( const char *mname, dpid minstance_id, const char *anim_name )
-    {
-        model_instance_ref *mr;
-        model_instance_writelock *mil;
-        model_ref *m;
-        model_readlock *ml;
-        shared_obj_guard om, omr;
-        
-        m = this->findModel( mname );
-        if( !m )
-            return;
-        
-        ml = (model_readlock *)om.tryWriteLock( m, 300, "gfx::stopAnimation" );
-        delete m;
-        if( !ml )
-            return;
-        
-        mr = ml->findInstance( minstance_id );
-        if( !mr )
-            return;
-        
-        mil = (model_instance_writelock *)omr.tryWriteLock( mr, 300, "gfx::stopAnimation" );
-        delete mr;
-        if( !mil )
-            return;
-        
-        mil->stopAnimation( anim_name );
-    }
-    
-    //stop all animations
-    void gfx::stopAllAnimations( const char *mname, dpid minstance_id )
-    {
-        model_instance_ref *mr;
-        model_instance_writelock *mil;
-        model_ref *m;
-        model_readlock *ml;
-        shared_obj_guard om, omr;
-        
-        m = this->findModel( mname );
-        if( !m )
-            return;
-        
-        ml = (model_readlock *)om.tryWriteLock( m, 300, "gfx::stopAnimation" );
-        delete m;
-        if( !ml )
-            return;
-        
-        mr = ml->findInstance( minstance_id );
-        if( !mr )
-            return;
-        
-        mil = (model_instance_writelock *)omr.tryWriteLock( mr, 300, "gfx::stopAnimation" );
-        delete mr;
-        if( !mil )
-            return;
-        
-        mil->stopAllAnimations();
     }
     
     //add gui
@@ -937,6 +479,32 @@ namespace dragonpoop
             return 0;
         
         return l->getActorCount();
+    }
+    
+    
+    //get models
+    bool gfx::getModels( model_man_ref **r )
+    {
+        shared_obj_guard o;
+        model_man_writelock *l;
+        if( !this->getModels( &l, &o ) )
+            return 0;
+        *r = (model_man_ref *)l->getRef();
+        return 1;
+    }
+    
+    //get models
+    bool gfx::getModels( model_man_readlock **r, shared_obj_guard *o )
+    {
+        *r = (model_man_readlock *)o->tryReadLock( this->model_mgr, 1000, "gfx::getModels" );
+        return *r != 0;
+    }
+    
+    //get models
+    bool gfx::getModels( model_man_writelock **r, shared_obj_guard *o )
+    {
+        *r = (model_man_writelock *)o->tryWriteLock( this->model_mgr, 1000, "gfx::getModels" );
+        return *r != 0;
     }
     
 };

@@ -59,9 +59,6 @@ namespace dragonpoop
             g.unlock();
         }
         
-        if( this->bRunModels )
-            gfx::runModels( th, this->g );
-        
         if( this->bRunGuis )
             gfx::runGuis( th, this->g );
     }
