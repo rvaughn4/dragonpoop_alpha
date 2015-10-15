@@ -33,6 +33,7 @@ namespace dragonpoop
     class dpactor_man_ref;
     class dpactor_man_readlock;
     class dpactor_man_writelock;
+    class renderer_factory;
 
     class gfx_writelock : public shared_obj_writelock
     {
@@ -82,6 +83,10 @@ namespace dragonpoop
         bool getActors( dpactor_man_readlock **r, shared_obj_guard *o );
         //get actors
         bool getActors( dpactor_man_writelock **r, shared_obj_guard *o );
+        //add renderer factory
+        void addRenderer( renderer_factory *f );
+        //change renderer
+        bool changeRenderer( const char *cname );
 
         friend class gfx;
     };

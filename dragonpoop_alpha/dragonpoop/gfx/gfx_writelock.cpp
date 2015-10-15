@@ -113,4 +113,16 @@ namespace dragonpoop
         return this->t->getActors( r, o );
     }
     
+    //add renderer factory
+    void gfx_writelock::addRenderer( renderer_factory *f )
+    {
+        this->t->addRenderer( f );
+    }
+    
+    //change renderer
+    bool gfx_writelock::changeRenderer( const char *cname )
+    {
+        return this->t->changeRenderer( cname );
+    }
+    
 };

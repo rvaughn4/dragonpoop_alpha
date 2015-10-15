@@ -31,6 +31,7 @@
 #include "../gfx/gui/gui_man_ref.h"
 #include "../gfx/gui/gui_man_readlock.h"
 
+#include "openglx_1o5_renderer/openglx_1o5_renderer_factory.h"
 #include <thread>
 #include <random>
 
@@ -903,6 +904,19 @@ namespace dragonpoop
         
         this->bCamSync = 0;
         gl->getCameraPosition( &this->cam_pos );
+    }
+    
+    //populate renderer list
+    void renderer::addRenderers( gfx *g )
+    {
+        gfx_writelock *gl;
+        shared_obj_guard o;
+        
+        gl = (gfx_writelock *)o.tryWriteLock( g, 5000, "renderer::addRenderers" );
+        if( !gl )
+            return;
+        
+        gl->addRenderer( new openglx_1o5_renderer_factory() );
     }
     
 };

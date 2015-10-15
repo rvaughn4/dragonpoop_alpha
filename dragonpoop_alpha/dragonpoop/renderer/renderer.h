@@ -30,6 +30,7 @@ namespace dragonpoop
     class renderer_gui_readlock;
     class model_man_ref;
     class gui_man_ref;
+    class gfx;
 
     class renderer : public shared_obj
     {
@@ -156,6 +157,8 @@ namespace dragonpoop
         bool isRunning( void );
         //return core
         core *getCore( void );
+        //populate renderer list
+        static void addRenderers( gfx *g );
 
         friend class renderer_readlock;
         friend class renderer_writelock;

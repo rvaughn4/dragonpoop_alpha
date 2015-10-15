@@ -46,6 +46,7 @@ namespace dragonpoop
     class dpactor_man_ref;
     class dpactor_man_readlock;
     class dpactor_man_writelock;
+    class renderer_factory;
 
     class gfx : public shared_obj
     {
@@ -60,6 +61,7 @@ namespace dragonpoop
         gui_man *gui_mgr;
         
         core *c;
+        std::list<renderer_factory *> renderer_factories;
         renderer *r;
         dptaskpool_ref *tpr;
         unsigned int ms_each_frame, model_cnt, gui_cnt;
@@ -120,6 +122,10 @@ namespace dragonpoop
         bool getActors( dpactor_man_readlock **r, shared_obj_guard *o );
         //get actors
         bool getActors( dpactor_man_writelock **r, shared_obj_guard *o );
+        //add renderer factory
+        void addRenderer( renderer_factory *f );
+        //change renderer
+        bool changeRenderer( const char *cname );
         
     public:
 

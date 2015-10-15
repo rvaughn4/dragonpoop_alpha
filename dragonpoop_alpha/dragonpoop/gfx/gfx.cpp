@@ -10,7 +10,11 @@
 #include "../core/dptaskpool/dptaskpool_writelock.h"
 #include "../core/dptaskpool/dptaskpool_readlock.h"
 #include "../core/dptaskpool/dptaskpool_ref.h"
-#include "../renderer/renderers.h"
+#include "../renderer/renderer.h"
+#include "../renderer/renderer_ref.h"
+#include "../renderer/renderer_writelock.h"
+#include "../renderer/renderer_readlock.h"
+#include "../renderer/renderer_factory.h"
 #include "../core/shared_obj/shared_obj_guard.h"
 #include "model/model.h"
 #include "model/model_ref.h"
@@ -47,9 +51,6 @@ namespace dragonpoop
     //ctor
     gfx::gfx( core *c, dptaskpool_writelock *tp ) : shared_obj( c->getMutexMaster() )
     {
-        gfx_writelock *l;
-        shared_obj_guard o;
-        
         this->root_g = 0;
         this->root_factory = 0;
         this->gui_cnt = 0;
@@ -64,9 +65,9 @@ namespace dragonpoop
         this->land_mgr = new dpland_man( c, this, tp );
         this->actor_mgr = new dpactor_man( c, this, tp );
         this->gui_mgr = new gui_man( c, this, tp );
+        this->r = 0;
         
-        l = (gfx_writelock *)o.writeLock( this, "gfx::gfx" );
-        this->r = new openglx_1o5_renderer( c, l, tp );
+        renderer::addRenderers( this );
     }
 
     //dtor
@@ -188,6 +189,10 @@ namespace dragonpoop
             }
             o.unlock();
         }
+        
+        if( !this->r )
+            this->changeRenderer( 0 );
+        
     }
     
     //return fps
@@ -312,6 +317,62 @@ namespace dragonpoop
     {
         *r = (dpactor_man_writelock *)o->tryWriteLock( this->actor_mgr, 1000, "gfx::getActors" );
         return *r != 0;
+    }
+    
+    //add renderer factory
+    void gfx::addRenderer( renderer_factory *f )
+    {
+        this->renderer_factories.push_back( f );
+    }
+    
+    //change renderer
+    bool gfx::changeRenderer( const char *cname )
+    {
+        renderer_factory *p, *f;
+        int hs, s;
+        std::list<renderer_factory *> *l;
+        std::list<renderer_factory *>::iterator i;
+        std::string sname;
+        gfx_writelock *gl;
+        dptaskpool_writelock *tp;
+        shared_obj_guard og, ot;
+        
+        gl = (gfx_writelock *)og.tryWriteLock( this, 5000, "gfx::changeRenderer" );
+        if( !gl )
+            return 0;
+        tp = (dptaskpool_writelock *)ot.tryWriteLock( this->tpr, 5000, "gfx::changeRenderer" );
+        if( !tp )
+            return 0;
+        
+        if( cname )
+            sname.assign( cname );
+        if( sname.length() < 1 )
+            cname = 0;
+        f = 0;
+        hs = 0;
+        
+        l = &this->renderer_factories;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            s = p->getScore();
+            if( f && s < hs )
+                continue;
+            if( cname && p->compareName( &sname ) != 0 )
+                continue;
+            if( !p->works( this->c, gl, tp ) )
+                continue;
+            f = p;
+            hs = s;
+        }
+        
+        if( !f )
+            return 0;
+        if( this->r )
+            delete this->r;
+        
+        this->r = f->makeRenderer( c, gl, tp );
+        return this->r != 0;
     }
     
 };
