@@ -17,6 +17,8 @@ namespace dragonpoop
     class dpactor_man_task;
     class dptaskpool_writelock;
     class gfx;
+    class dpactor;
+    class dpactor_ref;
     
     class dpactor_man : public shared_obj
     {
@@ -27,14 +29,20 @@ namespace dragonpoop
         gfx_ref *g;
         dptask *tsk;
         dpactor_man_task *gtsk;
-        
+        std::list<dpactor_ref *> actors;
+        int actor_cnt;
+
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
         void _killTask( void );
         //delete task
         void _deleteTask( void );
-        
+        //delete all actors
+        void deleteActors( void );
+        //run all actors
+        void runActors( dpthread_lock *thd );
+
     protected:
         
         //generate read lock
@@ -45,7 +53,13 @@ namespace dragonpoop
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run
         void run( dpthread_lock *thd, dpactor_man_writelock *g );
-        
+        //add actor
+        void addActor( dpactor *a );
+        //add actor
+        void addActor( dpactor_ref *a );
+        //return actor count
+        unsigned int getActorCount( void );
+
     public:
         
         //ctor

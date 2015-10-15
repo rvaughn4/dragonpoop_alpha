@@ -16,12 +16,6 @@
 #include "model/model_ref.h"
 #include "model/model_writelock.h"
 #include "model/model_readlock.h"
-#include "model/model_loader/model_loader.h"
-#include "model/model_loader/model_loader_writelock.h"
-#include "model/model_loader/model_loader_readlock.h"
-#include "model/model_saver/model_saver.h"
-#include "model/model_saver/model_saver_readlock.h"
-#include "model/model_saver/model_saver_writelock.h"
 #include "model/model_instance/model_instance_ref.h"
 #include "model/model_instance/model_instance_writelock.h"
 #include "gui/gui_ref.h"
@@ -36,6 +30,12 @@
 #include "dpactor/dpactor_writelock.h"
 #include "dpland/dpland_man.h"
 #include "dpactor/dpactor_man.h"
+#include "dpactor/dpactor_man_readlock.h"
+#include "dpactor/dpactor_man_writelock.h"
+#include "model/model_loader/model_loader_man.h"
+#include "model/model_loader/model_loader_man_readlock.h"
+#include "model/model_loader/model_loader_man_writelock.h"
+
 
 namespace dragonpoop
 {
@@ -56,6 +56,7 @@ namespace dragonpoop
         this->_startTasks( c, tp );
         this->tpr = (dptaskpool_ref *)tp->getRef();
 
+        this->loader_mgr = new model_loader_man( c, this, tp );
         this->land_mgr = new dpland_man( c, this, tp );
         this->actor_mgr = new dpactor_man( c, this, tp );
         
@@ -85,11 +86,9 @@ namespace dragonpoop
         
         delete this->actor_mgr;
         delete this->land_mgr;
+        delete this->loader_mgr;
         
-        this->deleteActors();
         this->deleteGuis();
-        this->deleteLoaders();
-        this->deleteSavers();
         this->deleteModels();
         delete this->r;
         this->r = 0;
@@ -110,7 +109,7 @@ namespace dragonpoop
     void gfx::_startTask( core *c, dptaskpool_writelock *tp, gfx_task **pgtsk, dptask **ptsk, bool bRunGfx, bool bRunModels, bool bRunGuis, bool bRunActors, unsigned int ms_delay )
     {
         *pgtsk = new gfx_task( this, bRunGfx, bRunModels, bRunGuis, bRunActors );
-        *ptsk = new dptask( c->getMutexMaster(), *pgtsk, ms_delay, 0 );
+        *ptsk = new dptask( c->getMutexMaster(), *pgtsk, ms_delay, 0, "gfx" );
         tp->addTask( *ptsk );
     }
     
@@ -215,9 +214,6 @@ namespace dragonpoop
             o.unlock();
         }
         
-        this->runLoaders( thd );
-        this->runSavers( thd );
-        
         if( !this->root_g && this->root_factory )
         {
             fl = (gui_factory_writelock *)o.tryWriteLock( this->root_factory, 10, "gfx::run" );
@@ -255,52 +251,6 @@ namespace dragonpoop
         }
     }
 
-    //delete all loaders
-    void gfx::deleteLoaders( void )
-    {
-        std::list<model_loader *> *l, d;
-        std::list<model_loader *>::iterator i;
-        model_loader *p;
-        
-        l = &this->loaders;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            d.push_back( p );
-        }
-        l->clear();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            delete p;
-        }
-    }
-    
-    //delete all savers
-    void gfx::deleteSavers( void )
-    {
-        std::list<model_saver *> *l, d;
-        std::list<model_saver *>::iterator i;
-        model_saver *p;
-        
-        l = &this->savers;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            d.push_back( p );
-        }
-        l->clear();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            delete p;
-        }
-    }
-    
     //delete all guis
     void gfx::deleteGuis( void )
     {
@@ -309,29 +259,6 @@ namespace dragonpoop
         gui_ref *p;
         
         l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            d.push_back( p );
-        }
-        l->clear();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            delete p;
-        }
-    }
-
-    //delete all actors
-    void gfx::deleteActors( void )
-    {
-        std::list<dpactor_ref *> *l, d;
-        std::list<dpactor_ref *>::iterator i;
-        dpactor_ref *p;
-        
-        l = &this->actors;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -418,70 +345,6 @@ namespace dragonpoop
         og.unlock();
     }
     
-    //delete old loaders
-    void gfx::runLoaders( dpthread_lock *thd )
-    {
-        std::list<model_loader *> *l, d;
-        std::list<model_loader *>::iterator i;
-        model_loader *p;
-        model_loader_writelock *pl;
-        shared_obj_guard o;
-        
-        l = &this->loaders;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (model_loader_writelock *)o.tryWriteLock( p, 3, "gfx::runLoaders" );
-            if( !pl )
-                continue;
-            pl->run( thd );
-            if( pl->isRunning() )
-                continue;
-            d.push_back( p );
-        }
-        o.unlock();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            this->loaders.remove( p );
-            delete p;
-        }
-    }
-    
-    //delete old savers
-    void gfx::runSavers( dpthread_lock *thd )
-    {
-        std::list<model_saver *> *l, d;
-        std::list<model_saver *>::iterator i;
-        model_saver *p;
-        model_saver_writelock *pl;
-        shared_obj_guard o;
-        
-        l = &this->savers;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (model_saver_writelock *)o.tryWriteLock( p, 3, "gfx::runSavers" );
-            if( !pl )
-                continue;
-            pl->run( thd );
-            if( pl->isRunning() )
-                continue;
-            d.push_back( p );
-        }
-        o.unlock();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            this->savers.remove( p );
-            delete p;
-        }
-    }
-    
     //run all guis
     void gfx::runGuis( dpthread_lock *thd, gfx_ref *g )
     {
@@ -544,69 +407,6 @@ namespace dragonpoop
         }
         og.unlock();
     }
-
-    //run all actors
-    void gfx::runActors( dpthread_lock *thd, gfx_ref *g )
-    {
-        std::list<dpactor_ref *> *l, ll, d;
-        std::list<dpactor_ref *>::iterator i;
-        dpactor_ref *p;
-        shared_obj_guard o, og;
-        dpactor_writelock *pl;
-        gfx_readlock *grl;
-        gfx_writelock *gwl;
-        
-        grl = (gfx_readlock *)og.tryReadLock( g, 100, "gfx::runActors" );
-        if( !grl )
-            return;
-        
-        l = &grl->t->actors;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( !p->isLinked() )
-                d.push_back( p );
-            else
-            {
-                pl = (dpactor_writelock *)o.tryWriteLock( p, 100, "gfx::runActors" );
-                if( pl )
-                {
-                    p = (dpactor_ref *)pl->getRef();
-                    if( p )
-                        ll.push_back( p );
-                }
-                o.unlock();
-            }
-        }
-        og.unlock();
-        
-        l = &ll;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (dpactor_writelock *)o.tryWriteLock( p, 100, "gfx::runActors" );
-            if( pl )
-                pl->run( thd );
-        }
-        o.unlock();
-        
-        if( d.empty() )
-            return;
-        
-        gwl = (gfx_writelock *)og.tryReadLock( g, 100, "gfx::runActors" );
-        if( !gwl )
-            return;
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            gwl->t->actors.remove( p );
-            gwl->t->actor_cnt--;
-            delete p;
-        }
-        og.unlock();
-    }
     
     //create model using name (if not exists, reuses if does), returns ref in pointer arg
     bool gfx::createModel( const char *mname, model_ref **r )
@@ -660,33 +460,26 @@ namespace dragonpoop
     bool gfx::loadModel( const char *mname, const char *path_name, const char *file_name, model_ref **r, model_loader_ref **mldr )
     {
         model_ref *pr;
-        model_loader *l;
-        model_loader_writelock *lw;
         shared_obj_guard o;
+        model_loader_man_writelock *l;
 
+        l = (model_loader_man_writelock *)o.tryWriteLock( this->loader_mgr, 3000, "gfx::loadModel" );
+        if( !l )
+            return 0;
+        
         if( !this->createModel( mname, &pr ) )
             return 0;
         
-        l = model_loader::loadFile( this->c, pr, path_name, file_name );
-        if( !l )
+        if( !l->load( pr, path_name, file_name, mldr ) )
+        {
+            delete pr;
             return 0;
+        }
         
         if( r )
             *r = pr;
         else
             delete pr;
-        
-        if( mldr )
-        {
-            lw = (model_loader_writelock *)o.tryWriteLock( l, 1000, "gfx::loadModel" );
-            if( lw )
-                *mldr = (model_loader_ref *)lw->getRef();
-            else
-                *mldr = 0;
-            o.unlock();
-        }
-        
-        this->loaders.push_back( l );
         
         return 1;
     }
@@ -695,30 +488,23 @@ namespace dragonpoop
     bool gfx::saveModel( const char *mname, const char *path_name, const char *file_name, model_saver_ref **msvr )
     {
         model_ref *pr;
-        model_saver *l;
-        model_saver_writelock *lw;
         shared_obj_guard o;
+        model_loader_man_writelock *l;
         
+        l = (model_loader_man_writelock *)o.tryWriteLock( this->loader_mgr, 3000, "gfx::loadModel" );
+        if( !l )
+            return 0;
+
         pr = this->findModel( mname );
         if( !pr )
             return 0;
 
-        l = model_saver::saveFile( this->c, pr, path_name, file_name );
-        if( !l )
-            return 0;
-        
-        delete pr;
-        
-        if( msvr )
+        if( !l->save( pr, path_name, file_name, msvr ) )
         {
-            lw = (model_saver_writelock *)o.tryWriteLock( l, 1000, "gfx::saveModel" );
-            if( lw )
-                *msvr = (model_saver_ref *)lw->getRef();
-            o.unlock();
+            delete pr;
+            return 0;
         }
-        
-        this->savers.push_back( l );
-        
+
         return 1;
     }
     
@@ -1118,44 +904,39 @@ namespace dragonpoop
     void gfx::addActor( dpactor *a )
     {
         shared_obj_guard o;
-        dpactor_writelock *l;
-        dpactor_ref *r;
+        dpactor_man_writelock *l;
         
-        l = (dpactor_writelock *)o.writeLock( a, "gfx::addActor" );
+        l = (dpactor_man_writelock *)o.tryWriteLock( this->actor_mgr, 500, "gfx::addActor" );
         if( !l )
             return;
         
-        r = (dpactor_ref *)l->getRef();
-        if( r )
-        {
-            this->actors.push_back( r );
-            this->actor_cnt++;
-        }
+        return l->addActor( a );
     }
     
     //add actor
     void gfx::addActor( dpactor_ref *a )
     {
         shared_obj_guard o;
-        dpactor_writelock *l;
-        dpactor_ref *r;
+        dpactor_man_writelock *l;
         
-        l = (dpactor_writelock *)o.writeLock( a, "gfx::addActor" );
+        l = (dpactor_man_writelock *)o.tryWriteLock( this->actor_mgr, 500, "gfx::addActor" );
         if( !l )
             return;
         
-        r = (dpactor_ref *)l->getRef();
-        if( r )
-        {
-            this->actors.push_back( r );
-            this->actor_cnt++;
-        }
+        return l->addActor( a );
     }
     
     //return actor count
     unsigned int gfx::getActorCount( void )
     {
-        return this->actor_cnt;
+        shared_obj_guard o;
+        dpactor_man_readlock *l;
+        
+        l = (dpactor_man_readlock *)o.tryReadLock( this->actor_mgr, 500, "gfx::getActorCount" );
+        if( !l )
+            return 0;
+        
+        return l->getActorCount();
     }
     
 };

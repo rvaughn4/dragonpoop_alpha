@@ -22,5 +22,11 @@ namespace dragonpoop
     {
         return this->t->getCore();
     }
+  
+    //return actor count
+    unsigned int dpactor_man_readlock::getActorCount( void )
+    {
+        return this->t->getActorCount();
+    }
     
 };

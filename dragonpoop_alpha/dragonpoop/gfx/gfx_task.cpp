@@ -64,9 +64,6 @@ namespace dragonpoop
         
         if( this->bRunGuis )
             gfx::runGuis( th, this->g );
-        
-        if( this->bRunActors )
-            gfx::runActors( th, this->g );
     }
     
 };

@@ -10,13 +10,14 @@ namespace dragonpoop
 {
 
     //ctor
-    dptask::dptask( dpmutex_master *mm, dptask_owner *o, uint64_t ms_delay, bool isSingleThread ) : shared_obj( mm )
+    dptask::dptask( dpmutex_master *mm, dptask_owner *o, uint64_t ms_delay, bool isSingleThread, const char *cname ) : shared_obj( mm )
     {
         this->o = o;
         this->bIsRun = 1;
         this->bIsSingle = isSingleThread;
         this->delayms = ms_delay;
         this->lasttime = 0;
+        this->sname.assign( cname );
     }
 
     //dtor

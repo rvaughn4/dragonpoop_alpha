@@ -28,7 +28,9 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        
+        //return actor count
+        unsigned int getActorCount( void );
+
         friend class dpactor_man;
     };
     

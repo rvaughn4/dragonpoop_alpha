@@ -12,6 +12,10 @@
 #include "../gfx_ref.h"
 #include "../gfx.h"
 #include "../gfx_writelock.h"
+#include "dpactor.h"
+#include "dpactor_ref.h"
+#include "dpactor_readlock.h"
+#include "dpactor_writelock.h"
 
 namespace dragonpoop
 {
@@ -23,6 +27,7 @@ namespace dragonpoop
         gfx_writelock *gl;
         
         this->c = c;
+        this->actor_cnt = 0;
         
         gl = (gfx_writelock *)o.writeLock( g, "dpactor_man::dpactor_man" );
         this->g = (gfx_ref *)gl->getRef();
@@ -47,6 +52,7 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "dpactor_man::~dpactor_man" );
         this->_deleteTask();
         delete this->g;
+        this->deleteActors();
         o.unlock();
     }
     
@@ -78,7 +84,7 @@ namespace dragonpoop
     void dpactor_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
         this->gtsk = new dpactor_man_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, "dpactor_man" );
         tp->addTask( this->tsk );
     }
     
@@ -110,7 +116,113 @@ namespace dragonpoop
     //run
     void dpactor_man::run( dpthread_lock *thd, dpactor_man_writelock *g )
     {
+        this->runActors( thd );
+    }
+    
+    //delete all actors
+    void dpactor_man::deleteActors( void )
+    {
+        std::list<dpactor_ref *> *l, d;
+        std::list<dpactor_ref *>::iterator i;
+        dpactor_ref *p;
         
+        l = &this->actors;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }        
+    }
+    
+    //run all actors
+    void dpactor_man::runActors( dpthread_lock *thd )
+    {
+        std::list<dpactor_ref *> *l, ll, d;
+        std::list<dpactor_ref *>::iterator i;
+        dpactor_ref *p;
+        shared_obj_guard o;
+        dpactor_writelock *pl;
+        
+        l = &this->actors;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+            {
+                d.push_back( p );
+                continue;
+            }
+            pl = (dpactor_writelock *)o.tryWriteLock( p, 100, "dpactor_man::runActors" );
+            if( pl )
+                pl->run( thd );
+        }
+        o.unlock();
+        
+        if( d.empty() )
+            return;
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->actors.remove( p );
+            this->actor_cnt--;
+            delete p;
+        }
+    }
+    
+    //add actor
+    void dpactor_man::addActor( dpactor *a )
+    {
+        shared_obj_guard o;
+        dpactor_writelock *l;
+        dpactor_ref *r;
+        
+        l = (dpactor_writelock *)o.writeLock( a, "dpactor_man::addActor" );
+        if( !l )
+            return;
+        
+        r = (dpactor_ref *)l->getRef();
+        if( r )
+        {
+            this->actors.push_back( r );
+            this->actor_cnt++;
+        }
+    }
+    
+    //add actor
+    void dpactor_man::addActor( dpactor_ref *a )
+    {
+        shared_obj_guard o;
+        dpactor_writelock *l;
+        dpactor_ref *r;
+        
+        l = (dpactor_writelock *)o.writeLock( a, "dpactor_man::addActor" );
+        if( !l )
+            return;
+        
+        r = (dpactor_ref *)l->getRef();
+        if( r )
+        {
+            this->actors.push_back( r );
+            this->actor_cnt++;
+        }
+    }
+    
+    //return actor count
+    unsigned int dpactor_man::getActorCount( void )
+    {
+        if( this->actor_cnt < 0 )
+            return 0;
+        return (unsigned int)this->actor_cnt;
     }
     
 };

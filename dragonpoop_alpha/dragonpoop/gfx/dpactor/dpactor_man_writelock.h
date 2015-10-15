@@ -10,6 +10,8 @@ namespace dragonpoop
     class dpactor_man;
     class core;
     class dpthread_lock;
+    class dpactor;
+    class dpactor_ref;
     
     class dpactor_man_writelock : public shared_obj_writelock
     {
@@ -31,7 +33,13 @@ namespace dragonpoop
         core *getCore( void );
         //run
         void run( dpthread_lock *thd );
-        
+        //add actor
+        void addActor( dpactor *a );
+        //add actor
+        void addActor( dpactor_ref *a );
+        //return actor count
+        unsigned int getActorCount( void );
+
         friend class dpactor_man;
     };
     

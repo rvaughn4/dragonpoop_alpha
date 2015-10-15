@@ -28,5 +28,23 @@ namespace dragonpoop
     {
         this->t->run( thd, this );
     }
+  
+    //add actor
+    void dpactor_man_writelock::addActor( dpactor *a )
+    {
+        this->t->addActor( a );
+    }
+    
+    //add actor
+    void dpactor_man_writelock::addActor( dpactor_ref *a )
+    {
+        this->t->addActor( a );
+    }
+    
+    //return actor count
+    unsigned int dpactor_man_writelock::getActorCount( void )
+    {
+        return this->t->getActorCount();
+    }
     
 };

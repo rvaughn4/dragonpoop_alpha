@@ -78,7 +78,7 @@ namespace dragonpoop
     void dpland_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
         this->gtsk = new dpland_man_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0 );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, "dpland_man" );
         tp->addTask( this->tsk );
     }
     

@@ -34,6 +34,7 @@ namespace dragonpoop
     class dpactor_ref;
     class dpland_man;
     class dpactor_man;
+    class model_loader_man;
 
     class gfx : public shared_obj
     {
@@ -51,11 +52,12 @@ namespace dragonpoop
         
         dpland_man *land_mgr;
         dpactor_man *actor_mgr;
+        model_loader_man *loader_mgr;
         
         core *c;
         renderer *r;
         dptaskpool_ref *tpr;
-        unsigned int ms_each_frame, model_cnt, gui_cnt, actor_cnt;
+        unsigned int ms_each_frame, model_cnt, gui_cnt;
         float fps;
         uint64_t last_r_poll;
         dpposition cam_pos;
@@ -65,10 +67,7 @@ namespace dragonpoop
         gui *root_g;
         
         std::list<model *> models;
-        std::list<model_loader *> loaders;
-        std::list<model_saver *> savers;
         std::list<gui_ref *> guis;
-        std::list<dpactor_ref *> actors;
         
         //start all tasks
         void _startTasks( core *c, dptaskpool_writelock *tp );
@@ -85,24 +84,12 @@ namespace dragonpoop
         
         //delete all models
         void deleteModels( void );
-        //delete all loaders
-        void deleteLoaders( void );
-        //delete all savers
-        void deleteSavers( void );
         //delete all guis
         void deleteGuis( void );
-        //delete all actors
-        void deleteActors( void );
         //delete old models
         static void runModels( dpthread_lock *thd, gfx_ref *g );
-        //delete old loaders
-        void runLoaders( dpthread_lock *thd );
-        //delete old savers
-        void runSavers( dpthread_lock *thd );
         //run all guis
         static void runGuis( dpthread_lock *thd, gfx_ref *g );
-        //run all actors
-        static void runActors( dpthread_lock *thd, gfx_ref *g );
         
     protected:
 

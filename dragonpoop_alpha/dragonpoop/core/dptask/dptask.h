@@ -3,6 +3,7 @@
 #define dragonpoop_dptask_h
 
 #include "../shared_obj/shared_obj.h"
+#include <string>
 
 namespace dragonpoop
 {
@@ -19,6 +20,7 @@ namespace dragonpoop
         std::atomic<bool> bIsRun, bIsSingle;
         std::atomic<uint64_t> delayms, lasttime;
         dptask_owner *o;
+        std::string sname;
 
     protected:
 
@@ -50,7 +52,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        dptask( dpmutex_master *mm, dptask_owner *o, uint64_t ms_delay, bool isSingleThread );
+        dptask( dpmutex_master *mm, dptask_owner *o, uint64_t ms_delay, bool isSingleThread, const char *cname );
         //dtor
         virtual ~dptask( void );
 
