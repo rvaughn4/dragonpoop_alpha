@@ -30,6 +30,9 @@
 #include "../gfx/model/model_man_readlock.h"
 #include "../gfx/gui/gui_man_ref.h"
 #include "../gfx/gui/gui_man_readlock.h"
+#include "renderer_state.h"
+#include "renderer_state_init_api.h"
+#include "renderer_gui/renderer_gui_man.h"
 
 #include "openglx_1o5_renderer/openglx_1o5_renderer_factory.h"
 #include <thread>
@@ -56,6 +59,8 @@ namespace dragonpoop
         this->fps = this->fthiss = 0;
         g->getCameraPosition( &this->cam_pos );
         this->bCamSync = 0;
+        this->rgui_mgr = 0;
+        this->cs = 0;//new renderer_state_init_api( this );
     }
 
     //dtor
@@ -72,6 +77,7 @@ namespace dragonpoop
         o.tryWriteLock( this, 3000, "renderer::~renderer" );
         delete this->tsk;
         delete this->gtsk;
+        delete this->cs;
         this->deleteModels();
         this->deleteGuis();
         delete this->gui_mgr;
@@ -135,6 +141,15 @@ namespace dragonpoop
     //run renderer from task
     void renderer::run( dptask_writelock *tskl, dpthread_lock *thd, renderer_writelock *r )
     {
+        renderer_state *ns;
+        
+        ns = this->cs->run( this, r, thd );
+        if( ns )
+        {
+            delete this->cs;
+            this->cs = ns;
+        }
+        /*
 
         if( this->bIsRun )
         {
@@ -170,8 +185,99 @@ namespace dragonpoop
             this->bIsRun = 1;
         else
             this->bDoRun = 0;
+         
+         */
     }
 
+    //run renderer
+    void renderer::state_run( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        this->runApi( rl, thd );
+        this->_syncCam();
+        this->runModels( thd, rl );
+        this->runGuis( thd, rl );
+        this->render( thd, rl );
+    }
+    
+    //init api
+    bool renderer::state_initApi( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        return this->initApi();
+    }
+    
+    //init gui manager
+    bool renderer::state_initGui( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        dptaskpool_writelock *tp;
+        shared_obj_guard o;
+        
+        this->rgui_mgr = new renderer_gui_man( this->c, this, tp );
+        
+        return 1;
+    }
+    
+    //init model manager
+    bool renderer::state_initModel( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        return 1;
+    }
+    
+    //start api
+    void renderer::state_startApi( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        
+    }
+    
+    //start gui manager
+    void renderer::state_startGui( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        
+    }
+    
+    //start model manager
+    void renderer::state_startModel( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        
+    }
+    
+    //stop api
+    void renderer::state_stopApi( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        
+    }
+    
+    //stop gui manager
+    void renderer::state_stopGui( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        
+    }
+    
+    //stop model manager
+    void renderer::state_stopModel( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        
+    }
+    
+    //deinit api
+    void renderer::state_deinitApi( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        this->deleteModels();
+        this->deleteGuis();
+        this->deinitApi();
+    }
+    
+    //init gui manager
+    void renderer::state_deinitGui( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        
+    }
+    
+    //init model manager
+    void renderer::state_deinitModel( dpthread_lock *thd, renderer_writelock *rl )
+    {
+        
+    }
+    
     //render
     void renderer::render( dpthread_lock *thd, renderer_writelock *rl )
     {

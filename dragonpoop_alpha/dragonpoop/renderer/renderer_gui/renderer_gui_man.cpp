@@ -1,0 +1,143 @@
+
+#include "renderer_gui_man.h"
+#include "renderer_gui_man_ref.h"
+#include "renderer_gui_man_readlock.h"
+#include "renderer_gui_man_writelock.h"
+#include "../../core/core.h"
+#include "../../core/shared_obj/shared_obj_guard.h"
+#include "../../core/dptask/dptask_writelock.h"
+#include "../../core/dptask/dptask.h"
+#include "../../core/dptaskpool/dptaskpool_writelock.h"
+#include "renderer_gui_man_task.h"
+#include "../../core/dptaskpool/dptaskpool_ref.h"
+#include "../../core/dptaskpool/dptaskpool_writelock.h"
+#include "../../core/dptaskpool/dptaskpool_readlock.h"
+#include "../../core/dpthread/dpthread_lock.h"
+#include "../renderer.h"
+#include "../renderer_ref.h"
+#include "../renderer_writelock.h"
+#include "../../gfx/gfx_writelock.h"
+#include "../../gfx/gfx_ref.h"
+#include "../../gfx/gui/gui_man_ref.h"
+#include "../../gfx/gui/gui_man_readlock.h"
+
+namespace dragonpoop
+{
+    
+    //ctor
+    renderer_gui_man::renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp ) : shared_obj( c->getMutexMaster() )
+    {
+        shared_obj_guard o;
+        gfx_writelock *gl;
+        renderer_writelock *rl;
+        
+        this->c = c;
+        this->tpr = (dptaskpool_ref *)tp->getRef();
+        
+        this->g = c->getGfx();
+        gl = (gfx_writelock *)o.writeLock( this->g, "renderer_gui_man::renderer_gui_man" );
+        if( gl )
+        {
+            gl->getGuis( &this->g_guis );
+        }
+        o.unlock();
+        
+        rl = (renderer_writelock *)o.writeLock( r, "renderer_gui_man::renderer_gui_man" );
+        if( rl )
+            this->r = (renderer_ref *)rl->getRef();
+        o.unlock();
+        
+        this->_startTask( tp, 50 );
+    }
+    
+    //dtor
+    renderer_gui_man::~renderer_gui_man( void )
+    {
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "renderer_gui_man::~renderer_gui_man" );
+        o.unlock();
+        this->unlink();
+        
+        o.tryWriteLock( this, 5000, "renderer_gui_man::~renderer_gui_man" );
+        this->_killTask();
+        o.unlock();
+        
+        o.tryWriteLock( this, 5000, "renderer_gui_man::~renderer_gui_man" );
+        this->_deleteTask();
+        delete this->r;
+        delete this->g;
+        delete this->g_guis;
+        delete this->tpr;
+        o.unlock();
+    }
+    
+    //return core
+    core *renderer_gui_man::getCore( void )
+    {
+        return this->c;
+    }
+    
+    //generate read lock
+    shared_obj_readlock *renderer_gui_man::genReadLock( shared_obj *p, dpmutex_readlock *l )
+    {
+        return new renderer_gui_man_readlock( (renderer_gui_man *)p, l );
+    }
+    
+    //generate write lock
+    shared_obj_writelock *renderer_gui_man::genWriteLock( shared_obj *p, dpmutex_writelock *l )
+    {
+        return new renderer_gui_man_writelock( (renderer_gui_man *)p, l );
+    }
+    
+    //generate ref
+    shared_obj_ref *renderer_gui_man::genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k )
+    {
+        return new renderer_gui_man_ref( (renderer_gui_man *)p, k );
+    }
+    
+    //start task
+    void renderer_gui_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
+    {
+        this->gtsk = new renderer_gui_man_task( this );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, "renderer_gui_man" );
+        tp->addTask( this->tsk );
+    }
+    
+    //kill task
+    void renderer_gui_man::_killTask( void )
+    {
+        dptask_writelock *tl;
+        shared_obj_guard o;
+        
+        if( !this->tsk )
+            return;
+        
+        tl = (dptask_writelock *)o.writeLock( this->tsk, "renderer_gui_man::_killTask" );
+        tl->kill();
+        o.unlock();
+    }
+    
+    //delete task
+    void renderer_gui_man::_deleteTask( void )
+    {
+        if( this->tsk )
+            delete this->tsk;
+        this->tsk = 0;
+        if( this->gtsk )
+            delete this->gtsk;
+        this->gtsk = 0;
+    }
+    
+    //run from manager thread
+    void renderer_gui_man::runFromTask( dpthread_lock *thd, renderer_gui_man_writelock *g )
+    {
+    }
+
+    //run from renderer thread
+    void renderer_gui_man::runFromRenderer( dpthread_lock *thd, renderer_gui_man_writelock *g )
+    {
+    }
+    
+    
+};

@@ -30,7 +30,10 @@ namespace dragonpoop
     class renderer_gui_readlock;
     class model_man_ref;
     class gui_man_ref;
+    class renderer_gui_man;
     class gfx;
+    class renderer_state;
+    class dptaskpool_ref;
 
     class renderer : public shared_obj
     {
@@ -43,6 +46,8 @@ namespace dragonpoop
         gfx_ref *g;
         model_man_ref *m;
         gui_man_ref *gui_mgr;
+        renderer_gui_man *rgui_mgr;
+        dptaskpool_ref *tp;
         
         std::atomic<bool> bDoRun, bIsRun;
         std::list<renderer_model *> models;
@@ -54,6 +59,35 @@ namespace dragonpoop
         dpmatrix m_world, m_gui, m_gui_undo;
         dpid hover_gui, focus_gui;
         dpposition cam_pos;
+        renderer_state *cs;
+        
+        //run renderer
+        void state_run( dpthread_lock *thd, renderer_writelock *rl );
+        //init api
+        bool state_initApi( dpthread_lock *thd, renderer_writelock *rl );
+        //init gui manager
+        bool state_initGui( dpthread_lock *thd, renderer_writelock *rl );
+        //init model manager
+        bool state_initModel( dpthread_lock *thd, renderer_writelock *rl );
+        //start api
+        void state_startApi( dpthread_lock *thd, renderer_writelock *rl );
+        //start gui manager
+        void state_startGui( dpthread_lock *thd, renderer_writelock *rl );
+        //start model manager
+        void state_startModel( dpthread_lock *thd, renderer_writelock *rl );
+        //stop api
+        void state_stopApi( dpthread_lock *thd, renderer_writelock *rl );
+        //stop gui manager
+        void state_stopGui( dpthread_lock *thd, renderer_writelock *rl );
+        //stop model manager
+        void state_stopModel( dpthread_lock *thd, renderer_writelock *rl );
+        //deinit api
+        void state_deinitApi( dpthread_lock *thd, renderer_writelock *rl );
+        //init gui manager
+        void state_deinitGui( dpthread_lock *thd, renderer_writelock *rl );
+        //init model manager
+        void state_deinitModel( dpthread_lock *thd, renderer_writelock *rl );
+
 
         //run models
         void runModels( dpthread_lock *thd, renderer_writelock *rl );
@@ -162,6 +196,7 @@ namespace dragonpoop
 
         friend class renderer_readlock;
         friend class renderer_writelock;
+        friend class renderer_state;
     };
     
 };
