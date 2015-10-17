@@ -8,6 +8,7 @@
 #include "renderer_ref.h"
 #include "../core/dpthread/dpthread_lock.h"
 #include "../core/dptaskpool/dptaskpool_writelock.h"
+#include "../core/dptaskpool/dptaskpool_ref.h"
 #include "../core/shared_obj/shared_obj_guard.h"
 #include "../gfx/gfx_writelock.h"
 #include "../gfx/gfx_readlock.h"
@@ -33,6 +34,7 @@
 #include "renderer_state.h"
 #include "renderer_state_init_api.h"
 #include "renderer_gui/renderer_gui_man.h"
+#include "renderer_gui/renderer_gui_man_writelock.h"
 
 #include "openglx_1o5_renderer/openglx_1o5_renderer_factory.h"
 #include <thread>
@@ -45,6 +47,7 @@ namespace dragonpoop
     renderer::renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp ) : shared_obj( c->getMutexMaster() )
     {
         this->c = c;
+        this->tp = (dptaskpool_ref *)tp->getRef();
         this->g = (gfx_ref *)g->getRef();
         this->bDoRun = 1;
         this->bIsRun = 0;
@@ -83,6 +86,7 @@ namespace dragonpoop
         delete this->gui_mgr;
         delete this->m;
         delete this->g;
+        delete this->tp;
         o.unlock();
     }
 
@@ -211,9 +215,13 @@ namespace dragonpoop
         dptaskpool_writelock *tp;
         shared_obj_guard o;
         
+        tp = (dptaskpool_writelock *)o.tryWriteLock( this->tp, 1000, "renderer::state_initGui" );
+        if( !tp )
+            return 0;
+        
         this->rgui_mgr = new renderer_gui_man( this->c, this, tp );
         
-        return 1;
+        return this->rgui_mgr != 0;
     }
     
     //init model manager
@@ -231,7 +239,13 @@ namespace dragonpoop
     //start gui manager
     void renderer::state_startGui( dpthread_lock *thd, renderer_writelock *rl )
     {
+        renderer_gui_man_writelock *l;
+        shared_obj_guard o;
         
+        l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 3000, "renderer::state_startGui" );
+        if( !l )
+            return;
+        //l->start();
     }
     
     //start model manager
@@ -269,7 +283,8 @@ namespace dragonpoop
     //init gui manager
     void renderer::state_deinitGui( dpthread_lock *thd, renderer_writelock *rl )
     {
-        
+        delete this->rgui_mgr;
+        this->rgui_mgr = 0;
     }
     
     //init model manager

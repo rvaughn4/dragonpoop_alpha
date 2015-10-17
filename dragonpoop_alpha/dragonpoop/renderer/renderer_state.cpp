@@ -18,7 +18,7 @@ namespace dragonpoop
     }
     
     //run, returns next state
-    renderer_state *renderer_state::run( renderer *r, dpthread_lock *thd )
+    renderer_state *renderer_state::run( renderer *r, renderer_writelock *rl, dpthread_lock *thd )
     {
         return 0;
     }
