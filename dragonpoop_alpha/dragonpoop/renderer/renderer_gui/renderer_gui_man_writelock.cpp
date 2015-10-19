@@ -34,5 +34,53 @@ namespace dragonpoop
     {
         this->t->runFromRenderer( thd, this );
     }
+  
+    //delete guis
+    void renderer_gui_man_writelock::deleteGuis( void )
+    {
+        this->t->deleteGuis();
+    }
+    
+    //render guis
+    void renderer_gui_man_writelock::renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
+    {
+        this->t->renderGuis( thd, rl, m_world );
+    }
+    
+    //return guis
+    void renderer_gui_man_writelock::getChildrenGuis( std::list<renderer_gui *> *l, dpid pid )
+    {
+        this->t->getChildrenGuis( l, pid );
+    }
+    
+    //process mouse input
+    bool renderer_gui_man_writelock::processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb )
+    {
+        return this->t->processGuiMouseInput( r, x, y, lb, rb );
+    }
+    
+    //get hovering gui id
+    dpid renderer_gui_man_writelock::getHoverId( void )
+    {
+        return this->t->getHoverId();
+    }
+    
+    //process gui keyboard input
+    void renderer_gui_man_writelock::processGuiKbInput( std::string *skey_name, bool isDown )
+    {
+        this->t->processGuiKbInput( skey_name, isDown );
+    }
+    
+    //gets selected text from gui (copy or cut)
+    bool renderer_gui_man_writelock::getSelectedText( std::string *s, bool bDoCut )
+    {
+        return this->t->getSelectedText( s, bDoCut );
+    }
+    
+    //sets selected text in gui (paste)
+    bool renderer_gui_man_writelock::setSelectedText( std::string *s )
+    {
+        return this->t->setSelectedText( s );
+    }
     
 };

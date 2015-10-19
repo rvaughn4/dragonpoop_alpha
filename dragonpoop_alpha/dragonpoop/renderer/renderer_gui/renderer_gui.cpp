@@ -318,7 +318,7 @@ namespace dragonpoop
     }
     
     //redo matrix
-    void renderer_gui::redoMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix )
+    void renderer_gui::redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix )
     {
         std::list<renderer_gui *> l;
         std::list<renderer_gui *>::iterator i;
@@ -412,7 +412,7 @@ namespace dragonpoop
     }
     
     //process mouse input
-    bool renderer_gui::processMouse( renderer_writelock *r, float x, float y, bool lb, bool rb )
+    bool renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )
     {
         dpxyz_f p;
         gui_writelock *g;
@@ -500,7 +500,7 @@ namespace dragonpoop
     }
     
     //gets gui id of focused child
-    bool renderer_gui::getFocusChild( renderer_writelock *r, dpid *fid )
+    bool renderer_gui::getFocusChild( renderer_gui_man_writelock *r, dpid *fid )
     {
         std::list<renderer_gui *> l;
         std::list<renderer_gui *>::iterator i;

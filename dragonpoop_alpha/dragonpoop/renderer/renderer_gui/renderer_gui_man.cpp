@@ -20,6 +20,11 @@
 #include "../../gfx/gfx_ref.h"
 #include "../../gfx/gui/gui_man_ref.h"
 #include "../../gfx/gui/gui_man_readlock.h"
+#include "renderer_gui.h"
+#include "renderer_gui_writelock.h"
+#include "../../gfx/gui/gui_ref.h"
+#include "../../gfx/gui/gui_readlock.h"
+#include "../../gfx/gui/gui_writelock.h"
 
 namespace dragonpoop
 {
@@ -47,7 +52,7 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
         
-        this->_startTask( tp, 50 );
+        this->_startTask( tp, 100 );
     }
     
     //dtor
@@ -56,6 +61,7 @@ namespace dragonpoop
         shared_obj_guard o;
         
         o.tryWriteLock( this, 5000, "renderer_gui_man::~renderer_gui_man" );
+        this->deleteGuis();
         o.unlock();
         this->unlink();
         
@@ -132,12 +138,124 @@ namespace dragonpoop
     //run from manager thread
     void renderer_gui_man::runFromTask( dpthread_lock *thd, renderer_gui_man_writelock *g )
     {
+        std::list<renderer_gui *> *l, d;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::runFromTask" );
+            if( !pl )
+                continue;
+            //pl->run( thd );
+            if( !pl->isAlive() )
+                d.push_back( p );
+        }
+        o.unlock();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->guis.remove( p );
+            delete p;
+        }
     }
 
     //run from renderer thread
     void renderer_gui_man::runFromRenderer( dpthread_lock *thd, renderer_gui_man_writelock *g )
     {
+        std::list<renderer_gui *> *l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::runFromRenderer" );
+            if( !pl )
+                continue;
+            //pl->run( thd );
+        }
+        o.unlock();
     }
     
+    //delete guis
+    void renderer_gui_man::deleteGuis( void )
+    {
+        std::list<renderer_gui *> *l, d;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        
+        l = &this->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    
+    //render guis
+    void renderer_gui_man::renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
+    {
+        
+    }
+    
+    //return guis
+    void renderer_gui_man::getChildrenGuis( std::list<renderer_gui *> *l, dpid pid )
+    {
+        
+    }
+    
+    //process mouse input
+    bool renderer_gui_man::processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb )
+    {
+        return 0;
+    }
+    
+    //get hovering gui id
+    dpid renderer_gui_man::getHoverId( void )
+    {
+        return this->hover_gui;
+    }
+    
+    //process gui keyboard input
+    void renderer_gui_man::processGuiKbInput( std::string *skey_name, bool isDown )
+    {
+        
+    }
+    
+    //gets selected text from gui (copy or cut)
+    bool renderer_gui_man::getSelectedText( std::string *s, bool bDoCut )
+    {
+        return 0;
+    }
+    
+    //sets selected text in gui (paste)
+    bool renderer_gui_man::setSelectedText( std::string *s )
+    {
+        return 0;
+    }
+    
+    //generate renderer gui
+    renderer_gui *renderer_gui_man::genGui( gui_writelock *ml )
+    {
+        return 0;
+    }
     
 };

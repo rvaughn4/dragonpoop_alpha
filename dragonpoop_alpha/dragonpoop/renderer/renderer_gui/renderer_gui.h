@@ -18,6 +18,7 @@ namespace dragonpoop
     class gui_writelock;
     class gui_readlock;
     class dpmatrix;
+    class renderer_gui_man_writelock;
     
     class renderer_gui : public shared_obj
     {
@@ -71,9 +72,9 @@ namespace dragonpoop
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world );
         //redo matrix
-        void redoMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix );
+        void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix );
         //process mouse input
-        bool processMouse( renderer_writelock *r, float x, float y, bool lb, bool rb );
+        bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb );
         //process kb input
         bool processKb( std::string *sname, bool bIsDown );
         //returns opacity
@@ -85,7 +86,7 @@ namespace dragonpoop
         //returns true if has focus
         bool hasFocus( void );
         //gets gui id of focused child
-        bool getFocusChild( renderer_writelock *r, dpid *fid );
+        bool getFocusChild( renderer_gui_man_writelock *r, dpid *fid );
         //return bg vb
         dpvertexindex_buffer *getBgBuffer( void );
         //return fg vb

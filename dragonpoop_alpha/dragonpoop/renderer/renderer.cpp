@@ -82,7 +82,6 @@ namespace dragonpoop
         delete this->gtsk;
         delete this->cs;
         this->deleteModels();
-        this->deleteGuis();
         delete this->gui_mgr;
         delete this->m;
         delete this->g;
@@ -139,7 +138,7 @@ namespace dragonpoop
     //stop renderer task
     void renderer::kill( void )
     {
-        this->bDoRun = 0;
+        this->_kill();
     }
 
     //run renderer from task
@@ -153,44 +152,6 @@ namespace dragonpoop
             delete this->cs;
             this->cs = ns;
         }
-        /*
-
-        if( this->bIsRun )
-        {
-            if( !this->bDoRun )
-            {
-                this->deleteModels();
-                this->deleteGuis();
-                this->deinitApi();
-                this->bIsRun = 0;
-                tskl->kill();
-                return;
-            }
-
-            if( !this->runApi( r, thd ) )
-                this->bDoRun = 0;
-            else
-            {
-                this->_syncCam();
-                this->runModels( thd, r );
-                this->runGuis( thd, r );
-                this->render( thd, r );
-            }
-            return;
-        }
-
-        if( !this->bDoRun )
-        {
-            tskl->kill();
-            return;
-        }
-
-        if( this->initApi() )
-            this->bIsRun = 1;
-        else
-            this->bDoRun = 0;
-         
-         */
     }
 
     //run renderer
@@ -199,7 +160,6 @@ namespace dragonpoop
         this->runApi( rl, thd );
         this->_syncCam();
         this->runModels( thd, rl );
-        this->runGuis( thd, rl );
         this->render( thd, rl );
     }
     
@@ -276,7 +236,6 @@ namespace dragonpoop
     void renderer::state_deinitApi( dpthread_lock *thd, renderer_writelock *rl )
     {
         this->deleteModels();
-        this->deleteGuis();
         this->deinitApi();
     }
     
@@ -290,7 +249,7 @@ namespace dragonpoop
     //init model manager
     void renderer::state_deinitModel( dpthread_lock *thd, renderer_writelock *rl )
     {
-        
+        this->deleteModels();
     }
     
     //render
@@ -312,7 +271,7 @@ namespace dragonpoop
         
         this->prepareGuiRender( w, h );
         //this->renderModels( thd, rl, 1, &this->m_gui );
-        this->renderGuis( thd, rl, &this->m_gui );
+       // this->renderGuis( thd, rl, &this->m_gui );
         
         this->flipBuffer();
         

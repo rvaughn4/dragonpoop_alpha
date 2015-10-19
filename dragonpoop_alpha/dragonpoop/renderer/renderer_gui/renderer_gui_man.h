@@ -24,6 +24,8 @@ namespace dragonpoop
     class renderer;
     class renderer_ref;
     class gui_man_ref;
+    class renderer_writelock;
+    class dpmatrix;
     
     class renderer_gui_man : public shared_obj
     {
@@ -34,11 +36,13 @@ namespace dragonpoop
         gfx_ref *g;
         dptask *tsk;
         renderer_gui_man_task *gtsk;
-        std::list<renderer_gui_ref *> guis;
+        std::list<renderer_gui *> guis;
         dptaskpool_ref *tpr;
         renderer_ref *r;
         gui_man_ref *g_guis;
-        
+        dpid hover_gui, focus_gui;
+        uint64_t t_last_gui_synced;
+
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
@@ -58,7 +62,25 @@ namespace dragonpoop
         void runFromTask( dpthread_lock *thd, renderer_gui_man_writelock *g );
         //run from renderer thread
         void runFromRenderer( dpthread_lock *thd, renderer_gui_man_writelock *g );
-        
+        //delete guis
+        void deleteGuis( void );
+        //render guis
+        void renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
+        //return guis
+        void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
+        //process mouse input
+        bool processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb );
+        //get hovering gui id
+        dpid getHoverId( void );
+        //process gui keyboard input
+        void processGuiKbInput( std::string *skey_name, bool isDown );
+        //gets selected text from gui (copy or cut)
+        bool getSelectedText( std::string *s, bool bDoCut );
+        //sets selected text in gui (paste)
+        bool setSelectedText( std::string *s );
+        //generate renderer gui
+        virtual renderer_gui *genGui( gui_writelock *ml );
+
     public:
         
         //ctor

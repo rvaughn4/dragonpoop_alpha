@@ -23,4 +23,22 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
+    //render guis
+    void renderer_gui_man_readlock::renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
+    {
+        this->t->renderGuis( thd, rl, m_world );
+    }
+    
+    //return guis
+    void renderer_gui_man_readlock::getChildrenGuis( std::list<renderer_gui *> *l, dpid pid )
+    {
+        this->t->getChildrenGuis( l, pid );
+    }
+    
+    //get hovering gui id
+    dpid renderer_gui_man_readlock::getHoverId( void )
+    {
+        return this->t->getHoverId();
+    }
+    
 };

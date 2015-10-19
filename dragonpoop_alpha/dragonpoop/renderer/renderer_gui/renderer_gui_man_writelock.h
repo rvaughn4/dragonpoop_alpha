@@ -14,6 +14,8 @@ namespace dragonpoop
     class dpthread_lock;
     class renderer_gui_ref;
     class renderer_gui;
+    class renderer_writelock;
+    class dpmatrix;
     
     class renderer_gui_man_writelock : public shared_obj_writelock
     {
@@ -37,7 +39,23 @@ namespace dragonpoop
         void runFromTask( dpthread_lock *thd );
         //run from renderer thread
         void runFromRenderer( dpthread_lock *thd );
-        
+        //delete guis
+        void deleteGuis( void );
+        //render guis
+        void renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
+        //return guis
+        void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
+        //process mouse input
+        bool processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb );
+        //get hovering gui id
+        dpid getHoverId( void );
+        //process gui keyboard input
+        void processGuiKbInput( std::string *skey_name, bool isDown );
+        //gets selected text from gui (copy or cut)
+        bool getSelectedText( std::string *s, bool bDoCut );
+        //sets selected text in gui (paste)
+        bool setSelectedText( std::string *s );
+
         friend class renderer_gui_man;
     };
     

@@ -14,6 +14,8 @@ namespace dragonpoop
     class dpthread_lock;
     class renderer_gui_ref;
     class renderer_gui;
+    class renderer_writelock;
+    class dpmatrix;
     
     class renderer_gui_man_readlock : public shared_obj_readlock
     {
@@ -33,7 +35,15 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        
+        //delete guis
+        void deleteGuis( void );
+        //render guis
+        void renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
+        //return guis
+        void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
+        //get hovering gui id
+        dpid getHoverId( void );
+
         friend class renderer_gui_man;
     };
     
