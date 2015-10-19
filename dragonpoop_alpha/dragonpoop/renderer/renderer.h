@@ -197,6 +197,8 @@ namespace dragonpoop
         friend class renderer_readlock;
         friend class renderer_writelock;
         friend class renderer_state;
+        
+        friend class openglx_1o5_renderer;
     };
     
 };

@@ -63,7 +63,7 @@ namespace dragonpoop
         g->getCameraPosition( &this->cam_pos );
         this->bCamSync = 0;
         this->rgui_mgr = 0;
-        this->cs = 0;//new renderer_state_init_api( this );
+        this->cs = new renderer_state_init_api( this );
     }
 
     //dtor

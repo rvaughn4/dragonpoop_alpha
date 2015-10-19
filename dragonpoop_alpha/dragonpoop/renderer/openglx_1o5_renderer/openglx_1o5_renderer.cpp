@@ -42,6 +42,8 @@ namespace dragonpoop
         this->_kill();
 
         o.tryWriteLock( this, 5000, "openglx_1o5_renderer::~openglx_1o5_renderer" );
+        this->deleteGuis();
+        this->deleteModels();
         o.unlock();
         this->unlink();
     }

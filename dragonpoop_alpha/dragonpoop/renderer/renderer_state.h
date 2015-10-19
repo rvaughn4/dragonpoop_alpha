@@ -21,7 +21,7 @@ namespace dragonpoop
         //ctor
         renderer_state( renderer *r );
         //run renderer
-        void run( dpthread_lock *thd, renderer_writelock *rl );
+        void _run( dpthread_lock *thd, renderer_writelock *rl );
         //init api
         bool initApi( dpthread_lock *thd, renderer_writelock *rl );
         //init gui manager
@@ -46,6 +46,10 @@ namespace dragonpoop
         void deinitGui( dpthread_lock *thd, renderer_writelock *rl );
         //init model manager
         void deinitModel( dpthread_lock *thd, renderer_writelock *rl );
+        //kill renderer
+        void kill( void );
+        //returns true if should run
+        bool doRun( void );
         
     public:
         
