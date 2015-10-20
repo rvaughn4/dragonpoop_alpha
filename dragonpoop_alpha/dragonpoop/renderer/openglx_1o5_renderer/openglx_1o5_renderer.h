@@ -93,7 +93,7 @@ namespace dragonpoop
         //flip backbuffer and present scene to screen
         virtual void flipBuffer( void );
         //generate renderer model
-        virtual renderer_model *genModel( model_writelock *ml );
+        virtual renderer_model_man *genModelMan( dptaskpool_writelock *tp );
         //generate renderer gui
         virtual renderer_gui_man *genGuiMan(  dptaskpool_writelock *tp );
         //render model instance group

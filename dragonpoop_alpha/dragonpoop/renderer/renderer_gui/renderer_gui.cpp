@@ -13,8 +13,6 @@
 #include "renderer_gui_man_writelock.h"
 #include "renderer_gui_man_readlock.h"
 
-#include <thread>
-
 namespace dragonpoop
 {
     

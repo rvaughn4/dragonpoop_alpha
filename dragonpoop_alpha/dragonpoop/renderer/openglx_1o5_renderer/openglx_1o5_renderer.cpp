@@ -7,6 +7,7 @@
 #include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui_man.h"
 #include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui.h"
 #include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui_readlock.h"
+#include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_man.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_instance/openglx_1o5_renderer_model_group_instance/openglx_1o5_renderer_model_group_instance.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model_material/openglx_1o5_renderer_model_material.h"
@@ -43,8 +44,6 @@ namespace dragonpoop
         this->_kill();
 
         o.tryWriteLock( this, 5000, "openglx_1o5_renderer::~openglx_1o5_renderer" );
-
-        this->deleteModels();
         o.unlock();
         this->unlink();
     }
@@ -449,9 +448,9 @@ namespace dragonpoop
     }
 
     //generate renderer model
-    renderer_model *openglx_1o5_renderer::genModel( model_writelock *ml )
+    renderer_model_man *openglx_1o5_renderer::genModelMan( dptaskpool_writelock *tp )
     {
-        return new openglx_1o5_renderer_model( ml, this );
+        return new openglx_1o5_renderer_model_man( this->getCore(), this, tp );
     }
     
     //generate renderer gui

@@ -237,6 +237,7 @@ namespace dragonpoop
             if( !gw )
                 continue;
             p = gwl->t->genGui( gw );
+            gw->setRenderer( p );
             gwl->t->guis.push_back( p );
         }
         o.unlock();
@@ -304,6 +305,8 @@ namespace dragonpoop
             if( !pl )
                 continue;
             pl->runFromRenderer( thd );
+            if( !pl->isAlive() )
+                d.push_back( p );
         }
         o.unlock();
         

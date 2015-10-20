@@ -36,6 +36,9 @@
 #include "renderer_gui/renderer_gui_man.h"
 #include "renderer_gui/renderer_gui_man_writelock.h"
 #include "renderer_gui/renderer_gui_man_readlock.h"
+#include "renderer_model/renderer_model_man.h"
+#include "renderer_model/renderer_model_man_writelock.h"
+#include "renderer_model/renderer_model_man_readlock.h"
 
 #include "openglx_1o5_renderer/openglx_1o5_renderer_factory.h"
 #include <thread>
@@ -55,7 +58,6 @@ namespace dragonpoop
         this->bActive = 1;
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
-        g->getModels( &this->m );
         this->gtsk = new renderer_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3/*14*/, 1, "renderer" );
         tp->addTask( this->tsk );
@@ -63,6 +65,7 @@ namespace dragonpoop
         g->getCameraPosition( &this->cam_pos );
         this->bCamSync = 0;
         this->rgui_mgr = 0;
+        this->rmodel_mgr = 0;
         this->cs = new renderer_state_init_api( this );
     }
 
@@ -81,8 +84,6 @@ namespace dragonpoop
         delete this->tsk;
         delete this->gtsk;
         delete this->cs;
-        this->deleteModels();
-        delete this->m;
         delete this->g;
         delete this->tp;
         o.unlock();
@@ -159,7 +160,7 @@ namespace dragonpoop
         this->runApi( rl, thd );
         this->_syncCam();
         renderer_gui_man::runFromRenderer( thd, this->rgui_mgr );
-        this->runModels( thd, rl );
+        renderer_model_man::runFromRenderer( thd, this->rmodel_mgr );
         this->render( thd, rl );
     }
     
@@ -186,7 +187,15 @@ namespace dragonpoop
     //init model manager
     bool renderer::state_initModel( dpthread_lock *thd, renderer_writelock *rl )
     {
-        return 1;
+        dptaskpool_writelock *tp;
+        shared_obj_guard o;
+        
+        tp = (dptaskpool_writelock *)o.tryWriteLock( this->tp, 1000, "renderer::state_initGui" );
+        if( !tp )
+            return 0;
+        
+        this->rmodel_mgr = this->genModelMan( tp );
+        return this->rmodel_mgr != 0;
     }
     
     //start api
@@ -234,7 +243,6 @@ namespace dragonpoop
     //deinit api
     void renderer::state_deinitApi( dpthread_lock *thd, renderer_writelock *rl )
     {
-        this->deleteModels();
         this->deinitApi();
     }
     
@@ -248,7 +256,8 @@ namespace dragonpoop
     //init model manager
     void renderer::state_deinitModel( dpthread_lock *thd, renderer_writelock *rl )
     {
-        this->deleteModels();
+        delete this->rmodel_mgr;
+        this->rmodel_mgr = 0;
     }
     
     //render
@@ -259,6 +268,7 @@ namespace dragonpoop
         float f0;
         shared_obj_guard o;
         renderer_gui_man_readlock *gwl;
+        renderer_model_man_readlock *mwl;
         
         w = this->getWidth();
         h = this->getHeight();
@@ -268,7 +278,10 @@ namespace dragonpoop
 
         
         this->prepareWorldRender( w, h );
-        this->renderModels( thd, rl, 0, &this->m_world );
+        mwl = (renderer_model_man_readlock *)o.tryReadLock( this->rmodel_mgr, 100, "renderer::render" );
+        if( mwl )
+            mwl->renderModels( thd, rl, &this->m_world );
+        o.unlock();
         
         this->prepareGuiRender( w, h );
         gwl = (renderer_gui_man_readlock *)o.tryReadLock( this->rgui_mgr, 100, "renderer::render" );
@@ -388,156 +401,14 @@ namespace dragonpoop
 
     }
 
-    //run models
-    void renderer::runModels( dpthread_lock *thd, renderer_writelock *rl )
-    {
-        std::list<renderer_model *> *l, d;
-        std::list<renderer_model *>::iterator i;
-        renderer_model *p;
-        dpid_btree t;
-        std::list<model *> li;
-        std::list<model *>::iterator ii;
-        model *pi;
-        model_writelock *pl;
-        renderer_model_writelock *ppl;
-        shared_obj_guard o, og;
-        model_man_readlock *ml;
-        uint64_t tr;
-        bool bDidFail;
-
-        tr = thd->getTicks();
-        if( tr - this->t_last_m_ran < 10 )
-            return;
-        this->t_last_m_ran = tr;
-        
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            ppl = (renderer_model_writelock *)o.tryWriteLock( p, 30, "renderer::runModels" );
-            if( !ppl )
-                continue;
-            ppl->run( thd );
-        }
-        
-        if( tr - this->t_last_m_synced < 500 )
-            return;
-        this->t_last_m_synced = tr;
-        
-        ml = (model_man_readlock *)og.tryReadLock( this->m, 30, "renderer::runModels" );
-        if( !ml )
-            return;
-        
-        //build id index
-        bDidFail = 0;
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            t.addLeaf( p->getId(), p );
-        }
-        
-        //sync models and create if not exist
-        ml->getModels( &li );
-        for( ii = li.begin(); ii != li.end(); ++ii )
-        {
-            pi = *ii;
-            pl = (model_writelock *)o.tryWriteLock( pi, 300, "renderer::runModels" );
-            if( !pl )
-            {
-                bDidFail = 1;
-                continue;
-            }
-            p = (renderer_model *)t.findLeaf( pl->getId() );
-            if( !p )
-            {
-                p = this->genModel( pl );
-                if( p )
-                    this->models.push_back( p );
-            }
-            t.removeLeaf( p );
-            if( !p )
-                continue;
-            ppl = (renderer_model_writelock *)og.tryWriteLock( p, 300, "renderer::runModels" );
-            if( !ppl )
-                continue;
-        }
-        o.unlock();
-        og.unlock();
-        
-        if( bDidFail )
-            return;
-        
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( t.findLeaf( p->getId() ) )
-                d.push_back( p );
-        }
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            this->models.remove( p );
-            delete p;
-        }
-        
-    }
-    
-    //render models
-    void renderer::renderModels( dpthread_lock *thd, renderer_writelock *rl, bool doGui, dpmatrix *m_world )
-    {
-        std::list<renderer_model *> *l;
-        std::list<renderer_model *>::iterator i;
-        renderer_model *p;
-        renderer_model_readlock *pl;
-        shared_obj_guard o;
-        
-        //render models
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (renderer_model_readlock *)o.tryReadLock( p, 100, "renderer::renderModels" );
-            if( !pl )
-                continue;
-            pl->render( thd, rl, doGui, m_world );
-        }
-    }
-    
-    //delete models
-    void renderer::deleteModels( void )
-    {
-        std::list<renderer_model *> *l, d;
-        std::list<renderer_model *>::iterator i;
-        renderer_model *p;
-        
-        l = &this->models;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            d.push_back( p );
-        }
-        l->clear();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            delete p;
-        }
-    }
-
     //generate renderer model
-    renderer_model *renderer::genModel( model_writelock *ml )
+    renderer_model_man *renderer::genModelMan( dptaskpool_writelock *tp )
     {
-        return new renderer_model( ml );
+        return 0;
     }
     
     //generate renderer gui
-    renderer_gui_man *renderer::genGuiMan(  dptaskpool_writelock *tp )
+    renderer_gui_man *renderer::genGuiMan( dptaskpool_writelock *tp )
     {
         return 0;
     }

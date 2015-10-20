@@ -25,6 +25,8 @@ namespace dragonpoop
     {
         this->m = (model_ref *)ml->getRef();
         this->bIsSynced = 0;
+        this->bIsRenSynced = 0;
+        this->bIsAlive = 1;
         this->id = ml->getId();
         ml->setRenderer( this );
     }
@@ -303,31 +305,6 @@ namespace dragonpoop
         }
     }
     
-    //run model from task
-    void renderer_model::run( dpthread_lock *thd, renderer_model_writelock *g )
-    {
-        uint64_t t;
-        model_writelock *ml;
-        shared_obj_guard o;
-        
-        t = thd->getTicks();
-        if( !this->bIsSynced && this->m )
-        {
-            ml = (model_writelock *)o.tryWriteLock( this->m, 10, "renderer_model::run" );
-            if( ml )
-            {
-                ml->getSize( &this->size );
-                ml->getCenter( &this->center );
-                this->syncMaterials( ml );
-                this->syncInstances( ml );
-                this->onSync( thd, g, ml );
-                this->bIsSynced = 1;
-            }
-        }
-    
-        this->runInstances( thd );
-    }
-    
     //render model
     void renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui, dpmatrix *m_world )
     {
@@ -350,7 +327,7 @@ namespace dragonpoop
     }
     
     //handle sync
-    void renderer_model::onSync( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml )
+    void renderer_model::onSync( dpthread_lock *thd, renderer_model_readlock *g, model_writelock *ml )
     {
         
     }
@@ -453,4 +430,58 @@ namespace dragonpoop
         *x = this->center;
     }
 
+    //returns true if alive
+    bool renderer_model::isAlive( void )
+    {
+        return this->bIsAlive;
+    }
+    
+    //kill model
+    void renderer_model::kill( void )
+    {
+        this->bIsAlive = 0;
+    }
+  
+    //run model from task
+    void renderer_model::runFromTask( dpthread_lock *thd, renderer_model_readlock *g )
+    {
+        model_writelock *ml;
+        shared_obj_guard o;
+        
+        if( !this->bIsSynced && this->m )
+        {
+            ml = (model_writelock *)o.tryWriteLock( this->m, 100, "renderer_model::run" );
+            if( ml )
+            {
+                this->bIsSynced = 1;
+                this->bIsRenSynced = 0;
+            }
+        }
+        
+//        this->runInstances( thd );
+    }
+    
+    //run model from renderer
+    void renderer_model::runFromRenderer( dpthread_lock *thd, renderer_model_readlock *g )
+    {
+        model_writelock *ml;
+        shared_obj_guard o;
+        
+        if( !this->bIsRenSynced && this->m )
+        {
+            ml = (model_writelock *)o.tryWriteLock( this->m, 100, "renderer_model::run" );
+            if( ml )
+            {
+                ml->getSize( &this->size );
+                ml->getCenter( &this->center );
+                this->syncMaterials( ml );
+                this->syncInstances( ml );
+                this->onSync( thd, g, ml );
+                this->bIsRenSynced = 1;
+            }
+        }
+        
+        this->runInstances( thd );
+    }
+    
 };

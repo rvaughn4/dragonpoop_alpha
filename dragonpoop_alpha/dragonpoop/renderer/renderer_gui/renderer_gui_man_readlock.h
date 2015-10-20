@@ -35,8 +35,6 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        //delete guis
-        void deleteGuis( void );
         //render guis
         void renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
         //return guis

@@ -9,13 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp"
-            timestampString = "467030412.749361"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer_model/openglx_1o5_renderer_model_man.cpp"
+            timestampString = "467037866.717923"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "504"
-            endingLineNumber = "504"
-            landmarkName = "renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )"
+            startingLineNumber = "23"
+            endingLineNumber = "23"
+            landmarkName = "openglx_1o5_renderer_model_man::genModel( model_writelock *ml )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -25,13 +25,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp"
-            timestampString = "467030412.749361"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp"
+            timestampString = "467037971.249867"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "507"
-            endingLineNumber = "507"
-            landmarkName = "renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )"
+            startingLineNumber = "480"
+            endingLineNumber = "480"
+            landmarkName = "renderer_model::runFromRenderer( dpthread_lock *thd, renderer_model_readlock *g )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -41,13 +41,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp"
-            timestampString = "467030412.749361"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp"
+            timestampString = "467037973.048284"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "517"
-            endingLineNumber = "517"
-            landmarkName = "renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )"
+            startingLineNumber = "457"
+            endingLineNumber = "457"
+            landmarkName = "renderer_model::runFromTask( dpthread_lock *thd, renderer_model_readlock *g )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -57,13 +57,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp"
-            timestampString = "467030412.749361"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp"
+            timestampString = "467038001.448635"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "513"
-            endingLineNumber = "513"
-            landmarkName = "renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )"
+            startingLineNumber = "479"
+            endingLineNumber = "479"
+            landmarkName = "renderer_model::runFromRenderer( dpthread_lock *thd, renderer_model_readlock *g )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -73,13 +73,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp"
-            timestampString = "467030412.749361"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer.cpp"
+            timestampString = "467038038.316178"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "515"
-            endingLineNumber = "515"
-            landmarkName = "renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )"
+            startingLineNumber = "582"
+            endingLineNumber = "582"
+            landmarkName = "openglx_1o5_renderer::renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -89,13 +89,61 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp"
-            timestampString = "467030412.749361"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp"
+            timestampString = "467038082.509287"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "519"
-            endingLineNumber = "519"
-            landmarkName = "renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )"
+            startingLineNumber = "325"
+            endingLineNumber = "325"
+            landmarkName = "renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui, dpmatrix *m_world )"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp"
+            timestampString = "467038085.441163"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
+            landmarkName = "renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui, dpmatrix *m_world )"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp"
+            timestampString = "467038088.905069"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "324"
+            endingLineNumber = "324"
+            landmarkName = "renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui, dpmatrix *m_world )"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp"
+            timestampString = "467038096.625044"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
+            landmarkName = "renderer_model::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui, dpmatrix *m_world )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

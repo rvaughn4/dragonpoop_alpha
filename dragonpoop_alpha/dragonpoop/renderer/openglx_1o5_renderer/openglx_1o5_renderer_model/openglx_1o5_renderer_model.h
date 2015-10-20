@@ -24,7 +24,7 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //handle sync
-        virtual void onSync( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml );
+        virtual void onSync( dpthread_lock *thd, renderer_model_readlock *g, model_writelock *ml );
         //generate instance
         virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
         //generate material

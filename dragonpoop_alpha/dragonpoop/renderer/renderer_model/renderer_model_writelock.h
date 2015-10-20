@@ -53,8 +53,6 @@ namespace dragonpoop
         void makeInstance( model_instance_writelock *ml );
         //sync model instance with changes
         void sync( void );
-        //run model from task
-        void run( dpthread_lock *thd );
         //find material
         renderer_model_material *findMaterial( dpid id );
         //get materials
@@ -63,6 +61,10 @@ namespace dragonpoop
         void getSize( dpxyz_f *x );
         //get center
         void getCenter( dpxyz_f *x );
+        //returns true if alive
+        bool isAlive( void );
+        //kill model
+        void kill( void );
 
         friend class renderer_model;
     };

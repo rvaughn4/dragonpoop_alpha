@@ -45,7 +45,7 @@ namespace dragonpoop
     }
     
     //handle sync
-    void openglx_1o5_renderer_model::onSync( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml )
+    void openglx_1o5_renderer_model::onSync( dpthread_lock *thd, renderer_model_readlock *g, model_writelock *ml )
     {
     }
     

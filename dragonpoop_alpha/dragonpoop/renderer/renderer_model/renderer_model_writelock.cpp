@@ -70,12 +70,6 @@ namespace dragonpoop
     {
         this->t->sync();
     }
-
-    //run model from task
-    void renderer_model_writelock::run( dpthread_lock *thd )
-    {
-        this->t->run( thd, this );
-    }
     
     //find material
     renderer_model_material *renderer_model_writelock::findMaterial( dpid id )
@@ -100,4 +94,17 @@ namespace dragonpoop
     {
         this->t->getCenter( x );
     }
+    
+    //returns true if alive
+    bool renderer_model_writelock::isAlive( void )
+    {
+        return this->t->isAlive();
+    }
+    
+    //kill model
+    void renderer_model_writelock::kill( void )
+    {
+        this->t->kill();
+    }
+
 };

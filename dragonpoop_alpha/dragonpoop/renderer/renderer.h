@@ -35,6 +35,7 @@ namespace dragonpoop
     class renderer_state;
     class dptaskpool_ref;
     class renderer_gui_man;
+    class renderer_model_man;
 
     class renderer : public shared_obj
     {
@@ -45,12 +46,11 @@ namespace dragonpoop
         renderer_task *gtsk;
         core *c;
         gfx_ref *g;
-        model_man_ref *m;
         renderer_gui_man *rgui_mgr;
+        renderer_model_man *rmodel_mgr;
         dptaskpool_ref *tp;
         
         std::atomic<bool> bDoRun, bIsRun;
-        std::list<renderer_model *> models;
         
         uint64_t t_last_m_ran, t_last_m_synced, t_last_fps, ms_each_frame;
         float fps, fthiss;
@@ -87,14 +87,8 @@ namespace dragonpoop
         void state_deinitModel( dpthread_lock *thd, renderer_writelock *rl );
 
 
-        //run models
-        void runModels( dpthread_lock *thd, renderer_writelock *rl );
-        //delete models
-        void deleteModels( void );
         //render
         void render( dpthread_lock *thd, renderer_writelock *rl );
-        //render models
-        void renderModels( dpthread_lock *thd, renderer_writelock *rl, bool doGui, dpmatrix *m_world );
         //sync camera
         void _syncCam( void );
         
@@ -133,7 +127,7 @@ namespace dragonpoop
         //flip backbuffer and present scene to screen
         virtual void flipBuffer( void );
         //generate renderer model
-        virtual renderer_model *genModel( model_writelock *ml );
+        virtual renderer_model_man *genModelMan( dptaskpool_writelock *tp );
         //generate renderer gui manager
         virtual renderer_gui_man *genGuiMan( dptaskpool_writelock *tp );
         //returns fps

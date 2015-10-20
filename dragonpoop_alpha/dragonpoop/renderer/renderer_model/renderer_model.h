@@ -45,7 +45,7 @@ namespace dragonpoop
             dpmultibtree bytype;
         } comps;
         std::list<renderer_model_instance *> instances;
-        std::atomic<bool> bIsSynced;
+        std::atomic<bool> bIsSynced, bIsRenSynced, bIsAlive;
         model_ref *m;
         uint64_t t_last_i_ran;
         dpxyz_f size, center;
@@ -85,10 +85,8 @@ namespace dragonpoop
         void makeInstance( model_instance_writelock *ml );
         //sync model instance with changes
         void sync( void );
-        //run model from task
-        void run( dpthread_lock *thd, renderer_model_writelock *g );
         //handle sync
-        virtual void onSync( dpthread_lock *thd, renderer_model_writelock *g, model_writelock *ml );
+        virtual void onSync( dpthread_lock *thd, renderer_model_readlock *g, model_writelock *ml );
         //generate instance
         virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
         //render model
@@ -105,7 +103,15 @@ namespace dragonpoop
         void getSize( dpxyz_f *x );
         //get center
         void getCenter( dpxyz_f *x );
-        
+        //returns true if alive
+        bool isAlive( void );
+        //kill model
+        void kill( void );
+        //run model from task
+        void runFromTask( dpthread_lock *thd, renderer_model_readlock *g );
+        //run model from renderer
+        void runFromRenderer( dpthread_lock *thd, renderer_model_readlock *g );
+
     public:
         
         //ctor
