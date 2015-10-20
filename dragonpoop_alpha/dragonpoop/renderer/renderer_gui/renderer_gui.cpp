@@ -31,7 +31,9 @@ namespace dragonpoop
         this->bIsHover = g->isHoverable();
         this->bIsEdit = g->isEditable();
         this->bSyncBg = this->bSyncFg = 1;
-        this->bSyncPos = 0;
+        this->bSyncBgRen = this->bSyncFgRen = 0;
+        this->bSyncPos = 1;
+        this->bSyncPosRen = 0;
         this->z = g->getZ();
         this->hv = 0;
         this->opacity = 1;
@@ -44,6 +46,8 @@ namespace dragonpoop
     //dtor
     renderer_gui::~renderer_gui( void )
     {
+        gui_ref *g;
+        g = this->g;
         delete g;
     }
     
@@ -78,7 +82,7 @@ namespace dragonpoop
     }
     
     //run gui from background task
-    void renderer_gui::runFromTask( dpthread_lock *thd, renderer_gui_writelock *g, renderer_gui_man_writelock *ml )
+    void renderer_gui::runFromTask( dpthread_lock *thd, renderer_gui_readlock *g )
     {
         gui_readlock *pl;
         shared_obj_guard o;
@@ -105,6 +109,9 @@ namespace dragonpoop
                     this->bSyncPosRen = 1;
                 }
                 
+                if( !this->bHasBg && this->bSyncBg )
+                    this->bSyncBg = 0;
+                
                 if( this->bHasBg && this->bSyncBg )
                 {
                     bm = pl->getBg();
@@ -112,6 +119,9 @@ namespace dragonpoop
                     this->bSyncBg = 0;
                     this->bSyncBgRen = 1;
                 }
+                
+                if( !this->bHasFg && this->bSyncFg )
+                    this->bSyncFg = 0;
                 
                 if( this->bHasFg && this->bSyncFg )
                 {
@@ -125,7 +135,7 @@ namespace dragonpoop
     }
     
     //run gui from renderer task
-    void renderer_gui::runFromRenderer( dpthread_lock *thd, renderer_gui_writelock *g, renderer_gui_man_writelock *ml, renderer_writelock *rl )
+    void renderer_gui::runFromRenderer( dpthread_lock *thd, renderer_gui_readlock *g )
     {
         gui_readlock *pl;
         shared_obj_guard o;
@@ -223,31 +233,31 @@ namespace dragonpoop
     }
     
     //override to handle bg texture update
-    void renderer_gui::updateBg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
+    void renderer_gui::updateBg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
     {
         
     }
     
     //override to handle fg texture update
-    void renderer_gui::updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
-    {
-        
-    }
-    
-    //override to handle bg texture update in renderer task
-    void renderer_gui::updateBgInRender( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
-    {
-        
-    }
-    
-    //override to handle fg texture update in renderer task
-    void renderer_gui::updateFgInRender( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
+    void renderer_gui::updateFg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
     {
         
     }
     
     //override to handle vb update in renderer task
-    void renderer_gui::updateVbInRender( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p )
+    void renderer_gui::updateVb( renderer_gui_readlock *rl, gui_readlock *gl, gui_dims *p )
+    {
+        
+    }
+    
+    //override to handle bg texture update in renderer task
+    void renderer_gui::updateBgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
+    {
+        
+    }
+    
+    //override to handle fg texture update in renderer task
+    void renderer_gui::updateFgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
     {
         
     }
@@ -310,7 +320,7 @@ namespace dragonpoop
     }
     
     //override to handle vb update
-    void renderer_gui::updateVb( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p )
+    void renderer_gui::updateVbInRender( renderer_gui_readlock *rl, gui_readlock *gl, gui_dims *p )
     {
         dpvertexindex_buffer *vb;
         float w, h, bw, tw;
@@ -368,16 +378,21 @@ namespace dragonpoop
     }
     
     //redo matrix
-    void renderer_gui::redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix )
+    void renderer_gui::redoMatrix( dpthread_lock *thd, renderer_gui_man_readlock *r, renderer_gui_readlock *m, dpmatrix *p_matrix )
     {
         std::list<renderer_gui *> l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
-        renderer_gui_writelock *pl;
+        renderer_gui_readlock *pl;
         shared_obj_guard o;
         float z;
         dpid hid;
+        gui_ref *gr;
         
+        gr = this->g;
+        if( !gr->isLinked() )
+            this->bIsAlive = 0;
+            
         if( this->bIsAlive )
         {
             if( this->fade < 0.95f )
@@ -410,8 +425,10 @@ namespace dragonpoop
                     this->hv += ( 0.0f - this->hv ) * 0.3f;
             }
         }
-        
-        this->mat.copy( p_matrix );
+        if( p_matrix )
+            this->mat.copy( p_matrix );
+        else
+            this->mat.setIdentity();
 
         z = (float)this->z / -8.0f;
         this->mat.translate( this->pos.x, this->pos.y, z );
@@ -448,7 +465,7 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 3, "renderer_gui::redoMatrix" );
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 3, "renderer_gui::redoMatrix" );
             if( !pl )
                 continue;
             pl->redoMatrix( thd, r, &this->mat );
@@ -497,7 +514,7 @@ namespace dragonpoop
         if( p.x >= this->pos.w || p.y >= this->pos.h )
             return 0;
 
-        g = (gui_writelock *)o.tryWriteLock( this->g, 3, "renderer_gui::processMouse" );
+        g = (gui_writelock *)o.tryWriteLock( this->g, 100, "renderer_gui::processMouse" );
         if( !g )
             return 1;
         g->processMouse( p.x, p.y, lb, rb );
@@ -532,6 +549,7 @@ namespace dragonpoop
     //returns true if alive
     bool renderer_gui::isAlive( void )
     {
+        if( this->g )
         if( this->bIsAlive )
             return 1;
         return this->fade > 0.1f;
@@ -550,12 +568,12 @@ namespace dragonpoop
     }
     
     //gets gui id of focused child
-    bool renderer_gui::getFocusChild( renderer_gui_man_writelock *r, dpid *fid )
+    bool renderer_gui::getFocusChild( renderer_gui_man_readlock *r, dpid *fid )
     {
         std::list<renderer_gui *> l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
-        renderer_gui_writelock *pl;
+        renderer_gui_readlock *pl;
         shared_obj_guard o;
 
         r->getChildrenGuis( &l, this->id );
@@ -564,7 +582,7 @@ namespace dragonpoop
             p = *i;
             if( p->getZ() != 0 )
                 continue;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 3, "renderer_gui::getFocusChild" );
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 3, "renderer_gui::getFocusChild" );
             if( !pl )
                 continue;
             if( pl->getFocusChild( r, fid ) )

@@ -33,10 +33,6 @@ namespace dragonpoop
         
     public:
         
-        //run gui from background task
-        void runFromTask( dpthread_lock *thd, renderer_gui_man_writelock *ml );
-        //run gui from renderer task
-        void runFromRenderer( dpthread_lock *thd, renderer_gui_man_writelock *ml, renderer_writelock *rl );
         //return core
         core *getCore( void );
         //returns id
@@ -59,8 +55,6 @@ namespace dragonpoop
         void syncBg( void );
         //called to force fg update
         void syncFg( void );
-        //redo matrix
-        void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix );
         //process mouse input
         bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb );
         //process kb input
@@ -69,10 +63,6 @@ namespace dragonpoop
         bool isAlive( void );
         //kills gui
         void kill( void );
-        //returns true if has focus
-        bool hasFocus( void );
-        //gets gui id of focused child
-        bool getFocusChild( renderer_gui_man_writelock *r, dpid *fid );
         //gets selected text from gui (copy or cut)
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)

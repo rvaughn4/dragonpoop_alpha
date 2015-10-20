@@ -35,6 +35,7 @@
 #include "renderer_state_init_api.h"
 #include "renderer_gui/renderer_gui_man.h"
 #include "renderer_gui/renderer_gui_man_writelock.h"
+#include "renderer_gui/renderer_gui_man_readlock.h"
 
 #include "openglx_1o5_renderer/openglx_1o5_renderer_factory.h"
 #include <thread>
@@ -155,17 +156,9 @@ namespace dragonpoop
     //run renderer
     void renderer::state_run( dpthread_lock *thd, renderer_writelock *rl )
     {
-        renderer_gui_man_writelock *gui_wl;
-        shared_obj_guard o;
-        
         this->runApi( rl, thd );
         this->_syncCam();
-        
-        gui_wl = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 30, "renderer::state_run" );
-        if( gui_wl )
-            gui_wl->runFromRenderer( thd, rl );
-        o.unlock();
-        
+        renderer_gui_man::runFromRenderer( thd, this->rgui_mgr );
         this->runModels( thd, rl );
         this->render( thd, rl );
     }
@@ -186,8 +179,7 @@ namespace dragonpoop
         if( !tp )
             return 0;
         
-        this->rgui_mgr = new renderer_gui_man( this->c, this, tp );
-        
+        this->rgui_mgr = this->genGuiMan( tp );
         return this->rgui_mgr != 0;
     }
     
@@ -265,6 +257,8 @@ namespace dragonpoop
         unsigned int w, h;
         uint64_t t, td;
         float f0;
+        shared_obj_guard o;
+        renderer_gui_man_readlock *gwl;
         
         w = this->getWidth();
         h = this->getHeight();
@@ -277,8 +271,10 @@ namespace dragonpoop
         this->renderModels( thd, rl, 0, &this->m_world );
         
         this->prepareGuiRender( w, h );
-        //this->renderModels( thd, rl, 1, &this->m_gui );
-       // this->renderGuis( thd, rl, &this->m_gui );
+        gwl = (renderer_gui_man_readlock *)o.tryReadLock( this->rgui_mgr, 100, "renderer::render" );
+        if( gwl )
+            gwl->renderGuis( thd, rl, &this->m_gui );
+        o.unlock();
         
         this->flipBuffer();
         

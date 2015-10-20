@@ -14,7 +14,7 @@ namespace dragonpoop
     //dtor
     openglx_1o5_renderer_gui_man::~openglx_1o5_renderer_gui_man( void )
     {
-        
+        this->deleteGuis();
     }
     
     //generate renderer gui

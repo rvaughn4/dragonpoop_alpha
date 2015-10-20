@@ -34,9 +34,13 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //override to handle bg texture update
-        virtual void updateBg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        virtual void updateBg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
         //override to handle fg texture update
-        virtual void updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        virtual void updateFg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
+        //override to handle bg texture update
+        virtual void updateBgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
+        //override to handle fg texture update
+        virtual void updateFgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
         //return bg texture
         unsigned int getBgTex( void );
         //return fg texture

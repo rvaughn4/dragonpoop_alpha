@@ -22,18 +22,6 @@ namespace dragonpoop
     {
         return this->t->getCore();
     }
-    
-    //run from manager thread
-    void renderer_gui_man_writelock::runFromTask( dpthread_lock *thd )
-    {
-        this->t->runFromTask( thd, this );
-    }
-    
-    //run from renderer thread
-    void renderer_gui_man_writelock::runFromRenderer( dpthread_lock *thd, renderer_writelock *rl )
-    {
-        this->t->runFromRenderer( thd, this, rl );
-    }
   
     //delete guis
     void renderer_gui_man_writelock::deleteGuis( void )

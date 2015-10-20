@@ -35,10 +35,6 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        //run from manager thread
-        void runFromTask( dpthread_lock *thd );
-        //run from renderer thread
-        void runFromRenderer( dpthread_lock *thd, renderer_writelock *rl );
         //delete guis
         void deleteGuis( void );
         //return guis

@@ -54,13 +54,25 @@ namespace dragonpoop
     }
     
     //override to handle bg texture update
-    void openglx_1o5_renderer_gui::updateBg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
+    void openglx_1o5_renderer_gui::updateBg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
+    {
+        
+    }
+    
+    //override to handle fg texture update
+    void openglx_1o5_renderer_gui::updateFg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
+    {
+        
+    }
+    
+    //override to handle bg texture update
+    void openglx_1o5_renderer_gui::updateBgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
     {
         this->makeTex( &this->bg_tex, &this->bg_tex_sz, bm );
     }
     
     //override to handle fg texture update
-    void openglx_1o5_renderer_gui::updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
+    void openglx_1o5_renderer_gui::updateFgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
     {
         this->makeTex( &this->fg_tex, &this->fg_tex_sz, bm );
     }

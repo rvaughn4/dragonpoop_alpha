@@ -37,19 +37,13 @@ namespace dragonpoop
     //run by task
     void renderer_gui_man_task::run( dptask_writelock *tl, dpthread_lock *th )
     {
-        renderer_gui_man_writelock *gl;
-        shared_obj_guard g;
-        
         if( !this->g )
         {
             tl->kill();
             return;
         }
-        
-        gl = (renderer_gui_man_writelock *)g.tryWriteLock( this->g, 100, "renderer_gui_man_task::run" );
-        if( gl )
-            gl->runFromTask( th );
-        g.unlock();
+
+        renderer_gui_man::runFromTask( th, this->g );
     }
     
 };

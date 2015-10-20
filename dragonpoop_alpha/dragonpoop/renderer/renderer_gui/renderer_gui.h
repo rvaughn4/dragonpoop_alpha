@@ -30,7 +30,7 @@ namespace dragonpoop
         dpid id, pid, hover_id;
         bool bHasFg, bHasBg, bIsAlive, bIsHover, bIsEdit, bIsFade;
         gui_dims pos;
-        gui_ref *g;
+        std::atomic<gui_ref *> g;
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg, bSyncBgRen, bSyncFgRen, bSyncPosRen;
         dpmatrix mat, undo_mat;
         unsigned int z;
@@ -47,9 +47,9 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run gui from background task
-        void runFromTask( dpthread_lock *thd, renderer_gui_writelock *g, renderer_gui_man_writelock *ml );
+        void runFromTask( dpthread_lock *thd, renderer_gui_readlock *g );
         //run gui from renderer task
-        void runFromRenderer( dpthread_lock *thd, renderer_gui_writelock *g, renderer_gui_man_writelock *ml, renderer_writelock *rl );
+        void runFromRenderer( dpthread_lock *thd, renderer_gui_readlock *g );
         //compares id
         bool compareId( dpid id );
         //get dimensions
@@ -61,17 +61,17 @@ namespace dragonpoop
         //get parent id
         dpid getParentId( void );
         //override to handle bg texture update
-        virtual void updateBg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        virtual void updateBg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
         //override to handle fg texture update
-        virtual void updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        virtual void updateFg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
         //override to handle vb update
-        virtual void updateVb( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p );
+        virtual void updateVb( renderer_gui_readlock *rl, gui_readlock *gl, gui_dims *p );
         //override to handle bg texture update in renderer task
-        virtual void updateBgInRender( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        virtual void updateBgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
         //override to handle fg texture update in renderer task
-        virtual void updateFgInRender( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        virtual void updateFgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
         //override to handle vb update in renderer task
-        virtual void updateVbInRender( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p );
+        virtual void updateVbInRender( renderer_gui_readlock *rl, gui_readlock *gl, gui_dims *p );
         //called to force pos update
         void syncPos( void );
         //called to force bg update
@@ -81,7 +81,7 @@ namespace dragonpoop
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, renderer_gui_man_readlock *ml, dpmatrix *m_world );
         //redo matrix
-        void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix );
+        void redoMatrix( dpthread_lock *thd, renderer_gui_man_readlock *r, renderer_gui_readlock *m, dpmatrix *p_matrix );
         //process mouse input
         bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb );
         //process kb input
@@ -95,7 +95,7 @@ namespace dragonpoop
         //returns true if has focus
         bool hasFocus( void );
         //gets gui id of focused child
-        bool getFocusChild( renderer_gui_man_writelock *r, dpid *fid );
+        bool getFocusChild( renderer_gui_man_readlock *r, dpid *fid );
         //return bg vb
         dpvertexindex_buffer *getBgBuffer( void );
         //return fg vb

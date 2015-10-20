@@ -89,4 +89,40 @@ namespace dragonpoop
         return this->t->getFgBuffer();
     }
 
+    //run gui from background task
+    void renderer_gui_readlock::runFromTask( dpthread_lock *thd )
+    {
+        this->t->runFromTask( thd, this );
+    }
+    
+    //run gui from renderer task
+    void renderer_gui_readlock::runFromRenderer( dpthread_lock *thd )
+    {
+        this->t->runFromRenderer( thd, this );
+    }
+    
+    //returns true if alive
+    bool renderer_gui_readlock::isAlive( void )
+    {
+        return this->t->isAlive();
+    }
+    
+    //returns true if has focus
+    bool renderer_gui_readlock::hasFocus( void )
+    {
+        return this->t->hasFocus();
+    }
+    
+    //gets gui id of focused child
+    bool renderer_gui_readlock::getFocusChild( renderer_gui_man_readlock *r, dpid *fid )
+    {
+        return this->t->getFocusChild( r, fid );
+    }
+    
+    //redo matrix
+    void renderer_gui_readlock::redoMatrix( dpthread_lock *thd, renderer_gui_man_readlock *r, dpmatrix *p_matrix )
+    {
+        this->t->redoMatrix( thd, r, this, p_matrix );
+    }
+
 };

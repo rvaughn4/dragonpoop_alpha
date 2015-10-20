@@ -26,6 +26,7 @@
 #include "../../gfx/gui/gui_ref.h"
 #include "../../gfx/gui/gui_readlock.h"
 #include "../../gfx/gui/gui_writelock.h"
+#include "../../core/dpbtree/dpid_btree.h"
 
 namespace dragonpoop
 {
@@ -53,7 +54,7 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
         
-        this->_startTask( tp, 100 );
+        this->_startTask( tp, 30 );
     }
     
     //dtor
@@ -136,56 +137,189 @@ namespace dragonpoop
         this->gtsk = 0;
     }
     
-    //run from manager thread
-    void renderer_gui_man::runFromTask( dpthread_lock *thd, renderer_gui_man_writelock *g )
+    //sync guis
+    void renderer_gui_man::sync( dpthread_lock *thd, renderer_gui_man_ref *g )
     {
         std::list<renderer_gui *> *l, d;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
-        renderer_gui_writelock *pl;
-        shared_obj_guard o;
+        renderer_gui_writelock *pwl;
+        renderer_gui_readlock *pl;
+        shared_obj_guard o, o1, o2;
+        renderer_gui_man_readlock *grl;
+        renderer_gui_man_writelock *gwl;
+        uint64_t t;
+        gui_man_readlock *mrl;
+        std::list<gui_ref *> lg, ng;
+        std::list<gui_ref *>::iterator ig;
+        gui_ref *pg;
+        dpid_btree pt;
+        gui_readlock *gl;
+        gui_writelock *gw;
         
-        l = &this->guis;
+        grl = (renderer_gui_man_readlock *)o1.tryReadLock( g, 100, "renderer_gui_man::sync" );
+        if( !grl )
+            return;
+        t = thd->getTicks();
+        if( t - grl->t->t_last_gui_synced < 100 )
+            return;
+        grl->t->t_last_gui_synced = t;
+        
+        //build list of guis
+        l = &grl->t->guis;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::runFromTask" );
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer_gui_man::sync" );
             if( !pl )
                 continue;
-            //pl->run( thd );
-            if( !pl->isAlive() )
+            pt.addLeaf( pl->getId(), p );
+        }
+        o.unlock();
+        
+        mrl = (gui_man_readlock *)o2.tryReadLock( grl->t->g_guis, 100, "renderer_gui_man::sync" );
+        if( !mrl )
+            return;
+        
+        //find guis, sync them, and remove from list
+        mrl->getGuis( &lg );
+        for( ig = lg.begin(); ig != lg.end(); ++ig )
+        {
+            pg = *ig;
+            gl = (gui_readlock *)o.tryReadLock( pg, 1000, "renderer_gui_man::sync" );
+            if( !gl )
+                continue;
+            p = (renderer_gui *)pt.findLeaf( gl->getId() );
+            if( !p )
+                ng.push_back( pg );
+            else
+                pt.removeLeaf( p );
+        }
+        o.unlock();
+        
+        //build list of guis to delete
+        l = &grl->t->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer_gui_man::sync" );
+            if( !pl )
+                continue;
+            if( pt.findLeaf( pl->getId() ) )
                 d.push_back( p );
         }
         o.unlock();
+        
+        if( d.empty() && ng.empty() )
+            return;
+        
+        gwl = (renderer_gui_man_writelock *)o1.tryWriteLock( g, 100, "renderer_gui_man::sync" );
+        if( !gwl )
+            return;
+        
+        //kill unmatched guis
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pwl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::sync" );
+            if( !pwl )
+                continue;
+            pwl->kill();
+        }
+        o.unlock();
+        
+        //create new guis
+        for( ig = ng.begin(); ig != ng.end(); ++ig )
+        {
+            pg = *ig;
+            gw = (gui_writelock *)o.tryWriteLock( pg, 1000, "renderer_gui_man::sync" );
+            if( !gw )
+                continue;
+            p = gwl->t->genGui( gw );
+            gwl->t->guis.push_back( p );
+        }
+        o.unlock();
+
+    }
+    
+    //run from manager thread
+    void renderer_gui_man::runFromTask( dpthread_lock *thd, renderer_gui_man_ref *g )
+    {
+        std::list<renderer_gui *> *l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_readlock *pl;
+        shared_obj_guard o, o1;
+        renderer_gui_man_readlock *grl;
+        dpid pid;
+
+        grl = (renderer_gui_man_readlock *)o1.tryReadLock( g, 100, "renderer_gui_man::runFromTask" );
+        if( !grl )
+            return;
+        
+        l = &grl->t->guis;
+        grl->t->focus_gui = dpid_null();
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer_gui_man::runFromTask" );
+            if( !pl )
+                continue;
+            pl->runFromTask( thd );
+            if( pl->isAlive() && ( pl->hasFocus() || dpid_isZero( &grl->t->focus_gui ) ) )
+            {
+                if( !pl->getFocusChild( grl, &grl->t->focus_gui ) )
+                    grl->t->focus_gui = pl->getId();
+            }
+            pid = pl->getParentId();
+            if( dpid_isZero( &pid ) )
+                pl->redoMatrix( thd, grl, 0 );
+        }
+        o.unlock();
+        
+        renderer_gui_man::sync( thd, g );
+    }
+
+    //run from renderer thread
+    void renderer_gui_man::runFromRenderer( dpthread_lock *thd, renderer_gui_man *g )
+    {
+        std::list<renderer_gui *> *l, d;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_readlock *pl;
+        shared_obj_guard o, o1;
+        renderer_gui_man_readlock *grl;
+        renderer_gui_man_writelock *gwl;
+
+        grl = (renderer_gui_man_readlock *)o1.tryReadLock( g, 100, "renderer_gui_man::runFromTask" );
+        if( !grl )
+            return;
+        
+        l = &grl->t->guis;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer_gui_man::runFromRenderer" );
+            if( !pl )
+                continue;
+            pl->runFromRenderer( thd );
+        }
+        o.unlock();
+        
+        if( d.empty() )
+            return;
+        gwl = (renderer_gui_man_writelock *)o1.tryReadLock( g, 100, "renderer_gui_man::runFromTask" );
+        if( !gwl )
+            return;
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            this->guis.remove( p );
+            gwl->t->guis.remove( p );
             delete p;
         }
-    }
-
-    //run from renderer thread
-    void renderer_gui_man::runFromRenderer( dpthread_lock *thd, renderer_gui_man_writelock *g, renderer_writelock *rl )
-    {
-        std::list<renderer_gui *> *l;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        renderer_gui_writelock *pl;
-        shared_obj_guard o;
-        
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::runFromRenderer" );
-            if( !pl )
-                continue;
-            //pl->run( thd );
-        }
-        o.unlock();
     }
     
     //delete guis

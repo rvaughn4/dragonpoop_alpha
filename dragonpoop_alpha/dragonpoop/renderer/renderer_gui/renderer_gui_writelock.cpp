@@ -17,18 +17,6 @@ namespace dragonpoop
         
     }
     
-    //run gui from background task
-    void renderer_gui_writelock::runFromTask( dpthread_lock *thd, renderer_gui_man_writelock *ml )
-    {
-        this->t->runFromTask( thd, this, ml );
-    }
-    
-    //run gui from renderer task
-    void renderer_gui_writelock::runFromRenderer( dpthread_lock *thd, renderer_gui_man_writelock *ml, renderer_writelock *rl )
-    {
-        this->t->runFromRenderer( thd, this, ml, rl );
-    }
-    
     //return core
     core *renderer_gui_writelock::getCore( void )
     {
@@ -95,12 +83,6 @@ namespace dragonpoop
         this->t->syncFg();
     }
     
-    //redo matrix
-    void renderer_gui_writelock::redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix )
-    {
-        this->t->redoMatrix( thd, r, this, p_matrix );
-    }
-    
     //process mouse input
     bool renderer_gui_writelock::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )
     {
@@ -123,18 +105,6 @@ namespace dragonpoop
     void renderer_gui_writelock::kill( void )
     {
         this->t->kill();
-    }
-    
-    //returns true if has focus
-    bool renderer_gui_writelock::hasFocus( void )
-    {
-        return this->t->hasFocus();
-    }
-    
-    //gets gui id of focused child
-    bool renderer_gui_writelock::getFocusChild( renderer_gui_man_writelock *r, dpid *fid )
-    {
-        return this->t->getFocusChild( r, fid );
     }
     
     //gets selected text from gui (copy or cut)
