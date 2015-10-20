@@ -14,6 +14,7 @@ namespace dragonpoop
     class dpthread_lock;
     class dpmatrix;
     class dpvertexindex_buffer;
+    class renderer_gui_man_readlock;
     
     class renderer_gui_readlock : public shared_obj_readlock
     {
@@ -48,7 +49,7 @@ namespace dragonpoop
         //compares parent id
         bool compareParentId( dpid id );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, dpmatrix *m_world );
+        void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_man_readlock *ml, dpmatrix *m_world );
         //returns opacity
         float getOpacity( void );
         //return bg vb

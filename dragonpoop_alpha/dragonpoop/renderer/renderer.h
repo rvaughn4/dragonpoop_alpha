@@ -34,6 +34,7 @@ namespace dragonpoop
     class gfx;
     class renderer_state;
     class dptaskpool_ref;
+    class renderer_gui_man;
 
     class renderer : public shared_obj
     {
@@ -45,7 +46,6 @@ namespace dragonpoop
         core *c;
         gfx_ref *g;
         model_man_ref *m;
-        gui_man_ref *gui_mgr;
         renderer_gui_man *rgui_mgr;
         dptaskpool_ref *tp;
         
@@ -134,8 +134,8 @@ namespace dragonpoop
         virtual void flipBuffer( void );
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
-        //generate renderer gui
-        virtual renderer_gui *genGui( gui_writelock *ml );
+        //generate renderer gui manager
+        virtual renderer_gui_man *genGuiMan( dptaskpool_writelock *tp );
         //returns fps
         float getFps( void );
         //return ms each frame
@@ -160,7 +160,11 @@ namespace dragonpoop
         void syncCamera( void );
         //get position difference from camera
         void getPositionRelativeToCamera( dpposition *in_obj_pos, uint64_t t_epoch_now, dpxyz_f *out_xyz );
-        
+        //gets selected text from gui (copy or cut)
+        bool getSelectedText( std::string *s, bool bDoCut );
+        //sets selected text in gui (paste)
+        bool setSelectedText( std::string *s );
+
     public:
 
         //ctor

@@ -66,9 +66,9 @@ namespace dragonpoop
     }
     
     //render model
-    void renderer_gui_readlock::render( dpthread_lock *thd, renderer_writelock *r, dpmatrix *m_world )
+    void renderer_gui_readlock::render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_man_readlock *ml, dpmatrix *m_world )
     {
-        this->t->render( thd, r, this, m_world );
+        this->t->render( thd, r, this, ml, m_world );
     }
     
     //returns opacity

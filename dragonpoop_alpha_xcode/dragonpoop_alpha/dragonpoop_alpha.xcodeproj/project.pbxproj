@@ -281,6 +281,7 @@
 		79FE3BB81BC17C800092CDAE /* root_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FE3BB31BC17C800092CDAE /* root_gui.cpp */; };
 		79FE3BB91BC17C800092CDAE /* root_gui_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FE3BB51BC17C800092CDAE /* root_gui_factory.cpp */; };
 		79FE3BBE1BC18C8D0092CDAE /* button_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FE3BBB1BC18C8D0092CDAE /* button_gui.cpp */; };
+		79FF8AED1BD5F0E5004134E0 /* openglx_1o5_renderer_gui_man.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FF8AEB1BD5F0E5004134E0 /* openglx_1o5_renderer_gui_man.cpp */; };
 		79FFA0AD1BB54F7400584638 /* gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FFA0A41BB54F7400584638 /* gui.cpp */; };
 		79FFA0AE1BB54F7400584638 /* gui_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FFA0A61BB54F7400584638 /* gui_readlock.cpp */; };
 		79FFA0AF1BB54F7400584638 /* gui_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FFA0A81BB54F7400584638 /* gui_ref.cpp */; };
@@ -943,6 +944,8 @@
 		79FE3BBB1BC18C8D0092CDAE /* button_gui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = button_gui.cpp; sourceTree = "<group>"; };
 		79FE3BBC1BC18C8D0092CDAE /* button_gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = button_gui.h; sourceTree = "<group>"; };
 		79FE3BBD1BC18C8D0092CDAE /* button_guis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = button_guis.h; sourceTree = "<group>"; };
+		79FF8AEB1BD5F0E5004134E0 /* openglx_1o5_renderer_gui_man.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = openglx_1o5_renderer_gui_man.cpp; sourceTree = "<group>"; };
+		79FF8AEC1BD5F0E5004134E0 /* openglx_1o5_renderer_gui_man.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = openglx_1o5_renderer_gui_man.h; sourceTree = "<group>"; };
 		79FFA0A41BB54F7400584638 /* gui.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gui.cpp; sourceTree = "<group>"; };
 		79FFA0A51BB54F7400584638 /* gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gui.h; sourceTree = "<group>"; };
 		79FFA0A61BB54F7400584638 /* gui_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gui_readlock.cpp; sourceTree = "<group>"; };
@@ -975,6 +978,8 @@
 			children = (
 				7900CFB61BB70EE200F1CE55 /* openglx_1o5_renderer_gui.cpp */,
 				7900CFB71BB70EE200F1CE55 /* openglx_1o5_renderer_gui.h */,
+				79FF8AEB1BD5F0E5004134E0 /* openglx_1o5_renderer_gui_man.cpp */,
+				79FF8AEC1BD5F0E5004134E0 /* openglx_1o5_renderer_gui_man.h */,
 				7900CFB81BB70EE200F1CE55 /* openglx_1o5_renderer_gui_readlock.cpp */,
 				7900CFB91BB70EE200F1CE55 /* openglx_1o5_renderer_gui_readlock.h */,
 				7900CFBA1BB70EE200F1CE55 /* openglx_1o5_renderer_gui_ref.cpp */,
@@ -2249,6 +2254,7 @@
 				7974FF041B842576003BC1EE /* model_loader_ms3d_state_make_frames.cpp in Sources */,
 				7907597E1BD0F38900F9D2F1 /* renderer_state_start_model.cpp in Sources */,
 				791CA1FF1BD0141C00FEF40B /* gui_man_ref.cpp in Sources */,
+				79FF8AED1BD5F0E5004134E0 /* openglx_1o5_renderer_gui_man.cpp in Sources */,
 				79A2BCE81BA5EBF4001F2C6B /* renderer_model_joint_instance.cpp in Sources */,
 				79F703C71BCE8BA900B35B8B /* dpactor_man_ref.cpp in Sources */,
 				794610F91B6D42CE00311E86 /* model_loader_ms3d_state_parse_vertex_extras.cpp in Sources */,

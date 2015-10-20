@@ -30,21 +30,15 @@ namespace dragonpoop
     }
     
     //run from renderer thread
-    void renderer_gui_man_writelock::runFromRenderer( dpthread_lock *thd )
+    void renderer_gui_man_writelock::runFromRenderer( dpthread_lock *thd, renderer_writelock *rl )
     {
-        this->t->runFromRenderer( thd, this );
+        this->t->runFromRenderer( thd, this, rl );
     }
   
     //delete guis
     void renderer_gui_man_writelock::deleteGuis( void )
     {
         this->t->deleteGuis();
-    }
-    
-    //render guis
-    void renderer_gui_man_writelock::renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
-    {
-        this->t->renderGuis( thd, rl, m_world );
     }
     
     //return guis
@@ -54,9 +48,9 @@ namespace dragonpoop
     }
     
     //process mouse input
-    bool renderer_gui_man_writelock::processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb )
+    bool renderer_gui_man_writelock::processGuiMouseInput( float x, float y, bool lb, bool rb )
     {
-        return this->t->processGuiMouseInput( r, x, y, lb, rb );
+        return this->t->processGuiMouseInput( this, x, y, lb, rb );
     }
     
     //get hovering gui id

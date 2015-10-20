@@ -55,7 +55,6 @@ namespace dragonpoop
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
         g->getModels( &this->m );
-        g->getGuis( &this->gui_mgr );
         this->gtsk = new renderer_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3/*14*/, 1, "renderer" );
         tp->addTask( this->tsk );
@@ -82,7 +81,6 @@ namespace dragonpoop
         delete this->gtsk;
         delete this->cs;
         this->deleteModels();
-        delete this->gui_mgr;
         delete this->m;
         delete this->g;
         delete this->tp;
@@ -98,7 +96,7 @@ namespace dragonpoop
         d = this->bIsRun;
         while( d )
         {
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
+            std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
             d = this->bIsRun;
         }
     }
@@ -157,8 +155,17 @@ namespace dragonpoop
     //run renderer
     void renderer::state_run( dpthread_lock *thd, renderer_writelock *rl )
     {
+        renderer_gui_man_writelock *gui_wl;
+        shared_obj_guard o;
+        
         this->runApi( rl, thd );
         this->_syncCam();
+        
+        gui_wl = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 30, "renderer::state_run" );
+        if( gui_wl )
+            gui_wl->runFromRenderer( thd, rl );
+        o.unlock();
+        
         this->runModels( thd, rl );
         this->render( thd, rl );
     }
@@ -385,201 +392,6 @@ namespace dragonpoop
 
     }
 
-    //run guis
-    void renderer::runGuis( dpthread_lock *thd, renderer_writelock *rl )
-    {
-        std::list<renderer_gui *> *l, d;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        dpid_bytetree t;
-        std::list<gui_ref *> li;
-        std::list<gui_ref *>::iterator ii;
-        gui_ref *pi;
-        gui_writelock *pl;
-        renderer_gui_writelock *ppl;
-        shared_obj_guard o, og;
-        gui_man_readlock *gl;
-        uint64_t tr;
-        dpid nid;
-        dpmatrix mat;
-        bool bDidFail;
-        
-        //run guis
-        tr = thd->getTicks();
-        if( tr - this->t_last_gui_ran < 40 )
-            return;
-        this->t_last_gui_ran = tr;
-
-        nid = dpid_null();
-        mat.setTranslation( 0, 0, -1 );
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( !p->compareParentId( nid ) )
-                continue;
-            ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 10, "renderer::runGuis" );
-            if( !ppl )
-                continue;
-            ppl->redoMatrix( thd, rl, &mat );
-        }
-
-        //make new guis and delete old
-        if( tr - this->t_last_gui_synced < 250 )
-            return;
-        this->t_last_gui_synced = tr;
-        
-        gl = (gui_man_readlock *)og.tryReadLock( this->gui_mgr, 30, "renderer::runGuis" );
-        if( !gl )
-            return;
-        
-        //build id index
-        bDidFail = 0;
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            t.addLeaf( p->getId(), p );
-        }
-        
-        //sync models and create if not exist
-        this->focus_gui = nid;
-        gl->getGuis( &li );
-        for( ii = li.begin(); ii != li.end(); ++ii )
-        {
-            pi = *ii;
-            pl = (gui_writelock *)o.tryWriteLock( pi, 300, "renderer::runGuis" );
-            if( !pl )
-            {
-                bDidFail = 1;
-                continue;
-            }
-            p = (renderer_gui *)t.findLeaf( pl->getId() );
-            if( !p )
-            {
-                p = this->genGui( pl );
-                if( p )
-                    this->guis.push_back( p );
-                pl->setRenderer( p );
-            }
-            t.removeLeaf( p );
-            if( !p )
-                continue;
-            ppl = (renderer_gui_writelock *)og.tryWriteLock( p, 300, "renderer::runGuis" );
-            if( !ppl )
-                continue;
-            ppl->run( thd );
-            if( ppl->hasFocus() )
-            {
-                if( !ppl->getFocusChild( rl, &this->focus_gui ) )
-                    this->focus_gui = ppl->getId();
-            }
-        }
-        o.unlock();
-        og.unlock();
-        
-        if( bDidFail )
-            return;
-        
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( t.findLeaf( p->getId() ) )
-            {
-                ppl = (renderer_gui_writelock *)o.tryWriteLock( p, 10, "renderer::runGuis" );
-                if( ppl )
-                {
-                    ppl->kill();
-                    if( !ppl->isAlive() )
-                        d.push_back( p );
-                }
-            }
-        }
-        o.unlock();
-        
-        l = &d;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            this->guis.remove( p );
-            delete p;
-        }
-        
-    }
-    
-    //render guis
-    void renderer::renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
-    {
-        std::list<renderer_gui *> *l, lz, d;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        renderer_gui_readlock *pl;
-        shared_obj_guard o;
-        dpid nid;
-        int max_z, z;
-        
-        l = &this->guis;
-        nid = dpid_null();
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( p->compareParentId( nid ) )
-                lz.push_back( p );
-        }
-        
-        max_z = 0;
-        l = &lz;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            z = p->getZ();
-            if( z > max_z )
-                max_z = z;
-        }
-        max_z++;
-        
-        for( z = max_z; z >= 0; z-- )
-        {
-            l = &lz;
-            for( i = l->begin(); i != l->end(); ++i )
-            {
-                p = *i;
-                if( z != p->getZ() )
-                    continue;
-                pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer::renderGuis" );
-                if( !pl )
-                    continue;
-                pl->render( thd, rl, m_world );
-                d.push_back( p );
-            }
-            
-            l = &d;
-            for( i = l->begin(); i != l->end(); ++i )
-            {
-                p = *i;
-                lz.remove( p );
-            }
-            d.clear();
-        }
-    }
-    
-    //delete guis
-    void renderer::deleteGuis( void )
-    {
-        std::list<renderer_gui *> *l, d;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            d.push_back( p );
-        }
-        l->clear();
-    }
-
     //run models
     void renderer::runModels( dpthread_lock *thd, renderer_writelock *rl )
     {
@@ -729,9 +541,9 @@ namespace dragonpoop
     }
     
     //generate renderer gui
-    renderer_gui *renderer::genGui( gui_writelock *ml )
+    renderer_gui_man *renderer::genGuiMan(  dptaskpool_writelock *tp )
     {
-        return new renderer_gui( ml );
+        return 0;
     }
     
     //returns fps
@@ -763,27 +575,14 @@ namespace dragonpoop
     {
         return 0;
     }
-    
-    //return guis
-    void renderer::getChildrenGuis( std::list<renderer_gui *> *ll, dpid pid )
-    {
-        std::list<renderer_gui *> *l;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( p->compareParentId( pid ) )
-                ll->push_back( p );
-        }
-    }
 
     //process mouse input
     void renderer::processMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb )
     {
         float w, h;
+        renderer_gui_man_writelock *l;
+        shared_obj_guard o;
+        dpxyz_f t;
         
         w = this->getWidth();
         h = this->getHeight();
@@ -794,162 +593,30 @@ namespace dragonpoop
         y = ( 2.0f * y ) - 1.0f;
         y = -y;
         
-        if( this->processGuiMouseInput( r, x, y, lb, rb ) )
-            return;
-    }
-    
-    //process mouse input
-    bool renderer::processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb )
-    {
-        std::list<renderer_gui *> *l, lz, d;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        renderer_gui_writelock *pl;
-        shared_obj_guard o;
-        dpid nid;
-        int max_z, z;
-        dpxyz_f t;
-        
         t.x = x;
         t.y = y;
         t.z = 0;
         this->m_gui_undo.transform( &t );
         
-        l = &this->guis;
-        nid = dpid_null();
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( p->compareParentId( nid ) )
-                lz.push_back( p );
-        }
+        l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 1000, "renderer::processMouseInput" );
+        if( !l )
+            return;
         
-        max_z = 0;
-        l = &lz;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            z = p->getZ();
-            if( z > max_z )
-                max_z = z;
-        }
-        max_z++;
-
-        this->hover_gui = dpid_null();
-        for( z = 0; z < max_z; z++ )
-        {
-            l = &lz;
-            for( i = l->begin(); i != l->end(); ++i )
-            {
-                p = *i;
-                if( z != p->getZ() )
-                    continue;
-                pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiMouseInput" );
-                if( !pl )
-                    continue;
-                if( pl->processMouse( r, t.x, t.y, lb, rb ) )
-                {
-                    this->hover_gui = pl->getHoverId();
-                    return 1;
-                }
-                d.push_back( p );
-            }
-            
-            l = &d;
-            for( i = l->begin(); i != l->end(); ++i )
-            {
-                p = *i;
-                lz.remove( p );
-            }
-            d.clear();
-        }
-        
-        return 0;
-    }
-    
-    //get hovering gui id
-    dpid renderer::getHoverId( void )
-    {
-        return this->hover_gui;
+        if( l->processGuiMouseInput( t.x, t.y, lb, rb ) )
+            return;
     }
     
     //process keyboard input
     void renderer::processKbInput( std::string *skey_name, bool isDown )
     {
-        this->processGuiKbInput( skey_name, isDown );
-    }
-    
-    //process gui keyboard input
-    void renderer::processGuiKbInput( std::string *skey_name, bool isDown )
-    {
-        std::list<renderer_gui *> *l;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        renderer_gui_writelock *pl;
+        renderer_gui_man_writelock *l;
         shared_obj_guard o;
-        
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiKbInput" );
-            if( !pl )
-                return;
-            if( !pl->compareId( this->focus_gui ) )
-                continue;
-            pl->processKb( skey_name, isDown );
+
+        l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 1000, "renderer::processMouseInput" );
+        if( !l )
             return;
-        }
-    }
-    
-    //gets selected text from gui (copy or cut)
-    bool renderer::getSelectedText( std::string *s, bool bDoCut )
-    {
-        std::list<renderer_gui *> *l;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        renderer_gui_writelock *pl;
-        shared_obj_guard o;
-        
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::getSelectedText" );
-            if( !pl )
-                return 0;
-            if( !pl->compareId( this->focus_gui ) )
-                continue;
-            pl->getSelectedText( s, bDoCut );
-            return 1;
-        }
-        
-        return 0;
-    }
-    
-    //sets selected text in gui (paste)
-    bool renderer::setSelectedText( std::string *s )
-    {
-        std::list<renderer_gui *> *l;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        renderer_gui_writelock *pl;
-        shared_obj_guard o;
-        
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::setSelectedText" );
-            if( !pl )
-                return 0;
-            if( !pl->compareId( this->focus_gui ) )
-                continue;
-            pl->setSelectedText( s );
-            return 1;
-        }
-        
-        return 0;
+
+        l->processGuiKbInput( skey_name, isDown );
     }
     
     //gets camera position
@@ -997,6 +664,32 @@ namespace dragonpoop
             return;
         
         gl->addRenderer( new openglx_1o5_renderer_factory() );
+    }
+    
+    //gets selected text from gui (copy or cut)
+    bool renderer::getSelectedText( std::string *s, bool bDoCut )
+    {
+        shared_obj_guard o;
+        renderer_gui_man_writelock *l;
+        
+        l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 100, "renderer::getSelectedText" );
+        if( !l )
+            return 0;
+        
+        return l->getSelectedText( s, bDoCut );
+    }
+    
+    //sets selected text in gui (paste)
+    bool renderer::setSelectedText( std::string *s )
+    {
+        shared_obj_guard o;
+        renderer_gui_man_writelock *l;
+        
+        l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 100, "renderer::setSelectedText" );
+        if( !l )
+            return 0;
+        
+        return l->setSelectedText( s );
     }
     
 };

@@ -63,10 +63,6 @@ namespace dragonpoop
         unsigned int getTextureMemory( void );
         //get vertex memory used
         unsigned int getVertexMemory( void );
-        //return guis
-        void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
-        //get hovering gui id
-        dpid getHoverId( void );
         //gets camera position
         void getCameraPosition( dpposition *p );
         //sync camera position

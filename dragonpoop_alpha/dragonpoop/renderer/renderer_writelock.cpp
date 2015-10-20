@@ -83,18 +83,6 @@ namespace dragonpoop
         return this->t->getVertexMemory();
     }
     
-    //return guis
-    void renderer_writelock::getChildrenGuis( std::list<renderer_gui *> *l, dpid pid )
-    {
-        this->t->getChildrenGuis( l, pid );
-    }
-    
-    //get hovering gui id
-    dpid renderer_writelock::getHoverId( void )
-    {
-        return this->t->getHoverId();
-    }
-    
     //gets camera position
     void renderer_writelock::getCameraPosition( dpposition *p )
     {

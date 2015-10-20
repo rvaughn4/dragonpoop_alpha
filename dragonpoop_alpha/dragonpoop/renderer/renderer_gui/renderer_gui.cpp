@@ -10,6 +10,8 @@
 #include "../renderer_writelock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 #include "../../core/dpthread/dpthread_lock.h"
+#include "renderer_gui_man_writelock.h"
+#include "renderer_gui_man_readlock.h"
 
 #include <thread>
 
@@ -75,27 +77,19 @@ namespace dragonpoop
         return new renderer_gui_ref( (renderer_gui *)p, k );
     }
     
-    //run gui
-    void renderer_gui::run( dpthread_lock *thd, renderer_gui_writelock *g )
+    //run gui from background task
+    void renderer_gui::runFromTask( dpthread_lock *thd, renderer_gui_writelock *g, renderer_gui_man_writelock *ml )
     {
         gui_readlock *pl;
         shared_obj_guard o;
         dpbitmap *bm;
-        uint64_t t;
-        
         
         if( this->bSyncBg || this->bSyncFg || this->bSyncPos )
         {
 
-            t = thd->getTicks();
-            if( !this->bSyncPos && t - this->t_last_tex_update < 100 )
-                return;
-            this->t_last_tex_update = t;
-            
-            pl = (gui_readlock *)o.tryReadLock( this->g, 100, "renderer_gui::run" );
+            pl = (gui_readlock *)o.tryReadLock( this->g, 100, "renderer_gui::runFromTask" );
             if( pl )
             {
-                
                 if( this->bSyncPos )
                 {
                     this->pid = pl->getParentId();
@@ -108,6 +102,7 @@ namespace dragonpoop
                     this->z = pl->getZ();
                     this->updateVb( g, pl, &this->pos );
                     this->bSyncPos = 0;
+                    this->bSyncPosRen = 1;
                 }
                 
                 if( this->bHasBg && this->bSyncBg )
@@ -115,6 +110,7 @@ namespace dragonpoop
                     bm = pl->getBg();
                     this->updateBg( g, pl, bm );
                     this->bSyncBg = 0;
+                    this->bSyncBgRen = 1;
                 }
                 
                 if( this->bHasFg && this->bSyncFg )
@@ -122,14 +118,50 @@ namespace dragonpoop
                     bm = pl->getFg();
                     this->updateFg( g, pl, bm );
                     this->bSyncFg = 0;
+                    this->bSyncFgRen = 1;
+                }
+            }
+        }
+    }
+    
+    //run gui from renderer task
+    void renderer_gui::runFromRenderer( dpthread_lock *thd, renderer_gui_writelock *g, renderer_gui_man_writelock *ml, renderer_writelock *rl )
+    {
+        gui_readlock *pl;
+        shared_obj_guard o;
+        dpbitmap *bm;
+        
+        if( this->bSyncBgRen || this->bSyncFgRen || this->bSyncPosRen )
+        {
+            pl = (gui_readlock *)o.tryReadLock( this->g, 100, "renderer_gui::runFromRenderer" );
+            if( pl )
+            {
+                
+                if( this->bSyncPosRen )
+                {
+                    this->updateVbInRender( g, pl, &this->pos );
+                    this->bSyncPosRen = 0;
                 }
                 
+                if( this->bHasBg && this->bSyncBgRen )
+                {
+                    bm = pl->getBg();
+                    this->updateBgInRender( g, pl, bm );
+                    this->bSyncBgRen = 0;
+                }
+                
+                if( this->bHasFg && this->bSyncFgRen )
+                {
+                    bm = pl->getFg();
+                    this->updateFgInRender( g, pl, bm );
+                    this->bSyncFgRen = 0;
+                }
             }
         }        
     }
     
     //render model
-    void renderer_gui::render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world )
+    void renderer_gui::render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, renderer_gui_man_readlock *ml, dpmatrix *m_world )
     {
         std::list<renderer_gui *> l;
         std::list<renderer_gui *>::iterator i;
@@ -142,7 +174,7 @@ namespace dragonpoop
         mat.multiply( &this->mat );
         r->renderGui( thd, m, &mat );
 
-        r->getChildrenGuis( &l, this->id );
+        ml->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
@@ -150,7 +182,7 @@ namespace dragonpoop
             if( !pl )
                 continue;
             if( !pl->compareId( this->id ) )
-                pl->render( thd, r, m_world );
+                pl->render( thd, r, ml, m_world );
         }
     }
     
@@ -198,6 +230,24 @@ namespace dragonpoop
     
     //override to handle fg texture update
     void renderer_gui::updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
+    {
+        
+    }
+    
+    //override to handle bg texture update in renderer task
+    void renderer_gui::updateBgInRender( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
+    {
+        
+    }
+    
+    //override to handle fg texture update in renderer task
+    void renderer_gui::updateFgInRender( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm )
+    {
+        
+    }
+    
+    //override to handle vb update in renderer task
+    void renderer_gui::updateVbInRender( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p )
     {
         
     }

@@ -4,6 +4,7 @@
 #include "openglx_1o5_renderer_writelock.h"
 #include "openglx_1o5_renderer_ref.h"
 #include "../../core/core.h"
+#include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui_man.h"
 #include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui.h"
 #include "openglx_1o5_renderer_gui/openglx_1o5_renderer_gui_readlock.h"
 #include "openglx_1o5_renderer_model/openglx_1o5_renderer_model.h"
@@ -42,7 +43,7 @@ namespace dragonpoop
         this->_kill();
 
         o.tryWriteLock( this, 5000, "openglx_1o5_renderer::~openglx_1o5_renderer" );
-        this->deleteGuis();
+
         this->deleteModels();
         o.unlock();
         this->unlink();
@@ -454,9 +455,9 @@ namespace dragonpoop
     }
     
     //generate renderer gui
-    renderer_gui *openglx_1o5_renderer::genGui( gui_writelock *ml )
+    renderer_gui_man *openglx_1o5_renderer::genGuiMan( dptaskpool_writelock *tp )
     {
-        return new openglx_1o5_renderer_gui( ml, this );
+        return new openglx_1o5_renderer_gui_man( this->getCore(), this, tp );
     }
 
     //draw vb

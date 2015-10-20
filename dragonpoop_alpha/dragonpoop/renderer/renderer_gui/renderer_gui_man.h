@@ -26,6 +26,7 @@ namespace dragonpoop
     class gui_man_ref;
     class renderer_writelock;
     class dpmatrix;
+    class gui_writelock;
     
     class renderer_gui_man : public shared_obj
     {
@@ -61,15 +62,15 @@ namespace dragonpoop
         //run from manager thread
         void runFromTask( dpthread_lock *thd, renderer_gui_man_writelock *g );
         //run from renderer thread
-        void runFromRenderer( dpthread_lock *thd, renderer_gui_man_writelock *g );
+        void runFromRenderer( dpthread_lock *thd, renderer_gui_man_writelock *g, renderer_writelock *rl );
         //delete guis
         void deleteGuis( void );
         //render guis
-        void renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
+        void renderGuis( dpthread_lock *thd, renderer_writelock *rl, renderer_gui_man_readlock *ml, dpmatrix *m_world );
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //process mouse input
-        bool processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb );
+        bool processGuiMouseInput( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb );
         //get hovering gui id
         dpid getHoverId( void );
         //process gui keyboard input

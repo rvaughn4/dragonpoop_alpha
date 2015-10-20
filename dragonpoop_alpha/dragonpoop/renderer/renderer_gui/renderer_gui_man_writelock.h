@@ -38,15 +38,13 @@ namespace dragonpoop
         //run from manager thread
         void runFromTask( dpthread_lock *thd );
         //run from renderer thread
-        void runFromRenderer( dpthread_lock *thd );
+        void runFromRenderer( dpthread_lock *thd, renderer_writelock *rl );
         //delete guis
         void deleteGuis( void );
-        //render guis
-        void renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //process mouse input
-        bool processGuiMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb );
+        bool processGuiMouseInput( float x, float y, bool lb, bool rb );
         //get hovering gui id
         dpid getHoverId( void );
         //process gui keyboard input

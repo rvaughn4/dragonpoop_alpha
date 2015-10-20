@@ -19,6 +19,7 @@ namespace dragonpoop
     class gui_readlock;
     class dpmatrix;
     class renderer_gui_man_writelock;
+    class renderer_gui_man_readlock;
     
     class renderer_gui : public shared_obj
     {
@@ -30,7 +31,7 @@ namespace dragonpoop
         bool bHasFg, bHasBg, bIsAlive, bIsHover, bIsEdit, bIsFade;
         gui_dims pos;
         gui_ref *g;
-        std::atomic<bool> bSyncPos, bSyncBg, bSyncFg;
+        std::atomic<bool> bSyncPos, bSyncBg, bSyncFg, bSyncBgRen, bSyncFgRen, bSyncPosRen;
         dpmatrix mat, undo_mat;
         unsigned int z;
         float hv, opacity, fade, clickfade;
@@ -45,8 +46,10 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
-        //run gui
-        void run( dpthread_lock *thd, renderer_gui_writelock *g );
+        //run gui from background task
+        void runFromTask( dpthread_lock *thd, renderer_gui_writelock *g, renderer_gui_man_writelock *ml );
+        //run gui from renderer task
+        void runFromRenderer( dpthread_lock *thd, renderer_gui_writelock *g, renderer_gui_man_writelock *ml, renderer_writelock *rl );
         //compares id
         bool compareId( dpid id );
         //get dimensions
@@ -63,6 +66,12 @@ namespace dragonpoop
         virtual void updateFg( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
         //override to handle vb update
         virtual void updateVb( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p );
+        //override to handle bg texture update in renderer task
+        virtual void updateBgInRender( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        //override to handle fg texture update in renderer task
+        virtual void updateFgInRender( renderer_gui_writelock *rl, gui_readlock *gl, dpbitmap *bm );
+        //override to handle vb update in renderer task
+        virtual void updateVbInRender( renderer_gui_writelock *rl, gui_readlock *gl, gui_dims *p );
         //called to force pos update
         void syncPos( void );
         //called to force bg update
@@ -70,7 +79,7 @@ namespace dragonpoop
         //called to force fg update
         void syncFg( void );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world );
+        void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, renderer_gui_man_readlock *ml, dpmatrix *m_world );
         //redo matrix
         void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, renderer_gui_writelock *m, dpmatrix *p_matrix );
         //process mouse input
