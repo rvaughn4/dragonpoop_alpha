@@ -5,7 +5,7 @@ namespace dragonpoop
 {
     
     //ctor
-    window::window( float w, float h )
+    window::window( float w, float h, const char *ctitle )
     {
         
     }

@@ -16,7 +16,7 @@ namespace dragonpoop
         
 
         //ctor
-        window( float w, float h );
+        window( float w, float h, const char *ctitle );
         //dtor
         virtual ~window( void );
         //run window
