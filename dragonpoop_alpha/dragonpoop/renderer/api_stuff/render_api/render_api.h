@@ -18,16 +18,14 @@ namespace dragonpoop
         
     protected:
         
+        //generate read lock
+        virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
+        //generate write lock
+        virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
+        //generate ref
+        virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //returns window
         window *getWindow( void );
-        
-    public:
-        
-        
-        //ctor
-        render_api( window *w, dpmutex_master *mm );
-        //dtor
-        virtual ~render_api( void );
         //run api
         virtual void run( void );
         //returns true if window is open
@@ -37,6 +35,16 @@ namespace dragonpoop
         //returns window height
         float getHeight( void );
         
+    public:
+        
+        //ctor
+        render_api( window *w, dpmutex_master *mm );
+        //dtor
+        virtual ~render_api( void );
+
+        friend class render_api_ref;
+        friend class render_api_readlock;
+        friend class render_api_writelock;
     };
     
 };

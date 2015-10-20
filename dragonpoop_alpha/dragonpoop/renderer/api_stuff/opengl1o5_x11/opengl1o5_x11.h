@@ -9,6 +9,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#define opengl1o5_x11_max_contexts 4
+
 namespace dragonpoop
 {
     
@@ -21,11 +23,14 @@ namespace dragonpoop
         Display *dpy;
         int screen;
         Window win;
-        GLXContext ctx;
-        int x, y;
+        GLXContext ctx, shared_ctx[ opengl1o5_x11_max_contexts ];
+        int x, y, ctx_used;
         unsigned int width, height;
         unsigned int depth;
         bool bIsOpen;
+        
+        //return next fee context
+        GLXContext getNextCtx( void );
 
     protected:
         

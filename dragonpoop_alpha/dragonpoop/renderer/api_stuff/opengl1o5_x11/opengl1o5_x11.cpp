@@ -10,8 +10,9 @@ namespace dragonpoop
     opengl1o5_x11::opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm ) : render_api( new x11_window( w, h, ctitle ), mm )
     {
         Window winDummy;
-        unsigned int borderDummy;
+        unsigned int borderDummy, i;
 
+        this->ctx_used = 0;
         this->w = (x11_window *)this->getWindow();
         this->bIsOpen = this->w->isOpen();
         if( !this->bIsOpen )
@@ -25,6 +26,8 @@ namespace dragonpoop
         this->ctx = glXCreateContext( this->dpy, this->w->getVi(), 0, GL_TRUE );
         if( !this->ctx )
             return;
+        for( i = 0; i < opengl1o5_x11_max_contexts; i++ )
+            this->shared_ctx[ i ] = glXCreateContext( this->dpy, this->w->getVi(), this->ctx, GL_TRUE );
     
         //male context active
         glXMakeCurrent( this->dpy, this->win, this->ctx );
@@ -56,9 +59,13 @@ namespace dragonpoop
     //dtor
     opengl1o5_x11::~opengl1o5_x11( void )
     {
+        int i;
+        
         if( this->dpy && this->ctx )
         {
             glXMakeCurrent( this->dpy, None, 0 );
+            for( i = 0; i < opengl1o5_x11_max_contexts; i++ )
+                glXDestroyContext( this->dpy, this->shared_ctx[ i ] );
             glXDestroyContext( this->dpy, this->ctx );
         }
     }
@@ -67,10 +74,6 @@ namespace dragonpoop
     void opengl1o5_x11::run( void )
     {
         this->render_api::run();
-        glClearColor( (float)rand() / RAND_MAX, (float)rand() / RAND_MAX, (float)rand() / RAND_MAX, 1 );
-        glClearDepth( 1.0f );
-        glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT );
-        glXSwapBuffers( this->dpy, this->win );
     }
     
     //returns true if window is open
@@ -80,5 +83,22 @@ namespace dragonpoop
             return 0;
         return this->bIsOpen;
     }
+    
+    //return next fee context
+    GLXContext opengl1o5_x11::getNextCtx( void )
+    {
+        GLXContext r;
+        
+        while( this->ctx_used < opengl1o5_x11_max_contexts )
+        {
+            r = this->shared_ctx[ this->ctx_used ];
+            this->ctx_used++;
+            if( r )
+                return r;
+        }
+        
+        return 0;
+    }
+    
 
 };
