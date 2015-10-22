@@ -5,9 +5,14 @@
 #include "../../../core/shared_obj/shared_obj.h"
 #include "../../../core/dpmutex/dpmutex_master.h"
 #include "../window/window.h"
+#include <list>
 
 namespace dragonpoop
 {
+    
+    class render_api_context;
+    class render_api_context_ref;
+    class render_api_writelock;
     
     class render_api : public shared_obj
     {
@@ -15,6 +20,8 @@ namespace dragonpoop
     private:
         
         window *w;
+        dpmutex_master *mm;
+        std::list<render_api_context *> contexts;
         
     protected:
         
@@ -34,6 +41,12 @@ namespace dragonpoop
         float getWidth( void );
         //returns window height
         float getHeight( void );
+        //make context
+        render_api_context_ref *getContext( render_api_writelock *al );
+        //generate context
+        virtual render_api_context *genContext( render_api_writelock *al );
+        //delete contexts
+        void deleteContexts( void );
         
     public:
         

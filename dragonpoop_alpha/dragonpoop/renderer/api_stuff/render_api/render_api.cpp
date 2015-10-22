@@ -3,6 +3,10 @@
 #include "render_api_ref.h"
 #include "render_api_readlock.h"
 #include "render_api_writelock.h"
+#include "../../../core/shared_obj/shared_obj_guard.h"
+#include "render_api_context.h"
+#include "render_api_context_ref.h"
+#include "render_api_context_writelock.h"
 
 namespace dragonpoop
 {
@@ -11,6 +15,7 @@ namespace dragonpoop
     render_api::render_api( window *w, dpmutex_master *mm ) : shared_obj( mm )
     {
         this->w = w;
+        this->mm = mm;
     }
     
     //dtor
@@ -65,6 +70,54 @@ namespace dragonpoop
     window *render_api::getWindow( void )
     {
         return this->w;
+    }
+    
+    //make context
+    render_api_context_ref *render_api::getContext( render_api_writelock *al )
+    {
+        render_api_context *c;
+        render_api_context_writelock *l;
+        shared_obj_guard o;
+        
+        c = this->genContext( al );
+        if( !c )
+            return 0;
+        this->contexts.push_back( c );
+        
+        l = (render_api_context_writelock *)o.tryWriteLock( c, 1000, "render_api::getContext" );
+        if( !l )
+            return 0;
+        
+        return (render_api_context_ref *)l->getRef();
+    }
+    
+    //generate context
+    render_api_context *render_api::genContext( render_api_writelock *al )
+    {
+        return new render_api_context( al, this->mm );
+    }
+    
+    //delete contexts
+    void render_api::deleteContexts( void )
+    {
+        std::list<render_api_context *> *l, d;
+        std::list<render_api_context *>::iterator i;
+        render_api_context *p;
+        
+        l = &this->contexts;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
     }
     
 };

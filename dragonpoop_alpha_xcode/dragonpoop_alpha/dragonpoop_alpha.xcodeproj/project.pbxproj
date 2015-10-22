@@ -317,6 +317,10 @@
 		79FD4D6D1BCFDBA800126995 /* model_man_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FD4D651BCFDBA800126995 /* model_man_task.cpp */; };
 		79FD4D6E1BCFDBA800126995 /* model_man_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FD4D671BCFDBA800126995 /* model_man_writelock.cpp */; };
 		79FD4D6F1BCFDBA800126995 /* model_man.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FD4D691BCFDBA800126995 /* model_man.cpp */; };
+		79FDF64D1BD8D9B90018AC5D /* render_api_indexbuffer_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FDF6451BD8D9B90018AC5D /* render_api_indexbuffer_readlock.cpp */; };
+		79FDF64E1BD8D9B90018AC5D /* render_api_indexbuffer_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FDF6471BD8D9B90018AC5D /* render_api_indexbuffer_ref.cpp */; };
+		79FDF64F1BD8D9B90018AC5D /* render_api_indexbuffer_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FDF6491BD8D9B90018AC5D /* render_api_indexbuffer_writelock.cpp */; };
+		79FDF6501BD8D9B90018AC5D /* render_api_indexbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FDF64B1BD8D9B90018AC5D /* render_api_indexbuffer.cpp */; };
 		79FE3BAE1BC156B60092CDAE /* gui_factory_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FE3BA61BC156B60092CDAE /* gui_factory_readlock.cpp */; };
 		79FE3BAF1BC156B60092CDAE /* gui_factory_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FE3BA81BC156B60092CDAE /* gui_factory_ref.cpp */; };
 		79FE3BB01BC156B60092CDAE /* gui_factory_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FE3BAA1BC156B60092CDAE /* gui_factory_writelock.cpp */; };
@@ -1057,6 +1061,14 @@
 		79FD4D681BCFDBA800126995 /* model_man_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_man_writelock.h; sourceTree = "<group>"; };
 		79FD4D691BCFDBA800126995 /* model_man.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_man.cpp; sourceTree = "<group>"; };
 		79FD4D6A1BCFDBA800126995 /* model_man.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_man.h; sourceTree = "<group>"; };
+		79FDF6451BD8D9B90018AC5D /* render_api_indexbuffer_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_indexbuffer_readlock.cpp; sourceTree = "<group>"; };
+		79FDF6461BD8D9B90018AC5D /* render_api_indexbuffer_readlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_indexbuffer_readlock.h; sourceTree = "<group>"; };
+		79FDF6471BD8D9B90018AC5D /* render_api_indexbuffer_ref.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_indexbuffer_ref.cpp; sourceTree = "<group>"; };
+		79FDF6481BD8D9B90018AC5D /* render_api_indexbuffer_ref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_indexbuffer_ref.h; sourceTree = "<group>"; };
+		79FDF6491BD8D9B90018AC5D /* render_api_indexbuffer_writelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_indexbuffer_writelock.cpp; sourceTree = "<group>"; };
+		79FDF64A1BD8D9B90018AC5D /* render_api_indexbuffer_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_indexbuffer_writelock.h; sourceTree = "<group>"; };
+		79FDF64B1BD8D9B90018AC5D /* render_api_indexbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_indexbuffer.cpp; sourceTree = "<group>"; };
+		79FDF64C1BD8D9B90018AC5D /* render_api_indexbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_indexbuffer.h; sourceTree = "<group>"; };
 		79FE3BA61BC156B60092CDAE /* gui_factory_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gui_factory_readlock.cpp; sourceTree = "<group>"; };
 		79FE3BA71BC156B60092CDAE /* gui_factory_readlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gui_factory_readlock.h; sourceTree = "<group>"; };
 		79FE3BA81BC156B60092CDAE /* gui_factory_ref.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gui_factory_ref.cpp; sourceTree = "<group>"; };
@@ -1249,10 +1261,6 @@
 				790C4D311BD6B1CE009BCF7E /* render_api_context_writelock.h */,
 				790C4D2A1BD6B1CE009BCF7E /* render_api_context.cpp */,
 				790C4D2B1BD6B1CE009BCF7E /* render_api_context.h */,
-				790C4D321BD6B1CE009BCF7E /* render_api_readlock.cpp */,
-				790C4D331BD6B1CE009BCF7E /* render_api_readlock.h */,
-				790C4D341BD6B1CE009BCF7E /* render_api_ref.cpp */,
-				790C4D351BD6B1CE009BCF7E /* render_api_ref.h */,
 				790C4D381BD6B1CE009BCF7E /* render_api_shader_readlock.cpp */,
 				790C4D391BD6B1CE009BCF7E /* render_api_shader_readlock.h */,
 				790C4D3A1BD6B1CE009BCF7E /* render_api_shader_ref.cpp */,
@@ -1277,6 +1285,18 @@
 				790C4D4D1BD6B1CE009BCF7E /* render_api_vertexbuffer_writelock.h */,
 				790C4D461BD6B1CE009BCF7E /* render_api_vertexbuffer.cpp */,
 				790C4D471BD6B1CE009BCF7E /* render_api_vertexbuffer.h */,
+				79FDF6451BD8D9B90018AC5D /* render_api_indexbuffer_readlock.cpp */,
+				79FDF6461BD8D9B90018AC5D /* render_api_indexbuffer_readlock.h */,
+				79FDF6471BD8D9B90018AC5D /* render_api_indexbuffer_ref.cpp */,
+				79FDF6481BD8D9B90018AC5D /* render_api_indexbuffer_ref.h */,
+				79FDF6491BD8D9B90018AC5D /* render_api_indexbuffer_writelock.cpp */,
+				79FDF64A1BD8D9B90018AC5D /* render_api_indexbuffer_writelock.h */,
+				79FDF64B1BD8D9B90018AC5D /* render_api_indexbuffer.cpp */,
+				79FDF64C1BD8D9B90018AC5D /* render_api_indexbuffer.h */,
+				790C4D321BD6B1CE009BCF7E /* render_api_readlock.cpp */,
+				790C4D331BD6B1CE009BCF7E /* render_api_readlock.h */,
+				790C4D341BD6B1CE009BCF7E /* render_api_ref.cpp */,
+				790C4D351BD6B1CE009BCF7E /* render_api_ref.h */,
 				790C4D4E1BD6B1CE009BCF7E /* render_api_writelock.cpp */,
 				790C4D4F1BD6B1CE009BCF7E /* render_api_writelock.h */,
 				790C4D1E1BD6B1CE009BCF7E /* render_api.cpp */,
@@ -2481,6 +2501,7 @@
 				79F63AE61BCD00E100C56E38 /* dpland_state_make_model.cpp in Sources */,
 				7970E96E1B64F26E008E8328 /* dptaskpool.cpp in Sources */,
 				7970E9721B64F26E008E8328 /* dpthread.cpp in Sources */,
+				79FDF64E1BD8D9B90018AC5D /* render_api_indexbuffer_ref.cpp in Sources */,
 				791CA2011BD0141C00FEF40B /* gui_man_writelock.cpp in Sources */,
 				79F63AE91BCD00E100C56E38 /* dpland_state_run_medium.cpp in Sources */,
 				79FE3BB91BC17C800092CDAE /* root_gui_factory.cpp in Sources */,
@@ -2537,6 +2558,7 @@
 				790C4D701BD6B1CE009BCF7E /* render_api_vertexbuffer_readlock.cpp in Sources */,
 				79FE3BB11BC156B60092CDAE /* gui_factory.cpp in Sources */,
 				79E7447C1B6D02D9005BFDE0 /* model_loader_state.cpp in Sources */,
+				79FDF64F1BD8D9B90018AC5D /* render_api_indexbuffer_writelock.cpp in Sources */,
 				790C4D561BD6B1CE009BCF7E /* opengl1o5_x11.cpp in Sources */,
 				79203D971BC92B7300FD8C6B /* dpposition.cpp in Sources */,
 				79B931621B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp in Sources */,
@@ -2737,6 +2759,7 @@
 				794610F31B6D42CE00311E86 /* model_loader_ms3d_state_parse_header.cpp in Sources */,
 				79145C4A1BCA7DE900DC5434 /* dpactor_model_state_make_high.cpp in Sources */,
 				790C4D811BD6B55A009BCF7E /* render_api_command_set_indexbuffer.cpp in Sources */,
+				79FDF64D1BD8D9B90018AC5D /* render_api_indexbuffer_readlock.cpp in Sources */,
 				791CA2111BD0553600FEF40B /* renderer_gui_man.cpp in Sources */,
 				7900CFBF1BB70EE200F1CE55 /* openglx_1o5_renderer_gui.cpp in Sources */,
 				799FC1721B756F6F00E1A212 /* renderer_model_ref.cpp in Sources */,
@@ -2758,6 +2781,7 @@
 				79F107271B6ED076000723E4 /* model_instance_writelock.cpp in Sources */,
 				791CA20E1BD0553600FEF40B /* renderer_gui_man_ref.cpp in Sources */,
 				7970E99C1B64F26E008E8328 /* renderer_task.cpp in Sources */,
+				79FDF6501BD8D9B90018AC5D /* render_api_indexbuffer.cpp in Sources */,
 				79B4C4B81BCB2F950003C080 /* dpactor_animate_state_walk.cpp in Sources */,
 				7970E9601B64F26E008E8328 /* multibytetree.cpp in Sources */,
 				794610EF1B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.cpp in Sources */,
