@@ -41,4 +41,16 @@ namespace dragonpoop
         return this->t->getHeight();
     }
     
+    //make context
+    render_api_context_ref *render_api_writelock::getContext( void )
+    {
+        return this->t->getContext( this );
+    }
+    
+    //delete contexts
+    void render_api_writelock::deleteContexts( void )
+    {
+        this->t->deleteContexts();
+    }
+    
 };

@@ -7,6 +7,7 @@
 namespace dragonpoop
 {
     class render_api;
+    class render_api_context_ref;
     
     class render_api_writelock : public shared_obj_writelock
     {
@@ -32,6 +33,10 @@ namespace dragonpoop
         float getWidth( void );
         //returns window height
         float getHeight( void );
+        //make context
+        render_api_context_ref *getContext( void );
+        //delete contexts
+        void deleteContexts( void );
 
         friend class render_api;
     };

@@ -21,6 +21,13 @@ namespace dragonpoop
     //dtor
     render_api::~render_api( void )
     {
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "render_api_context::~render_api_context" );
+        o.unlock();
+        this->unlink();
+
+        this->deleteContexts();
         delete this->w;
     }
     
@@ -79,7 +86,7 @@ namespace dragonpoop
         render_api_context_writelock *l;
         shared_obj_guard o;
         
-        c = this->genContext( al );
+        c = this->genContext( al, this->mm );
         if( !c )
             return 0;
         this->contexts.push_back( c );
@@ -92,9 +99,9 @@ namespace dragonpoop
     }
     
     //generate context
-    render_api_context *render_api::genContext( render_api_writelock *al )
+    render_api_context *render_api::genContext( render_api_writelock *al, dpmutex_master *mm )
     {
-        return new render_api_context( al, this->mm );
+        return new render_api_context( al, mm );
     }
     
     //delete contexts

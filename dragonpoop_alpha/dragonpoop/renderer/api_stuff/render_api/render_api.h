@@ -41,10 +41,10 @@ namespace dragonpoop
         float getWidth( void );
         //returns window height
         float getHeight( void );
+        //generate context
+        virtual render_api_context *genContext( render_api_writelock *al, dpmutex_master *mm );
         //make context
         render_api_context_ref *getContext( render_api_writelock *al );
-        //generate context
-        virtual render_api_context *genContext( render_api_writelock *al );
         //delete contexts
         void deleteContexts( void );
         
