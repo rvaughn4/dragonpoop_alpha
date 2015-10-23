@@ -57,7 +57,7 @@ namespace dragonpoop
     //dtor
     render_api_command_set_texture::~render_api_command_set_texture( void )
     {
-        
+        delete this->r;
     }
     
     //compile command

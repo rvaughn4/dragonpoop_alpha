@@ -3,6 +3,8 @@
 #define dragonpoop_render_api_commandlist_h
 
 #include "render_api.h"
+#include "../../../gfx/dpmatrix/dpmatrix.h"
+
 #include <atomic>
 
 namespace dragonpoop
@@ -22,12 +24,13 @@ namespace dragonpoop
         
     private:
         
-        std::atomic<bool> bIsCompiled, bIsExecuted;
+        std::atomic<bool> bIsCompiled;
         std::list<render_api_command *> cmds;
         render_api_shader_ref *sdr;
         render_api_texture_ref *t0, *t1;
         render_api_vertexbuffer_ref *vb;
         render_api_indexbuffer_ref *ib;
+        dpmatrix m;
         
     protected:
         
@@ -37,8 +40,6 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
-        //returns true if ready to be compiled
-        bool isReadyForCompile( void );
         //returns true if ready to be executed
         bool isReadyForExecute( void );
         //compile command list
@@ -51,10 +52,8 @@ namespace dragonpoop
         virtual void drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib );
         //execute command list
         virtual void execute( render_api_context_writelock *r );
-        //makes ready for execution (call after done compiling commands)
-        void makeReadyForExecute( void );
-        //makes ready for compiling (call after done executing)
-        void makeReadyForCompile( void );
+        //set current matrix
+        void cmd_setMatrix( dpmatrix *m );
         //set current shader
         void cmd_setShader( render_api_shader_ref *r );
         //set current texture 0
@@ -69,6 +68,19 @@ namespace dragonpoop
         void cmd_draw( render_api_context_writelock *ctx );
         //delete commands
         void deleteCommands( void );
+        
+        //set shader command
+        
+        //set texture command
+        
+        //set vertex buffer command
+        
+        //set index buffer command
+        
+        //set matrix command
+        
+        //draw command
+
         
     public:
         

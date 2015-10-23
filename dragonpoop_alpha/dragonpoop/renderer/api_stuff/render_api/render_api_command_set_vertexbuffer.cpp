@@ -54,7 +54,7 @@ namespace dragonpoop
     //dtor
     render_api_command_set_vertexbuffer::~render_api_command_set_vertexbuffer( void )
     {
-        
+        delete this->r;
     }
     
     //compile command

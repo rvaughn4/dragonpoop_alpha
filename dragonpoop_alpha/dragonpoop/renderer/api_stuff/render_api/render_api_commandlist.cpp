@@ -15,7 +15,6 @@ namespace dragonpoop
     render_api_commandlist::render_api_commandlist( dpmutex_master *mm ) : shared_obj( mm )
     {
         this->bIsCompiled = 0;
-        this->bIsExecuted = 1;
     }
     
     //dtor
@@ -48,12 +47,6 @@ namespace dragonpoop
         return new render_api_commandlist_ref( (render_api_commandlist *)p, k );
     }
     
-    //returns true if ready to be compiled
-    bool render_api_commandlist::isReadyForCompile( void )
-    {
-        return this->bIsExecuted;
-    }
-    
     //returns true if ready to be executed
     bool render_api_commandlist::isReadyForExecute( void )
     {
@@ -84,6 +77,7 @@ namespace dragonpoop
         }
         
         this->endCompile( ctxl );
+        this->bIsCompiled = 1;
     }
     
     //called at begin of compile
@@ -107,20 +101,6 @@ namespace dragonpoop
     //execute command list
     void render_api_commandlist::execute( render_api_context_writelock *r )
     {
-    }
-    
-    //makes ready for execution (call after done compiling commands)
-    void render_api_commandlist::makeReadyForExecute( void )
-    {
-        this->bIsCompiled = 1;
-        this->bIsExecuted = 0;
-    }
-    
-    //makes ready for compiling (call after done executing)
-    void render_api_commandlist::makeReadyForCompile( void )
-    {
-        this->bIsCompiled = 0;
-        this->bIsExecuted = 1;
     }
     
     //set current shader
@@ -157,6 +137,12 @@ namespace dragonpoop
     void render_api_commandlist::cmd_draw( render_api_context_writelock *ctx )
     {
         this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib );
+    }
+    
+    //set current matrix
+    void render_api_commandlist::cmd_setMatrix( dpmatrix *m )
+    {
+        this->m.copy( m );
     }
     
     //delete commands

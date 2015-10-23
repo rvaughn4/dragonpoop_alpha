@@ -54,7 +54,7 @@ namespace dragonpoop
     //dtor
     render_api_command_set_indexbuffer::~render_api_command_set_indexbuffer( void )
     {
-        
+        delete this->r;
     }
     
     //compile command

@@ -54,7 +54,7 @@ namespace dragonpoop
     //dtor
     render_api_command_set_shader::~render_api_command_set_shader( void )
     {
-        
+        delete this->r;
     }
     
     //compile command

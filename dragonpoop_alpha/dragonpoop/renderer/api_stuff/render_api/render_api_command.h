@@ -11,6 +11,7 @@ namespace dragonpoop
     class render_api_texture_ref;
     class render_api_vertexbuffer_ref;
     class render_api_indexbuffer_ref;
+    class dpmatrix;
     
     class render_api_command
     {
@@ -21,6 +22,8 @@ namespace dragonpoop
         
     protected:
         
+        //set matrix
+        void setMatrix( dpmatrix *m );
         //set current shader
         void setShader( render_api_shader_ref *r );
         //set current texture 0

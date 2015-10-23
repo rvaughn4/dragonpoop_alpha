@@ -15,6 +15,7 @@
 		7900CFC21BB70EE200F1CE55 /* openglx_1o5_renderer_gui_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7900CFBC1BB70EE200F1CE55 /* openglx_1o5_renderer_gui_writelock.cpp */; };
 		79020BCC1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79020BCA1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.cpp */; };
 		79020BCF1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79020BCD1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp */; };
+		79046DD61BDAEF0B00E681B0 /* render_api_command_set_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79046DD41BDAEF0B00E681B0 /* render_api_command_set_matrix.cpp */; };
 		7906ABAD1B9B5773002C26A2 /* model_saver_ms3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906AB851B9B5773002C26A2 /* model_saver_ms3d.cpp */; };
 		7906ABD81B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABBC1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_animation.cpp */; };
 		7906ABD91B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7906ABBE1B9B5AA1002C26A2 /* model_saver_ms3d_state_make_frames.cpp */; };
@@ -367,6 +368,8 @@
 		79020BCB1B7DFC3A00B3318C /* model_loader_ms3d_state_make_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_animation.h; sourceTree = "<group>"; };
 		79020BCD1B7E059200B3318C /* model_loader_ms3d_state_make_joints.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_joints.cpp; sourceTree = "<group>"; };
 		79020BCE1B7E059200B3318C /* model_loader_ms3d_state_make_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_joints.h; sourceTree = "<group>"; };
+		79046DD41BDAEF0B00E681B0 /* render_api_command_set_matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_command_set_matrix.cpp; sourceTree = "<group>"; };
+		79046DD51BDAEF0B00E681B0 /* render_api_command_set_matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_command_set_matrix.h; sourceTree = "<group>"; };
 		7906AB851B9B5773002C26A2 /* model_saver_ms3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_saver_ms3d.cpp; sourceTree = "<group>"; };
 		7906AB861B9B5773002C26A2 /* model_saver_ms3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d.h; sourceTree = "<group>"; };
 		7906AB871B9B5773002C26A2 /* model_saver_ms3d_animation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_saver_ms3d_animation.h; sourceTree = "<group>"; };
@@ -1239,6 +1242,8 @@
 				790C4D791BD6B55A009BCF7E /* render_api_command_set_indexbuffer.h */,
 				790C4D7A1BD6B55A009BCF7E /* render_api_command_set_shader.cpp */,
 				790C4D7B1BD6B55A009BCF7E /* render_api_command_set_shader.h */,
+				79046DD41BDAEF0B00E681B0 /* render_api_command_set_matrix.cpp */,
+				79046DD51BDAEF0B00E681B0 /* render_api_command_set_matrix.h */,
 				790C4D7C1BD6B55A009BCF7E /* render_api_command_set_texture.cpp */,
 				790C4D7D1BD6B55A009BCF7E /* render_api_command_set_texture.h */,
 				790C4D7E1BD6B55A009BCF7E /* render_api_command_set_vertexbuffer.cpp */,
@@ -2530,6 +2535,7 @@
 				79145C4F1BCA7DE900DC5434 /* dpactor_model_state_run_med.cpp in Sources */,
 				79145C481BCA7DE900DC5434 /* dpactor_model_state_load_low.cpp in Sources */,
 				79F703C91BCE8BA900B35B8B /* dpactor_man_writelock.cpp in Sources */,
+				79046DD61BDAEF0B00E681B0 /* render_api_command_set_matrix.cpp in Sources */,
 				791CA2141BD0593B00FEF40B /* renderer_factory.cpp in Sources */,
 				7974FF041B842576003BC1EE /* model_loader_ms3d_state_make_frames.cpp in Sources */,
 				7907597E1BD0F38900F9D2F1 /* renderer_state_start_model.cpp in Sources */,

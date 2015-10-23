@@ -58,5 +58,11 @@ namespace dragonpoop
     {
         this->l->cmd_draw( ctx );
     }
+    
+    //set matrix
+    void render_api_command::setMatrix( dpmatrix *m )
+    {
+        this->l->cmd_setMatrix( m );
+    }
 
 };
