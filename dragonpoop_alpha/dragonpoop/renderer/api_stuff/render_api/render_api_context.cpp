@@ -54,26 +54,51 @@ namespace dragonpoop
     //generate commandlist
     render_api_commandlist *render_api_context::genCmdList( render_api_context_writelock *cl, dpmutex_master *mm )
     {
-        return 0;//new render_api_commandlist( cl, mm );
+        return new render_api_commandlist( mm );
     }
     
     //make commandlist
     render_api_commandlist_ref *render_api_context::makeCmdList( render_api_context_writelock *cl )
     {
-     /*   shared_obj_guard o;
+        shared_obj_guard o;
         render_api_commandlist *c;
         render_api_commandlist_writelock *l;
         
         
         c = this->genCmdList( cl, this->mm );
-       */
-        return 0;
+        if( !c )
+            return 0;
+        this->cmds.push_back( c );
+        
+        l = (render_api_commandlist_writelock *)o.tryWriteLock( c, 1000, "render_api_context::makeCmdList" );
+        if( !l )
+            return 0;
+        
+        return (render_api_commandlist_ref *)l->getRef();
     }
     
     //delete commandlists
     void render_api_context::deleteCmdLists( void )
     {
+        std::list<render_api_commandlist *> *l, d;
+        std::list<render_api_commandlist *>::iterator i;
+        render_api_commandlist *p;
         
+        l = &this->cmds;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+
     }
     
 };

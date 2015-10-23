@@ -3,7 +3,6 @@
 #define dragonpoop_render_api_commandlist_h
 
 #include "render_api.h"
-
 #include <atomic>
 
 namespace dragonpoop
@@ -23,7 +22,6 @@ namespace dragonpoop
         
     private:
         
-        render_api_ref *r;
         std::atomic<bool> bIsCompiled, bIsExecuted;
         std::list<render_api_command *> cmds;
         render_api_shader_ref *sdr;
@@ -52,35 +50,37 @@ namespace dragonpoop
         //called during compile for each draw call
         virtual void drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib );
         //execute command list
-        virtual void execute( render_api_ref *r );
+        virtual void execute( render_api_context_writelock *r );
         //makes ready for execution (call after done compiling commands)
         void makeReadyForExecute( void );
         //makes ready for compiling (call after done executing)
         void makeReadyForCompile( void );
         //set current shader
-        void setShader( render_api_shader_ref *r );
+        void cmd_setShader( render_api_shader_ref *r );
         //set current texture 0
-        void setTexture0( render_api_texture_ref *r );
+        void cmd_setTexture0( render_api_texture_ref *r );
         //set current texture 1
-        void setTexture1( render_api_texture_ref *r );
+        void cmd_setTexture1( render_api_texture_ref *r );
         //set current vertex buffer
-        void setVertexBuffer( render_api_vertexbuffer_ref *r );
+        void cmd_setVertexBuffer( render_api_vertexbuffer_ref *r );
         //set current index buffer
-        void setIndexBuffer( render_api_indexbuffer_ref *r );
+        void cmd_setIndexBuffer( render_api_indexbuffer_ref *r );
+        //draw
+        void cmd_draw( render_api_context_writelock *ctx );
         //delete commands
         void deleteCommands( void );
         
     public:
         
         //ctor
-        render_api_commandlist( render_api *r, dpmutex_master *mm );
+        render_api_commandlist( dpmutex_master *mm );
         //dtor
         virtual ~render_api_commandlist( void );
       
-        
         friend class render_api_commandlist_ref;
         friend class render_api_commandlist_readlock;
         friend class render_api_commandlist_writelock;
+        friend class render_api_command;
     };
     
 };
