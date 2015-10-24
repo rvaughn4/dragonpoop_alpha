@@ -24,9 +24,9 @@ namespace dragonpoop
     protected:
         
         //generate renderer
-        virtual renderer *genRenderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp ) = 0;
+        virtual renderer *genRenderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp );
         //test renderer
-        virtual bool testRenderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp ) = 0;
+        virtual bool testRenderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp );
         
     public:
         

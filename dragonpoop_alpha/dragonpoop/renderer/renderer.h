@@ -36,6 +36,8 @@ namespace dragonpoop
     class dptaskpool_ref;
     class renderer_gui_man;
     class renderer_model_man;
+    class render_api;
+    class render_api_context_ref;
 
     class renderer : public shared_obj
     {
@@ -49,6 +51,8 @@ namespace dragonpoop
         renderer_gui_man *rgui_mgr;
         renderer_model_man *rmodel_mgr;
         dptaskpool_ref *tp;
+        render_api *api;
+        render_api_context_ref *main_ctx;
         
         std::atomic<bool> bDoRun, bIsRun;
         
@@ -116,16 +120,10 @@ namespace dragonpoop
         virtual unsigned int getWidth( void );
         //return screen/window height
         virtual unsigned int getHeight( void );
-        //set viewport size
-        virtual void setViewport( unsigned int w, unsigned int h );
-        //clear screen with color
-        virtual void clearScreen( float r, float g, float b );
         //prepare for rendering world
         virtual void prepareWorldRender( unsigned int w, unsigned int h );
         //prepare for rendering gui
         virtual void prepareGuiRender( unsigned int w, unsigned int h );
-        //flip backbuffer and present scene to screen
-        virtual void flipBuffer( void );
         //generate renderer model
         virtual renderer_model_man *genModelMan( dptaskpool_writelock *tp );
         //generate renderer gui manager
@@ -140,10 +138,6 @@ namespace dragonpoop
         virtual unsigned int getTextureMemory( void );
         //get vertex memory used
         virtual unsigned int getVertexMemory( void );
-        //render model instance group
-        virtual void renderGroup( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world ) = 0;
-        //render gui
-        virtual void renderGui( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, dpmatrix *m_world ) = 0;
         //process mouse input
         void processMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb );
         //process keyboard input
@@ -158,6 +152,8 @@ namespace dragonpoop
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)
         bool setSelectedText( std::string *s );
+        //generate render api
+        virtual render_api *genRenderApi( dpmutex_master *mm );
 
     public:
 

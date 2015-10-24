@@ -1,5 +1,7 @@
 
 #include "renderer_factory.h"
+#include "../core/core.h"
+#include "renderer.h"
 
 namespace dragonpoop
 {
@@ -54,6 +56,18 @@ namespace dragonpoop
     int renderer_factory::getScore( void )
     {
         return this->score;
+    }
+    
+    //generate renderer
+    renderer *renderer_factory::genRenderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp )
+    {
+        return new renderer( c, g, tp );
+    }
+    
+    //test renderer
+    bool renderer_factory::testRenderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp )
+    {
+        return 1;
     }
     
 };

@@ -37,6 +37,16 @@ namespace dragonpoop
         render_api_commandlist_ref *makeCmdList( render_api_context_writelock *cl );
         //delete commandlists
         void deleteCmdLists( void );
+        //clear screen
+        virtual void clearColor( float r, float g, float b );
+        //clear depth
+        virtual void clearDepth( float f );
+        //present backbuffer
+        virtual void flipBackBuffer( void );
+        //make context active in thread
+        virtual void makeActive( void );
+        //set viewport
+        virtual void setViewport( float w, float h );
         
     public:
         

@@ -34,6 +34,9 @@ namespace dragonpoop
 
     protected:
         
+        //generate context
+        virtual render_api_context *genContext( render_api_writelock *al, dpmutex_master *mm );
+        
     public:
         
         

@@ -180,7 +180,7 @@ namespace dragonpoop
         
         mat.copy( m_world );
         mat.multiply( &this->mat );
-        r->renderGui( thd, m, &mat );
+        //r->renderGui( thd, m, &mat );
 
         ml->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )

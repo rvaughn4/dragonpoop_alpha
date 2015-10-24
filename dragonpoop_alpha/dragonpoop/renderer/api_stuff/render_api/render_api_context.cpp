@@ -101,4 +101,34 @@ namespace dragonpoop
 
     }
     
+    //clear screen
+    void render_api_context::clearColor( float r, float g, float b )
+    {
+        
+    }
+    
+    //clear depth
+    void render_api_context::clearDepth( float f )
+    {
+        
+    }
+    
+    //present backbuffer
+    void render_api_context::flipBackBuffer( void )
+    {
+        
+    }
+    
+    //make context active in thread
+    void render_api_context::makeActive( void )
+    {
+        
+    }
+    
+    //set viewport
+    void render_api_context::setViewport( float w, float h )
+    {
+        
+    }
+    
 };

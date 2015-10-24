@@ -49,10 +49,6 @@ namespace dragonpoop
         void kill( void );
         //run renderer from task
         void run( dptask_writelock *tskl, dpthread_lock *thd );
-        //render model instance group
-        void renderGroup( dpthread_lock *thd, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world );
-        //render gui
-        void renderGui( dpthread_lock *thd, renderer_gui_readlock *m, dpmatrix *m_world );
         //returns fps
         float getFps( void );
         //return ms each frame

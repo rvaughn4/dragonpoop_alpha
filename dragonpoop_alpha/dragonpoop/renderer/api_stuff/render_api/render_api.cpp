@@ -7,6 +7,18 @@
 #include "render_api_context.h"
 #include "render_api_context_ref.h"
 #include "render_api_context_writelock.h"
+#include "render_api_shader.h"
+#include "render_api_shader_ref.h"
+#include "render_api_shader_writelock.h"
+#include "render_api_texture.h"
+#include "render_api_texture_ref.h"
+#include "render_api_texture_writelock.h"
+#include "render_api_vertexbuffer.h"
+#include "render_api_vertexbuffer_ref.h"
+#include "render_api_vertexbuffer_writelock.h"
+#include "render_api_indexbuffer.h"
+#include "render_api_indexbuffer_ref.h"
+#include "render_api_indexbuffer_writelock.h"
 
 namespace dragonpoop
 {
@@ -27,6 +39,10 @@ namespace dragonpoop
         o.unlock();
         this->unlink();
 
+        this->deleteIndexBuffers();
+        this->deleteShaders();
+        this->deleteTextures();
+        this->deleteVertexBuffers();
         this->deleteContexts();
         delete this->w;
     }
@@ -112,6 +128,198 @@ namespace dragonpoop
         render_api_context *p;
         
         l = &this->contexts;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    
+    //gen shader
+    render_api_shader *render_api::genShader( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, const char *cname )
+    {
+        return 0;
+    }
+    
+    //gen texture
+    render_api_texture *render_api::genTexture( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, dpbitmap *bm )
+    {
+        return 0;
+    }
+    
+    //gen vertex buffer
+    render_api_vertexbuffer *render_api::genVertexBuffer( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, dpvertex_buffer *vb )
+    {
+        return 0;
+    }
+    
+    //gen index buffer
+    render_api_indexbuffer *render_api::genIndexBuffer( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, dpindex_buffer *vb )
+    {
+        return 0;
+    }
+    
+    //make shader
+    render_api_shader_ref *render_api::makeShader( render_api_writelock *al, render_api_context_writelock *cl, const char *cname )
+    {
+        shared_obj_guard o;
+        render_api_shader_writelock *l;
+        render_api_shader *c;
+        
+        c = this->genShader( this->mm, al, cl, cname );
+        if( !c )
+            return 0;
+        this->shaders.push_back( c );
+        
+        l = (render_api_shader_writelock *)o.tryWriteLock( c, 1000, "render_api::makeShader" );
+        if( !l )
+            return 0;
+        
+        return (render_api_shader_ref *)l->getRef();
+    }
+    
+    //make texture
+    render_api_texture_ref *render_api::makeTexture( render_api_writelock *al, render_api_context_writelock *cl, dpbitmap *bm )
+    {
+        shared_obj_guard o;
+        render_api_texture_writelock *l;
+        render_api_texture *c;
+        
+        c = this->genTexture( this->mm, al, cl, bm );
+        if( !c )
+            return 0;
+        this->textures.push_back( c );
+        
+        l = (render_api_texture_writelock *)o.tryWriteLock( c, 1000, "render_api::makeTexture" );
+        if( !l )
+            return 0;
+        
+        return (render_api_texture_ref *)l->getRef();
+    }
+    
+    //make vertex buffer
+    render_api_vertexbuffer_ref *render_api::makeVertexBuffer( render_api_writelock *al, render_api_context_writelock *cl, dpvertex_buffer *vb )
+    {
+        shared_obj_guard o;
+        render_api_vertexbuffer_writelock *l;
+        render_api_vertexbuffer *c;
+        
+        c = this->genVertexBuffer( this->mm, al, cl, vb );
+        if( !c )
+            return 0;
+        this->vertexbuffers.push_back( c );
+        
+        l = (render_api_vertexbuffer_writelock *)o.tryWriteLock( c, 1000, "render_api::makeVertexBuffer" );
+        if( !l )
+            return 0;
+        
+        return (render_api_vertexbuffer_ref *)l->getRef();
+    }
+    
+    //make index buffer
+    render_api_indexbuffer_ref *render_api::makeIndexBuffer( render_api_writelock *al, render_api_context_writelock *cl, dpindex_buffer *vb )
+    {
+        shared_obj_guard o;
+        render_api_indexbuffer_writelock *l;
+        render_api_indexbuffer *c;
+        
+        c = this->genIndexBuffer( this->mm, al, cl, vb );
+        if( !c )
+            return 0;
+        this->indexbuffers.push_back( c );
+        
+        l = (render_api_indexbuffer_writelock *)o.tryWriteLock( c, 1000, "render_api::makeIndexBuffer" );
+        if( !l )
+            return 0;
+        
+        return (render_api_indexbuffer_ref *)l->getRef();
+    }
+    
+    //delete shaders
+    void render_api::deleteShaders( void )
+    {
+        std::list<render_api_shader *> *l, d;
+        std::list<render_api_shader *>::iterator i;
+        render_api_shader *p;
+        
+        l = &this->shaders;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    
+    //delete textures
+    void render_api::deleteTextures( void )
+    {
+        std::list<render_api_texture *> *l, d;
+        std::list<render_api_texture *>::iterator i;
+        render_api_texture *p;
+        
+        l = &this->textures;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    
+    //delete vertex buffers
+    void render_api::deleteVertexBuffers( void )
+    {
+        std::list<render_api_vertexbuffer *> *l, d;
+        std::list<render_api_vertexbuffer *>::iterator i;
+        render_api_vertexbuffer *p;
+        
+        l = &this->vertexbuffers;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+    
+    //delete index buffers
+    void render_api::deleteIndexBuffers( void )
+    {
+        std::list<render_api_indexbuffer *> *l, d;
+        std::list<render_api_indexbuffer *>::iterator i;
+        render_api_indexbuffer *p;
+        
+        l = &this->indexbuffers;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;

@@ -7,6 +7,7 @@
 namespace dragonpoop
 {
     class render_api_context;
+    class render_api_commandlist_ref;
     
     class render_api_context_writelock : public shared_obj_writelock
     {
@@ -24,7 +25,21 @@ namespace dragonpoop
         
     public:
         
-        
+        //make commandlist
+        render_api_commandlist_ref *makeCmdList( void );
+        //delete commandlists
+        void deleteCmdLists( void );
+        //clear screen
+        void clearColor( float r, float g, float b );
+        //clear depth
+        void clearDepth( float f );
+        //present backbuffer
+        void flipBackBuffer( void );
+        //make context active in thread
+        void makeActive( void );
+        //set viewport
+        void setViewport( float w, float h );
+
         friend class render_api_context;
     };
     

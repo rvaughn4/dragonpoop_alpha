@@ -1,7 +1,8 @@
 
 #include "opengl1o5_x11.h"
+#include "opengl1o5_x11_context.h"
+#include "../../../core/shared_obj/shared_obj_guard.h"
 
-#include <random>
 
 namespace dragonpoop
 {
@@ -60,6 +61,17 @@ namespace dragonpoop
     opengl1o5_x11::~opengl1o5_x11( void )
     {
         int i;
+        shared_obj_guard o;
+        
+        o.tryWriteLock( this, 5000, "opengl1o5_x11::~opengl1o5_x11" );
+        this->unlink();
+        
+        o.tryWriteLock( this, 5000, "opengl1o5_x11::~opengl1o5_x11" );
+        this->deleteIndexBuffers();
+        this->deleteShaders();
+        this->deleteTextures();
+        this->deleteVertexBuffers();
+        this->deleteContexts();
         
         if( this->dpy && this->ctx )
         {
@@ -68,6 +80,8 @@ namespace dragonpoop
                 glXDestroyContext( this->dpy, this->shared_ctx[ i ] );
             glXDestroyContext( this->dpy, this->ctx );
         }
+        o.unlock();
+
     }
     
     //run api
@@ -100,5 +114,16 @@ namespace dragonpoop
         return 0;
     }
     
+    //generate context
+    render_api_context *opengl1o5_x11::genContext( render_api_writelock *al, dpmutex_master *mm )
+    {
+        GLXContext c;
+        
+        c = this->getNextCtx();
+        if( !c )
+            return 0;
+        
+        return new opengl1o5_x11_context( al, mm, c, this->win, this->dpy );
+    }
 
 };

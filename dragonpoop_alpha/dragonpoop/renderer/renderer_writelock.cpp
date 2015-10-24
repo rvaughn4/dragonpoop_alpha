@@ -40,18 +40,6 @@ namespace dragonpoop
     {
         this->t->run( tskl, thd, this );
     }
-
-    //render model instance group
-    void renderer_writelock::renderGroup( dpthread_lock *thd, renderer_model_readlock *m, renderer_model_instance_readlock *mi, renderer_model_instance_group *g, renderer_model_material *mat, dpmatrix *m_world )
-    {
-        this->t->renderGroup( thd, this, m, mi, g, mat, m_world );
-    }
-    
-    //render gui
-    void renderer_writelock::renderGui( dpthread_lock *thd, renderer_gui_readlock *m, dpmatrix *m_world )
-    {
-        this->t->renderGui( thd, this, m, m_world );
-    }
     
     //returns fps
     float renderer_writelock::getFps( void )

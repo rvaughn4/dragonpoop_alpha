@@ -40,7 +40,15 @@
 #include "renderer_model/renderer_model_man_writelock.h"
 #include "renderer_model/renderer_model_man_readlock.h"
 
-#include "openglx_1o5_renderer/openglx_1o5_renderer_factory.h"
+#include "api_stuff/render_api/render_api.h"
+#include "api_stuff/render_api/render_api_writelock.h"
+#include "api_stuff/render_api/render_api_context_ref.h"
+#include "api_stuff/render_api/render_api_context_writelock.h"
+
+#include "api_stuff/opengl1o5_x11/opengl1o5_x11.h"
+
+#include "renderer_factory.h"
+
 #include <thread>
 #include <random>
 
@@ -50,6 +58,8 @@ namespace dragonpoop
     //ctor
     renderer::renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp ) : shared_obj( c->getMutexMaster() )
     {
+        this->api = 0;
+        this->main_ctx = 0;
         this->c = c;
         this->tp = (dptaskpool_ref *)tp->getRef();
         this->g = (gfx_ref *)g->getRef();
@@ -266,17 +276,28 @@ namespace dragonpoop
         unsigned int w, h;
         uint64_t t, td;
         float f0;
-        shared_obj_guard o;
-        renderer_gui_man_readlock *gwl;
-        renderer_model_man_readlock *mwl;
-        
-        w = this->getWidth();
-        h = this->getHeight();
-        
-        this->setViewport( w, h );
-        this->clearScreen( 0.5f, 0.5f, 1.0f );
+        shared_obj_guard o, octx;
+        render_api_context_writelock *ctxl;
+        render_api_writelock *al;
+    //    renderer_gui_man_readlock *gwl;
+      //  renderer_model_man_readlock *mwl;
 
+        al = (render_api_writelock *)octx.tryWriteLock( this->api, 100, "renderer::render" );
+        if( !al )
+            return;
+        w = al->getWidth();
+        h = al->getHeight();
+
+        ctxl = (render_api_context_writelock *)octx.tryWriteLock( this->main_ctx, 100, "renderer::render" );
+        if( !ctxl )
+            return;
         
+        ctxl->makeActive();
+        ctxl->setViewport( w, h );
+        ctxl->clearColor( 0.5f, 0.5f, 1.0f );
+        ctxl->clearDepth( 1.0f );
+        
+        /*
         this->prepareWorldRender( w, h );
         mwl = (renderer_model_man_readlock *)o.tryReadLock( this->rmodel_mgr, 100, "renderer::render" );
         if( mwl )
@@ -288,8 +309,9 @@ namespace dragonpoop
         if( gwl )
             gwl->renderGuis( thd, rl, &this->m_gui );
         o.unlock();
+        */
         
-        this->flipBuffer();
+        ctxl->flipBackBuffer();
         
         this->fthiss += 1.0f;
         t = thd->getTicks();
@@ -309,17 +331,52 @@ namespace dragonpoop
     //init graphics api
     bool renderer::initApi( void )
     {
-        return 1;
+        render_api_writelock *al;
+        shared_obj_guard o;
+
+        if( this->main_ctx )
+            delete this->main_ctx;
+        this->main_ctx = 0;
+        if( this->api )
+            delete this->api;
+        
+        this->api = this->genRenderApi( this->c->getMutexMaster() );
+        if( !this->api )
+            return 0;
+        
+        al = (render_api_writelock *)o.tryWriteLock( this->api, 100, "renderer::runApi" );
+        if( !al )
+            return 0;
+
+        this->main_ctx = al->getContext();
+        return this->main_ctx != 0;
     }
 
     //deinit graphics api
     void renderer::deinitApi( void )
     {
+        if( this->main_ctx )
+            delete this->main_ctx;
+        this->main_ctx = 0;
+        if( this->api )
+            delete this->api;
+        this->api = 0;
     }
 
     //do background graphics api processing
     bool renderer::runApi( renderer_writelock *r, dpthread_lock *thd )
     {
+        render_api_writelock *al;
+        shared_obj_guard o;
+        
+        al = (render_api_writelock *)o.tryWriteLock( this->api, 100, "renderer::runApi" );
+        if( !al )
+            return 1;
+            
+        al->run();
+        if( !al->isOpen() )
+            this->c->kill();
+        
         return 1;
     }
 
@@ -333,18 +390,6 @@ namespace dragonpoop
     unsigned int renderer::getHeight( void )
     {
         return 1;
-    }
-
-    //set viewport size
-    void renderer::setViewport( unsigned int w, unsigned int h )
-    {
-
-    }
-
-    //clear screen with color
-    void renderer::clearScreen( float r, float g, float b )
-    {
-
     }
 
     //prepare for rendering world
@@ -395,22 +440,16 @@ namespace dragonpoop
         this->m_gui_undo.inverse( &this->m_gui );
     }
 
-    //flip backbuffer and present scene to screen
-    void renderer::flipBuffer( void )
-    {
-
-    }
-
     //generate renderer model
     renderer_model_man *renderer::genModelMan( dptaskpool_writelock *tp )
     {
-        return 0;
+        return new renderer_model_man( this->c, this, tp );
     }
     
     //generate renderer gui
     renderer_gui_man *renderer::genGuiMan( dptaskpool_writelock *tp )
     {
-        return 0;
+        return new renderer_gui_man( this->c, this, tp );
     }
     
     //returns fps
@@ -530,7 +569,7 @@ namespace dragonpoop
         if( !gl )
             return;
         
-        gl->addRenderer( new openglx_1o5_renderer_factory() );
+        gl->addRenderer( new renderer_factory( "derp", 1 ) );
     }
     
     //gets selected text from gui (copy or cut)
@@ -557,6 +596,12 @@ namespace dragonpoop
             return 0;
         
         return l->setSelectedText( s );
+    }
+    
+    //generate render api
+    render_api *renderer::genRenderApi( dpmutex_master *mm )
+    {
+        return new opengl1o5_x11( 1024, 724, "derp", c->getMutexMaster() );
     }
     
 };

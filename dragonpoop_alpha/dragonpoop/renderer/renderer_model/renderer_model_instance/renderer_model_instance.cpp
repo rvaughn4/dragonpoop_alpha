@@ -443,7 +443,7 @@ namespace dragonpoop
         {
             g = *i;
             mat = m->findMaterial( g->getMaterialId() );
-            r->renderGroup( thd, m, mi, g, mat, m_world );
+           // r->renderGroup( thd, m, mi, g, mat, m_world );
         }
     }
     
