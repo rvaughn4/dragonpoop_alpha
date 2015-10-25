@@ -93,7 +93,7 @@ namespace dragonpoop
     }
     
     //called during compile for each draw call
-    void render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib )
+    void render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m )
     {
         
     }
@@ -136,7 +136,7 @@ namespace dragonpoop
     //draw
     void render_api_commandlist::cmd_draw( render_api_context_writelock *ctx )
     {
-        this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib );
+        this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m );
     }
     
     //set current matrix

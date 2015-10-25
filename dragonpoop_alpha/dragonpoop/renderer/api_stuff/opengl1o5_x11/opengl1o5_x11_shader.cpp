@@ -12,6 +12,7 @@
 #include "../render_api/render_api_texture_ref.h"
 #include "../../../gfx/dpvertex/dpindex_buffer.h"
 #include "../../../gfx/dpvertex/dpvertex_buffer.h"
+#include "../../../gfx/dpmatrix/dpmatrix.h"
 
 namespace dragonpoop
 {
@@ -63,6 +64,8 @@ namespace dragonpoop
         
         bib = ibl->getBuffer();
         bvb = vbl->getBuffer();
+        
+        glLoadMatrixf( m->getRaw4by4() );
         
         if( sizeof( dpindex ) == sizeof( uint16_t ) )
         {

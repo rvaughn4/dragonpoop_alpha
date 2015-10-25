@@ -19,6 +19,8 @@ namespace dragonpoop
         
     protected:
         
+        //generate commandlist
+        virtual render_api_commandlist *genCmdList( render_api_context_writelock *cl, dpmutex_master *mm );
         //clear screen
         virtual void clearColor( float r, float g, float b );
         //clear depth

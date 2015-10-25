@@ -1,6 +1,7 @@
 
 #include "opengl1o5_x11_context.h"
 #include "render_api_context.h"
+#include "opengl1o5_x11_commandlist.h"
 
 namespace dragonpoop
 {
@@ -17,6 +18,12 @@ namespace dragonpoop
     opengl1o5_x11_context::~opengl1o5_x11_context( void )
     {
         
+    }
+    
+    //generate commandlist
+    render_api_commandlist *opengl1o5_x11_context::genCmdList( render_api_context_writelock *cl, dpmutex_master *mm )
+    {
+        return new opengl1o5_x11_commandlist( mm );
     }
     
     //clear screen
