@@ -71,4 +71,10 @@ namespace dragonpoop
         this->t->getPositionRelativeToCamera( in_obj_pos, t_epoch_now, out_xyz );
     }
 
+    //returns true if gui commandlist is set
+    bool renderer_readlock::isGuiCommandListUploaded( void )
+    {
+        return this->t->isGuiCommandListUploaded();
+    }
+ 
 };

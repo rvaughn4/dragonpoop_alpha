@@ -43,6 +43,8 @@
 #include "api_stuff/render_api/render_api_writelock.h"
 #include "api_stuff/render_api/render_api_context_ref.h"
 #include "api_stuff/render_api/render_api_context_writelock.h"
+#include "api_stuff/render_api/render_api_commandlist_ref.h"
+#include "api_stuff/render_api/render_api_commandlist_writelock.h"
 #include "renderer_factory.h"
 #include "x11_opengl_1o5_renderer/x11_opengl_1o5_renderer_factory.h"
 
@@ -74,12 +76,14 @@ namespace dragonpoop
         this->rgui_mgr = 0;
         this->rmodel_mgr = 0;
         this->cs = new renderer_state_init_api( this );
+        this->gui_cl = 0;
     }
 
     //dtor
     renderer::~renderer( void )
     {
         shared_obj_guard o;
+        render_api_commandlist_ref *cl;
 
         this->_kill();
 
@@ -88,6 +92,9 @@ namespace dragonpoop
         this->unlink();
 
         o.tryWriteLock( this, 3000, "renderer::~renderer" );
+        cl = this->gui_cl;
+        if( cl )
+            delete cl;
         delete this->tsk;
         delete this->gtsk;
         delete this->cs;
@@ -166,7 +173,7 @@ namespace dragonpoop
     {
         this->runApi( rl, thd );
         this->_syncCam();
-        renderer_gui_man::runFromRenderer( thd, this->rgui_mgr );
+
         renderer_model_man::runFromRenderer( thd, this->rmodel_mgr );
         this->render( thd, rl );
     }
@@ -610,6 +617,24 @@ namespace dragonpoop
     render_api *renderer::genRenderApi( dpmutex_master *mm )
     {
         return 0;
+    }
+    
+    //returns true if gui commandlist is set
+    bool renderer::isGuiCommandListUploaded( void )
+    {
+        render_api_commandlist_ref *cl;
+        cl = this->gui_cl;
+        return cl != 0;
+    }
+    
+    //set gui commandlist
+    void renderer::uploadGuiCommandList( render_api_commandlist_ref *cl )
+    {
+        render_api_commandlist_ref *ocl;
+        ocl = this->gui_cl;
+        if( ocl )
+            delete ocl;
+        this->gui_cl = cl;
     }
     
 };

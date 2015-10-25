@@ -7,6 +7,8 @@
 namespace dragonpoop
 {
     class render_api_commandlist;
+    class render_api_context_ref;
+    class render_api_context_writelock;
     
     class render_api_commandlist_writelock : public shared_obj_writelock
     {
@@ -24,6 +26,15 @@ namespace dragonpoop
         
     public:
         
+        //returns true if ready to be executed
+        bool isReadyForExecute( void );
+        //compile command list
+        void compile( render_api_context_writelock *ctx );
+        //execute command list
+        void execute( render_api_context_writelock *r );
+        //delete commands
+        void deleteCommands( void );
+
         
         friend class render_api_commandlist;
     };

@@ -64,5 +64,11 @@ namespace dragonpoop
     {
         return this->t->setSelectedText( s );
     }
+  
+    //render guis
+    void renderer_gui_man_writelock::renderGuis( dpthread_lock *thd, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl )
+    {
+        this->t->renderGuis( thd, this, m_world, ctx, cl );
+    }
     
 };

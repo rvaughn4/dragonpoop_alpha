@@ -16,6 +16,8 @@ namespace dragonpoop
     class renderer_gui;
     class renderer_writelock;
     class dpmatrix;
+    class render_api_context_writelock;
+    class render_api_commandlist_writelock;
     
     class renderer_gui_man_writelock : public shared_obj_writelock
     {
@@ -49,6 +51,8 @@ namespace dragonpoop
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)
         bool setSelectedText( std::string *s );
+        //render guis
+        void renderGuis( dpthread_lock *thd, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
 
         friend class renderer_gui_man;
     };

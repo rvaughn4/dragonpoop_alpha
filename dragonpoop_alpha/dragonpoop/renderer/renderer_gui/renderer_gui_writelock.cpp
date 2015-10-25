@@ -138,7 +138,7 @@ namespace dragonpoop
     }
     
     //render model
-    void renderer_gui_writelock::render( dpthread_lock *thd, renderer_gui_man_readlock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
+    void renderer_gui_writelock::render( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
         this->t->render( thd, ml, m_world, ctx, clist );
     }

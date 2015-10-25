@@ -77,7 +77,7 @@ namespace dragonpoop
         //run gui from background task
         void run( dpthread_lock *thd, render_api_context_writelock *ctx );
         //render model
-        void render( dpthread_lock *thd, renderer_gui_man_readlock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        void render( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //returns true if has focus
         bool hasFocus( void );
         //gets gui id of focused child

@@ -46,6 +46,8 @@ namespace dragonpoop
         void getCameraPosition( dpposition *p );
         //get position difference from camera
         void getPositionRelativeToCamera( dpposition *in_obj_pos, uint64_t t_epoch_now, dpxyz_f *out_xyz );
+        //returns true if gui commandlist is set
+        bool isGuiCommandListUploaded( void );
 
         friend class renderer;
     };

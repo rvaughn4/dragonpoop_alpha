@@ -23,12 +23,6 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
-    //render guis
-    void renderer_gui_man_readlock::renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
-    {
-        this->t->renderGuis( thd, rl, this, m_world );
-    }
-    
     //return guis
     void renderer_gui_man_readlock::getChildrenGuis( std::list<renderer_gui *> *l, dpid pid )
     {

@@ -35,8 +35,6 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        //render guis
-        void renderGuis( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //get hovering gui id

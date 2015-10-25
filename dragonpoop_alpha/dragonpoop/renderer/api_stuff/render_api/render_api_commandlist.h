@@ -43,7 +43,7 @@ namespace dragonpoop
         //returns true if ready to be executed
         bool isReadyForExecute( void );
         //compile command list
-        void compile( render_api_context_ref *ctx );
+        void compile( render_api_context_writelock *ctx );
         //called at begin of compile
         virtual bool beginCompile( render_api_context_writelock *ctx );
         //called at end of compile

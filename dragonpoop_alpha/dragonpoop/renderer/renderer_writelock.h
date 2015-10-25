@@ -24,6 +24,7 @@ namespace dragonpoop
     class renderer_gui;
     class dpposition;
     struct dpxyz_f;
+    class render_api_commandlist_ref;
 
     class renderer_writelock : public shared_obj_writelock
     {
@@ -65,6 +66,10 @@ namespace dragonpoop
         void syncCamera( void );
         //get position difference from camera
         void getPositionRelativeToCamera( dpposition *in_obj_pos, uint64_t t_epoch_now, dpxyz_f *out_xyz );
+        //returns true if gui commandlist is set
+        bool isGuiCommandListUploaded( void );
+        //set gui commandlist
+        void uploadGuiCommandList( render_api_commandlist_ref *cl );
 
         friend class renderer;
     };

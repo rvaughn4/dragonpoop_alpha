@@ -54,17 +54,11 @@ namespace dragonpoop
     }
     
     //compile command list
-    void render_api_commandlist::compile( render_api_context_ref *ctx )
+    void render_api_commandlist::compile( render_api_context_writelock *ctxl )
     {
         std::list<render_api_command *> *l;
         std::list<render_api_command *>::iterator i;
         render_api_command *p;
-        render_api_context_writelock *ctxl;
-        shared_obj_guard o;
-        
-        ctxl = (render_api_context_writelock *)o.tryWriteLock( ctx, 100, "render_api_commandlist::compile" );
-        if( !ctxl )
-            return;
         
         if( !this->beginCompile( ctxl ) )
             return;

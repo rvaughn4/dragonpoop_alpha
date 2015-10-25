@@ -39,6 +39,7 @@ namespace dragonpoop
     class renderer_model_man;
     class render_api;
     class render_api_context_ref;
+    class render_api_commandlist_ref;
 
     class renderer : public shared_obj
     {
@@ -56,6 +57,7 @@ namespace dragonpoop
         render_api_context_ref *main_ctx;
         
         std::atomic<bool> bDoRun, bIsRun;
+        std::atomic<render_api_commandlist_ref *> gui_cl;
         
         uint64_t t_last_m_ran, t_last_m_synced, t_last_fps, ms_each_frame;
         float fps, fthiss;
@@ -90,8 +92,6 @@ namespace dragonpoop
         void state_deinitGui( dpthread_lock *thd, renderer_writelock *rl );
         //init model manager
         void state_deinitModel( dpthread_lock *thd, renderer_writelock *rl );
-
-
         //render
         void render( dpthread_lock *thd, renderer_writelock *rl );
         //sync camera
@@ -155,6 +155,10 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //generate render api
         virtual render_api *genRenderApi( dpmutex_master *mm );
+        //returns true if gui commandlist is set
+        bool isGuiCommandListUploaded( void );
+        //set gui commandlist
+        void uploadGuiCommandList( render_api_commandlist_ref *cl );
 
     public:
 
