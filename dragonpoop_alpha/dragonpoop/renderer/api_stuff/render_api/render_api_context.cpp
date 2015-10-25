@@ -131,4 +131,56 @@ namespace dragonpoop
         
     }
     
+    //make a texture
+    render_api_texture_ref *render_api_context::makeTexture( render_api_context_writelock *cl, dpbitmap *bm )
+    {
+        shared_obj_guard o;
+        render_api_writelock *l;
+        
+        l = (render_api_writelock *)o.tryWriteLock( this->r, 1000, "render_api_context::makeTexture" );
+        if( !l )
+            return 0;
+        
+        return l->makeTexture( cl, bm );
+    }
+    
+    //make a shader
+    render_api_shader_ref *render_api_context::makeShader( render_api_context_writelock *cl, const char *cname )
+    {
+        shared_obj_guard o;
+        render_api_writelock *l;
+        
+        l = (render_api_writelock *)o.tryWriteLock( this->r, 1000, "render_api_context::makeTexture" );
+        if( !l )
+            return 0;
+        
+        return l->makeShader( cl, cname );
+    }
+    
+    //make a vertex buffer
+    render_api_vertexbuffer_ref *render_api_context::makeVertexBuffer( render_api_context_writelock *cl, dpvertex_buffer *vb )
+    {
+        shared_obj_guard o;
+        render_api_writelock *l;
+        
+        l = (render_api_writelock *)o.tryWriteLock( this->r, 1000, "render_api_context::makeTexture" );
+        if( !l )
+            return 0;
+        
+        return l->makeVertexBuffer( cl, vb );
+    }
+    
+    //make a index buffer
+    render_api_indexbuffer_ref *render_api_context::makeIndexBuffer( render_api_context_writelock *cl, dpindex_buffer *ib )
+    {
+        shared_obj_guard o;
+        render_api_writelock *l;
+        
+        l = (render_api_writelock *)o.tryWriteLock( this->r, 1000, "render_api_context::makeTexture" );
+        if( !l )
+            return 0;
+        
+        return l->makeIndexBuffer( cl, ib );
+    }
+    
 };

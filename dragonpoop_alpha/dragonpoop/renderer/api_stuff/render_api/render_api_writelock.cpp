@@ -53,4 +53,52 @@ namespace dragonpoop
         this->t->deleteContexts();
     }
     
+    //make shader
+    render_api_shader_ref *render_api_writelock::makeShader( render_api_context_writelock *cl, const char *cname )
+    {
+        return this->t->makeShader( this, cl, cname );
+    }
+    
+    //make texture
+    render_api_texture_ref *render_api_writelock::makeTexture( render_api_context_writelock *cl, dpbitmap *bm )
+    {
+        return this->t->makeTexture( this, cl, bm );
+    }
+    
+    //make vertex buffer
+    render_api_vertexbuffer_ref *render_api_writelock::makeVertexBuffer( render_api_context_writelock *cl, dpvertex_buffer *vb )
+    {
+        return this->t->makeVertexBuffer( this, cl, vb );
+    }
+    
+    //make index buffer
+    render_api_indexbuffer_ref *render_api_writelock::makeIndexBuffer( render_api_context_writelock *cl, dpindex_buffer *vb )
+    {
+        return this->t->makeIndexBuffer( this, cl, vb );
+    }
+    
+    //delete shaders
+    void render_api_writelock::deleteShaders( void )
+    {
+        this->t->deleteShaders();
+    }
+    
+    //delete textures
+    void render_api_writelock::deleteTextures( void )
+    {
+        this->t->deleteTextures();
+    }
+    
+    //delete vertex buffers
+    void render_api_writelock::deleteVertexBuffers( void )
+    {
+        this->t->deleteVertexBuffers();
+    }
+    
+    //delete index buffers
+    void render_api_writelock::deleteIndexBuffers( void )
+    {
+        this->t->deleteIndexBuffers();
+    }
+    
 };

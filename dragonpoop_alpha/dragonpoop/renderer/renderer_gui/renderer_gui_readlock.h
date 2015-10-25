@@ -15,6 +15,7 @@ namespace dragonpoop
     class dpmatrix;
     class dpvertexindex_buffer;
     class renderer_gui_man_readlock;
+    class renderer_gui_man_writelock;
     class dpmatrix;
     
     class renderer_gui_readlock : public shared_obj_readlock
@@ -49,26 +50,18 @@ namespace dragonpoop
         dpid getParentId( void );
         //compares parent id
         bool compareParentId( dpid id );
-        //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_man_readlock *ml, dpmatrix *m_world );
         //returns opacity
         float getOpacity( void );
         //return bg vb
         dpvertexindex_buffer *getBgBuffer( void );
         //return fg vb
         dpvertexindex_buffer *getFgBuffer( void );
-        //run gui from background task
-        void runFromTask( dpthread_lock *thd );
-        //run gui from renderer task
-        void runFromRenderer( dpthread_lock *thd );
         //returns true if alive
         bool isAlive( void );
         //returns true if has focus
         bool hasFocus( void );
         //gets gui id of focused child
-        bool getFocusChild( renderer_gui_man_readlock *r, dpid *fid );
-        //redo matrix
-        void redoMatrix( dpthread_lock *thd, renderer_gui_man_readlock *r, dpmatrix *p_matrix );
+        bool getFocusChild( renderer_gui_man_writelock *r, dpid *fid );
 
         friend class renderer_gui;
     };

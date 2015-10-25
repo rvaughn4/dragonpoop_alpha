@@ -27,7 +27,9 @@ namespace dragonpoop
     class renderer_writelock;
     class dpmatrix;
     class gui_writelock;
-    
+    class render_api_context_ref;
+    class render_api_commandlist_ref;
+
     class renderer_gui_man : public shared_obj
     {
         
@@ -43,6 +45,8 @@ namespace dragonpoop
         gui_man_ref *g_guis;
         dpid hover_gui, focus_gui;
         uint64_t t_last_gui_synced;
+        render_api_context_ref *ctx;
+        render_api_commandlist_ref *clist;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
@@ -83,7 +87,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp );
+        renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx );
         //dtor
         virtual ~renderer_gui_man( void );
         //return core

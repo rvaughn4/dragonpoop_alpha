@@ -27,17 +27,21 @@
 #include "../../gfx/gui/gui_readlock.h"
 #include "../../gfx/gui/gui_writelock.h"
 #include "../../core/dpbtree/dpid_btree.h"
+#include "../api_stuff/render_api/render_api_context_ref.h"
+#include "../api_stuff/render_api/render_api_context_writelock.h"
+#include "renderer_gui.h"
 
 namespace dragonpoop
 {
     
     //ctor
-    renderer_gui_man::renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp ) : shared_obj( c->getMutexMaster() )
+    renderer_gui_man::renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx ) : shared_obj( c->getMutexMaster() )
     {
         shared_obj_guard o;
         gfx_writelock *gl;
         renderer_writelock *rl;
         
+        this->ctx = ctx;
         this->c = c;
         this->tpr = (dptaskpool_ref *)tp->getRef();
         
@@ -73,6 +77,7 @@ namespace dragonpoop
         
         o.tryWriteLock( this, 5000, "renderer_gui_man::~renderer_gui_man" );
         this->_deleteTask();
+        delete this->ctx;
         delete this->r;
         delete this->g;
         delete this->g_guis;
@@ -237,8 +242,11 @@ namespace dragonpoop
             if( !gw )
                 continue;
             p = gwl->t->genGui( gw );
-            gw->setRenderer( p );
-            gwl->t->guis.push_back( p );
+            if( p )
+            {
+                gw->setRenderer( p );
+                gwl->t->guis.push_back( p );
+            }
         }
         o.unlock();
 
@@ -250,13 +258,17 @@ namespace dragonpoop
         std::list<renderer_gui *> *l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
-        renderer_gui_readlock *pl;
-        shared_obj_guard o, o1;
-        renderer_gui_man_readlock *grl;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o, o1, oc;
+        renderer_gui_man_writelock *grl;
         dpid pid;
+        render_api_context_writelock *ctxl;
 
-        grl = (renderer_gui_man_readlock *)o1.tryReadLock( g, 100, "renderer_gui_man::runFromTask" );
+        grl = (renderer_gui_man_writelock *)o1.tryReadLock( g, 100, "renderer_gui_man::runFromTask" );
         if( !grl )
+            return;
+        ctxl = (render_api_context_writelock *)oc.tryWriteLock( grl->t->ctx, 100, "renderer_gui_man::runFromTask" );
+        if( !ctxl )
             return;
         
         l = &grl->t->guis;
@@ -264,10 +276,10 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer_gui_man::runFromTask" );
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::runFromTask" );
             if( !pl )
                 continue;
-            pl->runFromTask( thd );
+            pl->run( thd, ctxl );
             if( pl->isAlive() && ( pl->hasFocus() || dpid_isZero( &grl->t->focus_gui ) ) )
             {
                 if( !pl->getFocusChild( grl, &grl->t->focus_gui ) )
@@ -304,7 +316,7 @@ namespace dragonpoop
             pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer_gui_man::runFromRenderer" );
             if( !pl )
                 continue;
-            pl->runFromRenderer( thd );
+           // pl->runFromRenderer( thd );
             if( !pl->isAlive() )
                 d.push_back( p );
         }
@@ -390,7 +402,7 @@ namespace dragonpoop
                 pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer_gui_man::renderGuis" );
                 if( !pl )
                     continue;
-                pl->render( thd, rl, ml, m_world );
+               // pl->render( thd, rl, ml, m_world );
                 d.push_back( p );
             }
             
@@ -565,7 +577,7 @@ namespace dragonpoop
     //generate renderer gui
     renderer_gui *renderer_gui_man::genGui( gui_writelock *ml )
     {
-        return 0;
+        return new renderer_gui( ml );
     }
     
 };

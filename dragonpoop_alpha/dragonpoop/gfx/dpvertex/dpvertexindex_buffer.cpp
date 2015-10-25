@@ -84,4 +84,16 @@ namespace dragonpoop
         }
     }
     
+    //get vertex buffer
+    dpvertex_buffer *dpvertexindex_buffer::getVB( void )
+    {
+        return &this->vb;
+    }
+    
+    //get index buffer
+    dpindex_buffer *dpvertexindex_buffer::getIB( void )
+    {
+        return &this->ib;
+    }
+    
 };

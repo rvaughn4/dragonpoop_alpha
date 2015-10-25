@@ -59,4 +59,28 @@ namespace dragonpoop
         this->t->setViewport( w, h );
     }
     
+    //make a texture
+    render_api_texture_ref *render_api_context_writelock::makeTexture( dpbitmap *bm )
+    {
+        return this->t->makeTexture( this, bm );
+    }
+    
+    //make a shader
+    render_api_shader_ref *render_api_context_writelock::makeShader( const char *cname )
+    {
+        return this->t->makeShader( this, cname );
+    }
+    
+    //make a vertex buffer
+    render_api_vertexbuffer_ref *render_api_context_writelock::makeVertexBuffer( dpvertex_buffer *vb )
+    {
+        return this->t->makeVertexBuffer( this, vb );
+    }
+    
+    //make a index buffer
+    render_api_indexbuffer_ref *render_api_context_writelock::makeIndexBuffer( dpindex_buffer *ib )
+    {
+        return this->t->makeIndexBuffer( this, ib );
+    }
+    
 };

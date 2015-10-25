@@ -38,6 +38,10 @@ namespace dragonpoop
         dpvertex *getVertexBuffer( unsigned int *p_size );
         //get index buffer
         dpindex *getIndexBuffer( unsigned int *p_size );
+        //get vertex buffer
+        dpvertex_buffer *getVB( void );
+        //get index buffer
+        dpindex_buffer *getIB( void );
 
     };
     

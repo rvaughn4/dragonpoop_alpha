@@ -8,7 +8,14 @@ namespace dragonpoop
 {
     class render_api_context;
     class render_api_commandlist_ref;
-    
+    class dpbitmap;
+    class dpindex_buffer;
+    class dpvertex_buffer;
+    class render_api_texture_ref;
+    class render_api_shader_ref;
+    class render_api_vertexbuffer_ref;
+    class render_api_indexbuffer_ref;
+
     class render_api_context_writelock : public shared_obj_writelock
     {
         
@@ -39,6 +46,14 @@ namespace dragonpoop
         void makeActive( void );
         //set viewport
         void setViewport( float w, float h );
+        //make a texture
+        render_api_texture_ref *makeTexture( dpbitmap *bm );
+        //make a shader
+        render_api_shader_ref *makeShader( const char *cname );
+        //make a vertex buffer
+        render_api_vertexbuffer_ref *makeVertexBuffer( dpvertex_buffer *vb );
+        //make a index buffer
+        render_api_indexbuffer_ref *makeIndexBuffer( dpindex_buffer *ib );
 
         friend class render_api_context;
     };

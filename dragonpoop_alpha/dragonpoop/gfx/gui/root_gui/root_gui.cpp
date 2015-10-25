@@ -27,9 +27,9 @@ namespace dragonpoop
         
         this->g = (gfx_ref *)g->getRef();
         
-        this->enableBg( 0 );
-        this->enableFg( 0 );
-        this->setEditMode( 0 );
+        this->enableBg( 1 );
+        this->enableFg( 1 );
+        this->setEditMode( 1 );
         this->setFade( 0 );
         this->setPosition( 0, 0 );
         this->setWidthHeight( 1920, 1080 );

@@ -12,6 +12,11 @@
 #include "../../core/dpthread/dpthread_lock.h"
 #include "renderer_gui_man_writelock.h"
 #include "renderer_gui_man_readlock.h"
+#include "../api_stuff/render_api/render_api_vertexbuffer_ref.h"
+#include "../api_stuff/render_api/render_api_indexbuffer_ref.h"
+#include "../api_stuff/render_api/render_api_texture_ref.h"
+#include "../api_stuff/render_api/render_api_context_writelock.h"
+#include "../../gfx/dpvertex/dpvertexindex_buffer.h"
 
 namespace dragonpoop
 {
@@ -39,6 +44,9 @@ namespace dragonpoop
         this->bIsAlive = 1;
         this->clickfade = 0;
         this->bIsFade = g->isFade();
+        this->render_ib_bg = this->render_ib_fg = 0;
+        this->render_tex_bg = this->render_tex_fg = 0;
+        this->render_vb_bg = this->render_vb_fg = 0;
     }
     
     //dtor
@@ -79,121 +87,6 @@ namespace dragonpoop
         return new renderer_gui_ref( (renderer_gui *)p, k );
     }
     
-    //run gui from background task
-    void renderer_gui::runFromTask( dpthread_lock *thd, renderer_gui_readlock *g )
-    {
-        gui_readlock *pl;
-        shared_obj_guard o;
-        dpbitmap *bm;
-        
-        if( this->bSyncBg || this->bSyncFg || this->bSyncPos )
-        {
-
-            pl = (gui_readlock *)o.tryReadLock( this->g, 100, "renderer_gui::runFromTask" );
-            if( pl )
-            {
-                if( this->bSyncPos )
-                {
-                    this->pid = pl->getParentId();
-                    pl->getDimensions( &this->pos );
-                    this->bHasBg = pl->hasBg();
-                    this->bHasFg = pl->hasFg();
-                    this->bIsHover = pl->isHoverable();
-                    this->bIsEdit = pl->isEditable();
-                    this->bIsFade = pl->isFade();
-                    this->z = pl->getZ();
-                    this->updateVb( g, pl, &this->pos );
-                    this->bSyncPos = 0;
-                    this->bSyncPosRen = 1;
-                }
-                
-                if( !this->bHasBg && this->bSyncBg )
-                    this->bSyncBg = 0;
-                
-                if( this->bHasBg && this->bSyncBg )
-                {
-                    bm = pl->getBg();
-                    this->updateBg( g, pl, bm );
-                    this->bSyncBg = 0;
-                    this->bSyncBgRen = 1;
-                }
-                
-                if( !this->bHasFg && this->bSyncFg )
-                    this->bSyncFg = 0;
-                
-                if( this->bHasFg && this->bSyncFg )
-                {
-                    bm = pl->getFg();
-                    this->updateFg( g, pl, bm );
-                    this->bSyncFg = 0;
-                    this->bSyncFgRen = 1;
-                }
-            }
-        }
-    }
-    
-    //run gui from renderer task
-    void renderer_gui::runFromRenderer( dpthread_lock *thd, renderer_gui_readlock *g )
-    {
-        gui_readlock *pl;
-        shared_obj_guard o;
-        dpbitmap *bm;
-        
-        if( this->bSyncBgRen || this->bSyncFgRen || this->bSyncPosRen )
-        {
-            pl = (gui_readlock *)o.tryReadLock( this->g, 100, "renderer_gui::runFromRenderer" );
-            if( pl )
-            {
-                
-                if( this->bSyncPosRen )
-                {
-                    this->updateVbInRender( g, pl, &this->pos );
-                    this->bSyncPosRen = 0;
-                }
-                
-                if( this->bHasBg && this->bSyncBgRen )
-                {
-                    bm = pl->getBg();
-                    this->updateBgInRender( g, pl, bm );
-                    this->bSyncBgRen = 0;
-                }
-                
-                if( this->bHasFg && this->bSyncFgRen )
-                {
-                    bm = pl->getFg();
-                    this->updateFgInRender( g, pl, bm );
-                    this->bSyncFgRen = 0;
-                }
-            }
-        }        
-    }
-    
-    //render model
-    void renderer_gui::render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, renderer_gui_man_readlock *ml, dpmatrix *m_world )
-    {
-        std::list<renderer_gui *> l;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        renderer_gui_readlock *pl;
-        shared_obj_guard o;
-        dpmatrix mat;
-        
-        mat.copy( m_world );
-        mat.multiply( &this->mat );
-        //r->renderGui( thd, m, &mat );
-
-        ml->getChildrenGuis( &l, this->id );
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            pl = (renderer_gui_readlock *)o.tryReadLock( p, 30, "renderer_gui::render" );
-            if( !pl )
-                continue;
-            if( !pl->compareId( this->id ) )
-                pl->render( thd, r, ml, m_world );
-        }
-    }
-    
     //returns id
     dpid renderer_gui::getId( void )
     {
@@ -228,36 +121,6 @@ namespace dragonpoop
     dpid renderer_gui::getParentId( void )
     {
         return this->pid;
-    }
-    
-    //override to handle bg texture update
-    void renderer_gui::updateBg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
-    {
-        
-    }
-    
-    //override to handle fg texture update
-    void renderer_gui::updateFg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
-    {
-        
-    }
-    
-    //override to handle vb update in renderer task
-    void renderer_gui::updateVb( renderer_gui_readlock *rl, gui_readlock *gl, gui_dims *p )
-    {
-        
-    }
-    
-    //override to handle bg texture update in renderer task
-    void renderer_gui::updateBgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
-    {
-        
-    }
-    
-    //override to handle fg texture update in renderer task
-    void renderer_gui::updateFgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm )
-    {
-        
     }
     
     //makes a box in vb
@@ -317,46 +180,6 @@ namespace dragonpoop
         vb->addVertexUnique( &b );
     }
     
-    //override to handle vb update
-    void renderer_gui::updateVbInRender( renderer_gui_readlock *rl, gui_readlock *gl, gui_dims *p )
-    {
-        dpvertexindex_buffer *vb;
-        float w, h, bw, tw;
-        
-        bw = p->border_w;
-        tw = p->border_tex_w;
-        w = p->w;
-        h = p->h;
-
-        //fg
-        vb = &this->fg_vb;
-        vb->clear();
-        makeBox( vb, 0, 0, w, h, 0, 0, 1, 1 );
-        
-        //bg
-        vb = &this->bg_vb;
-        vb->clear();
-
-        //tl
-        makeBox( vb, 0,         0,          bw,             bw,             0,          0,          tw, tw );
-        //top
-        makeBox( vb, bw,        0,          w - bw - bw,    bw,             tw,         0,          1 - tw - tw, tw );
-        //tr
-        makeBox( vb, w - bw,    0,          bw,             bw,             1 - tw,     0,          tw, tw );
-        //left
-        makeBox( vb, 0,         bw,         bw,             h - bw - bw,    0,          tw,         tw, 1 - tw - tw );
-        //center
-        makeBox( vb, bw,        bw,         w - bw - bw,    h - bw - bw,    tw,         tw,         1 - tw - tw, 1 - tw - tw );
-        //right
-        makeBox( vb, w - bw,    bw,         bw,             h - bw - bw,    1 - tw,     tw,         tw, 1 - tw - tw );
-        //bl
-        makeBox( vb, 0,         h - bw,     bw,             bw,             0,          1 - tw,     tw, tw );
-        //bottom
-        makeBox( vb, bw,        h - bw,     w - bw - bw,    bw,             tw,         1 - tw,     1 - tw - tw, tw );
-        //br
-        makeBox( vb, w - bw,    h - bw,     bw,             bw,             1 - tw,     1 - tw,     tw, tw );
-    }
-    
     //called to force pos update
     void renderer_gui::syncPos( void )
     {
@@ -376,12 +199,12 @@ namespace dragonpoop
     }
     
     //redo matrix
-    void renderer_gui::redoMatrix( dpthread_lock *thd, renderer_gui_man_readlock *r, renderer_gui_readlock *m, dpmatrix *p_matrix )
+    void renderer_gui::redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix )
     {
         std::list<renderer_gui *> l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
-        renderer_gui_readlock *pl;
+        renderer_gui_writelock *pl;
         shared_obj_guard o;
         float z;
         dpid hid;
@@ -463,7 +286,7 @@ namespace dragonpoop
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_readlock *)o.tryReadLock( p, 3, "renderer_gui::redoMatrix" );
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 3, "renderer_gui::redoMatrix" );
             if( !pl )
                 continue;
             pl->redoMatrix( thd, r, &this->mat );
@@ -566,7 +389,7 @@ namespace dragonpoop
     }
     
     //gets gui id of focused child
-    bool renderer_gui::getFocusChild( renderer_gui_man_readlock *r, dpid *fid )
+    bool renderer_gui::getFocusChild( renderer_gui_man_writelock *r, dpid *fid )
     {
         std::list<renderer_gui *> l;
         std::list<renderer_gui *>::iterator i;
@@ -636,4 +459,146 @@ namespace dragonpoop
         return this->hover_id;
     }
     
+    //run gui from background task
+    void renderer_gui::run( dpthread_lock *thd, render_api_context_writelock *ctx )
+    {
+        gui_readlock *pl;
+        shared_obj_guard o;
+        dpbitmap *bm;
+        
+        if( this->bSyncBg || this->bSyncFg || this->bSyncPos )
+        {
+            
+            pl = (gui_readlock *)o.tryReadLock( this->g, 100, "renderer_gui::runFromTask" );
+            if( pl )
+            {
+                if( this->bSyncPos )
+                {
+                    this->pid = pl->getParentId();
+                    pl->getDimensions( &this->pos );
+                    this->bHasBg = pl->hasBg();
+                    this->bHasFg = pl->hasFg();
+                    this->bIsHover = pl->isHoverable();
+                    this->bIsEdit = pl->isEditable();
+                    this->bIsFade = pl->isFade();
+                    this->z = pl->getZ();
+                    this->updateVb( &this->pos, ctx );
+                    this->bSyncPos = 0;
+                }
+                
+                if( !this->bHasBg && this->bSyncBg )
+                    this->bSyncBg = 0;
+                
+                if( this->bHasBg && this->bSyncBg )
+                {
+                    bm = pl->getBg();
+                    this->updateBg( bm, ctx );
+                    this->bSyncBg = 0;
+                }
+                
+                if( !this->bHasFg && this->bSyncFg )
+                    this->bSyncFg = 0;
+                
+                if( this->bHasFg && this->bSyncFg )
+                {
+                    bm = pl->getFg();
+                    this->updateFg( bm, ctx );
+                    this->bSyncFg = 0;
+                }
+            }
+        }
+    }
+    
+    //render model
+    void renderer_gui::render( dpthread_lock *thd, renderer_gui_man_readlock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
+    {
+        std::list<renderer_gui *> l;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+        dpmatrix mat;
+        
+        mat.copy( m_world );
+        mat.multiply( &this->mat );
+        //r->renderGui( thd, m, &mat );
+        
+        ml->getChildrenGuis( &l, this->id );
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer_gui::render" );
+            if( !pl )
+                continue;
+            if( !pl->compareId( this->id ) )
+                pl->render( thd, ml, m_world, ctx, clist );
+        }
+    }
+    
+    //override to handle bg texture update
+    void renderer_gui::updateBg( dpbitmap *bm, render_api_context_writelock *ctx )
+    {
+        if( this->render_tex_bg )
+            delete this->render_tex_bg;
+        this->render_tex_bg = ctx->makeTexture( bm );
+    }
+    
+    //override to handle fg texture update
+    void renderer_gui::updateFg( dpbitmap *bm, render_api_context_writelock *ctx )
+    {
+        if( this->render_tex_fg )
+            delete this->render_tex_fg;
+        this->render_tex_fg = ctx->makeTexture( bm );
+    }
+    
+    //override to handle vb update in renderer task
+    void renderer_gui::updateVb( gui_dims *p, render_api_context_writelock *ctx )
+    {
+        dpvertexindex_buffer vb;
+        float w, h, bw, tw;
+        
+        bw = p->border_w;
+        tw = p->border_tex_w;
+        w = p->w;
+        h = p->h;
+        
+        
+        //fg
+        makeBox( &vb, 0, 0, w, h, 0, 0, 1, 1 );
+        if( this->render_vb_fg )
+            delete this->render_vb_fg;
+        this->render_vb_fg = ctx->makeVertexBuffer( vb.getVB() );
+        if( this->render_ib_fg )
+            delete this->render_ib_fg;
+        this->render_ib_fg = ctx->makeIndexBuffer( vb.getIB() );
+        
+        //bg
+
+        //tl
+        makeBox( &vb, 0,         0,          bw,             bw,             0,          0,          tw, tw );
+        //top
+        makeBox( &vb, bw,        0,          w - bw - bw,    bw,             tw,         0,          1 - tw - tw, tw );
+        //tr
+        makeBox( &vb, w - bw,    0,          bw,             bw,             1 - tw,     0,          tw, tw );
+        //left
+        makeBox( &vb, 0,         bw,         bw,             h - bw - bw,    0,          tw,         tw, 1 - tw - tw );
+        //center
+        makeBox( &vb, bw,        bw,         w - bw - bw,    h - bw - bw,    tw,         tw,         1 - tw - tw, 1 - tw - tw );
+        //right
+        makeBox( &vb, w - bw,    bw,         bw,             h - bw - bw,    1 - tw,     tw,         tw, 1 - tw - tw );
+        //bl
+        makeBox( &vb, 0,         h - bw,     bw,             bw,             0,          1 - tw,     tw, tw );
+        //bottom
+        makeBox( &vb, bw,        h - bw,     w - bw - bw,    bw,             tw,         1 - tw,     1 - tw - tw, tw );
+        //br
+        makeBox( &vb, w - bw,    h - bw,     bw,             bw,             1 - tw,     1 - tw,     tw, tw );
+
+        if( this->render_vb_bg )
+            delete this->render_vb_bg;
+        this->render_vb_bg = ctx->makeVertexBuffer( vb.getVB() );
+        if( this->render_ib_bg )
+            delete this->render_ib_bg;
+        this->render_ib_bg = ctx->makeIndexBuffer( vb.getIB() );
+    }
+
 };

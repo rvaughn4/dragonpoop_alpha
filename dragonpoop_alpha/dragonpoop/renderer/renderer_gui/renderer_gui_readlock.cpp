@@ -65,12 +65,6 @@ namespace dragonpoop
         return this->t->compareParentId( id );
     }
     
-    //render model
-    void renderer_gui_readlock::render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_man_readlock *ml, dpmatrix *m_world )
-    {
-        this->t->render( thd, r, this, ml, m_world );
-    }
-    
     //returns opacity
     float renderer_gui_readlock::getOpacity( void )
     {
@@ -88,18 +82,6 @@ namespace dragonpoop
     {
         return this->t->getFgBuffer();
     }
-
-    //run gui from background task
-    void renderer_gui_readlock::runFromTask( dpthread_lock *thd )
-    {
-        this->t->runFromTask( thd, this );
-    }
-    
-    //run gui from renderer task
-    void renderer_gui_readlock::runFromRenderer( dpthread_lock *thd )
-    {
-        this->t->runFromRenderer( thd, this );
-    }
     
     //returns true if alive
     bool renderer_gui_readlock::isAlive( void )
@@ -114,15 +96,9 @@ namespace dragonpoop
     }
     
     //gets gui id of focused child
-    bool renderer_gui_readlock::getFocusChild( renderer_gui_man_readlock *r, dpid *fid )
+    bool renderer_gui_readlock::getFocusChild( renderer_gui_man_writelock *r, dpid *fid )
     {
         return this->t->getFocusChild( r, fid );
     }
     
-    //redo matrix
-    void renderer_gui_readlock::redoMatrix( dpthread_lock *thd, renderer_gui_man_readlock *r, dpmatrix *p_matrix )
-    {
-        this->t->redoMatrix( thd, r, this, p_matrix );
-    }
-
 };

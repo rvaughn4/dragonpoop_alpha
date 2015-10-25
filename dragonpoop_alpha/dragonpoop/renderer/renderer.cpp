@@ -446,7 +446,18 @@ namespace dragonpoop
     //generate renderer gui
     renderer_gui_man *renderer::genGuiMan( dptaskpool_writelock *tp )
     {
-        return new renderer_gui_man( this->c, this, tp );
+        shared_obj_guard o;
+        render_api_writelock *l;
+        render_api_context_ref *ctx;
+        
+        l = (render_api_writelock *)o.tryWriteLock( this->api, 5000, "renderer::genGuiMan" );
+        if( !l )
+            return 0;
+        ctx = l->getContext();
+        if( !ctx )
+            return 0;
+        
+        return new renderer_gui_man( this->c, this, tp, ctx );
     }
     
     //returns fps

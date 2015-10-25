@@ -20,6 +20,11 @@ namespace dragonpoop
     class dpmatrix;
     class renderer_gui_man_writelock;
     class renderer_gui_man_readlock;
+    class render_api_context_writelock;
+    class render_api_texture_ref;
+    class render_api_indexbuffer_ref;
+    class render_api_vertexbuffer_ref;
+    class render_api_commandlist_writelock;
     
     class renderer_gui : public shared_obj
     {
@@ -37,6 +42,9 @@ namespace dragonpoop
         float hv, opacity, fade, clickfade;
         dpvertexindex_buffer bg_vb, fg_vb;
         uint64_t t_last_tex_update;
+        render_api_texture_ref *render_tex_bg, *render_tex_fg;
+        render_api_indexbuffer_ref *render_ib_fg, *render_ib_bg;
+        render_api_vertexbuffer_ref *render_vb_fg, *render_vb_bg;
         
     protected:
         
@@ -46,10 +54,6 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
-        //run gui from background task
-        void runFromTask( dpthread_lock *thd, renderer_gui_readlock *g );
-        //run gui from renderer task
-        void runFromRenderer( dpthread_lock *thd, renderer_gui_readlock *g );
         //compares id
         bool compareId( dpid id );
         //get dimensions
@@ -60,28 +64,14 @@ namespace dragonpoop
         bool hasFg( void );
         //get parent id
         dpid getParentId( void );
-        //override to handle bg texture update
-        virtual void updateBg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
-        //override to handle fg texture update
-        virtual void updateFg( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
-        //override to handle vb update
-        virtual void updateVb( renderer_gui_readlock *rl, gui_readlock *gl, gui_dims *p );
-        //override to handle bg texture update in renderer task
-        virtual void updateBgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
-        //override to handle fg texture update in renderer task
-        virtual void updateFgInRender( renderer_gui_readlock *rl, gui_readlock *gl, dpbitmap *bm );
-        //override to handle vb update in renderer task
-        virtual void updateVbInRender( renderer_gui_readlock *rl, gui_readlock *gl, gui_dims *p );
         //called to force pos update
         void syncPos( void );
         //called to force bg update
         void syncBg( void );
         //called to force fg update
         void syncFg( void );
-        //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_gui_readlock *m, renderer_gui_man_readlock *ml, dpmatrix *m_world );
         //redo matrix
-        void redoMatrix( dpthread_lock *thd, renderer_gui_man_readlock *r, renderer_gui_readlock *m, dpmatrix *p_matrix );
+        void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix );
         //process mouse input
         bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb );
         //process kb input
@@ -95,7 +85,7 @@ namespace dragonpoop
         //returns true if has focus
         bool hasFocus( void );
         //gets gui id of focused child
-        bool getFocusChild( renderer_gui_man_readlock *r, dpid *fid );
+        bool getFocusChild( renderer_gui_man_writelock *r, dpid *fid );
         //return bg vb
         dpvertexindex_buffer *getBgBuffer( void );
         //return fg vb
@@ -106,6 +96,16 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //get hovering gui id
         dpid getHoverId( void );
+        //run gui from background task
+        void run( dpthread_lock *thd, render_api_context_writelock *ctx );
+        //render model
+        void render( dpthread_lock *thd, renderer_gui_man_readlock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        //override to handle bg texture update
+        void updateBg( dpbitmap *bm, render_api_context_writelock *ctx );
+        //override to handle fg texture update
+        void updateFg( dpbitmap *bm, render_api_context_writelock *ctx );
+        //override to handle vb update
+        void updateVb( gui_dims *p, render_api_context_writelock *ctx );
 
     public:
         

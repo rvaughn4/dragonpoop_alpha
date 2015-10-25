@@ -125,4 +125,34 @@ namespace dragonpoop
         return this->t->getHoverId();
     }
     
+    //redo matrix
+    void renderer_gui_writelock::redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix )
+    {
+        this->t->redoMatrix( thd, r, p_matrix );
+    }
+    
+    //run gui from background task
+    void renderer_gui_writelock::run( dpthread_lock *thd, render_api_context_writelock *ctx )
+    {
+        this->t->run( thd, ctx );
+    }
+    
+    //render model
+    void renderer_gui_writelock::render( dpthread_lock *thd, renderer_gui_man_readlock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
+    {
+        this->t->render( thd, ml, m_world, ctx, clist );
+    }
+    
+    //returns true if has focus
+    bool renderer_gui_writelock::hasFocus( void )
+    {
+        return this->t->hasFocus();
+    }
+    
+    //gets gui id of focused child
+    bool renderer_gui_writelock::getFocusChild( renderer_gui_man_writelock *r, dpid *fid )
+    {
+        return this->t->getFocusChild( r, fid );
+    }
+    
 };

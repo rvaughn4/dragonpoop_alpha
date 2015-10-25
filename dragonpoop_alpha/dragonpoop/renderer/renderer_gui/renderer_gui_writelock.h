@@ -16,6 +16,9 @@ namespace dragonpoop
     class dpmatrix;
     class renderer_writelock;
     class renderer_gui_man_writelock;
+    class renderer_gui_man_readlock;
+    class render_api_context_writelock;
+    class render_api_commandlist_writelock;
     
     class renderer_gui_writelock : public shared_obj_writelock
     {
@@ -69,6 +72,16 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //get hovering gui id
         dpid getHoverId( void );
+        //redo matrix
+        void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix );
+        //run gui from background task
+        void run( dpthread_lock *thd, render_api_context_writelock *ctx );
+        //render model
+        void render( dpthread_lock *thd, renderer_gui_man_readlock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        //returns true if has focus
+        bool hasFocus( void );
+        //gets gui id of focused child
+        bool getFocusChild( renderer_gui_man_writelock *r, dpid *fid );
 
         friend class renderer_gui;
     };
