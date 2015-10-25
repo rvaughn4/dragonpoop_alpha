@@ -17,13 +17,19 @@ namespace dragonpoop
         
     protected:
         
+        //generate read lock
+        virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
+        //return vb
+        dpvertex_buffer *getBuffer( void );
+        
     public:
         
         //ctor
         opengl1o5_x11_vertexbuffer( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm, dpvertex_buffer *vb );
         //dtor
         virtual ~opengl1o5_x11_vertexbuffer( void );
-        
+      
+        friend class opengl1o5_x11_vertexbuffer_readlock;
     };
     
 };

@@ -19,10 +19,13 @@ namespace dragonpoop
         void makeTex( dpbitmap *bm );
         //delete texture
         void deleteTex( void );
-        //return tex
-        unsigned int getTex( void );
         
     protected:
+        
+        //generate read lock
+        virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
+        //return tex
+        unsigned int getTex( void );
         
     public:
         

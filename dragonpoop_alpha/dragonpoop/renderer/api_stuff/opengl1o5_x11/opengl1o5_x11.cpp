@@ -133,7 +133,7 @@ namespace dragonpoop
     //gen shader
     render_api_shader *opengl1o5_x11::genShader( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, const char *cname )
     {
-        return 0;
+        return new opengl1o5_x11_shader( al, cl, mm );
     }
     
     //gen texture

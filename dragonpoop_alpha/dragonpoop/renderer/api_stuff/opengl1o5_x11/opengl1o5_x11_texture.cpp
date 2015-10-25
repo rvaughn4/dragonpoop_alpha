@@ -3,6 +3,7 @@
 #include "../../../gfx/dpbitmap/dpbitmap.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "../render_api/render_api_context_writelock.h"
+#include "opengl1o5_x11_texture_readlock.h"
 
 namespace dragonpoop
 {
@@ -26,6 +27,12 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "opengl1o5_x11_texture::~opengl1o5_x11_texture" );
         this->deleteTex();
         o.unlock();
+    }
+    
+    //generate read lock
+    shared_obj_readlock *opengl1o5_x11_texture::genReadLock( shared_obj *p, dpmutex_readlock *l )
+    {
+        return new opengl1o5_x11_texture_readlock( (opengl1o5_x11_texture *)p, l );
     }
     
     //make texture

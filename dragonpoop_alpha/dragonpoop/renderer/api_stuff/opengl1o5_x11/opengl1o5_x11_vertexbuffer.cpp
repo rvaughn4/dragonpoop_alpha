@@ -1,6 +1,7 @@
 
 #include "opengl1o5_x11_vertexbuffer.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
+#include "opengl1o5_x11_vertexbuffer_readlock.h"
 
 namespace dragonpoop
 {
@@ -23,6 +24,18 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "opengl1o5_x11_vertexbuffer::~opengl1o5_x11_vertexbuffer" );
         this->vb.clear();
         o.unlock();
+    }
+    
+    //generate read lock
+    shared_obj_readlock *opengl1o5_x11_vertexbuffer::genReadLock( shared_obj *p, dpmutex_readlock *l )
+    {
+        return new opengl1o5_x11_vertexbuffer_readlock( (opengl1o5_x11_vertexbuffer *)p, l );
+    }
+    
+    //return vb
+    dpvertex_buffer *opengl1o5_x11_vertexbuffer::getBuffer( void )
+    {
+        return &this->vb;
     }
     
 };
