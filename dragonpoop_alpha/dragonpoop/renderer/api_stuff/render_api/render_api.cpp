@@ -372,4 +372,22 @@ namespace dragonpoop
         }
     }
     
+    //returns true if mouse input is waiting
+    bool render_api::hasMouseInput( void )
+    {
+        return this->w->hasMouseInput();
+    }
+    
+    //fetches mouse input
+    bool render_api::getMouseInput( window_mouse_input *m )
+    {
+        return this->w->getMouseInput( m );
+    }
+    
+    //adds mouse input
+    void render_api::addMouseInput( window_mouse_input *m )
+    {
+        this->w->addMouseInput( m );
+    }
+    
 };

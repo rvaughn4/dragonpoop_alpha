@@ -91,7 +91,13 @@ namespace dragonpoop
         void deleteVertexBuffers( void );
         //delete index buffers
         void deleteIndexBuffers( void );
-        
+        //returns true if mouse input is waiting
+        bool hasMouseInput( void );
+        //fetches mouse input
+        bool getMouseInput( window_mouse_input *m );
+        //adds mouse input
+        void addMouseInput( window_mouse_input *m );
+
     public:
         
         //ctor

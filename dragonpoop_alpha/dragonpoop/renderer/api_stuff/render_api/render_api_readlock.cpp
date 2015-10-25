@@ -35,4 +35,10 @@ namespace dragonpoop
         return this->t->getHeight();
     }
     
+    //returns true if mouse input is waiting
+    bool render_api_readlock::hasMouseInput( void )
+    {
+        return this->t->hasMouseInput();
+    }
+    
 };

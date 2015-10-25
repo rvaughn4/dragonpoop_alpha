@@ -3,6 +3,7 @@
 #define dragonpoop_render_api_writelock_h
 
 #include "../../../core/shared_obj/shared_obj_writelock.h"
+#include "../window/window.h"
 
 namespace dragonpoop
 {
@@ -61,6 +62,12 @@ namespace dragonpoop
         void deleteVertexBuffers( void );
         //delete index buffers
         void deleteIndexBuffers( void );
+        //returns true if mouse input is waiting
+        bool hasMouseInput( void );
+        //fetches mouse input
+        bool getMouseInput( window_mouse_input *m );
+        //adds mouse input
+        void addMouseInput( window_mouse_input *m );
 
         friend class render_api;
     };

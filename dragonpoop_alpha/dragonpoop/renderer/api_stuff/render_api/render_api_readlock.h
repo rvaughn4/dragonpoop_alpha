@@ -30,7 +30,9 @@ namespace dragonpoop
         float getWidth( void );
         //returns window height
         float getHeight( void );
-        
+        //returns true if mouse input is waiting
+        bool hasMouseInput( void );
+
         friend class render_api;
     };
     

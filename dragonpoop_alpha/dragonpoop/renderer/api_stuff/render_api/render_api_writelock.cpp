@@ -101,4 +101,22 @@ namespace dragonpoop
         this->t->deleteIndexBuffers();
     }
     
+    //returns true if mouse input is waiting
+    bool render_api_writelock::hasMouseInput( void )
+    {
+        return this->t->hasMouseInput();
+    }
+    
+    //fetches mouse input
+    bool render_api_writelock::getMouseInput( window_mouse_input *m )
+    {
+        return this->t->getMouseInput( m );
+    }
+    
+    //adds mouse input
+    void render_api_writelock::addMouseInput( window_mouse_input *m )
+    {
+        this->t->addMouseInput( m );
+    }
+    
 };

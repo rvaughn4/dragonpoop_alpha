@@ -40,4 +40,28 @@ namespace dragonpoop
         return 0;
     }
 
+    //returns true if mouse input is waiting
+    bool window::hasMouseInput( void )
+    {
+        return !this->mse.empty();
+    }
+    
+    //fetches mouse input
+    bool window::getMouseInput( window_mouse_input *m )
+    {
+        if( this->mse.empty() )
+            return 0;
+        
+        *m = this->mse.front();
+        this->mse.pop();
+        
+        return 1;
+    }
+    
+    //adds mouse input
+    void window::addMouseInput( window_mouse_input *m )
+    {
+        this->mse.push( *m );
+    }
+    
 };

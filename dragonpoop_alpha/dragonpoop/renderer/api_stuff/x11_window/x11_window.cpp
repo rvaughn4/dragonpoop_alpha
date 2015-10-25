@@ -90,6 +90,7 @@ namespace dragonpoop
     void x11_window::run( void )
     {
         XEvent event;
+        window_mouse_input m;
         
         if( XPending( this->dpy ) < 1 )
             return;
@@ -109,17 +110,29 @@ namespace dragonpoop
                 }
                 break;
             case MotionNotify:
-                //this->processMouseInput( r, event.xbutton.x, event.xbutton.y, this->lb, this->rb );
+                m.x = event.xbutton.x;
+                m.y = event.xbutton.y;
+                m.lb = this->lb;
+                m.rb = this->rb;
+                this->addMouseInput( &m );
                 break;
             case ButtonPress:
                 this->lb |= event.xbutton.button == Button1;
                 this->rb |= event.xbutton.button == Button2;
-               // this->processMouseInput( r, event.xbutton.x, event.xbutton.y, this->lb, this->rb );
+                m.x = event.xbutton.x;
+                m.y = event.xbutton.y;
+                m.lb = this->lb;
+                m.rb = this->rb;
+                this->addMouseInput( &m );
                 break;
             case ButtonRelease:
                 this->lb &= event.xbutton.button != Button1;
                 this->rb &= event.xbutton.button != Button2;
-               // this->processMouseInput( r, event.xbutton.x, event.xbutton.y, this->lb, this->rb );
+                m.x = event.xbutton.x;
+                m.y = event.xbutton.y;
+                m.lb = this->lb;
+                m.rb = this->rb;
+                this->addMouseInput( &m );
                 break;
             case KeyPress:
                 //this->processKb( XLookupKeysym( &event.xkey, 0 ), 1 );
