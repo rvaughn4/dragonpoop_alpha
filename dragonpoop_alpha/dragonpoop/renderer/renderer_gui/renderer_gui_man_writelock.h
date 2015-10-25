@@ -42,7 +42,7 @@ namespace dragonpoop
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //process mouse input
-        bool processGuiMouseInput( float x, float y, bool lb, bool rb );
+        bool processGuiMouseInput( float w, float h, float x, float y, bool lb, bool rb );
         //get hovering gui id
         dpid getHoverId( void );
         //process gui keyboard input

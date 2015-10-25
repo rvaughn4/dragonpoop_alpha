@@ -36,9 +36,9 @@ namespace dragonpoop
     }
     
     //process mouse input
-    bool renderer_gui_man_writelock::processGuiMouseInput( float x, float y, bool lb, bool rb )
+    bool renderer_gui_man_writelock::processGuiMouseInput( float w, float h, float x, float y, bool lb, bool rb )
     {
-        return this->t->processGuiMouseInput( this, x, y, lb, rb );
+        return this->t->processGuiMouseInput( this, w, h, x, y, lb, rb );
     }
     
     //get hovering gui id

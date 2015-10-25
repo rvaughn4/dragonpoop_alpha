@@ -38,8 +38,10 @@ namespace dragonpoop
     class renderer_gui_man;
     class renderer_model_man;
     class render_api;
+    class render_api_writelock;
     class render_api_context_ref;
     class render_api_commandlist_ref;
+    class renderer_gui_man_writelock;
 
     class renderer : public shared_obj
     {
@@ -141,9 +143,9 @@ namespace dragonpoop
         //get vertex memory used
         virtual unsigned int getVertexMemory( void );
         //process mouse input
-        void processMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb );
+        void processMouseInput( renderer_gui_man_writelock *gl, render_api_writelock *al, float x, float y, bool lb, bool rb );
         //process keyboard input
-        void processKbInput( std::string *skey_name, bool isDown );
+        void processKbInput( renderer_gui_man_writelock *gl, std::string *skey_name, bool isDown );
         //gets camera position
         void getCameraPosition( dpposition *p );
         //sync camera position

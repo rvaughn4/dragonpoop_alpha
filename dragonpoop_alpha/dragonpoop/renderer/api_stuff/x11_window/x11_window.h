@@ -23,8 +23,10 @@ namespace dragonpoop
         XSetWindowAttributes attr;
         Atom wm_delete_window, selprop, a_targets, a_clipboard;
         int w, h;
-        bool lb, rb, bIsOpen;
+        bool lb, rb, bIsOpen, bctrl, bdocut, bshift, bcaps;
         XVisualInfo *vi;
+
+        void processKb( KeySym k, bool isDown );
 
     protected:
         

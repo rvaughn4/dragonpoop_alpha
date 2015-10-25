@@ -390,7 +390,10 @@ namespace dragonpoop
     bool renderer::runApi( renderer_writelock *r, dpthread_lock *thd )
     {
         render_api_writelock *al;
-        shared_obj_guard o;
+        shared_obj_guard o, o1;
+        window_mouse_input m;
+        window_kb_input k;
+        renderer_gui_man_writelock *gl;
         
         al = (render_api_writelock *)o.tryWriteLock( this->api, 100, "renderer::runApi" );
         if( !al )
@@ -399,6 +402,23 @@ namespace dragonpoop
         al->run();
         if( !al->isOpen() )
             this->c->kill();
+        if( !al->hasKBInput() && !al->hasMouseInput() )
+            return 1;
+        
+        gl = (renderer_gui_man_writelock *)o1.tryWriteLock( this->rgui_mgr, 100, "renderer::runApi" );
+        if( !gl )
+            return 1;
+        
+        if( al->hasMouseInput() )
+        {
+            while( al->getMouseInput( &m ) )
+                this->processMouseInput( gl, al, m.x, m.y, m.lb, m.rb );
+        }
+        if( al->hasKBInput() )
+        {
+            while( al->getKBInput( &k ) )
+                this->processKbInput( gl, &k.sname, k.bDown );
+        }
         
         return 1;
     }
@@ -517,45 +537,19 @@ namespace dragonpoop
     }
 
     //process mouse input
-    void renderer::processMouseInput( renderer_writelock *r, float x, float y, bool lb, bool rb )
+    void renderer::processMouseInput( renderer_gui_man_writelock *l, render_api_writelock *al, float x, float y, bool lb, bool rb )
     {
         float w, h;
-        renderer_gui_man_writelock *l;
-        shared_obj_guard o;
-        dpxyz_f t;
-        
-        w = this->getWidth();
-        h = this->getHeight();
-        x = x / w;
-        y = y / h;
-        
-        x = ( 2.0f * x ) - 1.0f;
-        y = ( 2.0f * y ) - 1.0f;
-        y = -y;
-        
-        t.x = x;
-        t.y = y;
-        t.z = 0;
-        this->m_gui_undo.transform( &t );
-        
-        l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 1000, "renderer::processMouseInput" );
-        if( !l )
-            return;
-        
-        if( l->processGuiMouseInput( t.x, t.y, lb, rb ) )
-            return;
+
+        w = al->getWidth();
+        h = al->getHeight();
+
+        l->processGuiMouseInput( w, h, x, y, lb, rb );
     }
     
     //process keyboard input
-    void renderer::processKbInput( std::string *skey_name, bool isDown )
+    void renderer::processKbInput( renderer_gui_man_writelock *l, std::string *skey_name, bool isDown )
     {
-        renderer_gui_man_writelock *l;
-        shared_obj_guard o;
-
-        l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 1000, "renderer::processMouseInput" );
-        if( !l )
-            return;
-
         l->processGuiKbInput( skey_name, isDown );
     }
     

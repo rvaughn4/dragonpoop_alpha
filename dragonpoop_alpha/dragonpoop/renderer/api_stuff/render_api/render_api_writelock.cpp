@@ -119,4 +119,22 @@ namespace dragonpoop
         this->t->addMouseInput( m );
     }
     
+    //returns true if kb input is waiting
+    bool render_api_writelock::hasKBInput( void )
+    {
+        return this->t->hasKBInput();
+    }
+    
+    //fetches kb input
+    bool render_api_writelock::getKBInput( window_kb_input *m )
+    {
+        return this->t->getKBInput( m );
+    }
+    
+    //adds kb input
+    void render_api_writelock::addKBInput( window_kb_input *m )
+    {
+        this->t->addKBInput( m );
+    }
+    
 };

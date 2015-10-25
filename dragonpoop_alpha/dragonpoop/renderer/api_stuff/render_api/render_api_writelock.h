@@ -68,6 +68,12 @@ namespace dragonpoop
         bool getMouseInput( window_mouse_input *m );
         //adds mouse input
         void addMouseInput( window_mouse_input *m );
+        //returns true if kb input is waiting
+        bool hasKBInput( void );
+        //fetches kb input
+        bool getKBInput( window_kb_input *m );
+        //adds kb input
+        void addKBInput( window_kb_input *m );
 
         friend class render_api;
     };

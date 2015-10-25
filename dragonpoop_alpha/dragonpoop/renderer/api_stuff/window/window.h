@@ -3,6 +3,7 @@
 #define dragonpoop_window_h
 
 #include <queue>
+#include <string>
 
 namespace dragonpoop
 {
@@ -12,6 +13,11 @@ namespace dragonpoop
         float x, y;
         bool lb, rb;
     };
+    struct window_kb_input
+    {
+        std::string sname;
+        bool bDown;
+    };
     
     class window
     {
@@ -19,6 +25,7 @@ namespace dragonpoop
     private:
         
         std::queue<window_mouse_input> mse;
+        std::queue<window_kb_input> kbe;
         
     protected:
         
@@ -43,6 +50,12 @@ namespace dragonpoop
         bool getMouseInput( window_mouse_input *m );
         //adds mouse input
         void addMouseInput( window_mouse_input *m );
+        //returns true if kb input is waiting
+        bool hasKBInput( void );
+        //fetches kb input
+        bool getKBInput( window_kb_input *m );
+        //adds kb input
+        void addKBInput( window_kb_input *m );
         
     };
     

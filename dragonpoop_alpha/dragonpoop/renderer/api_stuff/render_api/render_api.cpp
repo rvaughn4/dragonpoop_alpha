@@ -390,4 +390,22 @@ namespace dragonpoop
         this->w->addMouseInput( m );
     }
     
+    //returns true if kb input is waiting
+    bool render_api::hasKBInput( void )
+    {
+        return this->w->hasKBInput();
+    }
+    
+    //fetches kb input
+    bool render_api::getKBInput( window_kb_input *m )
+    {
+        return this->w->getKBInput( m );
+    }
+    
+    //adds kb input
+    void render_api::addKBInput( window_kb_input *m )
+    {
+        this->w->addKBInput( m );
+    }
+    
 };

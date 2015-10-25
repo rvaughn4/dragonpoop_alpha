@@ -64,4 +64,28 @@ namespace dragonpoop
         this->mse.push( *m );
     }
     
+    //returns true if kb input is waiting
+    bool window::hasKBInput( void )
+    {
+        return !this->kbe.empty();
+    }
+    
+    //fetches kb input
+    bool window::getKBInput( window_kb_input *m )
+    {
+        if( this->kbe.empty() )
+            return 0;
+        
+        *m = this->kbe.front();
+        this->kbe.pop();
+        
+        return 1;
+    }
+    
+    //adds kb input
+    void window::addKBInput( window_kb_input *m )
+    {
+        this->kbe.push( *m );
+    }
+    
 };

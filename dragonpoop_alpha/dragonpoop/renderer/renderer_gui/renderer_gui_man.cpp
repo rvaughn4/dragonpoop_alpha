@@ -470,7 +470,7 @@ namespace dragonpoop
         
         for( t = 0; t < 1000; t++ )
         {
-            rl = (renderer_readlock *)o.tryReadLock( r, 1000, "renderer_gui_man::waitForRenderer" );
+            rl = (renderer_readlock *)o.tryReadLock( r, "renderer_gui_man::waitForRenderer" );
             if( !rl )
                 return 0;
             if( !rl->isGuiCommandListUploaded() )
@@ -573,7 +573,7 @@ namespace dragonpoop
     }
     
     //process mouse input
-    bool renderer_gui_man::processGuiMouseInput( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )
+    bool renderer_gui_man::processGuiMouseInput( renderer_gui_man_writelock *r, float w, float h, float x, float y, bool lb, bool rb )
     {
         std::list<renderer_gui *> *l, lz, d;
         std::list<renderer_gui *>::iterator i;
@@ -582,7 +582,20 @@ namespace dragonpoop
         shared_obj_guard o;
         dpid nid;
         int max_z, z;
+        dpxyz_f t;
         
+        x = x / w;
+        y = y / h;
+        
+        x = ( 2.0f * x ) - 1.0f;
+        y = ( 2.0f * y ) - 1.0f;
+        y = -y;
+        
+        t.x = x;
+        t.y = y;
+        t.z = 0;
+        this->m_undo.transform( &t );
+
         l = &this->guis;
         nid = dpid_null();
         for( i = l->begin(); i != l->end(); ++i )
@@ -615,7 +628,7 @@ namespace dragonpoop
                 pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiMouseInput" );
                 if( !pl )
                     continue;
-                if( pl->processMouse( r, x, y, lb, rb ) )
+                if( pl->processMouse( r, t.x, t.y, lb, rb ) )
                 {
                     this->hover_gui = pl->getHoverId();
                     return 1;
