@@ -39,15 +39,12 @@
 #include "renderer_model/renderer_model_man.h"
 #include "renderer_model/renderer_model_man_writelock.h"
 #include "renderer_model/renderer_model_man_readlock.h"
-
 #include "api_stuff/render_api/render_api.h"
 #include "api_stuff/render_api/render_api_writelock.h"
 #include "api_stuff/render_api/render_api_context_ref.h"
 #include "api_stuff/render_api/render_api_context_writelock.h"
-
-#include "api_stuff/opengl1o5_x11/opengl1o5_x11.h"
-
 #include "renderer_factory.h"
+#include "x11_opengl_1o5_renderer/x11_opengl_1o5_renderer_factory.h"
 
 #include <thread>
 #include <random>
@@ -569,7 +566,7 @@ namespace dragonpoop
         if( !gl )
             return;
         
-        gl->addRenderer( new renderer_factory( "derp", 1 ) );
+        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 1 ) );
     }
     
     //gets selected text from gui (copy or cut)
@@ -601,7 +598,7 @@ namespace dragonpoop
     //generate render api
     render_api *renderer::genRenderApi( dpmutex_master *mm )
     {
-        return new opengl1o5_x11( 1024, 724, "derp", c->getMutexMaster() );
+        return 0;
     }
     
 };

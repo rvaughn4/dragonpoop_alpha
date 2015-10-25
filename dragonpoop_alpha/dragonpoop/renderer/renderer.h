@@ -5,6 +5,7 @@
 #include "../core/shared_obj/shared_obj.h"
 #include "../gfx/dpmatrix/dpmatrix.h"
 #include "../gfx/dpposition/dpposition.h"
+#include "x11_opengl_1o5_renderer/x11_opengl_1o5_renderer_factory.h"
 
 namespace dragonpoop
 {
