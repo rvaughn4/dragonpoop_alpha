@@ -352,6 +352,7 @@ namespace dragonpoop
         rx = x * this->values.c1.r1 + y * this->values.c1.r2 + z * this->values.c1.r3;
         ry = y * this->values.c2.r1 + y * this->values.c2.r2 + z * this->values.c2.r3;
         rz = z * this->values.c3.r1 + y * this->values.c3.r2 + z * this->values.c3.r3;
+        rw = w;
         
         if( px )
             *px = rx;

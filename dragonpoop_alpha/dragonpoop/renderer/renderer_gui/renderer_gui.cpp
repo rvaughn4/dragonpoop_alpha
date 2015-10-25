@@ -524,7 +524,11 @@ namespace dragonpoop
         mat.multiply( &this->mat );
         
         if( this->hasBg() || this->hasFg() )
+        {
             clist->setMatrix( &mat );
+            clist->setAlpha( this->getOpacity() );
+            clist->setTexture( 0, 1 );
+        }
         if( this->hasBg() )
         {
             clist->setTexture( this->render_tex_bg, 0 );
@@ -532,7 +536,6 @@ namespace dragonpoop
             clist->setVertexBuffer( this->render_vb_bg );
             clist->draw();
         }
-
         if( this->hasFg() )
         {
             clist->setTexture( this->render_tex_fg, 0 );

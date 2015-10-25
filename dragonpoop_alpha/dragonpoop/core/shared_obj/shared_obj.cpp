@@ -129,7 +129,6 @@ namespace dragonpoop
         bool r;
 
         l = &this->refs;
-        r = 0;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;

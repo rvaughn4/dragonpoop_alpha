@@ -143,7 +143,7 @@ namespace dragonpoop
     //draw bitmap
     void dpfont::drawBitmap( dpbitmap *bm, int sx, int sy, int *osx, int *osy, dprgba *clr )
     {
-        unsigned int x, y, mx, my, by, bh, c;
+        unsigned int x, y, by, bh, c;
         dpxy xy;
         dprgba rg;
         
@@ -152,7 +152,6 @@ namespace dragonpoop
         by = bh - by;
         bh = this->sz - bh + by;
 
-        mx = my = 0;
         for( y = 0; y < this->fc->glyph->bitmap.rows; y++ )
         {
             xy.y = y + sy + bh;

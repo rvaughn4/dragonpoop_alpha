@@ -146,7 +146,6 @@ namespace dragonpoop
         model_loader_ms3d *ldr;
         unsigned int i, e;
         ms3d_model_frame *f;
-        model_animation_frame *frm;
         model_writelock *m;
         shared_obj_guard o;
         std::vector<ms3d_model_frame> *fl;
@@ -163,7 +162,7 @@ namespace dragonpoop
             f = &( *ldr->frames )[ i ];
             if( end_frame && ( f->t < start_frame || f->t > end_frame ) )
                 continue;
-            frm = m->makeAnimationFrame( thd->genId(), anim_id, f->id, f->t - start_frame );
+            m->makeAnimationFrame( thd->genId(), anim_id, f->id, f->t - start_frame );
         }
     }
     
@@ -237,22 +236,10 @@ namespace dragonpoop
     void model_loader_ms3d_state_make_frames::getKeyframeQuat( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x )
     {
         ms3d_model_joint_keyframe kb, ke;
-        float td, tt, rb, re;
         dpquaternion qb, qe, q;
         
         this->getKeyframeBefore( t, l, &kb );
         this->getKeyframeAfter( t, l, &ke );
-        
-        td = ke.time - kb.time;
-        tt = t - kb.time;
-        if( td <= 0 )
-            re = 0;
-        else
-            re = tt / td;
-        if( re > 1 )
-            re = 1;
-        re = 1;
-        rb = 1.0f - re;
         
         qb.setAngle( kb.x, kb.y, kb.z );
         qe.setAngle( ke.x, ke.y, ke.z );

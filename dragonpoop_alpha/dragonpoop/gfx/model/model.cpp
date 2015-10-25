@@ -925,6 +925,7 @@ namespace dragonpoop
         uint16_t mtype;
         dpid id;
         
+        dpid_zero( &id );
         model_component::readType( b, &mtype );
         
         switch( mtype )

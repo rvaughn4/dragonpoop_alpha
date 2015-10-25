@@ -302,6 +302,7 @@ namespace dragonpoop
         m_rat_x = 1.0f - rat_x;
         m_rat_y = 1.0f - rat_y;
 
+        tl = tr = bl = br = *c;
         cp = *p;
         this->getColor( &tl, &cp );
         cp.x += 1;

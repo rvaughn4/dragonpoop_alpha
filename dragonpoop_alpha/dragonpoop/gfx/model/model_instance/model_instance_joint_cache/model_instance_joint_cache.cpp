@@ -29,6 +29,7 @@ namespace dragonpoop
         unsigned int i, e;
         
         this->cnt = 0;
+        b = this->buffer;
         if( !b )
             return;
         

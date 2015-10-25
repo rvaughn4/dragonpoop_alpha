@@ -186,8 +186,9 @@ namespace dragonpoop
         {
             p = *i;
             pl = (model_loader_writelock *)o.tryWriteLock( p, 100, "model_loader_man::runLoaders" );
-            if( pl )
-                pl->run( thd );
+            if( !pl )
+                continue;
+            pl->run( thd );
             if( !pl->isRunning() )
                 d.push_back( p );
         }
@@ -220,8 +221,9 @@ namespace dragonpoop
         {
             p = *i;
             pl = (model_saver_writelock *)o.tryWriteLock( p, 100, "model_loader_man::runSavers" );
-            if( pl )
-                pl->run( thd );
+            if( !pl )
+                continue;
+            pl->run( thd );
             if( !pl->isRunning() )
                 d.push_back( p );
         }

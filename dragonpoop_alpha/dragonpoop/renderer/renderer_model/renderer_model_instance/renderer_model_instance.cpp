@@ -432,19 +432,19 @@ namespace dragonpoop
     //render model
     void renderer_model_instance::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world )
     {
-        std::list<renderer_model_instance_group *> l;
-        std::list<renderer_model_instance_group *>::iterator i;
-        renderer_model_instance_group *g;
-        renderer_model_material *mat;
+       // std::list<renderer_model_instance_group *> l;
+       // std::list<renderer_model_instance_group *>::iterator i;
+       // renderer_model_instance_group *g;
+        //renderer_model_material *mat;
         
-        this->getGroups( &l );
+      //  this->getGroups( &l );
         
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            g = *i;
-            mat = m->findMaterial( g->getMaterialId() );
+      //  for( i = l.begin(); i != l.end(); ++i )
+      //  {
+      //      g = *i;
+          //  mat = m->findMaterial( g->getMaterialId() );
            // r->renderGroup( thd, m, mi, g, mat, m_world );
-        }
+      //  }
     }
     
     //returns joint cache

@@ -140,7 +140,7 @@ namespace dragonpoop
     void dpposition::getDirection( dpxyz_f *pout )
     {
         double dx, dy, dz;
-        float fx, fy, fz;
+        float fx, fy;//, fz;
         float f;
         
         this->getDiff( &dx, &dy, &dz );
@@ -155,7 +155,7 @@ namespace dragonpoop
             f = 1;
         fx = dx / f;
         fy = dy / f;
-        fz = dz / f;
+        //fz = dz / f;
         
         pout->x = acos( fy ) - 1.57f;
         if( dz < 0 )
