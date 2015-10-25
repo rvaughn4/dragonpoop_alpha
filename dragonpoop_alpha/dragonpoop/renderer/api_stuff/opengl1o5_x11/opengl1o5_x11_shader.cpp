@@ -34,7 +34,7 @@ namespace dragonpoop
     }
     
     //render vb
-    void opengl1o5_x11_shader::render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m )
+    void opengl1o5_x11_shader::render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m, float alpha )
     {
         opengl1o5_x11_texture_readlock *t0l, *t1l;
         opengl1o5_x11_indexbuffer_readlock *ibl;
@@ -65,7 +65,12 @@ namespace dragonpoop
         bib = ibl->getBuffer();
         bvb = vbl->getBuffer();
         
+        glDisable( GL_DEPTH_TEST );
+        glEnable( GL_TEXTURE_2D );
+        glEnable( GL_BLEND );
+        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         glLoadMatrixf( m->getRaw4by4() );
+        glColor4f( 1.0f, 1.0f, 1.0f, alpha );
         
         if( sizeof( dpindex ) == sizeof( uint16_t ) )
         {
@@ -77,7 +82,7 @@ namespace dragonpoop
             glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &pv->normal );
             glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &pv->pos );
             glDrawElements( GL_TRIANGLES, bib->getSize(), GL_UNSIGNED_SHORT, pi );
-            
+
             return;
         }
     

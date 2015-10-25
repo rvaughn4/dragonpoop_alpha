@@ -43,19 +43,6 @@ namespace dragonpoop
         glEndList();
     }
     
-    //called during compile for each draw call
-    void opengl1o5_x11_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m )
-    {
-        shared_obj_guard o;
-        render_api_shader_readlock *l;
-        
-        l = (render_api_shader_readlock *)o.tryReadLock( sdr, 100, "opengl1o5_x11_commandlist::drawCompile" );
-        if( !l )
-            return;
-        
-        l->render( ctx, t0, t1, ib, vb, m );
-    }
-    
     //execute command list
     void opengl1o5_x11_commandlist::execute( render_api_context_writelock *r )
     {

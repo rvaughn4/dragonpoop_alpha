@@ -18,9 +18,9 @@ namespace dragonpoop
     }
     
     //render vb
-    void render_api_shader_readlock::render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m )
+    void render_api_shader_readlock::render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m, float alpha )
     {
-        this->t->render( ctx, t0, t1, ib, vb, m );
+        this->t->render( ctx, t0, t1, ib, vb, m, alpha );
     }
     
 };

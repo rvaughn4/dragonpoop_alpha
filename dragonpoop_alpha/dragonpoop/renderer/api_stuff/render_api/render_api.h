@@ -38,6 +38,10 @@ namespace dragonpoop
         std::list<render_api_texture *> textures;
         std::list<render_api_vertexbuffer *> vertexbuffers;
         std::list<render_api_indexbuffer *> indexbuffers;
+        int crun;
+        
+        //run contexts
+        void runContexts( void );
         
     protected:
         

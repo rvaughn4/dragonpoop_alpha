@@ -77,6 +77,7 @@ namespace dragonpoop
         this->rmodel_mgr = 0;
         this->cs = new renderer_state_init_api( this );
         this->gui_cl = 0;
+        this->new_gui_cl = 0;
     }
 
     //dtor
@@ -92,9 +93,11 @@ namespace dragonpoop
         this->unlink();
 
         o.tryWriteLock( this, 3000, "renderer::~renderer" );
-        cl = this->gui_cl;
+        cl = this->new_gui_cl;
         if( cl )
             delete cl;
+        if( this->gui_cl )
+            delete this->gui_cl;
         delete this->tsk;
         delete this->gtsk;
         delete this->cs;
@@ -280,9 +283,11 @@ namespace dragonpoop
         unsigned int w, h;
         uint64_t t, td;
         float f0;
-        shared_obj_guard o, octx;
+        shared_obj_guard o, octx, ocl;
         render_api_context_writelock *ctxl;
         render_api_writelock *al;
+        render_api_commandlist_writelock *cll;
+        
     //    renderer_gui_man_readlock *gwl;
       //  renderer_model_man_readlock *mwl;
 
@@ -300,6 +305,20 @@ namespace dragonpoop
         ctxl->setViewport( w, h );
         ctxl->clearColor( 0.5f, 0.5f, 1.0f );
         ctxl->clearDepth( 1.0f );
+        
+        if( this->gui_cl )
+        {
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 100, "renderer::render" );
+            if( cll )
+                cll->execute( ctxl );
+        }
+        if( this->new_gui_cl )
+        {
+            if( this->gui_cl )
+                delete this->gui_cl;
+            this->gui_cl = this->new_gui_cl;
+            this->new_gui_cl = 0;
+        }
         
         /*
         this->prepareWorldRender( w, h );
@@ -464,7 +483,7 @@ namespace dragonpoop
         if( !ctx )
             return 0;
         
-        return new renderer_gui_man( this->c, this, tp, ctx );
+        return new renderer_gui_man( this->c, this, tp, ctx, 1920, 1080 );
     }
     
     //returns fps
@@ -623,7 +642,7 @@ namespace dragonpoop
     bool renderer::isGuiCommandListUploaded( void )
     {
         render_api_commandlist_ref *cl;
-        cl = this->gui_cl;
+        cl = this->new_gui_cl;
         return cl != 0;
     }
     
@@ -631,10 +650,10 @@ namespace dragonpoop
     void renderer::uploadGuiCommandList( render_api_commandlist_ref *cl )
     {
         render_api_commandlist_ref *ocl;
-        ocl = this->gui_cl;
+        ocl = this->new_gui_cl;
         if( ocl )
             delete ocl;
-        this->gui_cl = cl;
+        this->new_gui_cl = cl;
     }
     
 };

@@ -54,6 +54,8 @@ namespace dragonpoop
         render_api_vertexbuffer_ref *makeVertexBuffer( dpvertex_buffer *vb );
         //make a index buffer
         render_api_indexbuffer_ref *makeIndexBuffer( dpindex_buffer *ib );
+        //run context, delete old lists
+        void run( void );
 
         friend class render_api_context;
     };

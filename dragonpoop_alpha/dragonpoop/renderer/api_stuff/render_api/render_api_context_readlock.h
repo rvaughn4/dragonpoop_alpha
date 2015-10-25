@@ -24,6 +24,8 @@ namespace dragonpoop
         
     public:
         
+        //return width and height
+        void getDimensions( float *w, float *h );        
         
         friend class render_api_context;
     };

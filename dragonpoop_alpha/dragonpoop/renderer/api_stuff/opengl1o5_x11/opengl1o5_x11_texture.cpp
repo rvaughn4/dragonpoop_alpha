@@ -38,7 +38,30 @@ namespace dragonpoop
     //make texture
     void opengl1o5_x11_texture::makeTex( dpbitmap *bm )
     {
+        unsigned int sz, bits, w, h;
+        char *buffer;
+
         this->glTex = 0;
+        sz = bm->getSize();
+        w = bm->getWidth();
+        h = bm->getHeight();
+        bits = bm->getBitsPerPixel();
+        buffer = bm->getBuffer();
+        
+        if( !buffer || !sz || !w || !h || ( bits != 24 && bits != 32 ) )
+            return;
+        
+        glGenTextures( 1, &this->glTex );
+        if( !this->glTex )
+            return;
+        
+        glBindTexture( GL_TEXTURE_2D, this->glTex );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        if( bits == 24 )
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer );
+        if( bits == 32 )
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
     }
     
     //delete texture

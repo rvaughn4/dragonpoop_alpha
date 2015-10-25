@@ -27,9 +27,9 @@ namespace dragonpoop
         
         this->g = (gfx_ref *)g->getRef();
         
-        this->enableBg( 1 );
-        this->enableFg( 1 );
-        this->setEditMode( 1 );
+        this->enableBg( 0 );
+        this->enableFg( 0 );
+        this->setEditMode( 0 );
         this->setFade( 0 );
         this->setPosition( 0, 0 );
         this->setWidthHeight( 1920, 1080 );
@@ -39,7 +39,7 @@ namespace dragonpoop
         this->perf_open = 0;
         this->esc_menu = 0;
         this->esc_menu_is_show = 0;
-        this->esc_menu_do_show = 0;
+        this->esc_menu_do_show = 1;
         
         g->getActors( &al, &o );
         this->a = new dpactor( g->getCore() );

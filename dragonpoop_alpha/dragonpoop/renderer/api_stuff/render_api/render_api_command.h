@@ -34,6 +34,8 @@ namespace dragonpoop
         void setVertexBuffer( render_api_vertexbuffer_ref *r );
         //set current index buffer
         void setIndexBuffer( render_api_indexbuffer_ref *r );
+        //set alpha
+        void setAlpha( float a );
         //draw
         void draw( render_api_context_writelock *ctx );
         

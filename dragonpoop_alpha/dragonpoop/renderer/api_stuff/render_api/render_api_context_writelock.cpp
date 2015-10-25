@@ -82,5 +82,11 @@ namespace dragonpoop
     {
         return this->t->makeIndexBuffer( this, ib );
     }
-    
+
+    //run context, delete old lists
+    void render_api_context_writelock::run( void )
+    {
+        this->t->run();
+    }
+
 };

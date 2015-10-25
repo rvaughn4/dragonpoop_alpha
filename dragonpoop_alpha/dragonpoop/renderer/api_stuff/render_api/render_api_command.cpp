@@ -53,6 +53,12 @@ namespace dragonpoop
         this->l->cmd_setIndexBuffer( r );
     }
     
+    //set alpha
+    void render_api_command::setAlpha( float a )
+    {
+        this->l->cmd_setAlpha( a );
+    }
+    
     //draw
     void render_api_command::draw( render_api_context_writelock *ctx )
     {

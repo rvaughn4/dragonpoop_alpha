@@ -49,7 +49,17 @@ namespace dragonpoop
     //make context active in thread
     void opengl1o5_x11_context::makeActive( void )
     {
-        glXMakeCurrent( this->dpy, this->win, this->ctx );
+        glXMakeCurrent( this->dpy, this->win, this->ctx );        
+        glEnableClientState( GL_NORMAL_ARRAY );
+        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+        glEnableClientState( GL_VERTEX_ARRAY );
+        glEnable( GL_DEPTH_TEST );
+        glDepthFunc( GL_LEQUAL );
+        glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        glMatrixMode( GL_MODELVIEW );
+        glLoadIdentity();
     }
     
     //set viewport

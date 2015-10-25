@@ -2,6 +2,7 @@
 #include "render_api_context.h"
 #include "render_api_ref.h"
 #include "render_api_writelock.h"
+#include "render_api_readlock.h"
 #include "render_api_context_ref.h"
 #include "render_api_context_readlock.h"
 #include "render_api_context_writelock.h"
@@ -64,7 +65,6 @@ namespace dragonpoop
         render_api_commandlist *c;
         render_api_commandlist_writelock *l;
         
-        
         c = this->genCmdList( cl, this->mm );
         if( !c )
             return 0;
@@ -98,7 +98,30 @@ namespace dragonpoop
             p = *i;
             delete p;
         }
-
+    }
+    
+    //run command lists
+    void render_api_context::runLists( void )
+    {
+        std::list<render_api_commandlist *> *l, d;
+        std::list<render_api_commandlist *>::iterator i;
+        render_api_commandlist *p;
+        
+        l = &this->cmds;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+                d.push_back( p );
+        }
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->cmds.remove( p );
+            delete p;
+        }
     }
     
     //clear screen
@@ -181,6 +204,26 @@ namespace dragonpoop
             return 0;
         
         return l->makeIndexBuffer( cl, ib );
+    }
+    
+    //run context, delete old lists
+    void render_api_context::run( void )
+    {
+        this->runLists();
+    }
+    
+    //return width and height
+    void render_api_context::getDimensions( float *w, float *h )
+    {
+        shared_obj_guard o;
+        render_api_readlock *l;
+        
+        l = (render_api_readlock *)o.tryReadLock( this->r, 1000, "render_api_context::getDimensions" );
+        if( !l )
+            return;
+        
+        *w = l->getWidth();
+        *h = l->getHeight();
     }
     
 };

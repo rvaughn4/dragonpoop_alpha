@@ -7,6 +7,15 @@
 #include "render_api_context_ref.h"
 #include "render_api_context_writelock.h"
 #include "render_api_command.h"
+#include "render_api_command_draw.h"
+#include "render_api_command_set_indexbuffer.h"
+#include "render_api_command_set_shader.h"
+#include "render_api_command_set_alpha.h"
+#include "render_api_command_set_matrix.h"
+#include "render_api_command_set_texture.h"
+#include "render_api_command_set_vertexbuffer.h"
+#include "render_api_shader_readlock.h"
+#include "render_api_shader_ref.h"
 
 namespace dragonpoop
 {
@@ -15,6 +24,12 @@ namespace dragonpoop
     render_api_commandlist::render_api_commandlist( dpmutex_master *mm ) : shared_obj( mm )
     {
         this->bIsCompiled = 0;
+        this->sdr = 0;
+        this->t0 = 0;
+        this->t1 = 0;
+        this->vb = 0;
+        this->ib = 0;
+        this->alpha = 1;
     }
     
     //dtor
@@ -87,9 +102,16 @@ namespace dragonpoop
     }
     
     //called during compile for each draw call
-    void render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m )
+    void render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
     {
+        shared_obj_guard o;
+        render_api_shader_readlock *l;
         
+        l = (render_api_shader_readlock *)o.tryReadLock( sdr, 100, "render_api_commandlist::drawCompile" );
+        if( !l )
+            return;
+        
+        l->render( ctx, t0, t1, ib, vb, m, alpha );
     }
     
     //execute command list
@@ -127,10 +149,16 @@ namespace dragonpoop
         this->ib = r;
     }
     
+    //set current alpha
+    void render_api_commandlist::cmd_setAlpha( float a )
+    {
+        this->alpha = a;
+    }
+    
     //draw
     void render_api_commandlist::cmd_draw( render_api_context_writelock *ctx )
     {
-        this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m );
+        this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m, this->alpha );
     }
     
     //set current matrix
@@ -160,6 +188,62 @@ namespace dragonpoop
             p = *i;
             delete p;
         }
+    }
+    
+    //set shader command
+    void render_api_commandlist::setShader( render_api_shader_ref *p )
+    {
+        render_api_command *c;
+        c = new render_api_command_set_shader( this, p );
+        this->cmds.push_back( c );
+    }
+    
+    //set texture command
+    void render_api_commandlist::setTexture( render_api_texture_ref *p, int level )
+    {
+        render_api_command *c;
+        c = new render_api_command_set_texture( this, p, level );
+        this->cmds.push_back( c );
+    }
+    
+    //set vertex buffer command
+    void render_api_commandlist::setVertexBuffer( render_api_vertexbuffer_ref *p )
+    {
+        render_api_command *c;
+        c = new render_api_command_set_vertexbuffer( this, p );
+        this->cmds.push_back( c );
+    }
+    
+    //set index buffer command
+    void render_api_commandlist::setIndexBuffer( render_api_indexbuffer_ref *p )
+    {
+        render_api_command *c;
+        c = new render_api_command_set_indexbuffer( this, p );
+        this->cmds.push_back( c );
+    }
+    
+    //set matrix command
+    void render_api_commandlist::setMatrix( dpmatrix *m )
+    {
+        render_api_command *c;
+        c = new render_api_command_set_matrix( this, m );
+        this->cmds.push_back( c );
+    }
+    
+    //set alpha command
+    void render_api_commandlist::setAlpha( float a )
+    {
+        render_api_command *c;
+        c = new render_api_command_set_alpha( this, a );
+        this->cmds.push_back( c );
+    }
+    
+    //draw command
+    void render_api_commandlist::draw( void )
+    {
+        render_api_command *c;
+        c = new render_api_command_draw( this );
+        this->cmds.push_back( c );
     }
     
 };

@@ -41,4 +41,46 @@ namespace dragonpoop
         this->t->deleteCommands();
     }
     
+    //set shader command
+    void render_api_commandlist_writelock::setShader( render_api_shader_ref *p )
+    {
+        this->t->setShader( p );
+    }
+    
+    //set texture command
+    void render_api_commandlist_writelock::setTexture( render_api_texture_ref *p, int level )
+    {
+        this->t->setTexture( p, level );
+    }
+    
+    //set vertex buffer command
+    void render_api_commandlist_writelock::setVertexBuffer( render_api_vertexbuffer_ref *p )
+    {
+        this->t->setVertexBuffer( p );
+    }
+    
+    //set index buffer command
+    void render_api_commandlist_writelock::setIndexBuffer( render_api_indexbuffer_ref *p )
+    {
+        this->t->setIndexBuffer( p );
+    }
+    
+    //set matrix command
+    void render_api_commandlist_writelock::setMatrix( dpmatrix *m )
+    {
+        this->t->setMatrix( m );
+    }
+    
+    //set alpha command
+    void render_api_commandlist_writelock::setAlpha( float a )
+    {
+        this->t->setAlpha( a );
+    }
+    
+    //draw command
+    void render_api_commandlist_writelock::draw( void )
+    {
+        this->t->draw();
+    }
+    
 };

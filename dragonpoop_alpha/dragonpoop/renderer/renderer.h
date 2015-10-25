@@ -57,7 +57,8 @@ namespace dragonpoop
         render_api_context_ref *main_ctx;
         
         std::atomic<bool> bDoRun, bIsRun;
-        std::atomic<render_api_commandlist_ref *> gui_cl;
+        std::atomic<render_api_commandlist_ref *> new_gui_cl;
+        render_api_commandlist_ref *gui_cl;
         
         uint64_t t_last_m_ran, t_last_m_synced, t_last_fps, ms_each_frame;
         float fps, fthiss;

@@ -69,6 +69,13 @@ namespace dragonpoop
     void render_api::run( void )
     {
         this->w->run();
+        
+        this->crun++;
+        if( this->crun < 20 )
+            return;
+        this->crun = 0;
+
+        this->runContexts();
     }
     
     //returns true if window is open
@@ -139,6 +146,36 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
+            delete p;
+        }
+    }
+    
+    //run contexts
+    void render_api::runContexts( void )
+    {
+        std::list<render_api_context *> *l, d;
+        std::list<render_api_context *>::iterator i;
+        render_api_context *p;
+        render_api_context_writelock *pl;
+        shared_obj_guard o;
+        
+        l = &this->contexts;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+                d.push_back( p );
+            pl = (render_api_context_writelock *)o.tryWriteLock( p, 100, "render_api::runContexts" );
+            if( !pl )
+                continue;
+            pl->run();
+        }
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->contexts.remove( p );
             delete p;
         }
     }

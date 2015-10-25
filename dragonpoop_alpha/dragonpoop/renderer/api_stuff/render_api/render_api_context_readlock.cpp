@@ -17,4 +17,10 @@ namespace dragonpoop
         
     }
     
+    //return width and height
+    void render_api_context_readlock::getDimensions( float *w, float *h )
+    {
+        this->t->getDimensions( w, h );
+    }
+    
 };

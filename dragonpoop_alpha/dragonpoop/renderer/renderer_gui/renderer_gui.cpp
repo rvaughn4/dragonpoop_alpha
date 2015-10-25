@@ -16,6 +16,7 @@
 #include "../api_stuff/render_api/render_api_indexbuffer_ref.h"
 #include "../api_stuff/render_api/render_api_texture_ref.h"
 #include "../api_stuff/render_api/render_api_context_writelock.h"
+#include "../api_stuff/render_api/render_api_commandlist_writelock.h"
 #include "../../gfx/dpvertex/dpvertexindex_buffer.h"
 
 namespace dragonpoop
@@ -521,7 +522,24 @@ namespace dragonpoop
         
         mat.copy( m_world );
         mat.multiply( &this->mat );
-        //r->renderGui( thd, m, &mat );
+        
+        if( this->hasBg() || this->hasFg() )
+            clist->setMatrix( &mat );
+        if( this->hasBg() )
+        {
+            clist->setTexture( this->render_tex_bg, 0 );
+            clist->setIndexBuffer( this->render_ib_bg );
+            clist->setVertexBuffer( this->render_vb_bg );
+            clist->draw();
+        }
+
+        if( this->hasFg() )
+        {
+            clist->setTexture( this->render_tex_fg, 0 );
+            clist->setIndexBuffer( this->render_ib_fg );
+            clist->setVertexBuffer( this->render_vb_fg );
+            clist->draw();
+        }
         
         ml->getChildrenGuis( &l, this->id );
         for( i = l.begin(); i != l.end(); ++i )

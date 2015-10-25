@@ -44,18 +44,6 @@ namespace dragonpoop
         glShadeModel( GL_SMOOTH );
         glClearColor( 0.0f, 0.0f, 0.0f, 0.5f );
         glClearDepth( 1.0f );
-        glEnable( GL_DEPTH_TEST );
-        glDepthFunc( GL_LEQUAL );
-        glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
-        glMatrixMode( GL_PROJECTION );
-        glLoadIdentity();
-        glMatrixMode( GL_MODELVIEW );
-        glLoadIdentity();
-        glEnable( GL_TEXTURE_2D );
-        
-        glEnableClientState( GL_NORMAL_ARRAY );
-        glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-        glEnableClientState( GL_VERTEX_ARRAY );
         
         this->bIsOpen = 1;
     }

@@ -30,6 +30,9 @@ namespace dragonpoop
         render_api_ref *r;
         std::list<render_api_commandlist *> cmds;
         
+        //run command lists
+        void runLists( void );
+        
     protected:
         
         //generate read lock
@@ -62,6 +65,10 @@ namespace dragonpoop
         render_api_vertexbuffer_ref *makeVertexBuffer( render_api_context_writelock *cl, dpvertex_buffer *vb );
         //make a index buffer
         render_api_indexbuffer_ref *makeIndexBuffer( render_api_context_writelock *cl, dpindex_buffer *ib );
+        //run context, delete old lists
+        void run( void );
+        //return width and height
+        void getDimensions( float *w, float *h );
         
     public:
         

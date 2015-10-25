@@ -32,6 +32,7 @@ namespace dragonpoop
     class render_api_commandlist_ref;
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
+    class render_api_shader_ref;
 
     class renderer_gui_man : public shared_obj
     {
@@ -49,8 +50,10 @@ namespace dragonpoop
         dpid hover_gui, focus_gui;
         uint64_t t_last_gui_synced;
         render_api_context_ref *ctx;
+        render_api_shader_ref *sdr;
         render_api_commandlist_ref *clist;
-        dpmatrix m;
+        dpmatrix m, m_undo;
+        float log_screen_width, log_screen_height;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
@@ -67,8 +70,11 @@ namespace dragonpoop
         //render into command list
         static void render( dpthread_lock *thd, renderer_gui_man_ref *g );
         //wait for renderer to finish with commandlist
-        static void waitForRenderer( renderer_ref *r );
+        static bool waitForRenderer( renderer_ref *r );
         //swap command list with renderer
+        static void swapList( renderer_gui_man_ref *g, renderer_ref *r );
+        //compute matrix
+        void computeMatrix( void );
         
     protected:
         
@@ -100,7 +106,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx );
+        renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, float log_screen_width, float log_screen_height );
         //dtor
         virtual ~renderer_gui_man( void );
         //return core

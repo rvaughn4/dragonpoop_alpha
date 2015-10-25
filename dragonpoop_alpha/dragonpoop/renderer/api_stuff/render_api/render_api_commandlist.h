@@ -31,6 +31,7 @@ namespace dragonpoop
         render_api_vertexbuffer_ref *vb;
         render_api_indexbuffer_ref *ib;
         dpmatrix m;
+        float alpha;
         
     protected:
         
@@ -49,7 +50,7 @@ namespace dragonpoop
         //called at end of compile
         virtual void endCompile( render_api_context_writelock *ctx );
         //called during compile for each draw call
-        virtual void drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m );
+        virtual void drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha );
         //execute command list
         virtual void execute( render_api_context_writelock *r );
         //set current matrix
@@ -64,23 +65,26 @@ namespace dragonpoop
         void cmd_setVertexBuffer( render_api_vertexbuffer_ref *r );
         //set current index buffer
         void cmd_setIndexBuffer( render_api_indexbuffer_ref *r );
+        //set current alpha
+        void cmd_setAlpha( float a );
         //draw
         void cmd_draw( render_api_context_writelock *ctx );
         //delete commands
         void deleteCommands( void );
-        
         //set shader command
-        
+        void setShader( render_api_shader_ref *p );
         //set texture command
-        
+        void setTexture( render_api_texture_ref *p, int level );
         //set vertex buffer command
-        
+        void setVertexBuffer( render_api_vertexbuffer_ref *p );
         //set index buffer command
-        
+        void setIndexBuffer( render_api_indexbuffer_ref *p );
         //set matrix command
-        
+        void setMatrix( dpmatrix *m );
+        //set alpha command
+        void setAlpha( float a );
         //draw command
-
+        void draw( void );
         
     public:
         
