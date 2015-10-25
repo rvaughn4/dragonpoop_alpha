@@ -2,6 +2,8 @@
 #include "render_api_vertexbuffer.h"
 #include "render_api_ref.h"
 #include "render_api_writelock.h"
+#include "render_api_context_ref.h"
+#include "render_api_context_writelock.h"
 #include "render_api_vertexbuffer_ref.h"
 #include "render_api_vertexbuffer_readlock.h"
 #include "render_api_vertexbuffer_writelock.h"
@@ -10,14 +12,16 @@ namespace dragonpoop
 {
     
     //ctor
-    render_api_vertexbuffer::render_api_vertexbuffer( render_api_writelock *r, dpmutex_master *mm ) : shared_obj( mm )
+    render_api_vertexbuffer::render_api_vertexbuffer( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm, dpvertex_buffer *vb ) : shared_obj( mm )
     {
         this->r = (render_api_ref *)r->getRef();
+        this->c = (render_api_context_ref *)c->getRef();
     }
     
     //dtor
     render_api_vertexbuffer::~render_api_vertexbuffer( void )
     {
+        delete this->c;
         delete this->r;
     }
     

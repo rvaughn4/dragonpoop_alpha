@@ -2,7 +2,10 @@
 #include "opengl1o5_x11.h"
 #include "opengl1o5_x11_context.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
-
+#include "opengl1o5_x11_shader.h"
+#include "opengl1o5_x11_texture.h"
+#include "opengl1o5_x11_vertexbuffer.h"
+#include "opengl1o5_x11_indexbuffer.h"
 
 namespace dragonpoop
 {
@@ -67,6 +70,7 @@ namespace dragonpoop
         this->unlink();
         
         o.tryWriteLock( this, 5000, "opengl1o5_x11::~opengl1o5_x11" );
+        glXMakeCurrent( this->dpy, this->win, this->ctx );
         this->deleteIndexBuffers();
         this->deleteShaders();
         this->deleteTextures();
@@ -126,4 +130,28 @@ namespace dragonpoop
         return new opengl1o5_x11_context( al, mm, c, this->win, this->dpy );
     }
 
+    //gen shader
+    render_api_shader *opengl1o5_x11::genShader( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, const char *cname )
+    {
+        return 0;
+    }
+    
+    //gen texture
+    render_api_texture *opengl1o5_x11::genTexture( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, dpbitmap *bm )
+    {
+        return new opengl1o5_x11_texture( al, cl, mm, bm );
+    }
+    
+    //gen vertex buffer
+    render_api_vertexbuffer *opengl1o5_x11::genVertexBuffer( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, dpvertex_buffer *vb )
+    {
+        return new opengl1o5_x11_vertexbuffer( al, cl, mm, vb );
+    }
+    
+    //gen index buffer
+    render_api_indexbuffer *opengl1o5_x11::genIndexBuffer( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, dpindex_buffer *ib )
+    {
+        return new opengl1o5_x11_indexbuffer( al, cl, mm, ib );
+    }
+    
 };
