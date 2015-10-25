@@ -18,4 +18,10 @@ namespace dragonpoop
 
     }
     
+    //render vb
+    void opengl1o5_x11_shader::render( render_api_context_ref *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m )
+    {
+        
+    }
+    
 };

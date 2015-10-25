@@ -19,6 +19,8 @@ namespace dragonpoop
         void makeTex( dpbitmap *bm );
         //delete texture
         void deleteTex( void );
+        //return tex
+        unsigned int getTex( void );
         
     protected:
         
@@ -29,6 +31,7 @@ namespace dragonpoop
         //dtor
         virtual ~opengl1o5_x11_texture( void );
 
+        friend class opengl1o5_x11_texture_readlock;
     };
     
 };

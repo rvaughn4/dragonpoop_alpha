@@ -11,6 +11,10 @@ namespace dragonpoop
     class render_api_writelock;
     class render_api_context_writelock;
     class render_api_context_ref;
+    class render_api_texture_ref;
+    class render_api_indexbuffer_ref;
+    class render_api_vertexbuffer_ref;
+    class dpmatrix;
     
     class render_api_shader : public shared_obj
     {
@@ -28,6 +32,8 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
+        //render vb
+        virtual void render( render_api_context_ref *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m );
         
     public:
         

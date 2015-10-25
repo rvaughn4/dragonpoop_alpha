@@ -40,4 +40,10 @@ namespace dragonpoop
         glDeleteTextures( 1, &this->glTex );
     }
     
+    //return tex
+    unsigned int opengl1o5_x11_texture::getTex( void )
+    {
+        return this->glTex;
+    }
+    
 };
