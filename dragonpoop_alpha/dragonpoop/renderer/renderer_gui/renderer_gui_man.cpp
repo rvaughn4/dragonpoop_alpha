@@ -118,8 +118,8 @@ namespace dragonpoop
         l->getDimensions( &w, &h );
         o.unlock();
         
-        sw = 1920.0f;
-        sh = 1080.0f;
+        sw = this->log_screen_width;
+        sh = this->log_screen_height;
         
         ss = sw * sw + sh * sh;
         ss = sqrtf( ss );

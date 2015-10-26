@@ -59,10 +59,6 @@ namespace dragonpoop
         void getCenter( dpxyz_f *x );
         //returns true if alive
         bool isAlive( void );
-        //run model from task
-        void runFromTask( dpthread_lock *thd );
-        //run model from renderer
-        void runFromRenderer( dpthread_lock *thd );
 
         friend class renderer_model;
     };

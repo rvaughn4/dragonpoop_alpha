@@ -76,5 +76,11 @@ namespace dragonpoop
     {
         return this->t->isGuiCommandListUploaded();
     }
+    
+    //returns true if model commandlist is set
+    bool renderer_readlock::isModelCommandListUploaded( void )
+    {
+        return this->t->isModelCommandListUploaded();
+    }
  
 };

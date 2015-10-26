@@ -59,10 +59,10 @@ namespace dragonpoop
         render_api_context_ref *main_ctx;
         
         std::atomic<bool> bDoRun, bIsRun;
-        std::atomic<render_api_commandlist_ref *> new_gui_cl;
-        render_api_commandlist_ref *gui_cl;
+        std::atomic<render_api_commandlist_ref *> new_gui_cl, new_model_cl;
+        render_api_commandlist_ref *gui_cl, *model_cl;
         
-        uint64_t t_last_m_ran, t_last_m_synced, t_last_fps, ms_each_frame;
+        uint64_t t_last_fps, ms_each_frame, t_last_input;
         float fps, fthiss;
         bool bActive, bActiveOld, bCamSync;
         dpmatrix m_world, m_gui, m_gui_undo;
@@ -162,6 +162,10 @@ namespace dragonpoop
         bool isGuiCommandListUploaded( void );
         //set gui commandlist
         void uploadGuiCommandList( render_api_commandlist_ref *cl );
+        //returns true if model commandlist is set
+        bool isModelCommandListUploaded( void );
+        //set model commandlist
+        void uploadModelCommandList( render_api_commandlist_ref *cl );
 
     public:
 

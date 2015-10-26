@@ -5,10 +5,12 @@
 #include "../../core/shared_obj/shared_obj.h"
 #include "../../core/dpid/dpid.h"
 #include "../dpbitmap/dpbitmap.h"
+#include "../dpvertex/dprgba.h"
+
 #include <atomic>
 #include <string>
-#include "../dpvertex/dprgba.h"
 #include <vector>
+#include <queue>
 
 namespace dragonpoop
 {
@@ -38,6 +40,18 @@ namespace dragonpoop
         unsigned int front, line_no, char_no;
     };
     
+    struct gui_kb_event
+    {
+        std::string sname;
+        bool bDown;
+    };
+    
+    struct gui_mouse_event
+    {
+        float x, y;
+        bool lb, rb;
+    };
+    
     class gui : public shared_obj
     {
         
@@ -47,7 +61,7 @@ namespace dragonpoop
         dpid id, pid;
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
-        std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw, bMouseInput, bLb, bRb, bKeyDown, bKeyInput;
+        std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw;
         bool bOldLb, bOldRb, bShiftDown, cur_flash, bIsSel, bIsEdit, bIsHover, bWasSel, bIsFade;
         float mx, my;
         gui_dims pos;
@@ -56,10 +70,12 @@ namespace dragonpoop
         renderer_gui_ref *r;
         unsigned int z, fnt_size, margin_size;
         dprgba fnt_clr;
-        std::string stxt, skb;
+        std::string stxt;
         std::vector<gui_txt_loc> txt_loc;
         unsigned int last_txt_line, line_front, cursor, sel_cursor, sz_div, redraw_timer;
         uint64_t t_last_redraw;
+        std::queue<gui_kb_event *> kbe;
+        std::queue<gui_mouse_event *> mse;
         
         //reset text loc
         void resetTxtLoc( void );

@@ -4,6 +4,7 @@
 
 #include "../../core/shared_obj/shared_obj.h"
 #include "../../core/dpid/dpid.h"
+#include "../../gfx/dpmatrix/dpmatrix.h"
 
 namespace dragonpoop
 {
@@ -27,7 +28,12 @@ namespace dragonpoop
     class renderer_writelock;
     class dpmatrix;
     class model_writelock;
-    
+    class render_api_context_ref;
+    class render_api_commandlist_ref;
+    class render_api_context_writelock;
+    class render_api_commandlist_writelock;
+    class render_api_shader_ref;
+
     class renderer_model_man : public shared_obj
     {
         
@@ -42,14 +48,33 @@ namespace dragonpoop
         renderer_ref *r;
         model_man_ref *g_models;
         uint64_t t_last_model_synced;
-        
+        render_api_context_ref *ctx;
+        render_api_shader_ref *sdr;
+        render_api_commandlist_ref *clist;
+        dpmatrix m, m_undo;
+        float log_screen_width, log_screen_height;
+
         //start task
-        void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
+        void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
         //kill task
         void _killTask( void );
         //delete task
         void _deleteTask( void );
-        
+        //sync models
+        static void sync( dpthread_lock *thd, renderer_model_man_ref *g );
+        //delete old models
+        static void deleteOldModels( dpthread_lock *thd, renderer_model_man_ref *g );
+        //run models
+        static void runModels( dpthread_lock *thd, renderer_model_man_ref *g );
+        //render into command list
+        static void render( dpthread_lock *thd, renderer_model_man_ref *g );
+        //wait for renderer to finish with commandlist
+        static bool waitForRenderer( renderer_ref *r );
+        //swap command list with renderer
+        static void swapList( renderer_model_man_ref *g, renderer_ref *r );
+        //compute matrix
+        void computeMatrix( void );
+
     protected:
         
         //generate read lock
@@ -64,22 +89,19 @@ namespace dragonpoop
         void renderModels( dpthread_lock *thd, renderer_writelock *rl, renderer_model_man_readlock *ml, dpmatrix *m_world );
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
-        //sync models
-        static void sync( dpthread_lock *thd, renderer_model_man_ref *g );
+
         
     public:
         
         //ctor
-        renderer_model_man( core *c, renderer *r, dptaskpool_writelock *tp );
+        renderer_model_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, float log_screen_width, float log_screen_height );
         //dtor
         virtual ~renderer_model_man( void );
         //return core
         core *getCore( void );
         //run from manager thread
-        static void runFromTask( dpthread_lock *thd, renderer_model_man_ref *g );
-        //run from renderer thread
-        static void runFromRenderer( dpthread_lock *thd, renderer_model_man *g );
-        
+        static void run( dpthread_lock *thd, renderer_model_man_ref *g, renderer_ref *r );
+
         friend class renderer_model_man_readlock;
         friend class renderer_model_man_writelock;
         

@@ -107,4 +107,10 @@ namespace dragonpoop
         this->t->kill();
     }
 
+    //run model from task
+    void renderer_model_writelock::run( dpthread_lock *thd, render_api_context_writelock *ctx )
+    {
+        this->t->run( thd, ctx );
+    }
+    
 };

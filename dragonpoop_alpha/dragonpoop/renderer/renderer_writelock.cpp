@@ -101,4 +101,16 @@ namespace dragonpoop
         this->t->uploadGuiCommandList( cl );
     }
  
+    //returns true if model commandlist is set
+    bool renderer_writelock::isModelCommandListUploaded( void )
+    {
+        return this->t->isModelCommandListUploaded();
+    }
+    
+    //set model commandlist
+    void renderer_writelock::uploadModelCommandList( render_api_commandlist_ref *cl )
+    {
+        this->t->uploadModelCommandList( cl );
+    }
+    
 };

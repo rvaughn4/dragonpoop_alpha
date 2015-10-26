@@ -89,16 +89,4 @@ namespace dragonpoop
         return this->t->isAlive();
     }
     
-    //run model from task
-    void renderer_model_readlock::runFromTask( dpthread_lock *thd )
-    {
-        this->t->runFromTask( thd, this );
-    }
-    
-    //run model from renderer
-    void renderer_model_readlock::runFromRenderer( dpthread_lock *thd )
-    {
-        this->t->runFromRenderer( thd, this );
-    }
-    
 };

@@ -18,6 +18,7 @@ namespace dragonpoop
     class model_writelock;
     class renderer_model_material;
     struct dpxyz_f;
+    class render_api_context_writelock;
     
     class renderer_model_writelock : public shared_obj_writelock
     {
@@ -65,6 +66,8 @@ namespace dragonpoop
         bool isAlive( void );
         //kill model
         void kill( void );
+        //run model from task
+        void run( dpthread_lock *thd, render_api_context_writelock *ctx );
 
         friend class renderer_model;
     };

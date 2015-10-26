@@ -48,6 +48,8 @@ namespace dragonpoop
         void getPositionRelativeToCamera( dpposition *in_obj_pos, uint64_t t_epoch_now, dpxyz_f *out_xyz );
         //returns true if gui commandlist is set
         bool isGuiCommandListUploaded( void );
+        //returns true if model commandlist is set
+        bool isModelCommandListUploaded( void );
 
         friend class renderer;
     };

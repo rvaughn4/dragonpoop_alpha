@@ -40,9 +40,7 @@ namespace dragonpoop
         this->r = 0;
         this->bWasBgDrawn = this->bWasFgDrawn = 0;
         this->z = 1;
-        this->bMouseInput = 0;
         this->bOldLb = this->bOldRb = 0;
-        this->bLb = this->bRb = 0;
         this->fnt_size = 0;
         this->fnt_clr.r = this->fnt_clr.g = this->fnt_clr.b = 0;
         this->fnt_clr.a = 255;
@@ -73,6 +71,23 @@ namespace dragonpoop
         if( this->r )
             delete this->r;
         delete this->mgr;
+        
+        while( !this->mse.empty() )
+        {
+            gui_mouse_event *e;
+            e = this->mse.front();
+            this->mse.pop();
+            delete e;
+        }
+        
+        while( !this->kbe.empty() )
+        {
+            gui_kb_event *e;
+            e = this->kbe.front();
+            this->kbe.pop();
+            delete e;
+        }
+        
         o.unlock();
     }
     
@@ -170,23 +185,34 @@ namespace dragonpoop
             }
         }
         
-        if( this->bMouseInput )
+        while( !this->mse.empty() )
         {
-            if( this->bOldLb != this->bLb )
+            gui_mouse_event *e;
+            e = this->mse.front();
+            this->mse.pop();
+            
+            if( this->bOldLb != e->lb )
                this->setFocus();
-            if( this->bOldLb != this->bLb )
-                this->handleMouseClick( this->mx, this->my, 0, this->bLb );
-            if( this->bOldRb != this->bRb )
-                this->handleMouseClick( this->mx, this->my, 1, this->bRb );
-            this->bMouseInput = 0;
-            this->bOldLb = this->bLb;
-            this->bOldRb = this->bRb;
+            if( this->bOldLb != e->lb )
+                this->handleMouseClick( e->x, e->y, 0, e->lb );
+            if( this->bOldRb != e->rb )
+                this->handleMouseClick( e->x, e->y, 1, e->rb );
+            
+            this->bOldLb = e->lb;
+            this->bOldRb = e->rb;
+            
+            delete e;
         }
         
-        if( this->bKeyInput )
+        while( !this->kbe.empty() )
         {
-            this->handleKbEvent( &this->skb, this->bKeyDown );
-            this->bKeyInput = 0;
+            gui_kb_event *e;
+            e = this->kbe.front();
+            this->kbe.pop();
+            
+            this->handleKbEvent( &e->sname, e->bDown );
+            
+            delete e;
         }
         
         this->doProcessing( thd, g );
@@ -658,19 +684,27 @@ namespace dragonpoop
     //process mouse input
     void gui::processMouse( float x, float y, bool lb, bool rb )
     {
-        this->mx = x;
-        this->my = y;
-        this->bLb = lb;
-        this->bRb = rb;
-        this->bMouseInput = 1;
+        gui_mouse_event *e;
+        
+        e = new gui_mouse_event();
+        e->lb = lb;
+        e->rb = rb;
+        e->x = x;
+        e->y = y;
+        
+        this->mse.push( e );
     }
     
     //process kb input
     void gui::processKb( std::string *skey, bool bDown )
     {
-        this->skb.assign( *skey );
-        this->bKeyDown = bDown;
-        this->bKeyInput = 1;
+        gui_kb_event *e;
+
+        e = new gui_kb_event();
+        e->sname.assign( *skey );
+        e->bDown = bDown;
+        
+        this->kbe.push( e );
     }
     
     //override to handle mouse button

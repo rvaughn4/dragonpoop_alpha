@@ -30,7 +30,12 @@ namespace dragonpoop
     class model_material;
     class dpmatrix;
     class model_ref;
-    
+    class render_api_context_writelock;
+    class render_api_texture_ref;
+    class render_api_indexbuffer_ref;
+    class render_api_vertexbuffer_ref;
+    class render_api_commandlist_writelock;
+
     class renderer_model : public shared_obj
     {
         
@@ -86,7 +91,7 @@ namespace dragonpoop
         //sync model instance with changes
         void sync( void );
         //handle sync
-        virtual void onSync( dpthread_lock *thd, renderer_model_readlock *g, model_writelock *ml );
+        virtual void onSync( dpthread_lock *thd, model_writelock *ml );
         //generate instance
         virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
         //render model
@@ -108,9 +113,7 @@ namespace dragonpoop
         //kill model
         void kill( void );
         //run model from task
-        void runFromTask( dpthread_lock *thd, renderer_model_readlock *g );
-        //run model from renderer
-        void runFromRenderer( dpthread_lock *thd, renderer_model_readlock *g );
+        void run( dpthread_lock *thd, render_api_context_writelock *ctx );
 
     public:
         

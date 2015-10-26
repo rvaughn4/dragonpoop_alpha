@@ -70,6 +70,10 @@ namespace dragonpoop
         bool isGuiCommandListUploaded( void );
         //set gui commandlist
         void uploadGuiCommandList( render_api_commandlist_ref *cl );
+        //returns true if model commandlist is set
+        bool isModelCommandListUploaded( void );
+        //set model commandlist
+        void uploadModelCommandList( render_api_commandlist_ref *cl );
 
         friend class renderer;
     };

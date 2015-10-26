@@ -78,6 +78,8 @@ namespace dragonpoop
         this->cs = new renderer_state_init_api( this );
         this->gui_cl = 0;
         this->new_gui_cl = 0;
+        this->model_cl = 0;
+        this->new_model_cl = 0;
     }
 
     //dtor
@@ -98,6 +100,11 @@ namespace dragonpoop
             delete cl;
         if( this->gui_cl )
             delete this->gui_cl;
+        cl = this->new_model_cl;
+        if( cl )
+            delete cl;
+        if( this->model_cl )
+            delete this->model_cl;
         delete this->tsk;
         delete this->gtsk;
         delete this->cs;
@@ -176,8 +183,6 @@ namespace dragonpoop
     {
         this->runApi( rl, thd );
         this->_syncCam();
-
-        renderer_model_man::runFromRenderer( thd, this->rmodel_mgr );
         this->render( thd, rl );
     }
     
@@ -306,11 +311,28 @@ namespace dragonpoop
         ctxl->clearColor( 0.5f, 0.5f, 1.0f );
         ctxl->clearDepth( 1.0f );
         
+        if( this->model_cl )
+        {
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 100, "renderer::render" );
+            if( cll )
+                cll->execute( ctxl );
+            ocl.unlock();
+        }
+        if( this->new_model_cl )
+        {
+            if( this->model_cl )
+                delete this->model_cl;
+            this->model_cl = this->new_model_cl;
+            this->new_model_cl = 0;
+        }
+        
+        ctxl->clearDepth( 1.0f );
         if( this->gui_cl )
         {
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 100, "renderer::render" );
             if( cll )
                 cll->execute( ctxl );
+            ocl.unlock();
         }
         if( this->new_gui_cl )
         {
@@ -319,20 +341,6 @@ namespace dragonpoop
             this->gui_cl = this->new_gui_cl;
             this->new_gui_cl = 0;
         }
-        
-        /*
-        this->prepareWorldRender( w, h );
-        mwl = (renderer_model_man_readlock *)o.tryReadLock( this->rmodel_mgr, 100, "renderer::render" );
-        if( mwl )
-            mwl->renderModels( thd, rl, &this->m_world );
-        o.unlock();
-        
-        this->prepareGuiRender( w, h );
-        gwl = (renderer_gui_man_readlock *)o.tryReadLock( this->rgui_mgr, 100, "renderer::render" );
-        if( gwl )
-            gwl->renderGuis( thd, rl, &this->m_gui );
-        o.unlock();
-        */
         
         ctxl->flipBackBuffer();
         
@@ -394,6 +402,7 @@ namespace dragonpoop
         window_mouse_input m;
         window_kb_input k;
         renderer_gui_man_writelock *gl;
+        uint64_t t;
         
         al = (render_api_writelock *)o.tryWriteLock( this->api, 100, "renderer::runApi" );
         if( !al )
@@ -402,6 +411,12 @@ namespace dragonpoop
         al->run();
         if( !al->isOpen() )
             this->c->kill();
+        
+        
+        t = thd->getTicks();
+        if( t - this->t_last_input < 100 )
+            return 1;
+        this->t_last_input = t;
         if( !al->hasKBInput() && !al->hasMouseInput() )
             return 1;
         
@@ -486,7 +501,18 @@ namespace dragonpoop
     //generate renderer model
     renderer_model_man *renderer::genModelMan( dptaskpool_writelock *tp )
     {
-        return new renderer_model_man( this->c, this, tp );
+        shared_obj_guard o;
+        render_api_writelock *l;
+        render_api_context_ref *ctx;
+        
+        l = (render_api_writelock *)o.tryWriteLock( this->api, 5000, "renderer::genModelMan" );
+        if( !l )
+            return 0;
+        ctx = l->getContext();
+        if( !ctx )
+            return 0;
+        
+        return new renderer_model_man( this->c, this, tp, ctx, 1920, 1080 );
     }
     
     //generate renderer gui
@@ -648,6 +674,24 @@ namespace dragonpoop
         if( ocl )
             delete ocl;
         this->new_gui_cl = cl;
+    }
+    
+    //returns true if model commandlist is set
+    bool renderer::isModelCommandListUploaded( void )
+    {
+        render_api_commandlist_ref *cl;
+        cl = this->new_model_cl;
+        return cl != 0;
+    }
+    
+    //set model commandlist
+    void renderer::uploadModelCommandList( render_api_commandlist_ref *cl )
+    {
+        render_api_commandlist_ref *ocl;
+        ocl = this->new_model_cl;
+        if( ocl )
+            delete ocl;
+        this->new_model_cl = cl;
     }
     
 };
