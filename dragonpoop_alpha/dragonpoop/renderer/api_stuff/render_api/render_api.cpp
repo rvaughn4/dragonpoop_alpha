@@ -76,6 +76,8 @@ namespace dragonpoop
         this->crun = 0;
 
         this->runContexts();
+        this->runShaders();
+        this->runTextures();
     }
     
     //returns true if window is open
@@ -176,6 +178,54 @@ namespace dragonpoop
         {
             p = *i;
             this->contexts.remove( p );
+            delete p;
+        }
+    }
+    
+    //run shaders
+    void render_api::runShaders( void )
+    {
+        std::list<render_api_shader *> *l, d;
+        std::list<render_api_shader *>::iterator i;
+        render_api_shader *p;
+        
+        l = &this->shaders;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+                d.push_back( p );
+        }
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->shaders.remove( p );
+            delete p;
+        }
+    }
+
+    //run textures
+    void render_api::runTextures( void )
+    {
+        std::list<render_api_texture *> *l, d;
+        std::list<render_api_texture *>::iterator i;
+        render_api_texture *p;
+        
+        l = &this->textures;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+                d.push_back( p );
+        }
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->textures.remove( p );
             delete p;
         }
     }

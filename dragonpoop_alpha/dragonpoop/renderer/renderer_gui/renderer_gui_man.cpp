@@ -458,7 +458,6 @@ namespace dragonpoop
         wl->renderGuis( thd, &wl->t->m, ctxl, cll );
         
         cll->compile( ctxl );
-        cll->deleteCommands();
     }
     
     //wait for renderer to finish with commandlist

@@ -42,6 +42,10 @@ namespace dragonpoop
         
         //run contexts
         void runContexts( void );
+        //run shaders
+        void runShaders( void );
+        //run textures
+        void runTextures( void );
         
     protected:
         
