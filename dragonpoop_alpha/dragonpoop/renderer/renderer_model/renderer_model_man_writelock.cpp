@@ -29,4 +29,10 @@ namespace dragonpoop
         this->t->deleteModels();
     }
     
+    //render models
+    void renderer_model_man_writelock::renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
+    {
+        this->t->renderModels( thd, campos, m_world, ctx, clist );
+    }
+    
 };

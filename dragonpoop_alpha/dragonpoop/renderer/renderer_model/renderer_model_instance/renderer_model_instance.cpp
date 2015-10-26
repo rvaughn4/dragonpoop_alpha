@@ -435,7 +435,7 @@ namespace dragonpoop
     }
 
     //render model
-    void renderer_model_instance::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
+    void renderer_model_instance::render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
         std::list<renderer_model_instance_group *> l;
         std::list<renderer_model_instance_group *>::iterator i;
@@ -443,7 +443,8 @@ namespace dragonpoop
         renderer_model_material *mat;
         dpmatrix mlocal;
         
-        this->getModelViewMatrix( thd, r, m, m_world, &mlocal );
+        this->redoMatrixes( mi, thd->getTicks() );
+        this->getModelViewMatrix( thd, campos, m, m_world, &mlocal );
         this->getGroups( &l );
         
         clist->setMatrix( &mlocal );

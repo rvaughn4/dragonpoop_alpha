@@ -31,10 +31,8 @@ namespace dragonpoop
     class dpmatrix;
     class model_ref;
     class render_api_context_writelock;
-    class render_api_texture_ref;
-    class render_api_indexbuffer_ref;
-    class render_api_vertexbuffer_ref;
     class render_api_commandlist_writelock;
+    class dpposition;
 
     class renderer_model : public shared_obj
     {
@@ -95,7 +93,7 @@ namespace dragonpoop
         //generate instance
         virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui, dpmatrix *m_world );
+        void render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //add material
         renderer_model_material *makeMaterial( model_writelock *ml, model_material *m, render_api_context_writelock *cl );
         //find material

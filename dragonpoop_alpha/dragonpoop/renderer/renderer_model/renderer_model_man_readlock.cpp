@@ -23,10 +23,4 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
-    //render models
-    void renderer_model_man_readlock::renderModels( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world )
-    {
-        this->t->renderModels( thd, rl, this, m_world );
-    }
-    
 };

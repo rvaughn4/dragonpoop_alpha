@@ -35,8 +35,6 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        //render models
-        void renderModels( dpthread_lock *thd, renderer_writelock *rl, dpmatrix *m_world );
 
         friend class renderer_model_man;
     };

@@ -5,6 +5,7 @@
 #include "../../core/shared_obj/shared_obj.h"
 #include "../../core/dpid/dpid.h"
 #include "../../gfx/dpmatrix/dpmatrix.h"
+#include "../../gfx/dpposition/dpposition.h"
 
 namespace dragonpoop
 {
@@ -33,6 +34,7 @@ namespace dragonpoop
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
     class render_api_shader_ref;
+    class dpposition;
 
     class renderer_model_man : public shared_obj
     {
@@ -53,6 +55,7 @@ namespace dragonpoop
         render_api_commandlist_ref *clist;
         dpmatrix m, m_undo;
         float log_screen_width, log_screen_height;
+        dpposition campos;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
@@ -86,7 +89,7 @@ namespace dragonpoop
         //delete models
         void deleteModels( void );
         //render models
-        void renderModels( dpthread_lock *thd, renderer_writelock *rl, renderer_model_man_readlock *ml, dpmatrix *m_world );
+        void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
 

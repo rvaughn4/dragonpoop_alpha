@@ -16,6 +16,9 @@ namespace dragonpoop
     class renderer_model;
     class renderer_writelock;
     class dpmatrix;
+    class dpposition;
+    class render_api_context_writelock;
+    class render_api_commandlist_writelock;
     
     class renderer_model_man_writelock : public shared_obj_writelock
     {
@@ -37,7 +40,9 @@ namespace dragonpoop
         core *getCore( void );
         //delete models
         void deleteModels( void );
-        
+        //render models
+        void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+
         friend class renderer_model_man;
     };
     

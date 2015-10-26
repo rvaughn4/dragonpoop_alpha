@@ -18,7 +18,10 @@ namespace dragonpoop
     class renderer_model_material;
     struct dpxyz_f;
     class dpmatrix;
-    
+    class render_api_context_writelock;
+    class render_api_commandlist_writelock;
+    class dpposition;
+
     class renderer_model_readlock : public shared_obj_readlock
     {
         
@@ -48,7 +51,7 @@ namespace dragonpoop
         //sync model instance with changes
         void sync( void );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, bool doGui, dpmatrix *m_world );
+        void render( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //find material
         renderer_model_material *findMaterial( dpid id );
         //get materials

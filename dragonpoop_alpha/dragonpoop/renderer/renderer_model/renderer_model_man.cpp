@@ -366,6 +366,8 @@ namespace dragonpoop
         shared_obj_guard o, octxt, ocl;
         render_api_context_writelock *ctxl;
         render_api_commandlist_writelock *cll;
+        renderer_readlock *rl;
+        
         
         wl = (renderer_model_man_writelock *)o.tryWriteLock( g, 100, "renderer_model_man::render" );
         if( !wl )
@@ -373,6 +375,11 @@ namespace dragonpoop
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( wl->t->ctx, 100, "renderer_model_man::render" );
         if( !ctxl )
             return;
+        rl = (renderer_readlock *)ocl.tryReadLock( wl->t->r, 100, "renderer_model_man::render" );
+        if( rl )
+            rl->getCameraPosition( &wl->t->campos );
+        ocl.unlock();
+        
         
         if( wl->t->clist )
             delete wl->t->clist;
@@ -385,7 +392,7 @@ namespace dragonpoop
             return;
         
         cll->setShader( wl->t->sdr );
-       // wl->renderModels( thd, &wl->t->m, ctxl, cll );
+        wl->renderModels( thd, &wl->t->campos, &wl->t->m, ctxl, cll );
         
         cll->compile( ctxl );
         cll->deleteCommands();
@@ -482,7 +489,7 @@ namespace dragonpoop
     }
     
     //render models
-    void renderer_model_man::renderModels( dpthread_lock *thd, renderer_writelock *rl, renderer_model_man_readlock *ml, dpmatrix *m_world )
+    void renderer_model_man::renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
         std::list<renderer_model *> *l;
         std::list<renderer_model *>::iterator i;
@@ -497,7 +504,7 @@ namespace dragonpoop
             pl = (renderer_model_readlock *)o.tryReadLock( p, 100, "renderer_model_man::rendermodels" );
             if( !pl )
                continue;
-            pl->render( thd, rl, 0, m_world );
+            pl->render( thd, campos, m_world, ctx, clist );
         }
     }
     
