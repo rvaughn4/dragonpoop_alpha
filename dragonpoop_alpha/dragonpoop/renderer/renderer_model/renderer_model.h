@@ -64,7 +64,7 @@ namespace dragonpoop
         //run instances
         void runInstances( dpthread_lock *thd );
         //sync materials
-        void syncMaterials( model_writelock *g );
+        void syncMaterials( model_writelock *g, render_api_context_writelock *cl );
         
     protected:
         
@@ -97,13 +97,13 @@ namespace dragonpoop
         //render model
         void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, bool doGui, dpmatrix *m_world );
         //add material
-        renderer_model_material *makeMaterial( model_writelock *ml, model_material *m );
+        renderer_model_material *makeMaterial( model_writelock *ml, model_material *m, render_api_context_writelock *cl );
         //find material
         renderer_model_material *findMaterial( dpid id );
         //get materials
         void getMaterials( std::list<renderer_model_material *> *l );
         //generate material
-        virtual renderer_model_material *genMaterial( model_writelock *ml, model_material *m );
+        virtual renderer_model_material *genMaterial( model_writelock *ml, model_material *m, render_api_context_writelock *cl );
         //get size
         void getSize( dpxyz_f *x );
         //get center

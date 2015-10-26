@@ -339,7 +339,7 @@ namespace dragonpoop
     }
     
     //sync materials
-    void renderer_model::syncMaterials( model_writelock *ml )
+    void renderer_model::syncMaterials( model_writelock *ml, render_api_context_writelock *cl )
     {
         std::list<renderer_model_material *> li, d;
         std::list<renderer_model_material *>::iterator ii;
@@ -365,11 +365,11 @@ namespace dragonpoop
             pi = (renderer_model_material *)t.findLeaf( p->getId() );
             if( pi )
             {
-                pi->sync( ml, p );
+                pi->sync( ml, p, cl );
                 t.removeLeaf( pi );
                 continue;
             }
-            this->makeMaterial( ml, p );
+            this->makeMaterial( ml, p, cl );
         }
         
         //find leaves in index not paired with a model_instance
@@ -390,16 +390,16 @@ namespace dragonpoop
     }
     
     //generate material
-    renderer_model_material *renderer_model::genMaterial( model_writelock *ml, model_material *m )
+    renderer_model_material *renderer_model::genMaterial( model_writelock *ml, model_material *m, render_api_context_writelock *cl )
     {
-        return new renderer_model_material( ml, m );
+        return new renderer_model_material( ml, m, cl );
     }
 
     //add material
-    renderer_model_material *renderer_model::makeMaterial( model_writelock *ml, model_material *m )
+    renderer_model_material *renderer_model::makeMaterial( model_writelock *ml, model_material *m, render_api_context_writelock *cl )
     {
         renderer_model_material *c;
-        c = this->genMaterial( ml, m );
+        c = this->genMaterial( ml, m, cl );
         if( !c )
             return 0;
         this->addComponent( c );
@@ -455,7 +455,7 @@ namespace dragonpoop
             {
                 ml->getSize( &this->size );
                 ml->getCenter( &this->center );
-                this->syncMaterials( ml );
+                this->syncMaterials( ml, ctx );
                 this->syncInstances( ml );
                 this->onSync( thd, ml );
                 this->bIsSynced = 1;

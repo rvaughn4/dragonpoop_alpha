@@ -10,6 +10,8 @@ namespace dragonpoop
     
     class model_material;
     class model_writelock;
+    class render_api_context_writelock;
+    class render_api_texture_ref;
     
     class renderer_model_material : public model_component
     {
@@ -21,13 +23,17 @@ namespace dragonpoop
             dprgba diffuse, specular, ambient, emissive;
         } colors;
         float shine, opacity;
+        struct
+        {
+            render_api_texture_ref *diffuse, *alphamap, *specmap, *normalmap;
+        } tex;
         
     protected:
         
     public:
         
         //ctor
-        renderer_model_material( model_writelock *ml, model_material *m );
+        renderer_model_material( model_writelock *ml, model_material *m, render_api_context_writelock *cl );
         //dtor
         virtual ~renderer_model_material( void );
         //get diffuse color
@@ -55,7 +61,7 @@ namespace dragonpoop
         //get opacity
         float getOpacity( void );
         //sync with group
-        virtual void sync( model_writelock *ml, model_material *m );
+        virtual void sync( model_writelock *ml, model_material *m, render_api_context_writelock *cl );
 
     };
     

@@ -504,7 +504,7 @@ namespace dragonpoop
     //generate renderer model
     renderer_model *renderer_model_man::genModel( model_writelock *ml )
     {
-        return 0;
+        return new renderer_model( ml );
     }
     
 };
