@@ -17,6 +17,11 @@
 #include "../renderer_model_readlock.h"
 #include "../../../core/dpthread/dpthread_lock.h"
 
+#include "../../api_stuff/render_api/render_api_commandlist_writelock.h"
+#include "../../api_stuff/render_api/render_api_context_writelock.h"
+#include "../../api_stuff/render_api/render_api_vertexbuffer_ref.h"
+#include "../../api_stuff/render_api/render_api_indexbuffer_ref.h"
+
 #include <math.h>
 
 namespace dragonpoop
@@ -430,21 +435,47 @@ namespace dragonpoop
     }
 
     //render model
-    void renderer_model_instance::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world )
+    void renderer_model_instance::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
-       // std::list<renderer_model_instance_group *> l;
-       // std::list<renderer_model_instance_group *>::iterator i;
-       // renderer_model_instance_group *g;
-        //renderer_model_material *mat;
+        std::list<renderer_model_instance_group *> l;
+        std::list<renderer_model_instance_group *>::iterator i;
+        renderer_model_instance_group *g;
+        renderer_model_material *mat;
+        dpmatrix mlocal;
         
-      //  this->getGroups( &l );
+        this->getModelViewMatrix( thd, r, m, m_world, &mlocal );
+        this->getGroups( &l );
         
-      //  for( i = l.begin(); i != l.end(); ++i )
-      //  {
-      //      g = *i;
-          //  mat = m->findMaterial( g->getMaterialId() );
-           // r->renderGroup( thd, m, mi, g, mat, m_world );
-      //  }
+        clist->setMatrix( &mlocal );
+        clist->setAlpha( this->getAlpha() );
+        
+        for( i = l.begin(); i != l.end(); ++i )
+        {
+            g = *i;
+            mat = m->findMaterial( g->getMaterialId() );
+            this->renderGroup( thd, mi, mat, g, ctx, clist );
+        }
+    }
+    
+    //render group
+    void renderer_model_instance::renderGroup( dpthread_lock *thd, renderer_model_instance_readlock *mi, renderer_model_material *m, renderer_model_instance_group *g, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
+    {
+        dpvertex_buffer *vb;
+        dpindex_buffer *ib;
+        render_api_vertexbuffer_ref *rvb;
+        render_api_indexbuffer_ref *rib;
+        
+        vb = g->getTransformedBuffer( mi, &ib );
+        rvb = ctx->makeVertexBuffer( vb );
+        rib = ctx->makeIndexBuffer( ib );
+        
+        clist->setTexture( m->getDiffuseTex(), 0 );
+        clist->setIndexBuffer( rib );
+        clist->setVertexBuffer( rvb );
+        clist->draw();
+        
+        delete rvb;
+        delete rib;
     }
     
     //returns joint cache
@@ -622,13 +653,13 @@ namespace dragonpoop
     }
     
     //get model view matrix
-    void renderer_model_instance::getModelViewMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
+    void renderer_model_instance::getModelViewMatrix( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
         dpxyz_f pp, sz, ctr, rot;
         float fsz, rsz;
         dpquaternion qa, qb, qc;
 
-        r->getPositionRelativeToCamera( &this->pos, thd->getTicks(), &pp );
+        campos->getDifference( &this->pos, thd->getTicks(), &pp );
         m->getCenter( &ctr );
         m->getSize( &sz );
         fsz = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;

@@ -136,5 +136,11 @@ namespace dragonpoop
             this->tex.specmap = cl->makeTexture( bm );
         
     }
+
+    //return diffuse tex
+    render_api_texture_ref *renderer_model_material::getDiffuseTex( void )
+    {
+        return this->tex.diffuse;
+    }
     
 };

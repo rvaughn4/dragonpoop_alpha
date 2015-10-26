@@ -21,6 +21,9 @@ namespace dragonpoop
     class dpmatrix;
     struct model_gui_pos;
     class dpthread_lock;
+    class dpposition;
+    class render_api_context_writelock;
+    class render_api_commandlist_writelock;
     
     class renderer_model_instance_readlock : public shared_obj_readlock
     {
@@ -61,15 +64,13 @@ namespace dragonpoop
         //animate
         void animate( void );
         //render model
-        void render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *m_world );
+        void render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //returns joint cache
         model_instance_joint_cache *getJointCache( void );
         //transform vertex using joints
         void transform( dpvertex *v );
         //recompute animation joint matrixes
         void redoMatrixes( uint64_t t );
-        //get model view matrix
-        void getModelViewMatrix( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix );
         //get dimensions
         model_gui_pos *getGuiDimensions( void );
         //returns true if gui

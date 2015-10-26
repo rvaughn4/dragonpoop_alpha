@@ -89,12 +89,11 @@ namespace dragonpoop
         this->t->animate();
     }
     
-    //render model
-    void renderer_model_instance_readlock::render( dpthread_lock *thd, renderer_writelock *r, renderer_model_readlock *m, dpmatrix *m_world )
+    void renderer_model_instance_readlock::render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
-        this->t->render( thd, r, m, this, m_world );
+        this->t->render( thd, campos, m, this, m_world, ctx, clist );
     }
-    
+
     //transform vertex using joints
     void renderer_model_instance_readlock::transform( dpvertex *v )
     {

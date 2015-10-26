@@ -37,11 +37,8 @@ namespace dragonpoop
     void renderer_model_instance_group::sync( model_instance_writelock *ml, model_instance_group *g, dpthread_lock *thd )
     {
         this->m_id = g->getMaterialId();
-        
         this->vb.clear();
         ml->fillVertexBuffer( g->getId(), &this->vb );
-        
-        this->indicies.clear();
     }
     
     //sync with group
@@ -56,37 +53,23 @@ namespace dragonpoop
     }
     
     //returns transformed vertex buffer
-    dpvertex_buffer *renderer_model_instance_group::getTransformedBuffer( renderer_model_instance_readlock *m, std::vector<uint16_t> **li )
+    dpvertex_buffer *renderer_model_instance_group::getTransformedBuffer( renderer_model_instance_readlock *m, dpindex_buffer **li )
     {
         unsigned int i, e;
-        dpvertex *v, *bv, *av;
-        dpindex *ib, *b;
+        dpvertex *v, *bv;
         
-        av = this->vb.getVertexBuffer( &e );
-        i = this->tvb.getSize();
+        this->tib.copy( this->vb.getIB() );
+        this->tvb.copy( this->vb.getVB() );
+        
+        e = this->tvb.getSize();
         bv = this->tvb.getBuffer();
-        for( ; i < e && av; i++ )
-            this->tvb.addVertex( av );
-        
-        for( i = 0; i < e && av && bv; i++ )
+        for( i = 0; i < e && bv; i++ )
         {
             v = &bv[ i ];
-            *v = av[ i ];
             m->transform( v );
         }
-        
-        ib = this->vb.getIndexBuffer( &e );
-        i = (unsigned int)this->indicies.size();
-        if( li && i != e )
-        {
-            for( i = 0; i < e; i++ )
-            {
-                b = &ib[ i ];
-                this->indicies.push_back( b->i );
-            }
-        }
         if( li )
-            *li = &this->indicies;
+            *li = &this->tib;
 
         return &this->tvb;
     }

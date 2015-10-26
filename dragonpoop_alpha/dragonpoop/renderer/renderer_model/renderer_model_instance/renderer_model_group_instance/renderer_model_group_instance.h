@@ -22,7 +22,7 @@ namespace dragonpoop
         dpid m_id;
         dpvertexindex_buffer vb;
         dpvertex_buffer tvb;
-        std::vector<uint16_t> indicies;
+        dpindex_buffer tib;
 
     protected:
         
@@ -43,7 +43,7 @@ namespace dragonpoop
         //returns vertex buffer
         dpvertexindex_buffer *getVertexBuffer( void );
         //returns transformed vertex buffer
-        dpvertex_buffer *getTransformedBuffer( renderer_model_instance_readlock *m, std::vector<uint16_t> **li );
+        dpvertex_buffer *getTransformedBuffer( renderer_model_instance_readlock *m, dpindex_buffer **li );
 
     };
     

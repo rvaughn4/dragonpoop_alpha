@@ -62,6 +62,11 @@ namespace dragonpoop
         float getOpacity( void );
         //sync with group
         virtual void sync( model_writelock *ml, model_material *m, render_api_context_writelock *cl );
+        //return diffuse tex
+        render_api_texture_ref *getDiffuseTex( void );
+        //return alpha tex
+        
+        
 
     };
     
