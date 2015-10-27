@@ -292,10 +292,9 @@ namespace dragonpoop
         render_api_context_writelock *ctxl;
         render_api_writelock *al;
         render_api_commandlist_writelock *cll;
+        renderer_model_man_writelock *modl;
+        renderer_gui_man_writelock *guil;
         
-    //    renderer_gui_man_readlock *gwl;
-      //  renderer_model_man_readlock *mwl;
-
         al = (render_api_writelock *)octx.tryWriteLock( this->api, 100, "renderer::render" );
         if( !al )
             return;
@@ -318,13 +317,6 @@ namespace dragonpoop
                 cll->execute( ctxl );
             ocl.unlock();
         }
-        if( this->new_model_cl )
-        {
-            if( this->model_cl )
-                delete this->model_cl;
-            this->model_cl = this->new_model_cl;
-            this->new_model_cl = 0;
-        }
         
         ctxl->clearDepth( 1.0f );
         if( this->gui_cl )
@@ -333,13 +325,6 @@ namespace dragonpoop
             if( cll )
                 cll->execute( ctxl );
             ocl.unlock();
-        }
-        if( this->new_gui_cl )
-        {
-            if( this->gui_cl )
-                delete this->gui_cl;
-            this->gui_cl = this->new_gui_cl;
-            this->new_gui_cl = 0;
         }
         
         ctxl->flipBackBuffer();
@@ -357,6 +342,28 @@ namespace dragonpoop
             this->ms_each_frame = (uint64_t)f0;
             this->fthiss = 0;
         }
+
+        if( this->new_model_cl )
+        {
+            if( this->model_cl )
+                delete this->model_cl;
+            this->model_cl = this->new_model_cl;
+            this->new_model_cl = 0;
+        }
+        if( this->new_gui_cl )
+        {
+            if( this->gui_cl )
+                delete this->gui_cl;
+            this->gui_cl = this->new_gui_cl;
+            this->new_gui_cl = 0;
+        }
+        
+        modl = (renderer_model_man_writelock *)ocl.tryWriteLock( this->rmodel_mgr, 3, "renderer::render" );
+        if( modl )
+            modl->listConsumed();
+        guil = (renderer_gui_man_writelock *)ocl.tryWriteLock( this->rgui_mgr, 3, "renderer::render" );
+        if( guil )
+            guil->listConsumed();
     }
  
     //init graphics api

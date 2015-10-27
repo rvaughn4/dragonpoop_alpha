@@ -2,7 +2,8 @@
 #include "opengl1o5_x11.h"
 #include "opengl1o5_x11_context.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
-#include "opengl1o5_x11_shader.h"
+#include "opengl1o5_x11_shader_gui.h"
+#include "opengl1o5_x11_shader_model.h"
 #include "opengl1o5_x11_texture.h"
 #include "opengl1o5_x11_vertexbuffer.h"
 #include "opengl1o5_x11_indexbuffer.h"
@@ -121,7 +122,16 @@ namespace dragonpoop
     //gen shader
     render_api_shader *opengl1o5_x11::genShader( dpmutex_master *mm, render_api_writelock *al, render_api_context_writelock *cl, const char *cname )
     {
-        return new opengl1o5_x11_shader( al, cl, mm );
+        std::string s;
+        
+        s.assign( cname );
+        
+        if( s.compare( "gui" ) == 0 )
+            return new opengl1o5_x11_shader_gui( al, cl, mm );
+        if( s.compare( "model" ) == 0 )
+            return new opengl1o5_x11_shader_model( al, cl, mm );
+        
+        return 0;
     }
     
     //gen texture

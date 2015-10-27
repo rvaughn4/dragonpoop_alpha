@@ -27,6 +27,8 @@ namespace dragonpoop
         virtual ~renderer_ref( void );
         
         friend class renderer;
+        friend class renderer_gui_man;
+        friend class renderer_model_man;
     };
     
 };

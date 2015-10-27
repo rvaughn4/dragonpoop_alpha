@@ -50,6 +50,7 @@ namespace dragonpoop
         renderer_writelock *rl;
         render_api_context_writelock *cl;
         
+        this->listReady = 0;
         this->log_screen_height = log_screen_height;
         this->log_screen_width = log_screen_width;
         this->ctx = ctx;
@@ -401,7 +402,7 @@ namespace dragonpoop
         renderer_gui_man::runGuis( thd, g );
         renderer_gui_man::deleteOldGuis( thd, g );
         renderer_gui_man::render( thd, g );
-        if( !renderer_gui_man::waitForRenderer( r ) )
+        if( !renderer_gui_man::waitForRenderer( g ) )
             return;
         renderer_gui_man::swapList( g, r );
     }
@@ -461,24 +462,27 @@ namespace dragonpoop
     }
     
     //wait for renderer to finish with commandlist
-    bool renderer_gui_man::waitForRenderer( renderer_ref *r )
+    bool renderer_gui_man::waitForRenderer( renderer_gui_man_ref *r )
     {
-        renderer_readlock *rl;
-        shared_obj_guard o;
-        int t;
+        int t, y;
         
         for( t = 0; t < 1000; t++ )
         {
-            rl = (renderer_readlock *)o.tryReadLock( r, "renderer_gui_man::waitForRenderer" );
-            if( !rl )
-                return 0;
-            if( !rl->isGuiCommandListUploaded() )
-                return 1;
-            o.unlock();
-            std::this_thread::sleep_for( std::chrono::milliseconds( 0 ) );
+            for( y = 0; y < 1000; y++ )
+            {
+                if( r->t->listReady )
+                    return 1;
+            }
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
         }
         
         return 0;
+    }
+    
+    //renderer notifies when list consumed
+    void renderer_gui_man::listConsumed( void )
+    {
+        this->listReady = 1;
     }
     
     //swap command list with renderer
@@ -488,10 +492,10 @@ namespace dragonpoop
         shared_obj_guard o, o1;
         renderer_gui_man_writelock *wl;
 
-        rl = (renderer_writelock *)o.tryWriteLock( r, 1000, "renderer_gui_man::swapList" );
+        rl = (renderer_writelock *)o.tryWriteLock( r, 3, "renderer_gui_man::swapList" );
         if( !rl )
             return;
-        wl = (renderer_gui_man_writelock *)o1.tryWriteLock( g, 1000, "renderer_gui_man::swapList" );
+        wl = (renderer_gui_man_writelock *)o1.tryWriteLock( g, 10, "renderer_gui_man::swapList" );
         if( !wl )
             return;
         

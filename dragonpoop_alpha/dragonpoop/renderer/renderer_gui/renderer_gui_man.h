@@ -6,6 +6,8 @@
 #include "../../core/dpid/dpid.h"
 #include "../../gfx/dpmatrix/dpmatrix.h"
 
+#include <atomic>
+
 namespace dragonpoop
 {
     
@@ -54,7 +56,8 @@ namespace dragonpoop
         render_api_commandlist_ref *clist;
         dpmatrix m, m_undo;
         float log_screen_width, log_screen_height;
-
+        std::atomic<bool> listReady;
+        
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
         //kill task
@@ -70,7 +73,7 @@ namespace dragonpoop
         //render into command list
         static void render( dpthread_lock *thd, renderer_gui_man_ref *g );
         //wait for renderer to finish with commandlist
-        static bool waitForRenderer( renderer_ref *r );
+        static bool waitForRenderer( renderer_gui_man_ref *r );
         //swap command list with renderer
         static void swapList( renderer_gui_man_ref *g, renderer_ref *r );
         //compute matrix
@@ -102,6 +105,8 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //generate renderer gui
         virtual renderer_gui *genGui( gui_writelock *ml );
+        //renderer notifies when list consumed
+        void listConsumed( void );
 
     public:
         

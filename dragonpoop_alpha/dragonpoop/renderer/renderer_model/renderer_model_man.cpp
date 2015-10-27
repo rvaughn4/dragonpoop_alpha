@@ -48,6 +48,7 @@ namespace dragonpoop
         renderer_writelock *rl;
         render_api_context_writelock *cl;
         
+        this->listReady = 0;
         this->log_screen_height = log_screen_height;
         this->log_screen_width = log_screen_width;
         this->ctx = ctx;
@@ -354,7 +355,7 @@ namespace dragonpoop
         renderer_model_man::runModels( thd, g );
         renderer_model_man::deleteOldModels( thd, g );
         renderer_model_man::render( thd, g );
-        if( !renderer_model_man::waitForRenderer( r ) )
+        if( !renderer_model_man::waitForRenderer( g ) )
             return;
         renderer_model_man::swapList( g, r );
     }
@@ -366,8 +367,6 @@ namespace dragonpoop
         shared_obj_guard o, octxt, ocl;
         render_api_context_writelock *ctxl;
         render_api_commandlist_writelock *cll;
-        renderer_readlock *rl;
-        
         
         wl = (renderer_model_man_writelock *)o.tryWriteLock( g, 100, "renderer_model_man::render" );
         if( !wl )
@@ -375,11 +374,6 @@ namespace dragonpoop
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( wl->t->ctx, 100, "renderer_model_man::render" );
         if( !ctxl )
             return;
-        rl = (renderer_readlock *)ocl.tryReadLock( wl->t->r, 100, "renderer_model_man::render" );
-        if( rl )
-            rl->getCameraPosition( &wl->t->campos );
-        ocl.unlock();
-        
         
         if( wl->t->clist )
             delete wl->t->clist;
@@ -399,24 +393,27 @@ namespace dragonpoop
     }
     
     //wait for renderer to finish with commandlist
-    bool renderer_model_man::waitForRenderer( renderer_ref *r )
+    bool renderer_model_man::waitForRenderer( renderer_model_man_ref *g )
     {
-        renderer_readlock *rl;
-        shared_obj_guard o;
-        int t;
+        int t, y;
         
         for( t = 0; t < 1000; t++ )
         {
-            rl = (renderer_readlock *)o.tryReadLock( r, "renderer_model_man::waitForRenderer" );
-            if( !rl )
-                return 0;
-            if( !rl->isModelCommandListUploaded() )
-                return 1;
-            o.unlock();
-            std::this_thread::sleep_for( std::chrono::milliseconds( 0 ) );
+            for( y = 0; y < 1000; y++ )
+            {
+                if( g->t->listReady )
+                    return 1;
+            }
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
         }
         
         return 0;
+    }
+    
+    //called by renderer to announce that commandlist was consumed
+    void renderer_model_man::listConsumed( void )
+    {
+        this->listReady = 1;
     }
     
     //swap command list with renderer
@@ -433,6 +430,7 @@ namespace dragonpoop
         if( !wl )
             return;
         
+        rl->getCameraPosition( &wl->t->campos );
         rl->uploadModelCommandList( wl->t->clist );
         wl->t->clist = 0;
     }

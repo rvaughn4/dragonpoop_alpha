@@ -7,6 +7,9 @@
 
 namespace dragonpoop
 {
+
+    class dpvertex_buffer;
+    class dpindex_buffer;
     
     class opengl1o5_x11_shader : public render_api_shader
     {
@@ -17,6 +20,8 @@ namespace dragonpoop
         
         //render vb
         virtual void render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m, float alpha );
+        //render vb
+        void renderVB( dpvertex_buffer *vb, dpindex_buffer *ib );
         
     public:
         

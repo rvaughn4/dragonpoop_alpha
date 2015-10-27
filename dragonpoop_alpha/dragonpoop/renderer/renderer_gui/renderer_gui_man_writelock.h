@@ -53,6 +53,8 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //render guis
         void renderGuis( dpthread_lock *thd, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
+        //renderer notifies when list consumed
+        void listConsumed( void );
 
         friend class renderer_gui_man;
     };
