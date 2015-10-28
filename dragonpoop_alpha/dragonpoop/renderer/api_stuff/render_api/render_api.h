@@ -46,6 +46,10 @@ namespace dragonpoop
         void runShaders( void );
         //run textures
         void runTextures( void );
+        //run vertex buffers
+        void runVertexBuffers( void );
+        //run index buffers
+        void runIndexBuffers( void );
         
     protected:
         

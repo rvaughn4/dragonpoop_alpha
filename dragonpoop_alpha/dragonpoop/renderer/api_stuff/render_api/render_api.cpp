@@ -70,14 +70,11 @@ namespace dragonpoop
     {
         this->w->run();
         
-        this->crun++;
-        if( this->crun < 20 )
-            return;
-        this->crun = 0;
-
         this->runContexts();
         this->runShaders();
         this->runTextures();
+        this->runIndexBuffers();
+        this->runVertexBuffers();
     }
     
     //returns true if window is open
@@ -226,6 +223,54 @@ namespace dragonpoop
         {
             p = *i;
             this->textures.remove( p );
+            delete p;
+        }
+    }
+    
+    //run vertex buffers
+    void render_api::runVertexBuffers( void )
+    {
+        std::list<render_api_vertexbuffer *> *l, d;
+        std::list<render_api_vertexbuffer *>::iterator i;
+        render_api_vertexbuffer *p;
+        
+        l = &this->vertexbuffers;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+                d.push_back( p );
+        }
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->vertexbuffers.remove( p );
+            delete p;
+        }
+    }
+    
+    //run index buffers
+    void render_api::runIndexBuffers( void )
+    {
+        std::list<render_api_indexbuffer *> *l, d;
+        std::list<render_api_indexbuffer *>::iterator i;
+        render_api_indexbuffer *p;
+        
+        l = &this->indexbuffers;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+                d.push_back( p );
+        }
+        
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->indexbuffers.remove( p );
             delete p;
         }
     }

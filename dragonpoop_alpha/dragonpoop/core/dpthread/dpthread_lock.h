@@ -47,6 +47,7 @@ namespace dragonpoop
         virtual dpid genId( void );
 
         friend class dpthread;
+        friend class dpthread_singletask;
     };
     
 };

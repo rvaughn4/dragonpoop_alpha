@@ -290,6 +290,7 @@
 		79F63AE81BCD00E100C56E38 /* dpland_state_run_low.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F63ADD1BCD00E100C56E38 /* dpland_state_run_low.cpp */; };
 		79F63AE91BCD00E100C56E38 /* dpland_state_run_medium.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F63ADF1BCD00E100C56E38 /* dpland_state_run_medium.cpp */; };
 		79F63AEA1BCD00E100C56E38 /* dpland_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F63AE11BCD00E100C56E38 /* dpland_state.cpp */; };
+		79F672F11BE0C77100A8E6D3 /* dpthread_singletask.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F672EF1BE0C77100A8E6D3 /* dpthread_singletask.cpp */; };
 		79F703BB1BCE793E00B35B8B /* dpland_man_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F703B91BCE793E00B35B8B /* dpland_man_task.cpp */; };
 		79F703C61BCE8BA900B35B8B /* dpactor_man_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F703BC1BCE8BA900B35B8B /* dpactor_man_readlock.cpp */; };
 		79F703C71BCE8BA900B35B8B /* dpactor_man_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F703BE1BCE8BA900B35B8B /* dpactor_man_ref.cpp */; };
@@ -991,6 +992,8 @@
 		79F63AE01BCD00E100C56E38 /* dpland_state_run_medium.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpland_state_run_medium.h; sourceTree = "<group>"; };
 		79F63AE11BCD00E100C56E38 /* dpland_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpland_state.cpp; sourceTree = "<group>"; };
 		79F63AE21BCD00E100C56E38 /* dpland_state.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpland_state.h; sourceTree = "<group>"; };
+		79F672EF1BE0C77100A8E6D3 /* dpthread_singletask.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpthread_singletask.cpp; sourceTree = "<group>"; };
+		79F672F01BE0C77100A8E6D3 /* dpthread_singletask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpthread_singletask.h; sourceTree = "<group>"; };
 		79F703B91BCE793E00B35B8B /* dpland_man_task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpland_man_task.cpp; sourceTree = "<group>"; };
 		79F703BA1BCE793E00B35B8B /* dpland_man_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpland_man_task.h; sourceTree = "<group>"; };
 		79F703BC1BCE8BA900B35B8B /* dpactor_man_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_man_readlock.cpp; sourceTree = "<group>"; };
@@ -1577,6 +1580,8 @@
 			children = (
 				7970E8DB1B64F26E008E8328 /* dpthread.cpp */,
 				7970E8DC1B64F26E008E8328 /* dpthread.h */,
+				79F672EF1BE0C77100A8E6D3 /* dpthread_singletask.cpp */,
+				79F672F01BE0C77100A8E6D3 /* dpthread_singletask.h */,
 				7970E8DD1B64F26E008E8328 /* dpthread_interface.cpp */,
 				7970E8DE1B64F26E008E8328 /* dpthread_interface.h */,
 				7970E8DF1B64F26E008E8328 /* dpthread_lock.cpp */,
@@ -2437,6 +2442,7 @@
 				791CA1FF1BD0141C00FEF40B /* gui_man_ref.cpp in Sources */,
 				79A2BCE81BA5EBF4001F2C6B /* renderer_model_joint_instance.cpp in Sources */,
 				79F703C71BCE8BA900B35B8B /* dpactor_man_ref.cpp in Sources */,
+				79F672F11BE0C77100A8E6D3 /* dpthread_singletask.cpp in Sources */,
 				792D27BF1BD664C5003F97D4 /* renderer_model_man_ref.cpp in Sources */,
 				790C4D5F1BD6B1CE009BCF7E /* render_api_commandlist_ref.cpp in Sources */,
 				794610F91B6D42CE00311E86 /* model_loader_ms3d_state_parse_vertex_extras.cpp in Sources */,

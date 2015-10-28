@@ -13,6 +13,7 @@
 #include "../../core/dptaskpool/dptaskpool_writelock.h"
 #include "../../core/dptaskpool/dptaskpool_readlock.h"
 #include "../../core/dpthread/dpthread_lock.h"
+#include "../../core/dpthread/dpthread_singletask.h"
 #include "../renderer.h"
 #include "../renderer_ref.h"
 #include "../renderer_readlock.h"
@@ -48,7 +49,7 @@ namespace dragonpoop
         renderer_writelock *rl;
         render_api_context_writelock *cl;
         
-        this->listReady = 0;
+        this->listReady = 1;
         this->log_screen_height = log_screen_height;
         this->log_screen_width = log_screen_width;
         this->ctx = ctx;
@@ -77,7 +78,8 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
         
-        this->_startTask( tp, 20, r );
+        this->thd = new dpthread_singletask( c->getMutexMaster(), 303 );
+        this->_startTask( tp, 3, r );
     }
     
     //dtor
@@ -89,6 +91,7 @@ namespace dragonpoop
         this->deleteModels();
         o.unlock();
         this->unlink();
+        delete this->thd;
         
         o.tryWriteLock( this, 5000, "renderer_model_man::~renderer_model_man" );
         this->_killTask();
@@ -134,9 +137,17 @@ namespace dragonpoop
     //start task
     void renderer_model_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r )
     {
+        dpthread_lock *thdl;
+        
         this->gtsk = new renderer_model_man_task( this, r );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, "renderer_model_man" );
-        tp->addTask( this->tsk );
+
+        thdl = this->thd->lock();
+        if( thdl )
+        {
+            thdl->addTask( this->tsk );
+            delete thdl;
+        }
     }
     
     //kill task
@@ -351,13 +362,11 @@ namespace dragonpoop
     //run from manager thread
     void renderer_model_man::run( dpthread_lock *thd, renderer_model_man_ref *g, renderer_ref *r )
     {
+        renderer_model_man::swapList( g, r );
         renderer_model_man::sync( thd, g );
         renderer_model_man::runModels( thd, g );
         renderer_model_man::deleteOldModels( thd, g );
         renderer_model_man::render( thd, g );
-        if( !renderer_model_man::waitForRenderer( g ) )
-            return;
-        renderer_model_man::swapList( g, r );
     }
     
     //render guis into commandlist
@@ -395,18 +404,8 @@ namespace dragonpoop
     //wait for renderer to finish with commandlist
     bool renderer_model_man::waitForRenderer( renderer_model_man_ref *g )
     {
-        int t, y;
-        
-        for( t = 0; t < 1000; t++ )
-        {
-            for( y = 0; y < 1000; y++ )
-            {
-                if( g->t->listReady )
-                    return 1;
-            }
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-        }
-        
+        if( g->t->listReady )
+            return 1;
         return 0;
     }
     
@@ -419,20 +418,8 @@ namespace dragonpoop
     //swap command list with renderer
     void renderer_model_man::swapList( renderer_model_man_ref *g, renderer_ref *r )
     {
-        renderer_writelock *rl;
-        shared_obj_guard o, o1;
-        renderer_model_man_writelock *wl;
-        
-        rl = (renderer_writelock *)o.tryWriteLock( r, 1000, "renderer_model_man::swapList" );
-        if( !rl )
-            return;
-        wl = (renderer_model_man_writelock *)o1.tryWriteLock( g, 1000, "renderer_model_man::swapList" );
-        if( !wl )
-            return;
-        
-        rl->getCameraPosition( &wl->t->campos );
-        rl->uploadModelCommandList( wl->t->clist );
-        wl->t->clist = 0;
+        r->t->uploadModelCommandList( g->t->clist );
+        g->t->clist = 0;
     }
     
     //compute matrix

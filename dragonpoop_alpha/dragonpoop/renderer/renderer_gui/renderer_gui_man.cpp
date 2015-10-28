@@ -12,6 +12,7 @@
 #include "../../core/dptaskpool/dptaskpool_ref.h"
 #include "../../core/dptaskpool/dptaskpool_writelock.h"
 #include "../../core/dptaskpool/dptaskpool_readlock.h"
+#include "../../core/dpthread/dpthread_singletask.h"
 #include "../../core/dpthread/dpthread_lock.h"
 #include "../renderer.h"
 #include "../renderer_ref.h"
@@ -50,7 +51,7 @@ namespace dragonpoop
         renderer_writelock *rl;
         render_api_context_writelock *cl;
         
-        this->listReady = 0;
+        this->listReady = 1;
         this->log_screen_height = log_screen_height;
         this->log_screen_width = log_screen_width;
         this->ctx = ctx;
@@ -76,7 +77,8 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
         
-        this->_startTask( tp, 20, r );
+        this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
+        this->_startTask( tp, 3, r );
     }
     
     //dtor
@@ -88,6 +90,7 @@ namespace dragonpoop
         this->deleteGuis();
         o.unlock();
         this->unlink();
+        delete this->thd;
         
         o.tryWriteLock( this, 5000, "renderer_gui_man::~renderer_gui_man" );
         this->_killTask();
@@ -169,9 +172,17 @@ namespace dragonpoop
     //start task
     void renderer_gui_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r )
     {
+        dpthread_lock *thdl;
+        
         this->gtsk = new renderer_gui_man_task( this, r );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, "renderer_gui_man" );
-        tp->addTask( this->tsk );
+
+        thdl = this->thd->lock();
+        if( thdl )
+        {
+            thdl->addTask( this->tsk );
+            delete thdl;
+        }
     }
     
     //kill task
@@ -398,13 +409,11 @@ namespace dragonpoop
     //run from manager thread
     void renderer_gui_man::run( dpthread_lock *thd, renderer_gui_man_ref *g, renderer_ref *r )
     {
+        renderer_gui_man::swapList( g, r );
         renderer_gui_man::sync( thd, g );
         renderer_gui_man::runGuis( thd, g );
         renderer_gui_man::deleteOldGuis( thd, g );
         renderer_gui_man::render( thd, g );
-        if( !renderer_gui_man::waitForRenderer( g ) )
-            return;
-        renderer_gui_man::swapList( g, r );
     }
     
     //delete guis
@@ -464,18 +473,8 @@ namespace dragonpoop
     //wait for renderer to finish with commandlist
     bool renderer_gui_man::waitForRenderer( renderer_gui_man_ref *r )
     {
-        int t, y;
-        
-        for( t = 0; t < 1000; t++ )
-        {
-            for( y = 0; y < 1000; y++ )
-            {
-                if( r->t->listReady )
-                    return 1;
-            }
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-        }
-        
+        if( r->t->listReady )
+            return 1;
         return 0;
     }
     
@@ -488,19 +487,8 @@ namespace dragonpoop
     //swap command list with renderer
     void renderer_gui_man::swapList( renderer_gui_man_ref *g, renderer_ref *r )
     {
-        renderer_writelock *rl;
-        shared_obj_guard o, o1;
-        renderer_gui_man_writelock *wl;
-
-        rl = (renderer_writelock *)o.tryWriteLock( r, 3, "renderer_gui_man::swapList" );
-        if( !rl )
-            return;
-        wl = (renderer_gui_man_writelock *)o1.tryWriteLock( g, 10, "renderer_gui_man::swapList" );
-        if( !wl )
-            return;
-        
-        rl->uploadGuiCommandList( wl->t->clist );
-        wl->t->clist = 0;
+        r->t->uploadGuiCommandList( g->t->clist );
+        g->t->clist = 0;
     }
     
     //render guis

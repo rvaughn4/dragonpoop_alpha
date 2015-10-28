@@ -22,8 +22,8 @@ namespace dragonpoop
         
         if( !thread_cnt )
             thread_cnt = std::thread::hardware_concurrency();
-        if( thread_cnt < 2 )
-            thread_cnt = 2;
+        if( thread_cnt < 3 )
+            thread_cnt = 3;
         
         this->setThreadCount( thread_cnt );
     }
@@ -107,7 +107,7 @@ namespace dragonpoop
         at = (dptask_ref *)tl->getRef();
         this->pushTask( at );
     }
-
+    
     //adjust thread count
     void dptaskpool::setThreadCount( unsigned int c )
     {

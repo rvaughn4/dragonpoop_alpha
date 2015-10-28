@@ -37,7 +37,8 @@ namespace dragonpoop
     class render_api_commandlist_writelock;
     class render_api_shader_ref;
     class dpposition;
-
+    class dpthread_singletask;
+    
     class renderer_model_man : public shared_obj
     {
         
@@ -59,6 +60,7 @@ namespace dragonpoop
         float log_screen_width, log_screen_height;
         dpposition campos;
         std::atomic<bool> listReady;
+        dpthread_singletask *thd;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );

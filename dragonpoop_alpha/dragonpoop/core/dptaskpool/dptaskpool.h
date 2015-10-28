@@ -13,6 +13,7 @@ namespace dragonpoop
     class dptask;
     class dptaskpool_writelock;
     class dpthread_lock;
+    class dptask_writelock;
 
     class dptaskpool : public shared_obj
     {

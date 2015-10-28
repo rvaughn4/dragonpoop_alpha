@@ -6,6 +6,7 @@
 #include "renderer_readlock.h"
 #include "renderer_writelock.h"
 #include "renderer_ref.h"
+#include "../core/dpthread/dpthread_singletask.h"
 #include "../core/dpthread/dpthread_lock.h"
 #include "../core/dptaskpool/dptaskpool_writelock.h"
 #include "../core/dptaskpool/dptaskpool_ref.h"
@@ -57,6 +58,10 @@ namespace dragonpoop
     //ctor
     renderer::renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp ) : shared_obj( c->getMutexMaster() )
     {
+        dpthread_lock *thdl;
+        
+        this->bIsGuiMade = this->bIsModelMade = 0;
+        this->bIsGuiRdy = this->bIsModelRdy = 0;
         this->api = 0;
         this->main_ctx = 0;
         this->c = c;
@@ -67,9 +72,15 @@ namespace dragonpoop
         this->bActive = 1;
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
+        this->thd = new dpthread_singletask( c->getMutexMaster(), 301 );
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3/*14*/, 1, "renderer" );
-        tp->addTask( this->tsk );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3, 1, "renderer" );
+        thdl = this->thd->lock();
+        if( thdl )
+        {
+            thdl->addTask( this->tsk );
+            delete thdl;
+        }
         this->fps = this->fthiss = 0;
         g->getCameraPosition( &this->cam_pos );
         this->bCamSync = 0;
@@ -93,6 +104,7 @@ namespace dragonpoop
         o.tryWriteLock( this, 3000, "renderer::~renderer" );
         o.unlock();
         this->unlink();
+        delete this->thd;
 
         o.tryWriteLock( this, 3000, "renderer::~renderer" );
         cl = this->new_gui_cl;
@@ -232,16 +244,20 @@ namespace dragonpoop
         renderer_gui_man_writelock *l;
         shared_obj_guard o;
         
+        this->bIsGuiMade = 1;
+        
         l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 3000, "renderer::state_startGui" );
         if( !l )
             return;
         //l->start();
+        
+        
     }
     
     //start model manager
     void renderer::state_startModel( dpthread_lock *thd, renderer_writelock *rl )
     {
-        
+        this->bIsModelMade = 1;
     }
     
     //stop api
@@ -253,13 +269,13 @@ namespace dragonpoop
     //stop gui manager
     void renderer::state_stopGui( dpthread_lock *thd, renderer_writelock *rl )
     {
-        
+        this->bIsGuiMade = 0;
     }
     
     //stop model manager
     void renderer::state_stopModel( dpthread_lock *thd, renderer_writelock *rl )
     {
-        
+        this->bIsModelMade = 0;
     }
     
     //deinit api
@@ -292,16 +308,29 @@ namespace dragonpoop
         render_api_context_writelock *ctxl;
         render_api_writelock *al;
         render_api_commandlist_writelock *cll;
-        renderer_model_man_writelock *modl;
-        renderer_gui_man_writelock *guil;
         
-        al = (render_api_writelock *)octx.tryWriteLock( this->api, 100, "renderer::render" );
+        if( this->new_model_cl )
+        {
+            if( this->model_cl )
+                delete this->model_cl;
+            this->model_cl = this->new_model_cl;
+            this->new_model_cl = 0;
+        }
+        if( this->new_gui_cl )
+        {
+            if( this->gui_cl )
+                delete this->gui_cl;
+            this->gui_cl = this->new_gui_cl;
+            this->new_gui_cl = 0;
+        }
+        
+        al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
         if( !al )
             return;
         w = al->getWidth();
         h = al->getHeight();
 
-        ctxl = (render_api_context_writelock *)octx.tryWriteLock( this->main_ctx, 100, "renderer::render" );
+        ctxl = (render_api_context_writelock *)octx.tryWriteLock( this->main_ctx, 30, "renderer::render" );
         if( !ctxl )
             return;
         
@@ -312,7 +341,7 @@ namespace dragonpoop
         
         if( this->model_cl )
         {
-            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 100, "renderer::render" );
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
             if( cll )
                 cll->execute( ctxl );
             ocl.unlock();
@@ -321,7 +350,7 @@ namespace dragonpoop
         ctxl->clearDepth( 1.0f );
         if( this->gui_cl )
         {
-            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 100, "renderer::render" );
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 3, "renderer::render" );
             if( cll )
                 cll->execute( ctxl );
             ocl.unlock();
@@ -343,27 +372,6 @@ namespace dragonpoop
             this->fthiss = 0;
         }
 
-        if( this->new_model_cl )
-        {
-            if( this->model_cl )
-                delete this->model_cl;
-            this->model_cl = this->new_model_cl;
-            this->new_model_cl = 0;
-        }
-        if( this->new_gui_cl )
-        {
-            if( this->gui_cl )
-                delete this->gui_cl;
-            this->gui_cl = this->new_gui_cl;
-            this->new_gui_cl = 0;
-        }
-        
-        modl = (renderer_model_man_writelock *)ocl.tryWriteLock( this->rmodel_mgr, 3, "renderer::render" );
-        if( modl )
-            modl->listConsumed();
-        guil = (renderer_gui_man_writelock *)ocl.tryWriteLock( this->rgui_mgr, 3, "renderer::render" );
-        if( guil )
-            guil->listConsumed();
     }
  
     //init graphics api

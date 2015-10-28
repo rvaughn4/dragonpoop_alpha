@@ -42,6 +42,7 @@ namespace dragonpoop
     class render_api_context_ref;
     class render_api_commandlist_ref;
     class renderer_gui_man_writelock;
+    class dpthread_singletask;
 
     class renderer : public shared_obj
     {
@@ -55,10 +56,11 @@ namespace dragonpoop
         renderer_gui_man *rgui_mgr;
         renderer_model_man *rmodel_mgr;
         dptaskpool_ref *tp;
+        dpthread_singletask *thd;
         render_api *api;
         render_api_context_ref *main_ctx;
         
-        std::atomic<bool> bDoRun, bIsRun;
+        std::atomic<bool> bDoRun, bIsRun, bIsGuiRdy, bIsModelRdy, bIsGuiMade, bIsModelMade;
         std::atomic<render_api_commandlist_ref *> new_gui_cl, new_model_cl;
         render_api_commandlist_ref *gui_cl, *model_cl;
         
@@ -183,8 +185,11 @@ namespace dragonpoop
         friend class renderer_readlock;
         friend class renderer_writelock;
         friend class renderer_state;
+        friend class renderer_model_man_task;
+        friend class renderer_gui_man_task;
         friend class renderer_model_man;
         friend class renderer_gui_man;
+        friend class renderer_task;
         
         friend class openglx_1o5_renderer;
     };

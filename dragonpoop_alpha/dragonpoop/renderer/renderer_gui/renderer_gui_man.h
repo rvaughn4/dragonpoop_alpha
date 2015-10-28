@@ -35,6 +35,7 @@ namespace dragonpoop
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
     class render_api_shader_ref;
+    class dpthread_singletask;
 
     class renderer_gui_man : public shared_obj
     {
@@ -57,6 +58,7 @@ namespace dragonpoop
         dpmatrix m, m_undo;
         float log_screen_width, log_screen_height;
         std::atomic<bool> listReady;
+        dpthread_singletask *thd;
         
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );

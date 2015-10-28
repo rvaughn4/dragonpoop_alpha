@@ -29,6 +29,9 @@ namespace dragonpoop
         friend class renderer;
         friend class renderer_gui_man;
         friend class renderer_model_man;
+        friend class renderer_model_man_task;
+        friend class renderer_gui_man_task;
+        friend class renderer_task;
     };
     
 };
