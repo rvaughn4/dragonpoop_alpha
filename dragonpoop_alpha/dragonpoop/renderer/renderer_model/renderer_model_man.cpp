@@ -35,6 +35,9 @@
 #include "../api_stuff/render_api/render_api_context_readlock.h"
 #include "../api_stuff/render_api/render_api_commandlist_ref.h"
 #include "../api_stuff/render_api/render_api_commandlist_writelock.h"
+#include "../renderer_commandlist_passer.h"
+#include "../renderer_commandlist_passer_ref.h"
+#include "../renderer_commandlist_passer_writelock.h"
 
 #include <thread>
 
@@ -42,12 +45,19 @@ namespace dragonpoop
 {
     
     //ctor
-    renderer_model_man::renderer_model_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, float log_screen_width, float log_screen_height ) : shared_obj( c->getMutexMaster() )
+    renderer_model_man::renderer_model_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height ) : shared_obj( c->getMutexMaster() )
     {
         shared_obj_guard o;
         gfx_writelock *gl;
         renderer_writelock *rl;
         render_api_context_writelock *cl;
+        renderer_commandlist_passer_writelock *cpl;
+        
+        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( clpasser, 5000, "renderer_model_man::renderer_model_man" );
+        if( cpl )
+            this->clpasser = (renderer_commandlist_passer_ref *)cpl->getRef();
+        else
+            this->clpasser = 0;
         
         this->listReady = 1;
         this->log_screen_height = log_screen_height;
@@ -79,13 +89,14 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 303 );
-        this->_startTask( tp, 3, r );
+        this->_startTask( tp, 15, r );
     }
     
     //dtor
     renderer_model_man::~renderer_model_man( void )
     {
         shared_obj_guard o;
+        renderer_commandlist_passer_ref *r;
         
         o.tryWriteLock( this, 5000, "renderer_model_man::~renderer_model_man" );
         this->deleteModels();
@@ -107,6 +118,8 @@ namespace dragonpoop
         delete this->g;
         delete this->g_models;
         delete this->tpr;
+        r = this->clpasser;
+        delete r;
         o.unlock();
     }
     
@@ -362,7 +375,6 @@ namespace dragonpoop
     //run from manager thread
     void renderer_model_man::run( dpthread_lock *thd, renderer_model_man_ref *g, renderer_ref *r )
     {
-        renderer_model_man::swapList( g, r );
         renderer_model_man::sync( thd, g );
         renderer_model_man::runModels( thd, g );
         renderer_model_man::deleteOldModels( thd, g );
@@ -376,10 +388,28 @@ namespace dragonpoop
         shared_obj_guard o, octxt, ocl;
         render_api_context_writelock *ctxl;
         render_api_commandlist_writelock *cll;
+        render_api_commandlist_ref *clr;
+        renderer_commandlist_passer_writelock *cpl;
+        shared_obj_guard ocpl;
         
         wl = (renderer_model_man_writelock *)o.tryWriteLock( g, 100, "renderer_model_man::render" );
         if( !wl )
             return;
+
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( g->t->clpasser, 3, "renderer_model_man::swapList" );
+        if( !cpl )
+            return;
+        clr = cpl->getModel();
+        if( clr )
+        {
+            delete clr;
+            return;
+        }
+        
+        cpl->setModel( wl->t->clist );
+        wl->t->campos.copy( cpl->getPosition() );
+        ocpl.unlock();
+        
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( wl->t->ctx, 100, "renderer_model_man::render" );
         if( !ctxl )
             return;
@@ -398,28 +428,6 @@ namespace dragonpoop
         wl->renderModels( thd, &wl->t->campos, &wl->t->m, ctxl, cll );
         
         cll->compile( ctxl );
-        cll->deleteCommands();
-    }
-    
-    //wait for renderer to finish with commandlist
-    bool renderer_model_man::waitForRenderer( renderer_model_man_ref *g )
-    {
-        if( g->t->listReady )
-            return 1;
-        return 0;
-    }
-    
-    //called by renderer to announce that commandlist was consumed
-    void renderer_model_man::listConsumed( void )
-    {
-        this->listReady = 1;
-    }
-    
-    //swap command list with renderer
-    void renderer_model_man::swapList( renderer_model_man_ref *g, renderer_ref *r )
-    {
-        r->t->uploadModelCommandList( g->t->clist );
-        g->t->clist = 0;
     }
     
     //compute matrix

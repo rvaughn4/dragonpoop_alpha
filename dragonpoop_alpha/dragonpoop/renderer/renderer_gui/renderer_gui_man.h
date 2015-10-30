@@ -36,6 +36,8 @@ namespace dragonpoop
     class render_api_commandlist_writelock;
     class render_api_shader_ref;
     class dpthread_singletask;
+    class renderer_commandlist_passer;
+    class renderer_commandlist_passer_ref;
 
     class renderer_gui_man : public shared_obj
     {
@@ -59,6 +61,7 @@ namespace dragonpoop
         float log_screen_width, log_screen_height;
         std::atomic<bool> listReady;
         dpthread_singletask *thd;
+        renderer_commandlist_passer_ref *clpasser;
         
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
@@ -113,7 +116,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, float log_screen_width, float log_screen_height );
+        renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height );
         //dtor
         virtual ~renderer_gui_man( void );
         //return core

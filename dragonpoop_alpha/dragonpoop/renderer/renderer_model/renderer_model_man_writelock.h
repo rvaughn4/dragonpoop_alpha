@@ -42,8 +42,6 @@ namespace dragonpoop
         void deleteModels( void );
         //render models
         void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
-        //called by renderer to announce that commandlist was consumed
-        void listConsumed( void );
 
         friend class renderer_model_man;
     };

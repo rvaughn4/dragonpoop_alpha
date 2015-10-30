@@ -43,6 +43,7 @@ namespace dragonpoop
     class render_api_commandlist_ref;
     class renderer_gui_man_writelock;
     class dpthread_singletask;
+    class renderer_commandlist_passer;
 
     class renderer : public shared_obj
     {
@@ -59,8 +60,9 @@ namespace dragonpoop
         dpthread_singletask *thd;
         render_api *api;
         render_api_context_ref *main_ctx;
+        renderer_commandlist_passer *clpasser;
         
-        std::atomic<bool> bDoRun, bIsRun, bIsGuiRdy, bIsModelRdy, bIsGuiMade, bIsModelMade;
+        std::atomic<bool> bDoRun, bIsRun;
         std::atomic<render_api_commandlist_ref *> new_gui_cl, new_model_cl;
         render_api_commandlist_ref *gui_cl, *model_cl;
         

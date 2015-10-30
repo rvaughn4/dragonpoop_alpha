@@ -36,6 +36,9 @@
 #include "../api_stuff/render_api/render_api_commandlist_ref.h"
 #include "../api_stuff/render_api/render_api_commandlist_writelock.h"
 #include "renderer_gui.h"
+#include "../renderer_commandlist_passer.h"
+#include "../renderer_commandlist_passer_ref.h"
+#include "../renderer_commandlist_passer_writelock.h"
 
 #include <math.h>
 #include <thread>
@@ -44,12 +47,20 @@ namespace dragonpoop
 {
     
     //ctor
-    renderer_gui_man::renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, float log_screen_width, float log_screen_height ) : shared_obj( c->getMutexMaster() )
+    renderer_gui_man::renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height ) : shared_obj( c->getMutexMaster() )
     {
         shared_obj_guard o;
         gfx_writelock *gl;
         renderer_writelock *rl;
         render_api_context_writelock *cl;
+        renderer_commandlist_passer_writelock *cpl;
+        
+        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( clpasser, 5000, "renderer_gui_man::renderer_gui_man" );
+        if( cpl )
+            this->clpasser = (renderer_commandlist_passer_ref *)cpl->getRef();
+        else
+            this->clpasser = 0;
+        o.unlock();
         
         this->listReady = 1;
         this->log_screen_height = log_screen_height;
@@ -78,7 +89,7 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
-        this->_startTask( tp, 3, r );
+        this->_startTask( tp, 30, r );
     }
     
     //dtor
@@ -106,6 +117,7 @@ namespace dragonpoop
         delete this->g;
         delete this->g_guis;
         delete this->tpr;
+        delete this->clpasser;
         o.unlock();
     }
     
@@ -487,8 +499,13 @@ namespace dragonpoop
     //swap command list with renderer
     void renderer_gui_man::swapList( renderer_gui_man_ref *g, renderer_ref *r )
     {
-        r->t->uploadGuiCommandList( g->t->clist );
-        g->t->clist = 0;
+        renderer_commandlist_passer_writelock *cpl;
+        shared_obj_guard o;
+        
+        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( g->t->clpasser, 3, "renderer_gui_man::swapList" );
+        if( !cpl || !g->t->clist )
+            return;
+        cpl->setGui( g->t->clist );
     }
     
     //render guis

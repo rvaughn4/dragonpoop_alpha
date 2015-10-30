@@ -38,6 +38,8 @@ namespace dragonpoop
     class render_api_shader_ref;
     class dpposition;
     class dpthread_singletask;
+    class renderer_commandlist_passer;
+    class renderer_commandlist_passer_ref;
     
     class renderer_model_man : public shared_obj
     {
@@ -61,6 +63,7 @@ namespace dragonpoop
         dpposition campos;
         std::atomic<bool> listReady;
         dpthread_singletask *thd;
+        std::atomic<renderer_commandlist_passer_ref *> clpasser;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
@@ -76,10 +79,6 @@ namespace dragonpoop
         static void runModels( dpthread_lock *thd, renderer_model_man_ref *g );
         //render into command list
         static void render( dpthread_lock *thd, renderer_model_man_ref *g );
-        //wait for renderer to finish with commandlist
-        static bool waitForRenderer( renderer_model_man_ref *g );
-        //swap command list with renderer
-        static void swapList( renderer_model_man_ref *g, renderer_ref *r );
         //compute matrix
         void computeMatrix( void );
 
@@ -97,13 +96,11 @@ namespace dragonpoop
         void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
-        //called by renderer to announce that commandlist was consumed
-        void listConsumed( void );
 
     public:
         
         //ctor
-        renderer_model_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, float log_screen_width, float log_screen_height );
+        renderer_model_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height );
         //dtor
         virtual ~renderer_model_man( void );
         //return core

@@ -58,14 +58,7 @@ namespace dragonpoop
             return;
         }
         
-        if( r->t->bIsGuiRdy )
-        {
-      //      std::this_thread::sleep_for( std::chrono::milliseconds( 3 ) );
-            return;
-        }
-
         renderer_gui_man::run( th, this->g, this->r );
-        r->t->bIsGuiRdy = 1;
     }
     
 };

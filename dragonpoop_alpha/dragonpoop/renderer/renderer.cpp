@@ -48,6 +48,9 @@
 #include "api_stuff/render_api/render_api_commandlist_writelock.h"
 #include "renderer_factory.h"
 #include "x11_opengl_1o5_renderer/x11_opengl_1o5_renderer_factory.h"
+#include "renderer_commandlist_passer.h"
+#include "renderer_commandlist_passer_ref.h"
+#include "renderer_commandlist_passer_writelock.h"
 
 #include <thread>
 #include <random>
@@ -60,8 +63,7 @@ namespace dragonpoop
     {
         dpthread_lock *thdl;
         
-        this->bIsGuiMade = this->bIsModelMade = 0;
-        this->bIsGuiRdy = this->bIsModelRdy = 0;
+        this->clpasser = new renderer_commandlist_passer( c->getMutexMaster() );
         this->api = 0;
         this->main_ctx = 0;
         this->c = c;
@@ -74,7 +76,7 @@ namespace dragonpoop
         this->ms_each_frame = 30;
         this->thd = new dpthread_singletask( c->getMutexMaster(), 301 );
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3, 1, "renderer" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 10, 1, "renderer" );
         thdl = this->thd->lock();
         if( thdl )
         {
@@ -121,6 +123,7 @@ namespace dragonpoop
         delete this->gtsk;
         delete this->cs;
         delete this->g;
+        delete this->clpasser;
         delete this->tp;
         o.unlock();
     }
@@ -244,8 +247,6 @@ namespace dragonpoop
         renderer_gui_man_writelock *l;
         shared_obj_guard o;
         
-        this->bIsGuiMade = 1;
-        
         l = (renderer_gui_man_writelock *)o.tryWriteLock( this->rgui_mgr, 3000, "renderer::state_startGui" );
         if( !l )
             return;
@@ -257,7 +258,6 @@ namespace dragonpoop
     //start model manager
     void renderer::state_startModel( dpthread_lock *thd, renderer_writelock *rl )
     {
-        this->bIsModelMade = 1;
     }
     
     //stop api
@@ -269,13 +269,11 @@ namespace dragonpoop
     //stop gui manager
     void renderer::state_stopGui( dpthread_lock *thd, renderer_writelock *rl )
     {
-        this->bIsGuiMade = 0;
     }
     
     //stop model manager
     void renderer::state_stopModel( dpthread_lock *thd, renderer_writelock *rl )
     {
-        this->bIsModelMade = 0;
     }
     
     //deinit api
@@ -308,6 +306,7 @@ namespace dragonpoop
         render_api_context_writelock *ctxl;
         render_api_writelock *al;
         render_api_commandlist_writelock *cll;
+        renderer_commandlist_passer_writelock *cpl;
         
         if( this->new_model_cl )
         {
@@ -323,6 +322,17 @@ namespace dragonpoop
             this->gui_cl = this->new_gui_cl;
             this->new_gui_cl = 0;
         }
+        
+        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 3, "renderer::render" );
+        if( cpl )
+        {
+            this->new_gui_cl = cpl->getGui();
+            this->new_model_cl = cpl->getModel();
+            cpl->setPosition( &this->cam_pos );
+            if( !this->new_model_cl )
+                return;
+        }
+        o.unlock();
         
         al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
         if( !al )
@@ -527,7 +537,7 @@ namespace dragonpoop
         if( !ctx )
             return 0;
         
-        return new renderer_model_man( this->c, this, tp, ctx, 1920, 1080 );
+        return new renderer_model_man( this->c, this, tp, ctx, this->clpasser, 1920, 1080 );
     }
     
     //generate renderer gui
@@ -544,7 +554,7 @@ namespace dragonpoop
         if( !ctx )
             return 0;
         
-        return new renderer_gui_man( this->c, this, tp, ctx, 1920, 1080 );
+        return new renderer_gui_man( this->c, this, tp, ctx, this->clpasser, 1920, 1080 );
     }
     
     //returns fps

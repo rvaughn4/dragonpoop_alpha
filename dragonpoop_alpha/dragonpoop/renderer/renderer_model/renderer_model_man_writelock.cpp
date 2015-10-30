@@ -35,10 +35,4 @@ namespace dragonpoop
         this->t->renderModels( thd, campos, m_world, ctx, clist );
     }
     
-    //called by renderer to announce that commandlist was consumed
-    void renderer_model_man_writelock::listConsumed( void )
-    {
-        this->t->listConsumed();
-    }
-    
 };

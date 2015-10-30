@@ -43,23 +43,12 @@ namespace dragonpoop
     {
         renderer_writelock *gl;
         shared_obj_guard lg;
-        renderer_ref *r;
 
         if( !this->g )
         {
             tl->kill();
             return;
         }
-        
-        r = this->g;
-        if( ( r->t->bIsModelMade && !r->t->bIsModelRdy ) || ( r->t->bIsGuiMade && !r->t->bIsGuiRdy ) )
-        {
-        //    std::this_thread::sleep_for( std::chrono::milliseconds( 3 ) );
-            return;
-        }
-      
-        r->t->bIsGuiRdy = 0;
-        r->t->bIsModelRdy = 0;
         
         gl = (renderer_writelock *)lg.tryWriteLock( this->g, 30, "renderer_task::run" );
         if( !gl )
