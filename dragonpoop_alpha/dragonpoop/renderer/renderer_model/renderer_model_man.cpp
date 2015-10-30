@@ -89,7 +89,7 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 303 );
-        this->_startTask( tp, 15, r );
+        this->_startTask( tp, 30, r );
     }
     
     //dtor
@@ -392,10 +392,6 @@ namespace dragonpoop
         renderer_commandlist_passer_writelock *cpl;
         shared_obj_guard ocpl;
         
-        wl = (renderer_model_man_writelock *)o.tryWriteLock( g, 100, "renderer_model_man::render" );
-        if( !wl )
-            return;
-
         cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( g->t->clpasser, 3, "renderer_model_man::swapList" );
         if( !cpl )
             return;
@@ -405,6 +401,10 @@ namespace dragonpoop
             delete clr;
             return;
         }
+        
+        wl = (renderer_model_man_writelock *)o.tryWriteLock( g, 100, "renderer_model_man::render" );
+        if( !wl )
+            return;
         
         cpl->setModel( wl->t->clist );
         wl->t->campos.copy( cpl->getPosition() );

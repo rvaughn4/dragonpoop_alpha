@@ -71,10 +71,4 @@ namespace dragonpoop
         this->t->renderGuis( thd, this, m_world, ctx, cl );
     }
     
-    //renderer notifies when list consumed
-    void renderer_gui_man_writelock::listConsumed( void )
-    {
-        this->t->listConsumed();
-    }
-    
 };

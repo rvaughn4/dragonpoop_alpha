@@ -77,10 +77,6 @@ namespace dragonpoop
         static void runGuis( dpthread_lock *thd, renderer_gui_man_ref *g );
         //render into command list
         static void render( dpthread_lock *thd, renderer_gui_man_ref *g );
-        //wait for renderer to finish with commandlist
-        static bool waitForRenderer( renderer_gui_man_ref *r );
-        //swap command list with renderer
-        static void swapList( renderer_gui_man_ref *g, renderer_ref *r );
         //compute matrix
         void computeMatrix( void );
         
@@ -110,8 +106,6 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //generate renderer gui
         virtual renderer_gui *genGui( gui_writelock *ml );
-        //renderer notifies when list consumed
-        void listConsumed( void );
 
     public:
         

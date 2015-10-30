@@ -421,7 +421,6 @@ namespace dragonpoop
     //run from manager thread
     void renderer_gui_man::run( dpthread_lock *thd, renderer_gui_man_ref *g, renderer_ref *r )
     {
-        renderer_gui_man::swapList( g, r );
         renderer_gui_man::sync( thd, g );
         renderer_gui_man::runGuis( thd, g );
         renderer_gui_man::deleteOldGuis( thd, g );
@@ -455,16 +454,29 @@ namespace dragonpoop
     void renderer_gui_man::render( dpthread_lock *thd, renderer_gui_man_ref *g )
     {
         renderer_gui_man_writelock *wl;
-        shared_obj_guard o, octxt, ocl;
+        shared_obj_guard o, octxt, ocl, ocpl;
         render_api_context_writelock *ctxl;
         render_api_commandlist_writelock *cll;
-        
+        renderer_commandlist_passer_writelock *cpl;
+        render_api_commandlist_ref *r;
+
         wl = (renderer_gui_man_writelock *)o.tryWriteLock( g, 100, "renderer_gui_man::render" );
         if( !wl )
             return;
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( wl->t->ctx, 100, "renderer_gui_man::render" );
         if( !ctxl )
             return;
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( wl->t->clpasser, 3, "renderer_gui_man::render" );
+        if( !cpl )
+            return;
+        r = cpl->getGui();
+        if( r )
+        {
+            delete r;
+            return;
+        }
+        cpl->setGui( g->t->clist );
+        ocpl.unlock();
         
         if( wl->t->clist )
             delete wl->t->clist;
@@ -480,32 +492,6 @@ namespace dragonpoop
         wl->renderGuis( thd, &wl->t->m, ctxl, cll );
         
         cll->compile( ctxl );
-    }
-    
-    //wait for renderer to finish with commandlist
-    bool renderer_gui_man::waitForRenderer( renderer_gui_man_ref *r )
-    {
-        if( r->t->listReady )
-            return 1;
-        return 0;
-    }
-    
-    //renderer notifies when list consumed
-    void renderer_gui_man::listConsumed( void )
-    {
-        this->listReady = 1;
-    }
-    
-    //swap command list with renderer
-    void renderer_gui_man::swapList( renderer_gui_man_ref *g, renderer_ref *r )
-    {
-        renderer_commandlist_passer_writelock *cpl;
-        shared_obj_guard o;
-        
-        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( g->t->clpasser, 3, "renderer_gui_man::swapList" );
-        if( !cpl || !g->t->clist )
-            return;
-        cpl->setGui( g->t->clist );
     }
     
     //render guis
