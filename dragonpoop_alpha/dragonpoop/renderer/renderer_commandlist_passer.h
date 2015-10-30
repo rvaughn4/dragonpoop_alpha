@@ -3,6 +3,7 @@
 #define dragonpoop_renderer_commandlist_passer_h
 
 #include "../core/shared_obj/shared_obj.h"
+#include "../gfx/dpposition/dpposition.h"
 
 namespace dragonpoop
 {
@@ -14,13 +15,11 @@ namespace dragonpoop
         
     private:
         
-        std::atomic<render_api_commandlist_ref *> *rmodel, *rgui;
-        
+        std::atomic<render_api_commandlist_ref *> rmodel, rgui;
+        dpposition pos;
         
     protected:
         
-        //generate read lock
-        virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
@@ -29,6 +28,14 @@ namespace dragonpoop
         void setModel( render_api_commandlist_ref *r );
         //get model commandlist
         render_api_commandlist_ref *getModel( void );
+        //set gui commandlist
+        void setGui( render_api_commandlist_ref *r );
+        //get gui commandlist
+        render_api_commandlist_ref *getGui( void );
+        //set camera position
+        void setPosition( dpposition *p );
+        //get camera position
+        dpposition *getPosition( void );
         
     public:
         
@@ -37,6 +44,10 @@ namespace dragonpoop
         //dtor
         virtual ~renderer_commandlist_passer( void );
         
+        
+        friend class renderer_commandlist_passer_writelock;
+        friend class renderer_commandlist_passer_readlock;
+        friend class renderer_commandlist_passer_ref;
 
     };
     
