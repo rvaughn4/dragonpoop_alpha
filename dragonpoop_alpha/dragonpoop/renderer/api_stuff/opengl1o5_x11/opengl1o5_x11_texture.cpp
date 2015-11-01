@@ -62,6 +62,8 @@ namespace dragonpoop
             glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer );
         if( bits == 32 )
             glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
+        
+        glFinish();
     }
     
     //delete texture

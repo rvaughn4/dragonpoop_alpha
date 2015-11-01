@@ -323,7 +323,7 @@ namespace dragonpoop
             this->new_gui_cl = 0;
         }
         
-        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 3, "renderer::render" );
+        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
         if( cpl )
         {
             this->new_gui_cl = cpl->getGui();
@@ -360,7 +360,7 @@ namespace dragonpoop
         ctxl->clearDepth( 1.0f );
         if( this->gui_cl )
         {
-            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 3, "renderer::render" );
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 30, "renderer::render" );
             if( cll )
                 cll->execute( ctxl );
             ocl.unlock();

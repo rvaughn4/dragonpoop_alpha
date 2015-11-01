@@ -425,7 +425,7 @@ namespace dragonpoop
             return;
         
         cll->setShader( wl->t->sdr );
-        wl->renderModels( thd, &wl->t->campos, &wl->t->m, ctxl, cll );
+      //  wl->renderModels( thd, &wl->t->campos, &wl->t->m, ctxl, cll );
         
         cll->compile( ctxl );
     }

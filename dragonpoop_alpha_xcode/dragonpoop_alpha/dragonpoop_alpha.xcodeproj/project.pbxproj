@@ -85,6 +85,7 @@
 		790C4D821BD6B55A009BCF7E /* render_api_command_set_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790C4D7A1BD6B55A009BCF7E /* render_api_command_set_shader.cpp */; };
 		790C4D831BD6B55A009BCF7E /* render_api_command_set_texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790C4D7C1BD6B55A009BCF7E /* render_api_command_set_texture.cpp */; };
 		790C4D841BD6B55A009BCF7E /* render_api_command_set_vertexbuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790C4D7E1BD6B55A009BCF7E /* render_api_command_set_vertexbuffer.cpp */; };
+		790C6ECD1BE5C3E90021A358 /* opengl1o5_x11_command.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790C6ECB1BE5C3E90021A358 /* opengl1o5_x11_command.cpp */; };
 		7910B9891B92793A00D72A06 /* model_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9821B92793A00D72A06 /* model_matrix.cpp */; };
 		7910B98A1B92793A00D72A06 /* model_quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9851B92793A00D72A06 /* model_quaternion.cpp */; };
 		7910B98B1B92793A00D72A06 /* model_vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9871B92793A00D72A06 /* model_vector.cpp */; };
@@ -511,6 +512,8 @@
 		790C4D7D1BD6B55A009BCF7E /* render_api_command_set_texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_command_set_texture.h; sourceTree = "<group>"; };
 		790C4D7E1BD6B55A009BCF7E /* render_api_command_set_vertexbuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_command_set_vertexbuffer.cpp; sourceTree = "<group>"; };
 		790C4D7F1BD6B55A009BCF7E /* render_api_command_set_vertexbuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_command_set_vertexbuffer.h; sourceTree = "<group>"; };
+		790C6ECB1BE5C3E90021A358 /* opengl1o5_x11_command.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl1o5_x11_command.cpp; sourceTree = "<group>"; };
+		790C6ECC1BE5C3E90021A358 /* opengl1o5_x11_command.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl1o5_x11_command.h; sourceTree = "<group>"; };
 		7910B9821B92793A00D72A06 /* model_matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_matrix.cpp; sourceTree = "<group>"; };
 		7910B9831B92793A00D72A06 /* model_matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_matrix.h; sourceTree = "<group>"; };
 		7910B9841B92793A00D72A06 /* model_matrixes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_matrixes.h; sourceTree = "<group>"; };
@@ -1177,6 +1180,8 @@
 			children = (
 				790C4D131BD6B1CE009BCF7E /* opengl1o5_x11.cpp */,
 				790C4D141BD6B1CE009BCF7E /* opengl1o5_x11.h */,
+				790C6ECB1BE5C3E90021A358 /* opengl1o5_x11_command.cpp */,
+				790C6ECC1BE5C3E90021A358 /* opengl1o5_x11_command.h */,
 				79ADC8C21BDCF1B200D90DB2 /* opengl1o5_x11_commandlist.cpp */,
 				79ADC8C31BDCF1B200D90DB2 /* opengl1o5_x11_commandlist.h */,
 				790C4D151BD6B1CE009BCF7E /* opengl1o5_x11_context.cpp */,
@@ -2670,6 +2675,7 @@
 				79291AD01B69A8BB00E85E62 /* model_vertex_joint.cpp in Sources */,
 				79EC80291B9877E90090D2D6 /* model_saver_state_fail.cpp in Sources */,
 				79F26F301BCC91A40025418D /* dpland_writelock.cpp in Sources */,
+				790C6ECD1BE5C3E90021A358 /* opengl1o5_x11_command.cpp in Sources */,
 				791CA20D1BD0553600FEF40B /* renderer_gui_man_readlock.cpp in Sources */,
 				79145C551BCA7DE900DC5434 /* dpactor_state.cpp in Sources */,
 				794610F31B6D42CE00311E86 /* model_loader_ms3d_state_parse_header.cpp in Sources */,

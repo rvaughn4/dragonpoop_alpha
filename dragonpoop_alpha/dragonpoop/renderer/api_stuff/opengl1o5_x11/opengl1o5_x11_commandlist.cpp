@@ -41,6 +41,7 @@ namespace dragonpoop
     void opengl1o5_x11_commandlist::endCompile( render_api_context_writelock *ctx )
     {
         glEndList();
+        glFinish();
     }
     
     //execute command list
