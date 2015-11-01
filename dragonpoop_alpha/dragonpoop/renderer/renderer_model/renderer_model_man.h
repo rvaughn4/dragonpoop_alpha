@@ -56,7 +56,6 @@ namespace dragonpoop
         model_man_ref *g_models;
         uint64_t t_last_model_synced;
         render_api_context_ref *ctx;
-        render_api_shader_ref *sdr;
         render_api_commandlist_ref *clist;
         dpmatrix m, m_undo;
         float log_screen_width, log_screen_height;

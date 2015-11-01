@@ -52,7 +52,6 @@ namespace dragonpoop
         shared_obj_guard o;
         gfx_writelock *gl;
         renderer_writelock *rl;
-        render_api_context_writelock *cl;
         renderer_commandlist_passer_writelock *cpl;
         
         cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( clpasser, 5000, "renderer_gui_man::renderer_gui_man" );
@@ -69,11 +68,6 @@ namespace dragonpoop
         this->clist = 0;
         this->c = c;
         this->tpr = (dptaskpool_ref *)tp->getRef();
-        cl = (render_api_context_writelock *)o.writeLock( this->ctx, "renderer_gui_man::renderer_gui_man" );
-        if( cl )
-            this->sdr = cl->makeShader( "gui" );
-        else
-            this->sdr = 0;
 
         this->g = c->getGfx();
         gl = (gfx_writelock *)o.writeLock( this->g, "renderer_gui_man::renderer_gui_man" );
@@ -111,7 +105,6 @@ namespace dragonpoop
         this->_deleteTask();
         if( this->clist )
             delete this->clist;
-        delete this->sdr;
         delete this->ctx;
         delete this->r;
         delete this->g;
@@ -453,6 +446,7 @@ namespace dragonpoop
         render_api_commandlist_writelock *cll;
         renderer_commandlist_passer_writelock *cpl;
         render_api_commandlist_ref *r;
+        render_api_shader_ref *sdr;
 
         wl = (renderer_gui_man_writelock *)o.tryWriteLock( g, 100, "renderer_gui_man::render" );
         if( !wl )
@@ -486,11 +480,17 @@ namespace dragonpoop
         if( !cll )
             return;
         
-        cll->setShader( wl->t->sdr );
+        sdr = ctxl->makeShader( "gui" );
+        if( sdr )
+            return;
+        
+        cll->setShader( sdr );
         wl->renderGuis( thd, &wl->t->m, ctxl, cll );
         
         if( cll->compile( ctxl ) )
             wl->t->clpasser->t->gui_ready = 1;
+        
+        delete sdr;
     }
     
     //render guis
