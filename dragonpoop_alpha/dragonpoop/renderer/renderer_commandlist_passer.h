@@ -17,6 +17,7 @@ namespace dragonpoop
         
         std::atomic<render_api_commandlist_ref *> rmodel, rgui;
         dpposition pos;
+        std::atomic<bool> model_ready, gui_ready;
         
     protected:
         
@@ -48,6 +49,9 @@ namespace dragonpoop
         friend class renderer_commandlist_passer_writelock;
         friend class renderer_commandlist_passer_readlock;
         friend class renderer_commandlist_passer_ref;
+        friend class renderer;
+        friend class renderer_gui_man;
+        friend class renderer_model_man;
 
     };
     

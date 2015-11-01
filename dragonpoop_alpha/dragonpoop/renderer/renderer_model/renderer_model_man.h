@@ -63,7 +63,7 @@ namespace dragonpoop
         dpposition campos;
         std::atomic<bool> listReady;
         dpthread_singletask *thd;
-        std::atomic<renderer_commandlist_passer_ref *> clpasser;
+        renderer_commandlist_passer_ref * clpasser;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );

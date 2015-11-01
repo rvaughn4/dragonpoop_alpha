@@ -14,6 +14,8 @@ namespace dragonpoop
     {
         this->rgui = 0;
         this->rmodel = 0;
+        this->model_ready = 0;
+        this->gui_ready = 0;
     }
     
     //dtor

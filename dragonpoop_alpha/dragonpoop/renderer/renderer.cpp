@@ -323,16 +323,21 @@ namespace dragonpoop
             this->new_gui_cl = 0;
         }
         
-        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
-        if( cpl )
+        if( this->clpasser->model_ready || this->clpasser->gui_ready )
         {
-            this->new_gui_cl = cpl->getGui();
-            this->new_model_cl = cpl->getModel();
-            cpl->setPosition( &this->cam_pos );
-            if( !this->new_model_cl )
-                return;
+        
+            cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
+            if( cpl )
+            {
+                this->new_gui_cl = cpl->getGui();
+                this->new_model_cl = cpl->getModel();
+                cpl->setPosition( &this->cam_pos );
+            }
+            o.unlock();
+            
+            this->clpasser->model_ready = 0;
+            this->clpasser->gui_ready = 0;
         }
-        o.unlock();
         
         al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
         if( !al )

@@ -388,22 +388,18 @@ namespace dragonpoop
         shared_obj_guard o, octxt, ocl;
         render_api_context_writelock *ctxl;
         render_api_commandlist_writelock *cll;
-        render_api_commandlist_ref *clr;
         renderer_commandlist_passer_writelock *cpl;
         shared_obj_guard ocpl;
         
-        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( g->t->clpasser, 3, "renderer_model_man::swapList" );
-        if( !cpl )
-            return;
-        clr = cpl->getModel();
-        if( clr )
-        {
-            delete clr;
-            return;
-        }
-        
         wl = (renderer_model_man_writelock *)o.tryWriteLock( g, 100, "renderer_model_man::render" );
         if( !wl )
+            return;
+
+        if( wl->t->clpasser->t->model_ready )
+            return;
+        
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( g->t->clpasser, 3, "renderer_model_man::swapList" );
+        if( !cpl )
             return;
         
         cpl->setModel( wl->t->clist );
@@ -427,7 +423,8 @@ namespace dragonpoop
         cll->setShader( wl->t->sdr );
         wl->renderModels( thd, &wl->t->campos, &wl->t->m, ctxl, cll );
         
-        cll->compile( ctxl );
+        if( !cll->compile( ctxl ) )
+            wl->t->clpasser->t->model_ready = 1;
     }
     
     //compute matrix
