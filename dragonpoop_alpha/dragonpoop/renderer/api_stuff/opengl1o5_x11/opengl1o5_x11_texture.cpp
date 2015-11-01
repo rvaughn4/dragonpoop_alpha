@@ -9,7 +9,7 @@ namespace dragonpoop
 {
     
     //ctor
-    opengl1o5_x11_texture::opengl1o5_x11_texture( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm, dpbitmap *bm ) : render_api_texture( r, c, mm, bm )
+    opengl1o5_x11_texture::opengl1o5_x11_texture( render_api_context_writelock *c, dpmutex_master *mm, dpbitmap *bm ) : render_api_texture( c, mm, bm )
     {
         c->makeActive();
         this->makeTex( bm );

@@ -7,7 +7,7 @@ namespace dragonpoop
 {
     
     //ctor
-    opengl1o5_x11_indexbuffer::opengl1o5_x11_indexbuffer( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm, dpindex_buffer *vb ) : render_api_indexbuffer( r, c, mm, vb )
+    opengl1o5_x11_indexbuffer::opengl1o5_x11_indexbuffer( render_api_context_writelock *c, dpmutex_master *mm, dpindex_buffer *vb ) : render_api_indexbuffer( c, mm, vb )
     {
         this->vb.copy( vb );
     }

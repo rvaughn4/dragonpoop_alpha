@@ -2,6 +2,12 @@
 #include "opengl1o5_x11_context.h"
 #include "render_api_context.h"
 #include "opengl1o5_x11_commandlist.h"
+#include "../../../core/shared_obj/shared_obj_guard.h"
+#include "opengl1o5_x11_shader_gui.h"
+#include "opengl1o5_x11_shader_model.h"
+#include "opengl1o5_x11_texture.h"
+#include "opengl1o5_x11_vertexbuffer.h"
+#include "opengl1o5_x11_indexbuffer.h"
 
 namespace dragonpoop
 {
@@ -17,7 +23,18 @@ namespace dragonpoop
     //dtor
     opengl1o5_x11_context::~opengl1o5_x11_context( void )
     {
+        shared_obj_guard o;
         
+        o.tryWriteLock( this, 5000, "opengl1o5_x11::~opengl1o5_x11" );
+        o.unlock();
+        this->unlink();
+        
+        o.tryWriteLock( this, 5000, "opengl1o5_x11::~opengl1o5_x11" );
+        this->deleteIndexBuffers();
+        this->deleteShaders();
+        this->deleteTextures();
+        this->deleteVertexBuffers();        
+        o.unlock();
     }
     
     //generate commandlist
@@ -68,4 +85,37 @@ namespace dragonpoop
         glViewport( 0, 0, w, h );
     }
 
+    //gen shader
+    render_api_shader *opengl1o5_x11_context::genShader( dpmutex_master *mm, render_api_context_writelock *cl, const char *cname )
+    {
+        std::string s;
+        
+        s.assign( cname );
+        
+        if( s.compare( "gui" ) == 0 )
+            return new opengl1o5_x11_shader_gui( cl, mm );
+        if( s.compare( "model" ) == 0 )
+            return new opengl1o5_x11_shader_model( cl, mm );
+        
+        return 0;
+    }
+    
+    //gen texture
+    render_api_texture *opengl1o5_x11_context::genTexture( dpmutex_master *mm, render_api_context_writelock *cl, dpbitmap *bm )
+    {
+        return new opengl1o5_x11_texture( cl, mm, bm );
+    }
+    
+    //gen vertex buffer
+    render_api_vertexbuffer *opengl1o5_x11_context::genVertexBuffer( dpmutex_master *mm, render_api_context_writelock *cl, dpvertex_buffer *vb )
+    {
+        return new opengl1o5_x11_vertexbuffer( cl, mm, vb );
+    }
+    
+    //gen index buffer
+    render_api_indexbuffer *opengl1o5_x11_context::genIndexBuffer( dpmutex_master *mm, render_api_context_writelock *cl, dpindex_buffer *ib )
+    {
+        return new opengl1o5_x11_indexbuffer( cl, mm, ib );
+    }
+    
 };

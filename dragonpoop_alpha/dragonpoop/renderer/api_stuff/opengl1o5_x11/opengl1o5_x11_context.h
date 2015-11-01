@@ -31,7 +31,15 @@ namespace dragonpoop
         virtual void makeActive( void );
         //set viewport
         virtual void setViewport( float w, float h );
-        
+        //gen shader
+        virtual render_api_shader *genShader( dpmutex_master *mm, render_api_context_writelock *cl, const char *cname );
+        //gen texture
+        virtual render_api_texture *genTexture( dpmutex_master *mm, render_api_context_writelock *cl, dpbitmap *bm );
+        //gen vertex buffer
+        virtual render_api_vertexbuffer *genVertexBuffer( dpmutex_master *mm, render_api_context_writelock *cl, dpvertex_buffer *vb );
+        //gen index buffer
+        virtual render_api_indexbuffer *genIndexBuffer( dpmutex_master *mm, render_api_context_writelock *cl, dpindex_buffer *vb );
+
     public:
         
         //ctor

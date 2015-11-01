@@ -76,14 +76,6 @@ namespace dragonpoop
         virtual void makeActive( void );
         //set viewport
         virtual void setViewport( float w, float h );
-        //make a texture
-        render_api_texture_ref *makeTexture( render_api_context_writelock *cl, dpbitmap *bm );
-        //make a shader
-        render_api_shader_ref *makeShader( render_api_context_writelock *cl, const char *cname );
-        //make a vertex buffer
-        render_api_vertexbuffer_ref *makeVertexBuffer( render_api_context_writelock *cl, dpvertex_buffer *vb );
-        //make a index buffer
-        render_api_indexbuffer_ref *makeIndexBuffer( render_api_context_writelock *cl, dpindex_buffer *ib );
         //run context, delete old lists
         void run( void );
         //return width and height

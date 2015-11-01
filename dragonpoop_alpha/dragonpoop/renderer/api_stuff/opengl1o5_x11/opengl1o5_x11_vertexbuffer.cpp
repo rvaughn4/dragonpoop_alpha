@@ -7,7 +7,7 @@ namespace dragonpoop
 {
     
     //ctor
-    opengl1o5_x11_vertexbuffer::opengl1o5_x11_vertexbuffer( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm, dpvertex_buffer *vb ) : render_api_vertexbuffer( r, c, mm, vb )
+    opengl1o5_x11_vertexbuffer::opengl1o5_x11_vertexbuffer( render_api_context_writelock *c, dpmutex_master *mm, dpvertex_buffer *vb ) : render_api_vertexbuffer( c, mm, vb )
     {
         this->vb.copy( vb );
     }

@@ -12,9 +12,8 @@ namespace dragonpoop
 {
     
     //ctor
-    render_api_indexbuffer::render_api_indexbuffer( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm, dpindex_buffer *ib ) : shared_obj( mm )
+    render_api_indexbuffer::render_api_indexbuffer( render_api_context_writelock *c, dpmutex_master *mm, dpindex_buffer *ib ) : shared_obj( mm )
     {
-        this->r = (render_api_ref *)r->getRef();
         this->c = (render_api_context_ref *)c->getRef();
     }
     
@@ -22,7 +21,6 @@ namespace dragonpoop
     render_api_indexbuffer::~render_api_indexbuffer( void )
     {
         delete this->c;
-        delete this->r;
     }
     
     //generate read lock

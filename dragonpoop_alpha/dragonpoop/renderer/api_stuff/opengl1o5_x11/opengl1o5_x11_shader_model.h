@@ -20,7 +20,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        opengl1o5_x11_shader_model( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm );
+        opengl1o5_x11_shader_model( render_api_context_writelock *c, dpmutex_master *mm );
         //dtor
         virtual ~opengl1o5_x11_shader_model( void );
         

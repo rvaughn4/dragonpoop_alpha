@@ -18,7 +18,6 @@ namespace dragonpoop
         
     private:
         
-        render_api_ref *r;
         render_api_context_ref *c;
         
     protected:
@@ -33,7 +32,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        render_api_texture( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm, dpbitmap *bm );
+        render_api_texture( render_api_context_writelock *c, dpmutex_master *mm, dpbitmap *bm );
         //dtor
         virtual ~render_api_texture( void );
         

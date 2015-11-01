@@ -25,7 +25,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        opengl1o5_x11_indexbuffer( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm, dpindex_buffer *vb );
+        opengl1o5_x11_indexbuffer( render_api_context_writelock *c, dpmutex_master *mm, dpindex_buffer *vb );
         //dtor
         virtual ~opengl1o5_x11_indexbuffer( void );
         

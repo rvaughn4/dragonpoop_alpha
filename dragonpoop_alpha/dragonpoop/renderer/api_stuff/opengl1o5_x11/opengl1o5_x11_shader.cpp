@@ -18,7 +18,7 @@ namespace dragonpoop
 {
     
     //ctor
-    opengl1o5_x11_shader::opengl1o5_x11_shader( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm ) : render_api_shader( r, c, mm )
+    opengl1o5_x11_shader::opengl1o5_x11_shader( render_api_context_writelock *c, dpmutex_master *mm ) : render_api_shader( c, mm )
     {
 
     }

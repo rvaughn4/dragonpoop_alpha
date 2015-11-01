@@ -21,7 +21,6 @@ namespace dragonpoop
         
     private:
         
-        render_api_ref *r;
         render_api_context_ref *c;
         
     protected:
@@ -38,7 +37,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        render_api_shader( render_api_writelock *r, render_api_context_writelock *c, dpmutex_master *mm );
+        render_api_shader( render_api_context_writelock *c, dpmutex_master *mm );
         //dtor
         virtual ~render_api_shader( void );
         
