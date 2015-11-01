@@ -34,7 +34,7 @@ namespace dragonpoop
     }
     
     //render vb
-    void opengl1o5_x11_shader_gui::render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m, float alpha )
+    bool opengl1o5_x11_shader_gui::render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m, float alpha )
     {
         opengl1o5_x11_texture_readlock *t0l, *t1l;
         opengl1o5_x11_indexbuffer_readlock *ibl;
@@ -53,7 +53,11 @@ namespace dragonpoop
             t1l = (opengl1o5_x11_texture_readlock *)ot1.tryReadLock( t1, 100, "opengl1o5_x11_shader::render" );
         
         if( !vbl || !ibl )
-            return;
+            return 0;
+        if( t0 && !t0l )
+            return 0;
+        if( t1 && !t1l )
+            return 0;
         gltex0 = gltex1 = 0;
         if( t0l )
             gltex0 = t0l->getTex();
@@ -72,6 +76,8 @@ namespace dragonpoop
         
         glBindTexture( GL_TEXTURE_2D, gltex0 );
         this->renderVB( bvb, bib );
+        
+        return 1;
     }
     
 };

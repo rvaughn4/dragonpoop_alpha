@@ -70,8 +70,7 @@ namespace dragonpoop
         if( !l )
             return 0;
         
-        l->render( ctx, t0, t1, ib, vb, m, alpha );
-        return 1;
+        return l->render( ctx, t0, t1, ib, vb, m, alpha );
     }
     
     //delete batches

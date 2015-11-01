@@ -344,6 +344,8 @@ namespace dragonpoop
             return;
         w = al->getWidth();
         h = al->getHeight();
+        this->clpasser->w = w;
+        this->clpasser->h = h;
 
         ctxl = (render_api_context_writelock *)octx.tryWriteLock( this->main_ctx, 30, "renderer::render" );
         if( !ctxl )
@@ -357,8 +359,10 @@ namespace dragonpoop
         if( this->model_cl )
         {
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
-            if( cll )
-                cll->execute( ctxl );
+            if( !cll )
+                return;
+            if( !cll->execute( ctxl ) )
+                return;
             ocl.unlock();
         }
         
@@ -366,8 +370,10 @@ namespace dragonpoop
         if( this->gui_cl )
         {
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 30, "renderer::render" );
-            if( cll )
-                cll->execute( ctxl );
+            if( !cll )
+                return;
+            if( !cll->execute( ctxl ) )
+                return;
             ocl.unlock();
         }
         

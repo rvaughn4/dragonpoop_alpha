@@ -18,6 +18,7 @@ namespace dragonpoop
         std::atomic<render_api_commandlist_ref *> rmodel, rgui;
         dpposition pos;
         std::atomic<bool> model_ready, gui_ready;
+        float w, h;
         
     protected:
         

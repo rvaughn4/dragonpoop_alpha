@@ -125,15 +125,9 @@ namespace dragonpoop
     void renderer_gui_man::computeMatrix( void )
     {
         float sw, sh, rw, rh, r, dw, dh, ss, w, h;
-        shared_obj_guard o;
-        render_api_context_readlock *l;
-        
-        l = (render_api_context_readlock *)o.tryReadLock( this->ctx, 100, "renderer_gui_man::computeMatrix" );
-        if( !l )
-            return;
-        l->getDimensions( &w, &h );
-        o.unlock();
-        
+
+        w = this->clpasser->t->w;
+        h = this->clpasser->t->h;
         sw = this->log_screen_width;
         sh = this->log_screen_height;
         
