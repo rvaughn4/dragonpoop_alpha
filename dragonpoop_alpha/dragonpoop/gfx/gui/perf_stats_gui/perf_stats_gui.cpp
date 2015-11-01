@@ -98,10 +98,10 @@ namespace dragonpoop
         if( !gl->getGuis( &guil, &ogui ) )
             return;
         
-        ss << "\e028Performance Statistics\r\n";
+        ss << "\e020\fsans Performance Statistics\e016\r\n";
         
         //gfx stats
-        ss << "\e020\fsans \r\nGraphics \flcd \r\n";
+        ss << "\r\nGraphics \r\n";
         ss << "\t" << modl->getModelCount() << " models open\r\n";
         ss << "\t" << modl->getInstanceCount() << " model instances\r\n";
         ss << "\t" << guil->getGuiCount() << " guis open\r\n";
@@ -109,7 +109,7 @@ namespace dragonpoop
         //camera
         gl->getCameraPosition( &pp );
         pp.getData( &ppi );
-        ss << "\e020\fsans \r\nCamera \flcd \r\n";
+        ss << "\r\nCamera \r\n";
         ss << "\tX " << ppi.end.whole.x << " +  " << ppi.end.fract.x << " meters\r\n";
         ss << "\tY " << ppi.end.whole.y << " +  " << ppi.end.fract.y << " meters\r\n";
         ss << "\tZ " << ppi.end.whole.z << " +  " << ppi.end.fract.z << " meters\r\n";
@@ -122,7 +122,7 @@ namespace dragonpoop
             if( rl )
             {
                 rl->getName( &s );
-                ss << "\fsans \r\nRenderer \flcd ( " << s << " )\r\n";
+                ss << "\r\nRenderer ( " << s << " )\r\n";
                 ss << "\t" << (int)rl->getFps() << " frames per second\r\n";
                 ss << "\t" << rl->getMsPerFrame() << " ms per frame\r\n";
                 i = rl->getTextureMemory() / 1048576;
