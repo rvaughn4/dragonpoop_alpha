@@ -283,6 +283,7 @@
 		79F426421BE21F7100B4AD9D /* renderer_commandlist_passer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F4263D1BE21F7100B4AD9D /* renderer_commandlist_passer.cpp */; };
 		79F4846E1BE6180100C2F894 /* render_api_commandlist_generic_batch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F4846A1BE6180100C2F894 /* render_api_commandlist_generic_batch.cpp */; };
 		79F4846F1BE6180100C2F894 /* render_api_commandlist_generic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F4846C1BE6180100C2F894 /* render_api_commandlist_generic.cpp */; };
+		79F484721BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F484701BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.cpp */; };
 		79F49A791B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F49A771B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp */; };
 		79F49A7E1B79704000CDF8A7 /* renderer_model_material.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F49A7B1B79704000CDF8A7 /* renderer_model_material.cpp */; };
 		79F578B51BA9939B00046726 /* model_loader_dpmodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F578B01BA9939B00046726 /* model_loader_dpmodel.cpp */; };
@@ -981,6 +982,8 @@
 		79F4846B1BE6180100C2F894 /* render_api_commandlist_generic_batch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_commandlist_generic_batch.h; sourceTree = "<group>"; };
 		79F4846C1BE6180100C2F894 /* render_api_commandlist_generic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_commandlist_generic.cpp; sourceTree = "<group>"; };
 		79F4846D1BE6180100C2F894 /* render_api_commandlist_generic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_commandlist_generic.h; sourceTree = "<group>"; };
+		79F484701BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl1o5_x11_commandlist_generic.cpp; sourceTree = "<group>"; };
+		79F484711BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl1o5_x11_commandlist_generic.h; sourceTree = "<group>"; };
 		79F49A771B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_ms3d_state_make_materials.cpp; sourceTree = "<group>"; };
 		79F49A781B795E4100CDF8A7 /* model_loader_ms3d_state_make_materials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_ms3d_state_make_materials.h; sourceTree = "<group>"; };
 		79F49A7B1B79704000CDF8A7 /* renderer_model_material.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_model_material.cpp; sourceTree = "<group>"; };
@@ -1183,6 +1186,8 @@
 			children = (
 				790C4D131BD6B1CE009BCF7E /* opengl1o5_x11.cpp */,
 				790C4D141BD6B1CE009BCF7E /* opengl1o5_x11.h */,
+				79F484701BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.cpp */,
+				79F484711BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.h */,
 				79ADC8C21BDCF1B200D90DB2 /* opengl1o5_x11_commandlist.cpp */,
 				79ADC8C31BDCF1B200D90DB2 /* opengl1o5_x11_commandlist.h */,
 				790C4D151BD6B1CE009BCF7E /* opengl1o5_x11_context.cpp */,
@@ -2648,6 +2653,7 @@
 				790C4D6A1BD6B1CE009BCF7E /* render_api_shader_writelock.cpp in Sources */,
 				790759781BD0F38900F9D2F1 /* renderer_state_deinit_model.cpp in Sources */,
 				79F8520F1BC5326900EF9695 /* perf_stats_gui.cpp in Sources */,
+				79F484721BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.cpp in Sources */,
 				7970E9881B64F26E008E8328 /* gfx_task.cpp in Sources */,
 				7970E97E1B64F26E008E8328 /* dpbitmap_bitmap_loader.cpp in Sources */,
 				790C4D6B1BD6B1CE009BCF7E /* render_api_texture.cpp in Sources */,

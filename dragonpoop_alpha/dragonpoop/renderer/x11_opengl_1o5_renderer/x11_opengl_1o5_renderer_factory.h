@@ -12,6 +12,8 @@ namespace dragonpoop
         
     private:
         
+        bool bUseDl;
+        
     protected:
         
         //generate renderer
@@ -22,7 +24,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        x11_opengl_1o5_renderer_factory( unsigned int score );
+        x11_opengl_1o5_renderer_factory( unsigned int score, bool bUseDl );
         //dtor
         virtual ~x11_opengl_1o5_renderer_factory( void );
         

@@ -82,7 +82,7 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 303 );
-        this->_startTask( tp, 3, r );
+        this->_startTask( tp, 1, r );
     }
     
     //dtor
@@ -391,7 +391,7 @@ namespace dragonpoop
         if( wl->t->clpasser->t->model_ready )
             return;
         
-        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( g->t->clpasser, 3, "renderer_model_man::swapList" );
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( g->t->clpasser, 100, "renderer_model_man::swapList" );
         if( !cpl )
             return;
         
@@ -420,7 +420,7 @@ namespace dragonpoop
         cll->setShader( sdr );
         wl->renderModels( thd, &wl->t->campos, &wl->t->m, ctxl, cll );
         
-        if( !cll->compile( ctxl ) )
+        if( cll->compile( ctxl ) )
             wl->t->clpasser->t->model_ready = 1;
         
         delete sdr;

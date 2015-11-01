@@ -10,9 +10,9 @@ namespace dragonpoop
 {
     
     //ctor
-    x11_opengl_1o5_renderer_factory::x11_opengl_1o5_renderer_factory( unsigned int score ) : renderer_factory( "X11 OpenGL 1.5", score )
+    x11_opengl_1o5_renderer_factory::x11_opengl_1o5_renderer_factory( unsigned int score, bool bUseDl ) : renderer_factory( bUseDl ? "X11 OpenGL 1.5 with Display Lists" : "X11 OpenGL 1.5", score )
     {
-        
+        this->bUseDl = bUseDl;
     }
     
     //dtor
@@ -24,7 +24,7 @@ namespace dragonpoop
     //generate renderer
     renderer *x11_opengl_1o5_renderer_factory::genRenderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp )
     {
-        return new x11_opengl_1o5_renderer( c, g, tp );
+        return new x11_opengl_1o5_renderer( c, g, tp, this->bUseDl );
     }
     
     //test renderer
@@ -35,7 +35,7 @@ namespace dragonpoop
         shared_obj_guard o;
         bool r;
         
-        tr = new opengl1o5_x11( 20, 20, "testing x11 opengl 1.5 ...", c->getMutexMaster() );
+        tr = new opengl1o5_x11( 20, 20, "testing x11 opengl 1.5 ...", c->getMutexMaster(), this->bUseDl );
         if( !tr )
             return 0;
         

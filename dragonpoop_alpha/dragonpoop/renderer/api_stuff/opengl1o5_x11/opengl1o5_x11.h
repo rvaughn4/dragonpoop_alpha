@@ -27,7 +27,7 @@ namespace dragonpoop
         int x, y, ctx_used;
         unsigned int width, height;
         unsigned int depth;
-        bool bIsOpen;
+        bool bIsOpen, bUseDl;
         
         //return next fee context
         GLXContext getNextCtx( void );
@@ -41,7 +41,7 @@ namespace dragonpoop
         
         
         //ctor
-        opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm );
+        opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm, bool bUseDl );
         //dtor
         virtual ~opengl1o5_x11( void );
         //run api

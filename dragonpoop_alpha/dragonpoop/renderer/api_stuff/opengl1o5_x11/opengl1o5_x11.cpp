@@ -12,11 +12,12 @@ namespace dragonpoop
 {
     
     //ctor
-    opengl1o5_x11::opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm ) : render_api( new x11_window( w, h, ctitle ), mm )
+    opengl1o5_x11::opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm, bool bUseDl ) : render_api( new x11_window( w, h, ctitle ), mm )
     {
         Window winDummy;
         unsigned int borderDummy, i;
 
+        this->bUseDl = bUseDl;
         this->ctx_used = 0;
         this->w = (x11_window *)this->getWindow();
         this->bIsOpen = this->w->isOpen();
@@ -113,7 +114,7 @@ namespace dragonpoop
         if( !c )
             return 0;
         
-        return new opengl1o5_x11_context( al, mm, c, this->win, this->dpy );
+        return new opengl1o5_x11_context( al, mm, c, this->win, this->dpy, this->bUseDl );
     }
 
 };

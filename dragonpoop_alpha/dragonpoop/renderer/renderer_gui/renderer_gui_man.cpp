@@ -454,7 +454,7 @@ namespace dragonpoop
         if( wl->t->clpasser->t->gui_ready )
             return;
         
-        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( wl->t->clpasser, 3, "renderer_gui_man::render" );
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( wl->t->clpasser, 100, "renderer_gui_man::render" );
         if( !cpl )
             return;
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( wl->t->ctx, 100, "renderer_gui_man::render" );

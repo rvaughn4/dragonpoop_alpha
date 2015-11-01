@@ -16,6 +16,7 @@ namespace dragonpoop
         GLXContext ctx;
         Window win;
         Display *dpy;
+        bool bUseDl;
         
     protected:
         
@@ -43,7 +44,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        opengl1o5_x11_context( render_api_writelock *r, dpmutex_master *mm, GLXContext ctx, Window win, Display *dpy );
+        opengl1o5_x11_context( render_api_writelock *r, dpmutex_master *mm, GLXContext ctx, Window win, Display *dpy, bool bUseDl );
         //dtor
         virtual ~opengl1o5_x11_context( void );
         

@@ -3,25 +3,17 @@
 #define dragonpoop_opengl1o5_x11_commandlist_h
 
 #include "opengl1o5_x11.h"
-#include "../render_api/render_api_commandlist_generic.h"
-
-#define opengl1o5_x11_commandlist_USE_DISPLAY_LIST
+#include "../render_api/render_api_commandlist.h"
 
 namespace dragonpoop
 {
     
-#ifdef opengl1o5_x11_commandlist_USE_DISPLAY_LIST
     class opengl1o5_x11_commandlist : public render_api_commandlist
-#else
-    class opengl1o5_x11_commandlist : public render_api_commandlist_generic
-#endif
     {
         
     private:
 
-#ifdef opengl1o5_x11_commandlist_USE_DISPLAY_LIST
         unsigned int dlist;
-#endif
         
     protected:
         

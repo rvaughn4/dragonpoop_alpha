@@ -8,9 +8,9 @@ namespace dragonpoop
 {
     
     //ctor
-    x11_opengl_1o5_renderer::x11_opengl_1o5_renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp ) : renderer( c, g, tp )
+    x11_opengl_1o5_renderer::x11_opengl_1o5_renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp, bool bUseDl ) : renderer( c, g, tp )
     {
-        
+        this->bUseDl = bUseDl;
     }
     
     //dtor
@@ -28,13 +28,16 @@ namespace dragonpoop
     //get renderer name
     void x11_opengl_1o5_renderer::getName( std::string *s )
     {
-        s->assign( "X11 OpenGL 1.5" );
+        if( this->bUseDl )
+            s->assign( "X11 OpenGL 1.5 with Display Lists" );
+        else
+            s->assign( "X11 OpenGL 1.5" );
     }
     
     //generate render api
     render_api *x11_opengl_1o5_renderer::genRenderApi( dpmutex_master *mm )
     {
-        return new opengl1o5_x11( 640, 480, "hello", mm );
+        return new opengl1o5_x11( 640, 480, "hello", mm, this->bUseDl );
     }
 
 };

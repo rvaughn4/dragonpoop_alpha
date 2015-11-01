@@ -2,6 +2,7 @@
 #include "opengl1o5_x11_context.h"
 #include "render_api_context.h"
 #include "opengl1o5_x11_commandlist.h"
+#include "opengl1o5_x11_commandlist_generic.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
 #include "opengl1o5_x11_shader_gui.h"
 #include "opengl1o5_x11_shader_model.h"
@@ -13,8 +14,9 @@ namespace dragonpoop
 {
     
     //ctor
-    opengl1o5_x11_context::opengl1o5_x11_context( render_api_writelock *r, dpmutex_master *mm, GLXContext ctx, Window win, Display *dpy ) : render_api_context( r, mm )
+    opengl1o5_x11_context::opengl1o5_x11_context( render_api_writelock *r, dpmutex_master *mm, GLXContext ctx, Window win, Display *dpy, bool bUseDl ) : render_api_context( r, mm )
     {
+        this->bUseDl = bUseDl;
         this->ctx = ctx;
         this->win = win;
         this->dpy = dpy;
@@ -40,7 +42,9 @@ namespace dragonpoop
     //generate commandlist
     render_api_commandlist *opengl1o5_x11_context::genCmdList( render_api_context_writelock *cl, dpmutex_master *mm )
     {
-        return new opengl1o5_x11_commandlist( mm );
+        if( this->bUseDl )
+            return new opengl1o5_x11_commandlist( mm );
+        return new opengl1o5_x11_commandlist_generic( mm );
     }
     
     //clear screen

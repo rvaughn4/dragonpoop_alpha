@@ -76,7 +76,7 @@ namespace dragonpoop
         this->ms_each_frame = 30;
         this->thd = new dpthread_singletask( c->getMutexMaster(), 301 );
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3, 1, "renderer" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 1, 1, "renderer" );
         thdl = this->thd->lock();
         if( thdl )
         {
@@ -323,6 +323,9 @@ namespace dragonpoop
             this->new_gui_cl = 0;
         }
         
+        if( !this->clpasser->model_ready && !this->clpasser->gui_ready )
+            return;
+        
         if( this->clpasser->model_ready || this->clpasser->gui_ready )
         {
         
@@ -332,11 +335,11 @@ namespace dragonpoop
                 this->new_gui_cl = cpl->getGui();
                 this->new_model_cl = cpl->getModel();
                 cpl->setPosition( &this->cam_pos );
+                this->clpasser->model_ready = 0;
+                this->clpasser->gui_ready = 0;
             }
-            o.unlock();
             
-            this->clpasser->model_ready = 0;
-            this->clpasser->gui_ready = 0;
+            o.unlock();
         }
         
         al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
@@ -659,7 +662,8 @@ namespace dragonpoop
         if( !gl )
             return;
         
-        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 1 ) );
+        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 1, 0 ) );
+        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 2, 1 ) );
     }
     
     //gets selected text from gui (copy or cut)

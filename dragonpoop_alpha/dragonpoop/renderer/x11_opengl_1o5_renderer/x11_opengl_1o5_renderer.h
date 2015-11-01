@@ -12,6 +12,8 @@ namespace dragonpoop
         
     private:
         
+        bool bUseDl;
+        
     protected:
         
         //get renderer name
@@ -22,7 +24,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        x11_opengl_1o5_renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp );
+        x11_opengl_1o5_renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp, bool bUseDl );
         //dtor
         virtual ~x11_opengl_1o5_renderer( void );
         
