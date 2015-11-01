@@ -445,7 +445,6 @@ namespace dragonpoop
         render_api_context_writelock *ctxl;
         render_api_commandlist_writelock *cll;
         renderer_commandlist_passer_writelock *cpl;
-        render_api_commandlist_ref *r;
         render_api_shader_ref *sdr;
 
         wl = (renderer_gui_man_writelock *)o.tryWriteLock( g, 100, "renderer_gui_man::render" );
@@ -461,12 +460,6 @@ namespace dragonpoop
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( wl->t->ctx, 100, "renderer_gui_man::render" );
         if( !ctxl )
             return;
-        r = cpl->getGui();
-        if( r )
-        {
-            delete r;
-            return;
-        }
         cpl->setGui( g->t->clist );
         ocpl.unlock();
         
@@ -481,7 +474,7 @@ namespace dragonpoop
             return;
         
         sdr = ctxl->makeShader( "gui" );
-        if( sdr )
+        if( !sdr )
             return;
         
         cll->setShader( sdr );
