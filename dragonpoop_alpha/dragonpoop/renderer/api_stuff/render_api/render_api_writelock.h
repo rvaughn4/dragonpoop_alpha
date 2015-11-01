@@ -10,13 +10,6 @@ namespace dragonpoop
     class render_api;
     class render_api_context_ref;
     class render_api_context_writelock;
-    class dpbitmap;
-    class dpindex_buffer;
-    class dpvertex_buffer;
-    class render_api_texture_ref;
-    class render_api_shader_ref;
-    class render_api_vertexbuffer_ref;
-    class render_api_indexbuffer_ref;
 
     class render_api_writelock : public shared_obj_writelock
     {
@@ -46,22 +39,6 @@ namespace dragonpoop
         render_api_context_ref *getContext( void );
         //delete contexts
         void deleteContexts( void );
-        //make shader
-        render_api_shader_ref *makeShader( render_api_context_writelock *cl, const char *cname );
-        //make texture
-        render_api_texture_ref *makeTexture( render_api_context_writelock *cl, dpbitmap *bm );
-        //make vertex buffer
-        render_api_vertexbuffer_ref *makeVertexBuffer( render_api_context_writelock *cl, dpvertex_buffer *vb );
-        //make index buffer
-        render_api_indexbuffer_ref *makeIndexBuffer( render_api_context_writelock *cl, dpindex_buffer *vb );
-        //delete shaders
-        void deleteShaders( void );
-        //delete textures
-        void deleteTextures( void );
-        //delete vertex buffers
-        void deleteVertexBuffers( void );
-        //delete index buffers
-        void deleteIndexBuffers( void );
         //returns true if mouse input is waiting
         bool hasMouseInput( void );
         //fetches mouse input

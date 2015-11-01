@@ -20,7 +20,14 @@ namespace dragonpoop
     class render_api_shader_ref;
     class render_api_vertexbuffer_ref;
     class render_api_indexbuffer_ref;
-    
+    class render_api_shader;
+    class render_api_texture;
+    class render_api_vertexbuffer;
+    class render_api_indexbuffer;
+    class dpbitmap;
+    class dpvertex_buffer;
+    class dpindex_buffer;
+
     class render_api_context : public shared_obj
     {
         
@@ -29,9 +36,21 @@ namespace dragonpoop
         dpmutex_master *mm;
         render_api_ref *r;
         std::list<render_api_commandlist *> cmds;
+        std::list<render_api_shader *> shaders;
+        std::list<render_api_texture *> textures;
+        std::list<render_api_vertexbuffer *> vertexbuffers;
+        std::list<render_api_indexbuffer *> indexbuffers;
         
         //run command lists
         void runLists( void );
+        //run shaders
+        void runShaders( void );
+        //run textures
+        void runTextures( void );
+        //run vertex buffers
+        void runVertexBuffers( void );
+        //run index buffers
+        void runIndexBuffers( void );
         
     protected:
         
@@ -69,6 +88,30 @@ namespace dragonpoop
         void run( void );
         //return width and height
         void getDimensions( float *w, float *h );
+        //gen shader
+        virtual render_api_shader *genShader( dpmutex_master *mm, render_api_context_writelock *cl, const char *cname );
+        //gen texture
+        virtual render_api_texture *genTexture( dpmutex_master *mm, render_api_context_writelock *cl, dpbitmap *bm );
+        //gen vertex buffer
+        virtual render_api_vertexbuffer *genVertexBuffer( dpmutex_master *mm, render_api_context_writelock *cl, dpvertex_buffer *vb );
+        //gen index buffer
+        virtual render_api_indexbuffer *genIndexBuffer( dpmutex_master *mm, render_api_context_writelock *cl, dpindex_buffer *vb );
+        //make shader
+        render_api_shader_ref *makeShader( render_api_context_writelock *cl, const char *cname );
+        //make texture
+        render_api_texture_ref *makeTexture(  render_api_context_writelock *cl, dpbitmap *bm );
+        //make vertex buffer
+        render_api_vertexbuffer_ref *makeVertexBuffer(  render_api_context_writelock *cl, dpvertex_buffer *vb );
+        //make index buffer
+        render_api_indexbuffer_ref *makeIndexBuffer( render_api_context_writelock *cl, dpindex_buffer *vb );
+        //delete shaders
+        void deleteShaders( void );
+        //delete textures
+        void deleteTextures( void );
+        //delete vertex buffers
+        void deleteVertexBuffers( void );
+        //delete index buffers
+        void deleteIndexBuffers( void );
         
     public:
         
