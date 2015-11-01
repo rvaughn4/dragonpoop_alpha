@@ -76,7 +76,7 @@ namespace dragonpoop
         this->ms_each_frame = 30;
         this->thd = new dpthread_singletask( c->getMutexMaster(), 301 );
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 10, 1, "renderer" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3, 1, "renderer" );
         thdl = this->thd->lock();
         if( thdl )
         {
