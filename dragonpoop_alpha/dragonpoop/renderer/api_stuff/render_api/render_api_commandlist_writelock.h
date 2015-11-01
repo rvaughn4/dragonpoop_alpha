@@ -31,12 +31,10 @@ namespace dragonpoop
         
     public:
         
-        //returns true if ready to be executed
-        bool isReadyForExecute( void );
         //compile command list
-        void compile( render_api_context_writelock *ctx );
+        bool compile( render_api_context_writelock *ctx );
         //execute command list
-        void execute( render_api_context_writelock *r );
+        bool execute( render_api_context_writelock *r );
         //delete commands
         void deleteCommands( void );
         //set shader command

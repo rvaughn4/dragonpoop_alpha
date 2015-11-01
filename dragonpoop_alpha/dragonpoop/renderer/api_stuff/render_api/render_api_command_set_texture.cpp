@@ -63,10 +63,7 @@ namespace dragonpoop
     //compile command
     void render_api_command_set_texture::compile( render_api_context_writelock *ctx )
     {
-        if( !this->tex_index )
-            this->setTexture0( this->r );
-        else
-            this->setTexture1( this->r );
+        this->setTexture( this->r, this->tex_index );
     }
     
 };

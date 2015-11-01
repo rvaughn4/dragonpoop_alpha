@@ -30,15 +30,9 @@ namespace dragonpoop
     }
     
     //set current texture 0
-    void render_api_command::setTexture0( render_api_texture_ref *r )
+    void render_api_command::setTexture( render_api_texture_ref *r, int index )
     {
-        this->l->cmd_setTexture0( r );
-    }
-    
-    //set current texture 1
-    void render_api_command::setTexture1( render_api_texture_ref *r )
-    {
-        this->l->cmd_setTexture1( r );
+        this->l->cmd_setTexture( r, index );
     }
     
     //set current vertex buffer

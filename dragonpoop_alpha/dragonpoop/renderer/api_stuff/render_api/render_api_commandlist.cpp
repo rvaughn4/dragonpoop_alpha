@@ -60,21 +60,15 @@ namespace dragonpoop
         return new render_api_commandlist_ref( (render_api_commandlist *)p, k );
     }
     
-    //returns true if ready to be executed
-    bool render_api_commandlist::isReadyForExecute( void )
-    {
-        return this->bIsCompiled;
-    }
-    
     //compile command list
-    void render_api_commandlist::compile( render_api_context_writelock *ctxl )
+    bool render_api_commandlist::compile( render_api_context_writelock *ctxl )
     {
         std::list<render_api_command *> *l;
         std::list<render_api_command *>::iterator i;
         render_api_command *p;
         
         if( !this->beginCompile( ctxl ) )
-            return;
+            return 0;
         
         l = &this->cmds;
         for( i = l->begin(); i != l->end(); ++i )
@@ -84,7 +78,7 @@ namespace dragonpoop
         }
         
         this->endCompile( ctxl );
-        this->bIsCompiled = 1;
+        return 1;
     }
     
     //called at begin of compile
@@ -100,61 +94,71 @@ namespace dragonpoop
     }
     
     //called during compile for each draw call
-    void render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
+    bool render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
     {
+        return 1;
     }
     
     //execute command list
-    void render_api_commandlist::execute( render_api_context_writelock *r )
+    bool render_api_commandlist::execute( render_api_context_writelock *r )
     {
+        return 1;
     }
     
     //set current shader
-    void render_api_commandlist::cmd_setShader( render_api_shader_ref *r )
+    bool render_api_commandlist::cmd_setShader( render_api_shader_ref *r )
     {
         this->sdr = r;
+        return 1;
     }
     
     //set current texture 0
-    void render_api_commandlist::cmd_setTexture0( render_api_texture_ref *r )
+    bool render_api_commandlist::cmd_setTexture( render_api_texture_ref *r, int index )
     {
-        this->t0 = r;
-    }
-    
-    //set current texture 1
-    void render_api_commandlist::cmd_setTexture1( render_api_texture_ref *r )
-    {
-        this->t1 = r;
+        switch( index )
+        {
+            case 0:
+                this->t0 = r;
+                break;
+            case 1:
+                this->t1 = r;
+                break;
+        }
+        return 1;
     }
     
     //set current vertex buffer
-    void render_api_commandlist::cmd_setVertexBuffer( render_api_vertexbuffer_ref *r )
+    bool render_api_commandlist::cmd_setVertexBuffer( render_api_vertexbuffer_ref *r )
     {
         this->vb = r;
+        return 1;
     }
     
     //set current index buffer
-    void render_api_commandlist::cmd_setIndexBuffer( render_api_indexbuffer_ref *r )
+    bool render_api_commandlist::cmd_setIndexBuffer( render_api_indexbuffer_ref *r )
     {
         this->ib = r;
+        return 1;
     }
     
     //set current alpha
-    void render_api_commandlist::cmd_setAlpha( float a )
+    bool render_api_commandlist::cmd_setAlpha( float a )
     {
         this->alpha = a;
+        return 1;
     }
     
     //draw
-    void render_api_commandlist::cmd_draw( render_api_context_writelock *ctx )
+    bool render_api_commandlist::cmd_draw( render_api_context_writelock *ctx )
     {
-        this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m, this->alpha );
+        return this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m, this->alpha );
     }
     
     //set current matrix
-    void render_api_commandlist::cmd_setMatrix( dpmatrix *m )
+    bool render_api_commandlist::cmd_setMatrix( dpmatrix *m )
     {
         this->m.copy( m );
+        return 1;
     }
     
     //delete commands

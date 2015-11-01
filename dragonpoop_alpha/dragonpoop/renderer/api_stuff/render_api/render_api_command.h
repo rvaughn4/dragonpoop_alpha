@@ -27,9 +27,7 @@ namespace dragonpoop
         //set current shader
         void setShader( render_api_shader_ref *r );
         //set current texture 0
-        void setTexture0( render_api_texture_ref *r );
-        //set current texture 1
-        void setTexture1( render_api_texture_ref *r );
+        void setTexture( render_api_texture_ref *r, int index );
         //set current vertex buffer
         void setVertexBuffer( render_api_vertexbuffer_ref *r );
         //set current index buffer
