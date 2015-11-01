@@ -14,8 +14,6 @@
 #include "render_api_command_set_matrix.h"
 #include "render_api_command_set_texture.h"
 #include "render_api_command_set_vertexbuffer.h"
-#include "render_api_shader_readlock.h"
-#include "render_api_shader_ref.h"
 
 namespace dragonpoop
 {
@@ -104,14 +102,6 @@ namespace dragonpoop
     //called during compile for each draw call
     void render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
     {
-        shared_obj_guard o;
-        render_api_shader_readlock *l;
-        
-        l = (render_api_shader_readlock *)o.tryReadLock( sdr, 100, "render_api_commandlist::drawCompile" );
-        if( !l )
-            return;
-        
-        l->render( ctx, t0, t1, ib, vb, m, alpha );
     }
     
     //execute command list
