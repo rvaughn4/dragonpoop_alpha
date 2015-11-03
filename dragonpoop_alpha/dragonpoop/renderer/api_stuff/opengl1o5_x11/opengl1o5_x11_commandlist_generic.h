@@ -15,6 +15,9 @@ namespace dragonpoop
         
     protected:
         
+        //generate batch
+        virtual render_api_commandlist_generic_batch *genBatch( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha );
+
     public:
         
         //ctor

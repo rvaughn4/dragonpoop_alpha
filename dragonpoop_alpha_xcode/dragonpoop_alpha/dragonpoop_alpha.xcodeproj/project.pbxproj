@@ -88,6 +88,8 @@
 		7910B9891B92793A00D72A06 /* model_matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9821B92793A00D72A06 /* model_matrix.cpp */; };
 		7910B98A1B92793A00D72A06 /* model_quaternion.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9851B92793A00D72A06 /* model_quaternion.cpp */; };
 		7910B98B1B92793A00D72A06 /* model_vector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7910B9871B92793A00D72A06 /* model_vector.cpp */; };
+		791247761BE8C24100E7C56D /* opengl1o5_x11_commandlist_generic_batch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 791247741BE8C24100E7C56D /* opengl1o5_x11_commandlist_generic_batch.cpp */; };
+		7912477C1BE8C70000E7C56D /* opengl1o5_x11_shader_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7912477A1BE8C70000E7C56D /* opengl1o5_x11_shader_readlock.cpp */; };
 		79145C441BCA7DE900DC5434 /* dpactor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C1D1BCA7DE900DC5434 /* dpactor.cpp */; };
 		79145C461BCA7DE900DC5434 /* dpactor_model_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C211BCA7DE900DC5434 /* dpactor_model_state.cpp */; };
 		79145C471BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C231BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp */; };
@@ -521,6 +523,10 @@
 		7910B9861B92793A00D72A06 /* model_quaternion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_quaternion.h; sourceTree = "<group>"; };
 		7910B9871B92793A00D72A06 /* model_vector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_vector.cpp; sourceTree = "<group>"; };
 		7910B9881B92793A00D72A06 /* model_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_vector.h; sourceTree = "<group>"; };
+		791247741BE8C24100E7C56D /* opengl1o5_x11_commandlist_generic_batch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl1o5_x11_commandlist_generic_batch.cpp; sourceTree = "<group>"; };
+		791247751BE8C24100E7C56D /* opengl1o5_x11_commandlist_generic_batch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl1o5_x11_commandlist_generic_batch.h; sourceTree = "<group>"; };
+		7912477A1BE8C70000E7C56D /* opengl1o5_x11_shader_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl1o5_x11_shader_readlock.cpp; sourceTree = "<group>"; };
+		7912477B1BE8C70000E7C56D /* opengl1o5_x11_shader_readlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl1o5_x11_shader_readlock.h; sourceTree = "<group>"; };
 		79145C1D1BCA7DE900DC5434 /* dpactor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor.cpp; sourceTree = "<group>"; };
 		79145C1E1BCA7DE900DC5434 /* dpactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor.h; sourceTree = "<group>"; };
 		79145C211BCA7DE900DC5434 /* dpactor_model_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_model_state.cpp; sourceTree = "<group>"; };
@@ -1186,6 +1192,8 @@
 			children = (
 				790C4D131BD6B1CE009BCF7E /* opengl1o5_x11.cpp */,
 				790C4D141BD6B1CE009BCF7E /* opengl1o5_x11.h */,
+				791247741BE8C24100E7C56D /* opengl1o5_x11_commandlist_generic_batch.cpp */,
+				791247751BE8C24100E7C56D /* opengl1o5_x11_commandlist_generic_batch.h */,
 				79F484701BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.cpp */,
 				79F484711BE6A3E800C2F894 /* opengl1o5_x11_commandlist_generic.h */,
 				79ADC8C21BDCF1B200D90DB2 /* opengl1o5_x11_commandlist.cpp */,
@@ -1198,6 +1206,8 @@
 				79ADC8BC1BDCD1D600D90DB2 /* opengl1o5_x11_texture_readlock.h */,
 				79ADC8BD1BDCD1D600D90DB2 /* opengl1o5_x11_vertexbuffer_readlock.cpp */,
 				79ADC8BE1BDCD1D600D90DB2 /* opengl1o5_x11_vertexbuffer_readlock.h */,
+				7912477A1BE8C70000E7C56D /* opengl1o5_x11_shader_readlock.cpp */,
+				7912477B1BE8C70000E7C56D /* opengl1o5_x11_shader_readlock.h */,
 				790C4D171BD6B1CE009BCF7E /* opengl1o5_x11_shader.cpp */,
 				790C4D181BD6B1CE009BCF7E /* opengl1o5_x11_shader.h */,
 				7903063A1BDF835E00EA0A62 /* opengl1o5_x11_shader_gui.cpp */,
@@ -2514,6 +2524,7 @@
 				7906ABDF1B9B5AA1002C26A2 /* model_saver_ms3d_state_write_animation.cpp in Sources */,
 				799FC16C1B756F6F00E1A212 /* renderer_model_group_instance.cpp in Sources */,
 				79B931651B6E9C570054295B /* model_loader_ms3d_state_make_groups.cpp in Sources */,
+				7912477C1BE8C70000E7C56D /* opengl1o5_x11_shader_readlock.cpp in Sources */,
 				79E744661B6CE52A005BFDE0 /* model_loader.cpp in Sources */,
 				799FC16B1B756F6F00E1A212 /* renderer_model.cpp in Sources */,
 				7906ABE41B9B5AA1002C26A2 /* model_saver_ms3d_state_write_triangles.cpp in Sources */,
@@ -2645,6 +2656,7 @@
 				7970E9821B64F26E008E8328 /* dpvertex_buffer.cpp in Sources */,
 				791CA20F1BD0553600FEF40B /* renderer_gui_man_task.cpp in Sources */,
 				7970E9631B64F26E008E8328 /* dpmutex.cpp in Sources */,
+				791247761BE8C24100E7C56D /* opengl1o5_x11_commandlist_generic_batch.cpp in Sources */,
 				79FFA2931BA63D0700971BAB /* model_saver_dpmodel_state_write.cpp in Sources */,
 				794610F21B6D42CE00311E86 /* model_loader_ms3d_state_parse_groups.cpp in Sources */,
 				790C4D731BD6B1CE009BCF7E /* render_api_writelock.cpp in Sources */,

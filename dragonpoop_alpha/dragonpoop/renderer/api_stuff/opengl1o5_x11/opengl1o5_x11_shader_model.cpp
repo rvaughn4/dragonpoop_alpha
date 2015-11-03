@@ -33,39 +33,9 @@ namespace dragonpoop
         this->unlink();
     }
     
-    //render vb
-    bool opengl1o5_x11_shader_model::render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m, float alpha )
+    //render gl
+    bool opengl1o5_x11_shader_model::_render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha )
     {
-        opengl1o5_x11_texture_readlock *t0l, *t1l;
-        opengl1o5_x11_indexbuffer_readlock *ibl;
-        opengl1o5_x11_vertexbuffer_readlock *vbl;
-        shared_obj_guard ot0, ot1, oib, ovb;
-        unsigned int gltex0, gltex1;
-        dpvertex_buffer *bvb;
-        dpindex_buffer *bib;
-        
-        vbl = (opengl1o5_x11_vertexbuffer_readlock *)ovb.tryReadLock( vb, 100, "opengl1o5_x11_shader::render" );
-        ibl = (opengl1o5_x11_indexbuffer_readlock *)oib.tryReadLock( ib, 100, "opengl1o5_x11_shader::render" );
-        t0l = t1l = 0;
-        if( t0 )
-            t0l = (opengl1o5_x11_texture_readlock *)ot0.tryReadLock( t0, 100, "opengl1o5_x11_shader::render" );
-        if( t1 )
-            t1l = (opengl1o5_x11_texture_readlock *)ot1.tryReadLock( t1, 100, "opengl1o5_x11_shader::render" );
-        
-        if( !vbl || !ibl )
-            return 0;
-        if( t0 && !t0l )
-            return 0;
-        if( t1 && !t1l )
-            return 0;
-        gltex0 = gltex1 = 0;
-        if( t0l )
-            gltex0 = t0l->getTex();
-        if( t1l )
-            gltex1 = t1l->getTex();
-        
-        bib = ibl->getBuffer();
-        bvb = vbl->getBuffer();
         
         glEnable( GL_DEPTH_TEST );
         glEnable( GL_TEXTURE_2D );
@@ -74,8 +44,8 @@ namespace dragonpoop
         glLoadMatrixf( m->getRaw4by4() );
         glColor4f( 1.0f, 1.0f, 1.0f, alpha );
         
-        glBindTexture( GL_TEXTURE_2D, gltex0 );
-        this->renderVB( bvb, bib );
+        glBindTexture( GL_TEXTURE_2D, t0 );
+        this->renderVB( vb, ib );
         
         return 1;
     }
