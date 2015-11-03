@@ -65,7 +65,7 @@ namespace dragonpoop
         shared_obj_guard o;
         opengl1o5_x11_shader_readlock *l;
         
-        l = (opengl1o5_x11_shader_readlock *)o.tryReadLock( sdr, 100, "opengl1o5_x11_commandlist_generic_batch::execute" );
+        l = (opengl1o5_x11_shader_readlock *)o.tryReadLock( sdr, 10, "opengl1o5_x11_commandlist_generic_batch::execute" );
         if( !l )
             return 0;
         

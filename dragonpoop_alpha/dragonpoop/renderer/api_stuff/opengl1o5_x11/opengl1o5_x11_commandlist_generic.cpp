@@ -1,6 +1,6 @@
 
 #include "opengl1o5_x11_commandlist_generic.h"
-#include "../render_api/render_api_commandlist_generic_batch.h"
+#include "opengl1o5_x11_commandlist_generic_batch.h"
 
 namespace dragonpoop
 {
@@ -20,7 +20,7 @@ namespace dragonpoop
     //generate batch
     render_api_commandlist_generic_batch *opengl1o5_x11_commandlist_generic::genBatch( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
     {
-        return new render_api_commandlist_generic_batch( this, sdr, t0, t1, vb, ib, m, alpha );
+        return new opengl1o5_x11_commandlist_generic_batch( this, sdr, t0, t1, vb, ib, m, alpha );
     }
     
 };
