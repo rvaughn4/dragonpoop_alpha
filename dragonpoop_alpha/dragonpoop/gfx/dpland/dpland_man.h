@@ -21,6 +21,7 @@ namespace dragonpoop
     class dpland_man_task;
     class dptaskpool_writelock;
     class gfx;
+    class dpland;
     
     class dpland_man : public shared_obj
     {
@@ -35,6 +36,8 @@ namespace dragonpoop
         } pos;
         dptask *tsk;
         dpland_man_task *gtsk;
+        std::list<dpland *> tiles;
+        float land_sz, tile_sz, tex_sz, world_sz;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
@@ -44,10 +47,10 @@ namespace dragonpoop
         void _deleteTask( void );
         //run tiles
         void runTiles( dpthread_lock *thd, dpland_man_writelock *g );
-        //create new tiles
-        void makeTiles( dpthread_lock *thd, dpland_man_writelock *g );
-        //returns true if tile exists
-        bool hasTile( int64_t x, int64_t z );
+        //returns tile
+        dpland *getTile( int64_t x, int64_t z );
+        //makes a tile at coords
+        void makeTile( dpthread_lock *thd, int64_t x, int64_t z );
         
     protected:
         

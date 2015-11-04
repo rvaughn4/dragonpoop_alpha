@@ -38,6 +38,8 @@ namespace dragonpoop
         //get buffer
         dpindex *getBuffer( void );
         //add index
+        void addIndex( int i );
+        //add index
         void addIndex( dpindex *i );
         //add index by vertex
         void addIndex( dpvertex_buffer *vb, dpvertex *v );

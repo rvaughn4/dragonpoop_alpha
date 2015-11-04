@@ -12,6 +12,8 @@
 #include "../gfx_ref.h"
 #include "../gfx.h"
 #include "../gfx_writelock.h"
+#include "dpland.h"
+#include "../../core/dpthread/dpthread_lock.h"
 
 namespace dragonpoop
 {
@@ -23,6 +25,11 @@ namespace dragonpoop
         gfx_writelock *gl;
         
         this->c = c;
+        
+        this->world_sz = 1000.0f;
+        this->land_sz = 100.0f;
+        this->tile_sz = 2.0f;
+        this->tex_sz = 10.0f;
         
         gl = (gfx_writelock *)o.writeLock( g, "dpland_man::dpland_man" );
         this->g = (gfx_ref *)gl->getRef();
@@ -110,25 +117,86 @@ namespace dragonpoop
     //run
     void dpland_man::run( dpthread_lock *thd, dpland_man_writelock *g )
     {
-        
+        this->runTiles( thd, g );
     }
     
     //run tiles
     void dpland_man::runTiles( dpthread_lock *thd, dpland_man_writelock *g )
     {
+        std::list<dpland *> *l, d;
+        std::list<dpland *>::iterator i;
+        dpland *p;
+        int64_t ix, iz, ex, ez, x, z, step, half_world;
+        float f;
         
-    }
+        l = &this->tiles;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        
+        x = 0;
+        z = 0;
+        
+        step = (int64_t)this->land_sz;
+        f = this->world_sz * 0.5f - this->land_sz * 0.5f;
+        half_world = (int64_t)f;
+        ez = (int64_t)this->world_sz;
+        ex = ez;
+        
+        for( iz = z - half_world; iz < ez; iz += step )
+        {
+            for( ix = x - half_world; ix < ex; ix += step )
+            {
+                p = this->getTile( ix, iz );
+                if( !p )
+                    this->makeTile( thd, ix, iz );
+                else
+                    d.remove( p );
+            }
+        }
+
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->tiles.remove( p );
+            delete p;
+        }
     
-    //create new tiles
-    void dpland_man::makeTiles( dpthread_lock *thd, dpland_man_writelock *g )
-    {
-        
     }
     
     //returns true if tile exists
-    bool dpland_man::hasTile( int64_t x, int64_t z )
+    dpland *dpland_man::getTile( int64_t x, int64_t z )
     {
-        return 1;
+        int64_t px, pz;
+        std::list<dpland *> *l;
+        std::list<dpland *>::iterator i;
+        dpland *p;
+        
+        l = &this->tiles;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            p->getPosition( &px, &pz );
+            if( px != x || pz != z )
+                continue;
+            return p;
+        }
+        
+        return 0;
+    }
+
+    //makes a tile at coords
+    void dpland_man::makeTile( dpthread_lock *thd, int64_t x, int64_t z )
+    {
+        dpland *p;
+        
+        p = new dpland( thd->genId(), x, z, this->land_sz, this->tile_sz, this->tex_sz );
+        if( !p )
+            return;
+        this->tiles.push_back( p );
     }
     
 };

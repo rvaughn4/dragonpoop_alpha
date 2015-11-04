@@ -54,6 +54,16 @@ namespace dragonpoop
     }
 
     //add index
+    void dpindex_buffer::addIndex( int i )
+    {
+        dpindex ii;
+        if( i < 0 )
+            return;
+        ii.i = (uint16_t )i;
+        this->addIndex( &ii );
+    }
+    
+    //add index
     void dpindex_buffer::addIndex( dpindex *i )
     {
         unsigned int nc, nm;
