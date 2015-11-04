@@ -30,6 +30,7 @@ namespace dragonpoop
         friend class renderer;
         friend class renderer_gui_man;
         friend class renderer_model_man;
+        friend class renderer_land_man;
     };
     
 };

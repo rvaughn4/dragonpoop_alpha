@@ -17,7 +17,7 @@ namespace dragonpoop
         
         std::atomic<render_api_commandlist_ref *> rmodel, rgui;
         dpposition pos;
-        std::atomic<bool> model_ready, gui_ready;
+        std::atomic<bool> model_ready, gui_ready, land_ready;
         float w, h;
         
     protected:
@@ -53,6 +53,7 @@ namespace dragonpoop
         friend class renderer;
         friend class renderer_gui_man;
         friend class renderer_model_man;
+        friend class renderer_land_man;
 
     };
     
