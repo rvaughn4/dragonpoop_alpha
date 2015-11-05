@@ -105,6 +105,7 @@
 		79145C541BCA7DE900DC5434 /* dpactor_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C3D1BCA7DE900DC5434 /* dpactor_ref.cpp */; };
 		79145C551BCA7DE900DC5434 /* dpactor_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C3F1BCA7DE900DC5434 /* dpactor_state.cpp */; };
 		79145C561BCA7DE900DC5434 /* dpactor_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C411BCA7DE900DC5434 /* dpactor_writelock.cpp */; };
+		7916B1781BEB69D400AABA42 /* renderer_land_man_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7916B1761BEB69D400AABA42 /* renderer_land_man_task.cpp */; };
 		791CA1FE1BD0141C00FEF40B /* gui_man_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 791CA1F41BD0141C00FEF40B /* gui_man_readlock.cpp */; };
 		791CA1FF1BD0141C00FEF40B /* gui_man_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 791CA1F61BD0141C00FEF40B /* gui_man_ref.cpp */; };
 		791CA2001BD0141C00FEF40B /* gui_man_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 791CA1F81BD0141C00FEF40B /* gui_man_task.cpp */; };
@@ -551,6 +552,8 @@
 		79145C411BCA7DE900DC5434 /* dpactor_writelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_writelock.cpp; sourceTree = "<group>"; };
 		79145C421BCA7DE900DC5434 /* dpactor_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor_writelock.h; sourceTree = "<group>"; };
 		79145C431BCA7DE900DC5434 /* dpactors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactors.h; sourceTree = "<group>"; };
+		7916B1761BEB69D400AABA42 /* renderer_land_man_task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_land_man_task.cpp; sourceTree = "<group>"; };
+		7916B1771BEB69D400AABA42 /* renderer_land_man_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_land_man_task.h; sourceTree = "<group>"; };
 		791CA1F41BD0141C00FEF40B /* gui_man_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gui_man_readlock.cpp; sourceTree = "<group>"; };
 		791CA1F51BD0141C00FEF40B /* gui_man_readlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gui_man_readlock.h; sourceTree = "<group>"; };
 		791CA1F61BD0141C00FEF40B /* gui_man_ref.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gui_man_ref.cpp; sourceTree = "<group>"; };
@@ -2270,6 +2273,8 @@
 				79F81A6F1BEA2E13000F26B0 /* renderer_land_man_ref.h */,
 				79F81A701BEA2E13000F26B0 /* renderer_land_man_writelock.cpp */,
 				79F81A711BEA2E13000F26B0 /* renderer_land_man_writelock.h */,
+				7916B1761BEB69D400AABA42 /* renderer_land_man_task.cpp */,
+				7916B1771BEB69D400AABA42 /* renderer_land_man_task.h */,
 			);
 			path = renderer_land;
 			sourceTree = "<group>";
@@ -2701,6 +2706,7 @@
 				79145C4E1BCA7DE900DC5434 /* dpactor_model_state_run_low.cpp in Sources */,
 				79F426401BE21F7100B4AD9D /* renderer_commandlist_passer_ref.cpp in Sources */,
 				79BF2CB61B8A2590007C9BA2 /* dpid_btree.cpp in Sources */,
+				7916B1781BEB69D400AABA42 /* renderer_land_man_task.cpp in Sources */,
 				790C4D671BD6B1CE009BCF7E /* render_api_shader.cpp in Sources */,
 				79F401631BC3EA3800DEC935 /* menu_gui_writelock.cpp in Sources */,
 				799FC16F1B756F6F00E1A212 /* renderer_model_instance_ref.cpp in Sources */,

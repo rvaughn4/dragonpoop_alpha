@@ -51,9 +51,9 @@ namespace dragonpoop
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)
         bool setSelectedText( std::string *s );
-        //render guis
-        void renderGuis( dpthread_lock *thd, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
-
+        //run
+        void run( dpthread_lock *thd );
+        
         friend class renderer_gui_man;
     };
     

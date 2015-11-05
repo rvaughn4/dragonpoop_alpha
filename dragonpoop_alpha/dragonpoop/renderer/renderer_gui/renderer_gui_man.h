@@ -63,22 +63,24 @@ namespace dragonpoop
         renderer_commandlist_passer_ref *clpasser;
         
         //start task
-        void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
+        void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
         void _killTask( void );
         //delete task
         void _deleteTask( void );
         //sync guis
-        static void sync( dpthread_lock *thd, renderer_gui_man_ref *g );
+        void sync( dpthread_lock *thd, renderer_gui_man_writelock *g );
         //delete old guis
-        static void deleteOldGuis( dpthread_lock *thd, renderer_gui_man_ref *g );
+        void deleteOldGuis( dpthread_lock *thd, renderer_gui_man_writelock *g );
         //run guis
-        static void runGuis( dpthread_lock *thd, renderer_gui_man_ref *g );
+        void runGuis( dpthread_lock *thd, renderer_gui_man_writelock *g );
         //render into command list
-        static void render( dpthread_lock *thd, renderer_gui_man_ref *g );
+        void render( dpthread_lock *thd, renderer_gui_man_writelock *g );
         //compute matrix
         void computeMatrix( void );
-        
+        //render guis
+        void renderGuis( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
+
     protected:
         
         //generate read lock
@@ -89,8 +91,6 @@ namespace dragonpoop
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //delete guis
         void deleteGuis( void );
-        //render guis
-        void renderGuis( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
         //return guis
         void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //process mouse input
@@ -105,6 +105,8 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //generate renderer gui
         virtual renderer_gui *genGui( gui_writelock *ml );
+        //run from manager thread
+        void run( dpthread_lock *thd, renderer_gui_man_writelock *g );
 
     public:
         
@@ -114,8 +116,6 @@ namespace dragonpoop
         virtual ~renderer_gui_man( void );
         //return core
         core *getCore( void );
-        //run from manager thread
-        static void run( dpthread_lock *thd, renderer_gui_man_ref *g, renderer_ref *r );
 
         friend class renderer_gui_man_readlock;
         friend class renderer_gui_man_writelock;

@@ -21,8 +21,8 @@ namespace dragonpoop
     class renderer_land_man_task;
     class dptaskpool_writelock;
     class gfx;
+    class dpland;
     class renderer_land;
-    class renderer_land_ref;
     class dptaskpool_ref;
     class renderer;
     class renderer_ref;
@@ -61,7 +61,7 @@ namespace dragonpoop
         renderer_commandlist_passer_ref *clpasser;
         
         //start task
-        void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
+        void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
         void _killTask( void );
         //delete task
@@ -84,11 +84,13 @@ namespace dragonpoop
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //delete lands
-        void deletelands( void );
+        void deleteLands( void );
         //render lands
         void renderLands( dpthread_lock *thd, renderer_land_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
         //generate renderer land
         virtual renderer_land *genLand( dpland *ml );
+        //run from manager thread
+        void run( dpthread_lock *thd, renderer_land_man_writelock *l );
         
     public:
         
@@ -98,8 +100,6 @@ namespace dragonpoop
         virtual ~renderer_land_man( void );
         //return core
         core *getCore( void );
-        //run from manager thread
-        void run( dpthread_lock *thd );
         
         friend class renderer_land_man_readlock;
         friend class renderer_land_man_writelock;

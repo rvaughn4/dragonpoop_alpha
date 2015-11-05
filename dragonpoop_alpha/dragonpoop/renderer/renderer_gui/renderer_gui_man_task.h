@@ -10,8 +10,6 @@ namespace dragonpoop
 {
     
     class renderer_gui_man_ref;
-    class renderer;
-    class renderer_ref;
     
     class renderer_gui_man_task : public dptask_owner
     {
@@ -19,14 +17,13 @@ namespace dragonpoop
     private:
         
         std::atomic<renderer_gui_man_ref *> g;
-        renderer_ref *r;
         
     protected:
         
     public:
         
         //ctor
-        renderer_gui_man_task( renderer_gui_man *g, renderer *r );
+        renderer_gui_man_task( renderer_gui_man *g );
         //dtor
         virtual ~renderer_gui_man_task( void );
         //run by task
