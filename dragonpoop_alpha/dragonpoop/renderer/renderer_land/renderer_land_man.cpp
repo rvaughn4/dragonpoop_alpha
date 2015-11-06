@@ -22,7 +22,7 @@
 #include "../../gfx/gfx_ref.h"
 #include "../../gfx/dpland/dpland_man_ref.h"
 #include "../../gfx/dpland/dpland_man_readlock.h"
-//#include "renderer_land.h"
+#include "renderer_land.h"
 #include "../../gfx/dpland/dpland.h"
 #include "../../core/dpbtree/dpid_btree.h"
 #include "../api_stuff/render_api/render_api_shader_ref.h"
