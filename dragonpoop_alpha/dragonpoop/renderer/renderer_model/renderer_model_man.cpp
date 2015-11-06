@@ -362,7 +362,7 @@ namespace dragonpoop
         if( this->clpasser->t->model_ready )
             return;
         
-        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( g->t->clpasser, 100, "renderer_model_man::swapList" );
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_model_man::swapList" );
         if( !cpl )
             return;
         

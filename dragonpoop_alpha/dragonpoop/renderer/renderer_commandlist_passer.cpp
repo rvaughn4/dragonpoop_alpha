@@ -50,6 +50,19 @@ namespace dragonpoop
         return new renderer_commandlist_passer_ref( (renderer_commandlist_passer *)p, k );
     }
     
+    
+    //set camera position
+    void renderer_commandlist_passer::setPosition( dpposition *p )
+    {
+        this->pos.copy( p );
+    }
+    
+    //get camera position
+    dpposition *renderer_commandlist_passer::getPosition( void )
+    {
+        return &this->pos;
+    }
+    
     //set model commandlist
     void renderer_commandlist_passer::setModel( render_api_commandlist_ref *r )
     {
@@ -124,16 +137,41 @@ namespace dragonpoop
         return r;
     }
     
-    //set camera position
-    void renderer_commandlist_passer::setPosition( dpposition *p )
+    //set land commandlist
+    void renderer_commandlist_passer::setLand( render_api_commandlist_ref *r )
     {
-        this->pos.copy( p );
+        render_api_commandlist_writelock *l;
+        shared_obj_guard o;
+        
+        l = (render_api_commandlist_writelock *)o.tryWriteLock( r, 100, "renderer_commandlist_passer::setLand" );
+        if( !l )
+            return;
+        
+        r = this->rland;
+        if( r )
+            delete r;
+        this->rland = 0;
+        
+        r = (render_api_commandlist_ref *)l->getRef();
+        this->rland = r;
     }
     
-    //get camera position
-    dpposition *renderer_commandlist_passer::getPosition( void )
+    //get land commandlist
+    render_api_commandlist_ref *renderer_commandlist_passer::getLand( void )
     {
-        return &this->pos;
+        render_api_commandlist_writelock *l;
+        shared_obj_guard o;
+        render_api_commandlist_ref *r;
+        
+        r = this->rland;
+        l = (render_api_commandlist_writelock *)o.tryWriteLock( r, 100, "renderer_commandlist_passer::getLand" );
+        if( !l )
+            return 0;
+        delete r;
+        this->rland = 0;
+        
+        r = (render_api_commandlist_ref *)l->getRef();
+        return r;
     }
     
 };

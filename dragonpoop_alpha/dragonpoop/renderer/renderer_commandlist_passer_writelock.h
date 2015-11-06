@@ -26,6 +26,10 @@ namespace dragonpoop
         
     public:
         
+        //set camera position
+        void setPosition( dpposition *p );
+        //get camera position
+        dpposition *getPosition( void );
         //set model commandlist
         void setModel( render_api_commandlist_ref *r );
         //get model commandlist
@@ -34,11 +38,11 @@ namespace dragonpoop
         void setGui( render_api_commandlist_ref *r );
         //get gui commandlist
         render_api_commandlist_ref *getGui( void );
-        //set camera position
-        void setPosition( dpposition *p );
-        //get camera position
-        dpposition *getPosition( void );
-        
+        //set land commandlist
+        void setLand( render_api_commandlist_ref *r );
+        //get land commandlist
+        render_api_commandlist_ref *getLand( void );
+
         friend class renderer_commandlist_passer;
     };
     

@@ -4,11 +4,12 @@
 #include "opengl1o5_x11_commandlist.h"
 #include "opengl1o5_x11_commandlist_generic.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
-#include "opengl1o5_x11_shader_gui.h"
-#include "opengl1o5_x11_shader_model.h"
 #include "opengl1o5_x11_texture.h"
 #include "opengl1o5_x11_vertexbuffer.h"
 #include "opengl1o5_x11_indexbuffer.h"
+#include "opengl1o5_x11_shader_gui.h"
+#include "opengl1o5_x11_shader_model.h"
+#include "opengl1o5_x11_shader_land.h"
 
 namespace dragonpoop
 {
@@ -100,6 +101,8 @@ namespace dragonpoop
             return new opengl1o5_x11_shader_gui( cl, mm );
         if( s.compare( "model" ) == 0 )
             return new opengl1o5_x11_shader_model( cl, mm );
+        if( s.compare( "land" ) == 0 )
+            return new opengl1o5_x11_shader_land( cl, mm );
         
         return 0;
     }

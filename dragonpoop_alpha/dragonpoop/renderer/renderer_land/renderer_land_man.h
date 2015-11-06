@@ -5,6 +5,7 @@
 #include "../../core/shared_obj/shared_obj.h"
 #include "../../core/dpid/dpid.h"
 #include "../../gfx/dpmatrix/dpmatrix.h"
+#include "../../gfx/dpposition/dpposition.h"
 
 #include <atomic>
 
@@ -59,6 +60,7 @@ namespace dragonpoop
         float log_screen_width, log_screen_height;
         dpthread_singletask *thd;
         renderer_commandlist_passer_ref *clpasser;
+        dpposition campos;
         
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
@@ -86,7 +88,7 @@ namespace dragonpoop
         //delete lands
         void deleteLands( void );
         //render lands
-        void renderLands( dpthread_lock *thd, renderer_land_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
+        void renderLands( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
         //generate renderer land
         virtual renderer_land *genLand( dpland *ml );
         //run from manager thread

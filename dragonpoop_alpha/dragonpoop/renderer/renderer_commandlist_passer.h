@@ -15,7 +15,7 @@ namespace dragonpoop
         
     private:
         
-        std::atomic<render_api_commandlist_ref *> rmodel, rgui;
+        std::atomic<render_api_commandlist_ref *> rmodel, rgui, rland;
         dpposition pos;
         std::atomic<bool> model_ready, gui_ready, land_ready;
         float w, h;
@@ -26,6 +26,10 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
+        //set camera position
+        void setPosition( dpposition *p );
+        //get camera position
+        dpposition *getPosition( void );
         //set model commandlist
         void setModel( render_api_commandlist_ref *r );
         //get model commandlist
@@ -34,10 +38,10 @@ namespace dragonpoop
         void setGui( render_api_commandlist_ref *r );
         //get gui commandlist
         render_api_commandlist_ref *getGui( void );
-        //set camera position
-        void setPosition( dpposition *p );
-        //get camera position
-        dpposition *getPosition( void );
+        //set land commandlist
+        void setLand( render_api_commandlist_ref *r );
+        //get land commandlist
+        render_api_commandlist_ref *getLand( void );
         
     public:
         

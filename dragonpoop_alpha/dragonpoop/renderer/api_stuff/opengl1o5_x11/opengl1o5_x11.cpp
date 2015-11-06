@@ -2,11 +2,6 @@
 #include "opengl1o5_x11.h"
 #include "opengl1o5_x11_context.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
-#include "opengl1o5_x11_shader_gui.h"
-#include "opengl1o5_x11_shader_model.h"
-#include "opengl1o5_x11_texture.h"
-#include "opengl1o5_x11_vertexbuffer.h"
-#include "opengl1o5_x11_indexbuffer.h"
 
 namespace dragonpoop
 {

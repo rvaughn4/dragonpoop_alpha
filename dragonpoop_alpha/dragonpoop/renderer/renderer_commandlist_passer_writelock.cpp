@@ -17,6 +17,18 @@ namespace dragonpoop
         
     }
     
+    //set camera position
+    void renderer_commandlist_passer_writelock::setPosition( dpposition *p )
+    {
+        this->t->setPosition( p );
+    }
+    
+    //get camera position
+    dpposition *renderer_commandlist_passer_writelock::getPosition( void )
+    {
+        return this->t->getPosition();
+    }
+    
     //set model commandlist
     void renderer_commandlist_passer_writelock::setModel( render_api_commandlist_ref *r )
     {
@@ -41,16 +53,16 @@ namespace dragonpoop
         return this->t->getGui();
     }
     
-    //set camera position
-    void renderer_commandlist_passer_writelock::setPosition( dpposition *p )
+    //set land commandlist
+    void renderer_commandlist_passer_writelock::setLand( render_api_commandlist_ref *r )
     {
-        this->t->setPosition( p );
+        this->t->setLand( r );
     }
     
-    //get camera position
-    dpposition *renderer_commandlist_passer_writelock::getPosition( void )
+    //get land commandlist
+    render_api_commandlist_ref *renderer_commandlist_passer_writelock::getLand( void )
     {
-        return this->t->getPosition();
+        return this->t->getLand();
     }
     
 };

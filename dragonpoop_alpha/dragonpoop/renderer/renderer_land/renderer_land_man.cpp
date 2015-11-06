@@ -196,81 +196,56 @@ namespace dragonpoop
     //sync lands
     void renderer_land_man::sync( dpthread_lock *thd )
     {
-/*        std::list<renderer_land *> *l, d;
+        std::list<renderer_land *> *l, d;
         std::list<renderer_land *>::iterator i;
         renderer_land *p;
-        renderer_land_writelock *pwl;
-        renderer_land_readlock *pl;
-        shared_obj_guard o, o1, o2;
-        renderer_land_man_readlock *grl;
-        renderer_land_man_writelock *gwl;
+        shared_obj_guard o2;
         uint64_t t;
-        land_man_readlock *mrl;
-        std::list<land_ref *> lg, ng;
-        std::list<land_ref *>::iterator ig;
-        land_ref *pg;
+        dpland_man_readlock *mrl;
+        std::list<dpland *> lg, ng;
+        std::list<dpland *>::iterator ig;
+        dpland *pg;
         dpid_btree pt;
-        land_readlock *gl;
-        land_writelock *gw;
         
-        grl = (renderer_land_man_readlock *)o1.tryReadLock( g, 100, "renderer_land_man::sync" );
-        if( !grl )
-            return;
         t = thd->getTicks();
-        if( t - grl->t->t_last_land_synced < 100 )
+        if( t - this->t_last_land_synced < 100 )
             return;
-        grl->t->t_last_land_synced = t;
+        this->t_last_land_synced = t;
         
         //build list of lands
-        l = &grl->t->lands;
+        l = &this->lands;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_land_readlock *)o.tryReadLock( p, 100, "renderer_land_man::sync" );
-            if( !pl )
-                continue;
-            pt.addLeaf( pl->getId(), p );
+            pt.addLeaf( p->getId(), p );
         }
-        o.unlock();
         
-        mrl = (land_man_readlock *)o2.tryReadLock( grl->t->g_lands, 100, "renderer_land_man::sync" );
+        mrl = (dpland_man_readlock *)o2.tryReadLock( this->g_lands, 100, "renderer_land_man::sync" );
         if( !mrl )
             return;
         
         //find lands, sync them, and remove from list
-        mrl->getlands( &lg );
+        //mrl->getLands( &lg );
         for( ig = lg.begin(); ig != lg.end(); ++ig )
         {
             pg = *ig;
-            gl = (land_readlock *)o.tryReadLock( pg, 1000, "renderer_land_man::sync" );
-            if( !gl )
-                continue;
-            p = (renderer_land *)pt.findLeaf( gl->getId() );
+            p = (renderer_land *)pt.findLeaf( pg->getId() );
             if( !p )
                 ng.push_back( pg );
             else
                 pt.removeLeaf( p );
         }
-        o.unlock();
         
         //build list of lands to delete
-        l = &grl->t->lands;
+        l = &this->lands;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_land_readlock *)o.tryReadLock( p, 100, "renderer_land_man::sync" );
-            if( !pl )
-                continue;
-            if( pt.findLeaf( pl->getId() ) )
+            if( pt.findLeaf( p->getId() ) )
                 d.push_back( p );
         }
-        o.unlock();
         
         if( d.empty() && ng.empty() )
-            return;
-        
-        gwl = (renderer_land_man_writelock *)o1.tryWriteLock( g, 100, "renderer_land_man::sync" );
-        if( !gwl )
             return;
         
         //kill unmatched lands
@@ -278,80 +253,32 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pwl = (renderer_land_writelock *)o.tryWriteLock( p, 100, "renderer_land_man::sync" );
-            if( !pwl )
-                continue;
-            pwl->kill();
+            this->lands.remove( p );
+            delete p;
         }
-        o.unlock();
         
         //create new lands
         for( ig = ng.begin(); ig != ng.end(); ++ig )
         {
             pg = *ig;
-            gw = (land_writelock *)o.tryWriteLock( pg, 1000, "renderer_land_man::sync" );
-            if( !gw )
-                continue;
-            p = gwl->t->genland( gw );
+            p = this->genLand( pg );
             if( p )
-            {
-                gw->setRenderer( p );
-                gwl->t->lands.push_back( p );
-            }
+                this->lands.push_back( p );
         }
-        o.unlock();
-        */
     }
     
     //run lands
     void renderer_land_man::runLands( dpthread_lock *thd )
     {
-/*        std::list<renderer_land *> *l, d;
-        std::list<renderer_land *>::iterator i;
-        renderer_land *p;
-        renderer_land_writelock *pl;
-        shared_obj_guard o, o1, oc;
-        renderer_land_man_writelock *grl;
-        dpid pid;
-        render_api_context_writelock *ctxl;
-        
-        grl = (renderer_land_man_writelock *)o1.tryReadLock( g, 100, "renderer_land_man::runFromTask" );
-        if( !grl )
-            return;
-        ctxl = (render_api_context_writelock *)oc.tryWriteLock( grl->t->ctx, 100, "renderer_land_man::runFromTask" );
-        if( !ctxl )
-            return;
-        
-        grl->t->computeMatrix();
-        
-        l = &grl->t->lands;
-        grl->t->focus_land = dpid_null();
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            pl = (renderer_land_writelock *)o.tryWriteLock( p, 100, "renderer_land_man::runFromTask" );
-            if( !pl )
-                continue;
-            pl->run( thd, ctxl );
-            if( pl->isAlive() && ( pl->hasFocus() || dpid_isZero( &grl->t->focus_land ) ) )
-            {
-                if( !pl->getFocusChild( grl, &grl->t->focus_land ) )
-                    grl->t->focus_land = pl->getId();
-            }
-            pid = pl->getParentId();
-            if( dpid_isZero( &pid ) )
-                pl->redoMatrix( thd, grl, 0 );
-        }
-        o.unlock();
-        oc.unlock();
-        o1.unlock();
- */
+        this->computeMatrix();
     }
     
     //run from manager thread
     void renderer_land_man::run( dpthread_lock *thd, renderer_land_man_writelock *l )
     {
-
+        this->sync( thd );
+        this->runLands( thd );
+        this->render( thd );
     }
     
     //delete lands
@@ -373,12 +300,60 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-         //   delete p;
+            delete p;
         }
     }
     
+    //render into command list
+    void renderer_land_man::render( dpthread_lock *thd )
+    {
+        shared_obj_guard o, octxt, ocl;
+        render_api_context_writelock *ctxl;
+        render_api_commandlist_writelock *cll;
+        renderer_commandlist_passer_writelock *cpl;
+        shared_obj_guard ocpl;
+        render_api_shader_ref *sdr;
+        
+        if( this->clpasser->t->land_ready )
+            return;
+        
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_land_man::swapList" );
+        if( !cpl )
+            return;
+        
+        cpl->setModel( this->clist );
+        this->campos.copy( cpl->getPosition() );
+        ocpl.unlock();
+        
+        ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 100, "renderer_land_man::render" );
+        if( !ctxl )
+            return;
+        
+        if( this->clist )
+            delete this->clist;
+        this->clist = ctxl->makeCmdList();
+        if( !this->clist )
+            return;
+        
+        cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->clist, 100, "renderer_land_man::render" );
+        if( !cll )
+            return;
+        
+        sdr = ctxl->makeShader( "land" );
+        if( !sdr )
+            return;
+        
+        cll->setShader( sdr );
+        this->renderLands( thd, &this->campos, &this->m, ctxl, cll );
+        
+        if( cll->compile( ctxl ) )
+            this->clpasser->t->land_ready = 1;
+        
+        delete sdr;        
+    }
+    
     //render lands
-    void renderer_land_man::renderLands( dpthread_lock *thd, renderer_land_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl )
+    void renderer_land_man::renderLands( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl )
     {
 
     }
