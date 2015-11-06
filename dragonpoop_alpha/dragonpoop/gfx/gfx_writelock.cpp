@@ -113,6 +113,24 @@ namespace dragonpoop
         return this->t->getActors( r, o );
     }
     
+    //get land
+    bool gfx_writelock::getLand( dpland_man_ref **r )
+    {
+        return this->t->getLand( r );
+    }
+    
+    //get land
+    bool gfx_writelock::getLand( dpland_man_readlock **r, shared_obj_guard *o )
+    {
+        return this->t->getLand( r, o );
+    }
+    
+    //get land
+    bool gfx_writelock::getLand( dpland_man_writelock **r, shared_obj_guard *o )
+    {
+        return this->t->getLand( r, o );
+    }
+    
     //add renderer factory
     void gfx_writelock::addRenderer( renderer_factory *f )
     {

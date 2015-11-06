@@ -66,9 +66,7 @@ namespace dragonpoop
         this->g = c->getGfx();
         gl = (gfx_writelock *)o.writeLock( this->g, "renderer_land_man::renderer_land_man" );
         if( gl )
-        {
-//            gl->getlands( &this->g_lands );
-        }
+            gl->getLand( &this->g_lands );
         o.unlock();
         
         rl = (renderer_writelock *)o.writeLock( r, "renderer_land_man::renderer_land_man" );

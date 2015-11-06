@@ -25,6 +25,9 @@ namespace dragonpoop
     class dpactor_man_ref;
     class dpactor_man_readlock;
     class dpactor_man_writelock;
+    class dpland_man_ref;
+    class dpland_man_readlock;
+    class dpland_man_writelock;
 
     class gfx_readlock : public shared_obj_readlock
     {
@@ -72,6 +75,12 @@ namespace dragonpoop
         bool getActors( dpactor_man_readlock **r, shared_obj_guard *o );
         //get actors
         bool getActors( dpactor_man_writelock **r, shared_obj_guard *o );
+        //get land
+        bool getLand( dpland_man_ref **r );
+        //get land
+        bool getLand( dpland_man_readlock **r, shared_obj_guard *o );
+        //get land
+        bool getLand( dpland_man_writelock **r, shared_obj_guard *o );
 
         friend class gfx;
     };

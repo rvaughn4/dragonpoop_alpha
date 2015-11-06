@@ -33,6 +33,9 @@ namespace dragonpoop
     class dpactor;
     class dpactor_ref;
     class dpland_man;
+    class dpland_man_ref;
+    class dpland_man_readlock;
+    class dpland_man_writelock;
     class dpactor_man;
     class model_man;
     class model_man_ref;
@@ -122,6 +125,12 @@ namespace dragonpoop
         bool getActors( dpactor_man_readlock **r, shared_obj_guard *o );
         //get actors
         bool getActors( dpactor_man_writelock **r, shared_obj_guard *o );
+        //get land
+        bool getLand( dpland_man_ref **r );
+        //get land
+        bool getLand( dpland_man_readlock **r, shared_obj_guard *o );
+        //get land
+        bool getLand( dpland_man_writelock **r, shared_obj_guard *o );
         //add renderer factory
         void addRenderer( renderer_factory *f );
         //change renderer

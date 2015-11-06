@@ -32,18 +32,19 @@
 #include "dpactor/dpactor.h"
 #include "dpactor/dpactor_ref.h"
 #include "dpactor/dpactor_writelock.h"
-#include "dpland/dpland_man.h"
 #include "dpactor/dpactor_man.h"
 #include "dpactor/dpactor_man_readlock.h"
 #include "dpactor/dpactor_man_writelock.h"
-
 #include "model/model_man.h"
 #include "model/model_man_readlock.h"
 #include "model/model_man_writelock.h"
-
 #include "gui/gui_man.h"
 #include "gui/gui_man_readlock.h"
 #include "gui/gui_man_writelock.h"
+#include "dpland/dpland_man.h"
+#include "dpland/dpland_man_ref.h"
+#include "dpland/dpland_man_readlock.h"
+#include "dpland/dpland_man_writelock.h"
 
 namespace dragonpoop
 {
@@ -316,6 +317,31 @@ namespace dragonpoop
     bool gfx::getActors( dpactor_man_writelock **r, shared_obj_guard *o )
     {
         *r = (dpactor_man_writelock *)o->tryWriteLock( this->actor_mgr, 1000, "gfx::getActors" );
+        return *r != 0;
+    }
+    
+    //get land
+    bool gfx::getLand( dpland_man_ref **r )
+    {
+        shared_obj_guard o;
+        dpland_man_writelock *l;
+        if( !this->getLand( &l, &o ) )
+            return 0;
+        *r = (dpland_man_ref *)l->getRef();
+        return 1;
+    }
+    
+    //get land
+    bool gfx::getLand( dpland_man_readlock **r, shared_obj_guard *o )
+    {
+        *r = (dpland_man_readlock *)o->tryReadLock( this->land_mgr, 1000, "gfx::getLand" );
+        return *r != 0;
+    }
+    
+    //get land
+    bool gfx::getLand( dpland_man_writelock **r, shared_obj_guard *o )
+    {
+        *r = (dpland_man_writelock *)o->tryWriteLock( this->land_mgr, 1000, "gfx::getLand" );
         return *r != 0;
     }
     

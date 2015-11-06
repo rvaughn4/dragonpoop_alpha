@@ -89,4 +89,22 @@ namespace dragonpoop
         return this->t->getGuis( r, o );
     }
     
+    //get land
+    bool gfx_readlock::getLand( dpland_man_ref **r )
+    {
+        return this->t->getLand( r );
+    }
+    
+    //get land
+    bool gfx_readlock::getLand( dpland_man_readlock **r, shared_obj_guard *o )
+    {
+        return this->t->getLand( r, o );
+    }
+    
+    //get land
+    bool gfx_readlock::getLand( dpland_man_writelock **r, shared_obj_guard *o )
+    {
+        return this->t->getLand( r, o );
+    }
+    
 };
