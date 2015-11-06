@@ -39,7 +39,7 @@ namespace dragonpoop
         //returns id
         dpid getId( void );
         //render model
-        void render( dpthread_lock *thd, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        void render( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
 
     };
     
