@@ -10,8 +10,6 @@ namespace dragonpoop
 {
     
     class renderer_model_man_ref;
-    class renderer;
-    class renderer_ref;
     
     class renderer_model_man_task : public dptask_owner
     {
@@ -19,14 +17,13 @@ namespace dragonpoop
     private:
         
         std::atomic<renderer_model_man_ref *> g;
-        renderer_ref *r;
         
     protected:
         
     public:
         
         //ctor
-        renderer_model_man_task( renderer_model_man *g, renderer *r );
+        renderer_model_man_task( renderer_model_man *g );
         //dtor
         virtual ~renderer_model_man_task( void );
         //run by task

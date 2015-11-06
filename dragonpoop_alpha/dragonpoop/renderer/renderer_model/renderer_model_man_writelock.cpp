@@ -22,17 +22,11 @@ namespace dragonpoop
     {
         return this->t->getCore();
     }
-    
-    //delete models
-    void renderer_model_man_writelock::deleteModels( void )
+  
+    //run from manager thread
+    void renderer_model_man_writelock::run( dpthread_lock *thd )
     {
-        this->t->deleteModels();
-    }
-    
-    //render models
-    void renderer_model_man_writelock::renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
-    {
-        this->t->renderModels( thd, campos, m_world, ctx, clist );
+        this->t->run( thd, this );
     }
     
 };

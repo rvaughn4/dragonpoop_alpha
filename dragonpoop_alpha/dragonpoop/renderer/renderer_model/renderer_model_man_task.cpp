@@ -5,9 +5,6 @@
 #include "renderer_model_man_ref.h"
 #include "../../core/dptask/dptask_writelock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
-#include "../renderer.h"
-#include "../renderer_ref.h"
-#include "../renderer_writelock.h"
 #include "../../core/dpthread/dpthread_lock.h"
 
 #include <thread>
@@ -16,22 +13,16 @@ namespace dragonpoop
 {
     
     //ctor
-    renderer_model_man_task::renderer_model_man_task( renderer_model_man *g, renderer *r )
+    renderer_model_man_task::renderer_model_man_task( renderer_model_man *g )
     {
         renderer_model_man_writelock *gl;
         shared_obj_guard sg;
-        renderer_writelock *l;
         
-        this->r = 0;
         this->g = 0;
         gl = (renderer_model_man_writelock *)sg.writeLock( g, "renderer_model_man_task::renderer_model_man_task" );
         if( !gl )
             return;
         this->g = (renderer_model_man_ref *)gl->getRef();
-        l = (renderer_writelock *)sg.writeLock( r, "renderer_model_man_task::renderer_model_man_task" );
-        if( !l )
-            return;
-        this->r = (renderer_ref *)l->getRef();
     }
     
     //dtor
@@ -44,20 +35,24 @@ namespace dragonpoop
             delete gg;
         }
         this->g = 0;
-        if( this->r )
-            delete this->r;
     }
     
     //run by task
     void renderer_model_man_task::run( dptask_writelock *tl, dpthread_lock *th )
     {
-        if( !this->g || !this->r )
+        shared_obj_guard o;
+        renderer_model_man_writelock *l;
+        
+        if( !this->g )
         {
             tl->kill();
             return;
         }
        
-        renderer_model_man::run( th, this->g, this->r );
+        l = (renderer_model_man_writelock *)o.tryWriteLock( this->g, 100, "" );
+        if( !l )
+            return;
+        l->run( th );
     }
     
 };

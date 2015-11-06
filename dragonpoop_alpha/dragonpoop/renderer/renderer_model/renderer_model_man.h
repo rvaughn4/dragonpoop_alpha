@@ -65,21 +65,23 @@ namespace dragonpoop
         renderer_commandlist_passer_ref * clpasser;
 
         //start task
-        void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r );
+        void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
         void _killTask( void );
         //delete task
         void _deleteTask( void );
         //sync models
-        static void sync( dpthread_lock *thd, renderer_model_man_ref *g );
+        void sync( dpthread_lock *thd, renderer_model_man_writelock *g );
         //delete old models
-        static void deleteOldModels( dpthread_lock *thd, renderer_model_man_ref *g );
+        void deleteOldModels( dpthread_lock *thd, renderer_model_man_writelock *g );
         //run models
-        static void runModels( dpthread_lock *thd, renderer_model_man_ref *g );
+        void runModels( dpthread_lock *thd, renderer_model_man_writelock *g );
         //render into command list
-        static void render( dpthread_lock *thd, renderer_model_man_ref *g );
+        void render( dpthread_lock *thd, renderer_model_man_writelock *g );
         //compute matrix
         void computeMatrix( void );
+        //render models
+        void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
 
     protected:
         
@@ -89,12 +91,12 @@ namespace dragonpoop
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
-        //delete models
-        void deleteModels( void );
-        //render models
-        void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //generate renderer model
         virtual renderer_model *genModel( model_writelock *ml );
+        //delete models
+        void deleteModels( void );
+        //run from manager thread
+        void run( dpthread_lock *thd, renderer_model_man_writelock *g );
 
     public:
         
@@ -104,8 +106,6 @@ namespace dragonpoop
         virtual ~renderer_model_man( void );
         //return core
         core *getCore( void );
-        //run from manager thread
-        static void run( dpthread_lock *thd, renderer_model_man_ref *g, renderer_ref *r );
 
         friend class renderer_model_man_readlock;
         friend class renderer_model_man_writelock;

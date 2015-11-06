@@ -82,7 +82,7 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 303 );
-        this->_startTask( tp, 1, r );
+        this->_startTask( tp, 1 );
     }
     
     //dtor
@@ -140,11 +140,11 @@ namespace dragonpoop
     }
     
     //start task
-    void renderer_model_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay, renderer *r )
+    void renderer_model_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
         dpthread_lock *thdl;
         
-        this->gtsk = new renderer_model_man_task( this, r );
+        this->gtsk = new renderer_model_man_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, "renderer_model_man" );
 
         thdl = this->thd->lock();
@@ -181,16 +181,14 @@ namespace dragonpoop
     }
     
     //sync models
-    void renderer_model_man::sync( dpthread_lock *thd, renderer_model_man_ref *g )
+    void renderer_model_man::sync( dpthread_lock *thd, renderer_model_man_writelock *g )
     {
         std::list<renderer_model *> *l, d;
         std::list<renderer_model *>::iterator i;
         renderer_model *p;
         renderer_model_writelock *pwl;
         renderer_model_readlock *pl;
-        shared_obj_guard o, o1, o2;
-        renderer_model_man_readlock *grl;
-        renderer_model_man_writelock *gwl;
+        shared_obj_guard o, o2;
         uint64_t t;
         model_man_readlock *mrl;
         std::list<model *> lg, ng;
@@ -200,16 +198,13 @@ namespace dragonpoop
         model_readlock *gl;
         model_writelock *gw;
         
-        grl = (renderer_model_man_readlock *)o1.tryReadLock( g, 100, "renderer_model_man::sync" );
-        if( !grl )
-            return;
         t = thd->getTicks();
-        if( t - grl->t->t_last_model_synced < 100 )
+        if( t - this->t_last_model_synced < 100 )
             return;
-        grl->t->t_last_model_synced = t;
+        this->t_last_model_synced = t;
         
         //build list of models
-        l = &grl->t->models;
+        l = &this->models;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -220,7 +215,7 @@ namespace dragonpoop
         }
         o.unlock();
         
-        mrl = (model_man_readlock *)o2.tryReadLock( grl->t->g_models, 100, "renderer_model_man::sync" );
+        mrl = (model_man_readlock *)o2.tryReadLock( this->g_models, 100, "renderer_model_man::sync" );
         if( !mrl )
             return;
         
@@ -241,7 +236,7 @@ namespace dragonpoop
         o.unlock();
         
         //build list of models to delete
-        l = &grl->t->models;
+        l = &this->models;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -254,10 +249,6 @@ namespace dragonpoop
         o.unlock();
         
         if( d.empty() && ng.empty() )
-            return;
-        
-        gwl = (renderer_model_man_writelock *)o1.tryWriteLock( g, 100, "renderer_model_man::sync" );
-        if( !gwl )
             return;
         
         //kill unmatched models
@@ -279,29 +270,24 @@ namespace dragonpoop
             gw = (model_writelock *)o.tryWriteLock( pg, 1000, "renderer_model_man::sync" );
             if( !gw )
                 continue;
-            p = gwl->t->genModel( gw );
+            p = this->genModel( gw );
             gw->setRenderer( p );
-            gwl->t->models.push_back( p );
+            this->models.push_back( p );
         }
         o.unlock();
         
     }
     
     //delete old models
-    void renderer_model_man::deleteOldModels( dpthread_lock *thd, renderer_model_man_ref *g )
+    void renderer_model_man::deleteOldModels( dpthread_lock *thd, renderer_model_man_writelock *g )
     {
         std::list<renderer_model *> *l, d;
         std::list<renderer_model *>::iterator i;
         renderer_model *p;
         renderer_model_writelock *pl;
-        shared_obj_guard o, o1;
-        renderer_model_man_writelock *grl;
+        shared_obj_guard o;
         
-        grl = (renderer_model_man_writelock *)o1.tryReadLock( g, 100, "renderer_model_man::deleteOldModels" );
-        if( !grl )
-            return;
-        
-        l = &grl->t->models;
+        l = &this->models;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -312,44 +298,36 @@ namespace dragonpoop
                 d.push_back( p );
         }
         o.unlock();
-        o1.unlock();
         
         if( d.empty() )
-            return;
-        grl = (renderer_model_man_writelock *)o1.tryReadLock( g, 100, "renderer_model_man::deleteOldModels" );
-        if( !grl )
             return;
         
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            grl->t->models.remove( p );
+            this->models.remove( p );
             delete p;
         }
     }
     
     //run guis
-    void renderer_model_man::runModels( dpthread_lock *thd, renderer_model_man_ref *g )
+    void renderer_model_man::runModels( dpthread_lock *thd, renderer_model_man_writelock *g )
     {
         std::list<renderer_model *> *l, d;
         std::list<renderer_model *>::iterator i;
         renderer_model *p;
         renderer_model_writelock *pl;
-        shared_obj_guard o, o1, oc;
-        renderer_model_man_writelock *grl;
+        shared_obj_guard o, oc;
         render_api_context_writelock *ctxl;
         
-        grl = (renderer_model_man_writelock *)o1.tryReadLock( g, 100, "renderer_model_man::runModels" );
-        if( !grl )
-            return;
-        ctxl = (render_api_context_writelock *)oc.tryWriteLock( grl->t->ctx, 100, "renderer_model_man::runModels" );
+        ctxl = (render_api_context_writelock *)oc.tryWriteLock( this->ctx, 100, "renderer_model_man::runModels" );
         if( !ctxl )
             return;
         
-        grl->t->computeMatrix();
+        this->computeMatrix();
         
-        l = &grl->t->models;
+        l = &this->models;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -357,26 +335,23 @@ namespace dragonpoop
             if( !pl )
                 continue;
             pl->run( thd, ctxl );
-            //pl->redoMatrix( thd, grl, 0 );
         }
         o.unlock();
         oc.unlock();
-        o1.unlock();
     }
     
     //run from manager thread
-    void renderer_model_man::run( dpthread_lock *thd, renderer_model_man_ref *g, renderer_ref *r )
+    void renderer_model_man::run( dpthread_lock *thd, renderer_model_man_writelock *g )
     {
-        renderer_model_man::sync( thd, g );
-        renderer_model_man::runModels( thd, g );
-        renderer_model_man::deleteOldModels( thd, g );
-        renderer_model_man::render( thd, g );
+        this->sync( thd, g );
+        this->runModels( thd, g );
+        this->deleteOldModels( thd, g );
+        this->render( thd, g );
     }
     
     //render guis into commandlist
-    void renderer_model_man::render( dpthread_lock *thd, renderer_model_man_ref *g )
+    void renderer_model_man::render( dpthread_lock *thd, renderer_model_man_writelock *g )
     {
-        renderer_model_man_writelock *wl;
         shared_obj_guard o, octxt, ocl;
         render_api_context_writelock *ctxl;
         render_api_commandlist_writelock *cll;
@@ -384,32 +359,28 @@ namespace dragonpoop
         shared_obj_guard ocpl;
         render_api_shader_ref *sdr;
         
-        wl = (renderer_model_man_writelock *)o.tryWriteLock( g, 100, "renderer_model_man::render" );
-        if( !wl )
-            return;
-
-        if( wl->t->clpasser->t->model_ready )
+        if( this->clpasser->t->model_ready )
             return;
         
         cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( g->t->clpasser, 100, "renderer_model_man::swapList" );
         if( !cpl )
             return;
         
-        cpl->setModel( wl->t->clist );
-        wl->t->campos.copy( cpl->getPosition() );
+        cpl->setModel( this->clist );
+        this->campos.copy( cpl->getPosition() );
         ocpl.unlock();
         
-        ctxl = (render_api_context_writelock *)octxt.tryWriteLock( wl->t->ctx, 100, "renderer_model_man::render" );
+        ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 100, "renderer_model_man::render" );
         if( !ctxl )
             return;
         
-        if( wl->t->clist )
-            delete wl->t->clist;
-        wl->t->clist = ctxl->makeCmdList();
-        if( !wl->t->clist )
+        if( this->clist )
+            delete this->clist;
+        this->clist = ctxl->makeCmdList();
+        if( !this->clist )
             return;
         
-        cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( wl->t->clist, 100, "renderer_model_man::render" );
+        cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->clist, 100, "renderer_model_man::render" );
         if( !cll )
             return;
         
@@ -418,10 +389,10 @@ namespace dragonpoop
             return;
         
         cll->setShader( sdr );
-        wl->renderModels( thd, &wl->t->campos, &wl->t->m, ctxl, cll );
+        this->renderModels( thd, &this->campos, &this->m, ctxl, cll );
         
         if( cll->compile( ctxl ) )
-            wl->t->clpasser->t->model_ready = 1;
+            this->clpasser->t->model_ready = 1;
         
         delete sdr;
     }

@@ -38,10 +38,8 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        //delete models
-        void deleteModels( void );
-        //render models
-        void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        //run from manager thread
+        void run( dpthread_lock *thd );
 
         friend class renderer_model_man;
     };
