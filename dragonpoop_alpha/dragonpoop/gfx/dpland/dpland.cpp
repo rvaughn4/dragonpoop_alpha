@@ -86,7 +86,7 @@ namespace dragonpoop
             {
                 v.pos.x = x;
                 v.pos.z = z;
-                v.pos.y = (float)rand() * 5.0f / (float)RAND_MAX;
+                v.pos.y = sin( x ) * sin( z ) * 10.0f;
                 v.normal.x = 0;
                 v.normal.y = 1;
                 v.normal.z = 0;
