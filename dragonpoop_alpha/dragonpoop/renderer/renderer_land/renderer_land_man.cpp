@@ -225,7 +225,7 @@ namespace dragonpoop
             return;
         
         //find lands, sync them, and remove from list
-        //mrl->getLands( &lg );
+        mrl->getTiles( &lg );
         for( ig = lg.begin(); ig != lg.end(); ++ig )
         {
             pg = *ig;
@@ -361,8 +361,14 @@ namespace dragonpoop
     //generate renderer land
     renderer_land *renderer_land_man::genLand( dpland *ml )
     {
-//        return new renderer_land( ml );
-        return 0;
+        render_api_context_writelock *ctx;
+        shared_obj_guard o;
+        
+        ctx = (render_api_context_writelock *)o.tryWriteLock( this->ctx, 300, "renderer_land_man::genLand" );
+        if( !ctx )
+            return 0;
+        
+        return new renderer_land( ml, ctx );
     }
     
 };

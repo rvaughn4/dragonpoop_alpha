@@ -44,6 +44,7 @@ namespace dragonpoop
     class renderer_gui_man_writelock;
     class dpthread_singletask;
     class renderer_commandlist_passer;
+    class renderer_land_man;
 
     class renderer : public shared_obj
     {
@@ -56,6 +57,7 @@ namespace dragonpoop
         gfx_ref *g;
         renderer_gui_man *rgui_mgr;
         renderer_model_man *rmodel_mgr;
+        renderer_land_man *rland_mgr;
         dptaskpool_ref *tp;
         dpthread_singletask *thd;
         render_api *api;
@@ -132,10 +134,14 @@ namespace dragonpoop
         virtual void prepareWorldRender( unsigned int w, unsigned int h );
         //prepare for rendering gui
         virtual void prepareGuiRender( unsigned int w, unsigned int h );
+        
         //generate renderer model
         virtual renderer_model_man *genModelMan( dptaskpool_writelock *tp );
         //generate renderer gui manager
         virtual renderer_gui_man *genGuiMan( dptaskpool_writelock *tp );
+        //generate renderer land manager
+        virtual renderer_land_man *genLandMan( dptaskpool_writelock *tp );
+        
         //returns fps
         float getFps( void );
         //return ms each frame
@@ -162,14 +168,6 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //generate render api
         virtual render_api *genRenderApi( dpmutex_master *mm );
-        //returns true if gui commandlist is set
-        bool isGuiCommandListUploaded( void );
-        //set gui commandlist
-        void uploadGuiCommandList( render_api_commandlist_ref *cl );
-        //returns true if model commandlist is set
-        bool isModelCommandListUploaded( void );
-        //set model commandlist
-        void uploadModelCommandList( render_api_commandlist_ref *cl );
 
     public:
 

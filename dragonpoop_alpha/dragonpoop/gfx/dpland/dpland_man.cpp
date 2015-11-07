@@ -198,5 +198,20 @@ namespace dragonpoop
             return;
         this->tiles.push_back( p );
     }
+  
+    //get tiles
+    void dpland_man::getTiles( std::list<dpland *> *ll )
+    {
+        std::list<dpland *> *l;
+        std::list<dpland *>::iterator i;
+        dpland *p;
+        
+        l = &this->tiles;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            ll->push_back( p );
+        }
+    }
     
 };

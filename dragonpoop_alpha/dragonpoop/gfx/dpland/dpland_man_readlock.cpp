@@ -23,4 +23,10 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
+    //get tiles
+    void dpland_man_readlock::getTiles( std::list<dpland *> *l )
+    {
+        this->t->getTiles( l );
+    }
+    
 };

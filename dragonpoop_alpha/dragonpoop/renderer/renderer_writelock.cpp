@@ -89,28 +89,4 @@ namespace dragonpoop
         this->t->getPositionRelativeToCamera( in_obj_pos, t_epoch_now, out_xyz );
     }
     
-    //returns true if gui commandlist is set
-    bool renderer_writelock::isGuiCommandListUploaded( void )
-    {
-        return this->t->isGuiCommandListUploaded();
-    }
-    
-    //set gui commandlist
-    void renderer_writelock::uploadGuiCommandList( render_api_commandlist_ref *cl )
-    {
-        this->t->uploadGuiCommandList( cl );
-    }
- 
-    //returns true if model commandlist is set
-    bool renderer_writelock::isModelCommandListUploaded( void )
-    {
-        return this->t->isModelCommandListUploaded();
-    }
-    
-    //set model commandlist
-    void renderer_writelock::uploadModelCommandList( render_api_commandlist_ref *cl )
-    {
-        this->t->uploadModelCommandList( cl );
-    }
-    
 };

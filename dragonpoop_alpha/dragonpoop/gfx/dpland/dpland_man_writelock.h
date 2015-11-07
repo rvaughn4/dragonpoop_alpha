@@ -4,12 +4,15 @@
 
 #include "../../core/shared_obj/shared_obj_writelock.h"
 
+#include <list>
+
 namespace dragonpoop
 {
     
     class dpland_man;
     class core;
     class dpthread_lock;
+    class dpland;
     
     class dpland_man_writelock : public shared_obj_writelock
     {
@@ -31,6 +34,8 @@ namespace dragonpoop
         core *getCore( void );
         //run
         void run( dpthread_lock *thd );
+        //get tiles
+        void getTiles( std::list<dpland *> *l );
 
         friend class dpland_man;
     };

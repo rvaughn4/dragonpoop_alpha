@@ -34,8 +34,6 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        //render lands
-        void renderLands( dpthread_lock *thd, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
         //run from manager thread
         void run( dpthread_lock *thd );
 

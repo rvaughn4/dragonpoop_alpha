@@ -62,6 +62,8 @@ namespace dragonpoop
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run
         void run( dpthread_lock *thd, dpland_man_writelock *g );
+        //get tiles
+        void getTiles( std::list<dpland *> *l );
         
     public:
         

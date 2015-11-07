@@ -66,14 +66,6 @@ namespace dragonpoop
         void syncCamera( void );
         //get position difference from camera
         void getPositionRelativeToCamera( dpposition *in_obj_pos, uint64_t t_epoch_now, dpxyz_f *out_xyz );
-        //returns true if gui commandlist is set
-        bool isGuiCommandListUploaded( void );
-        //set gui commandlist
-        void uploadGuiCommandList( render_api_commandlist_ref *cl );
-        //returns true if model commandlist is set
-        bool isModelCommandListUploaded( void );
-        //set model commandlist
-        void uploadModelCommandList( render_api_commandlist_ref *cl );
 
         friend class renderer;
     };

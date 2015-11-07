@@ -4,11 +4,14 @@
 
 #include "../../core/shared_obj/shared_obj_readlock.h"
 
+#include <list>
+
 namespace dragonpoop
 {
 
     class dpland_man;
     class core;
+    class dpland;
     
     class dpland_man_readlock : public shared_obj_readlock
     {
@@ -28,7 +31,9 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
-        
+        //get tiles
+        void getTiles( std::list<dpland *> *l );
+
         friend class dpland_man;
     };
     

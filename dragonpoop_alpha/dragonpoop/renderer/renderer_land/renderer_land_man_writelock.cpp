@@ -23,12 +23,6 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
-    //render lands
-    void renderer_land_man_writelock::renderLands( dpthread_lock *thd, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl )
-    {
-        this->t->renderLands( thd, this, m_world, ctx, cl );
-    }
-    
     //run from manager thread
     void renderer_land_man_writelock::run( dpthread_lock *thd )
     {

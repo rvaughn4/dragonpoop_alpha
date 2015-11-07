@@ -29,4 +29,10 @@ namespace dragonpoop
         this->t->run( thd, this );
     }
     
+    //get tiles
+    void dpland_man_writelock::getTiles( std::list<dpland *> *l )
+    {
+        this->t->getTiles( l );
+    }
+
 };
