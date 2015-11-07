@@ -288,4 +288,31 @@ namespace dragonpoop
         *dz = (double)( (int64_t)( arg->i.start.whole.z - this->i.start.whole.z ) ) + (double)( arg->i.start.fract.z - this->i.start.fract.z );
     }
     
+    //move immediatly
+    void dpposition::move( dpxyz_f *x )
+    {
+        double d;
+        int64_t di;
+        
+        d = x->x + this->i.end.fract.x;
+        di = (int64_t)d;
+        d -= di;
+        this->i.end.whole.x += di;
+        this->i.end.fract.x = d;
+        
+        d = x->y + this->i.end.fract.y;
+        di = (int64_t)d;
+        d -= di;
+        this->i.end.whole.y += di;
+        this->i.end.fract.y = d;
+        
+        d = x->x + this->i.end.fract.z;
+        di = (int64_t)d;
+        d -= di;
+        this->i.end.whole.z += di;
+        this->i.end.fract.z = d;
+        
+        this->i.start = this->i.end;
+    }
+    
 };

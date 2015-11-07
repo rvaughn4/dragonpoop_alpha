@@ -73,23 +73,20 @@ namespace dragonpoop
         float x, z;
         int ix, iz, ex, ez, i[ 2 ][ 2 ], cntv;
         
-        x = land_sz / tile_sz;
+        x = this->land_sz / this->tile_sz;
         ex = (int)x + 1;
         ez = ex;
         
         z = -land_sz * 0.5f;
         cntv = 0;
-        for( iz = 0; iz < ez; iz++, z += tile_sz )
+        for( iz = 0; iz < ez; iz++, z += this->tile_sz )
         {
             x = -land_sz * 0.5f;
-            for( ix = 0; ix < ex; ix++, x += tile_sz )
+            for( ix = 0; ix < ex; ix++, x += this->tile_sz )
             {
                 v.pos.x = x;
                 v.pos.z = z;
-                v.pos.y = sin( x ) * sin( z ) * 10.0f;
-                v.normal.x = 0;
-                v.normal.y = 1;
-                v.normal.z = 0;
+                v.pos.y = this->getHeightAndNormal( x, z, &v.normal );
                 v.texcoords[ 0 ].s = (float)ix / (float)ex;
                 v.texcoords[ 0 ].t = (float)iz / (float)ez;
                 v.texcoords[ 1 ].s = this->tex_size * (float)ix / (float)ex;
@@ -99,9 +96,9 @@ namespace dragonpoop
             }
         }
         
-        for( iz = 0; iz < ez; iz++ )
+        for( iz = 0; iz < ez - 1; iz++ )
         {
-            for( ix = 0; ix < ex; ix++ )
+            for( ix = 0; ix < ex - 1; ix++ )
             {
                 i[ 0 ][ 0 ] = ix + iz * ex;
                 i[ 0 ][ 1 ] = i[ 0 ][ 0 ] + 1;
@@ -120,6 +117,52 @@ namespace dragonpoop
                 this->ib.addIndex( i[ 1 ][ 1 ] );
             }
         }
+    }
+  
+    //get height and normals
+    float dpland::getHeightAndNormal( float x, float z, dpxyz_f *n )
+    {
+        float h[ 3 ];
+        dpxyz_f vx, vz, vr;
+        
+        h[ 0 ] = this->getHeight( x - this->tile_sz, z - this->tile_sz );
+        h[ 1 ] = this->getHeight( x + this->tile_sz, z - this->tile_sz );
+        h[ 2 ] = this->getHeight( x - this->tile_sz, z + this->tile_sz );
+        
+        vx.x = -this->tile_sz * 2;
+        vx.y = h[ 0 ] - h[ 1 ];
+        vx.z = 0;
+        
+        vz.x = 0;
+        vz.y = h[ 0 ] - h[ 2 ];
+        vz.z = -this->tile_sz * 2;
+        
+        vr.x = vx.y * vz.z - vx.z * vz.y;
+        vr.y = vx.z * vz.x - vx.x * vz.z;
+        vr.z = vx.x * vr.y - vx.y * vz.x;
+
+        x = vr.x * vr.x + vr.y * vr.y + vr.z * vr.z;
+        if( x <= 0 )
+            x = 1.0f;
+        else
+            x = sqrtf( x );
+        
+        n->x = vr.x / x;
+        n->y = vr.y / x;
+        n->z = vr.z / x;
+        
+        return h[ 0 ];
+    }
+    
+    //get height
+    float dpland::getHeight( float x, float z )
+    {
+        double dx, dz;
+        
+        dx = (double)this->pos.x + (double)x;
+        dz = (double)this->pos.z + (double)z;
+        
+        return sinf( dx ) * sinf( dz * 0.25f );
     }
     
 };

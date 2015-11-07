@@ -75,7 +75,7 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
-        this->_startTask( tp, 50 );
+        this->_startTask( tp, 200 );
     }
     
     //dtor
@@ -125,7 +125,7 @@ namespace dragonpoop
         dw = r - rw;
         dh = r - rh;
         
-        this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 100.0f, 45.0f );
+        this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 400.0f, 45.0f );
     }
     
     //return core

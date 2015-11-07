@@ -72,6 +72,8 @@ namespace dragonpoop
         void move( dpxyz_f *pin, uint64_t t_epoch_now, uint64_t t_epoch_when, bool doReverse );
         //stop moving
         void stop( uint64_t t_epoch_now );
+        //move immediatly
+        void move( dpxyz_f *x );
         
     };
     

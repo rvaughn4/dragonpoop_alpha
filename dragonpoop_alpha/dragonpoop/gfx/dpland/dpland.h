@@ -26,6 +26,10 @@ namespace dragonpoop
         
         //build land
         void build( void );
+        //get height and normals
+        float getHeightAndNormal( float x, float z, dpxyz_f *n );
+        //get height
+        float getHeight( float x, float y );
         
     protected:
         

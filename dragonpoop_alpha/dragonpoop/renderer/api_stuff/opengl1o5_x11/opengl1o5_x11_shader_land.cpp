@@ -37,6 +37,15 @@ namespace dragonpoop
     bool opengl1o5_x11_shader_land::_render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha )
     {
         
+        float LightAmbient[]=		{ 0.5f, 0.5f, 0.5f, 1.0f };
+        float LightDiffuse[]=		{ 1.0f, 1.0f, 1.0f, 1.0f };
+        float LightPosition[]=	{ 0.0f, 0.0f, 2.0f, 1.0f };
+        glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);		// Setup The Ambient Light
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);		// Setup The Diffuse Light
+        glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);	// Position The Light
+        glEnable(GL_LIGHT1);								// Enable Light One
+        glEnable( GL_LIGHTING );
+
         glEnable( GL_DEPTH_TEST );
         glEnable( GL_TEXTURE_2D );
         glEnable( GL_BLEND );

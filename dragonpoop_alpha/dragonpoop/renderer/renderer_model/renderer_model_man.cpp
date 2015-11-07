@@ -416,7 +416,7 @@ namespace dragonpoop
         dw = r - rw;
         dh = r - rh;
         
-        this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 100.0f, 45.0f );
+        this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 400.0f, 45.0f );
     }
     
     //delete models

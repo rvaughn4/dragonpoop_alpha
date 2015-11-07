@@ -10,6 +10,7 @@
 #include "../../core/dptaskpool/dptaskpool_writelock.h"
 #include "dpland_man_task.h"
 #include "../gfx_ref.h"
+#include "../gfx_readlock.h"
 #include "../gfx.h"
 #include "../gfx_writelock.h"
 #include "dpland.h"
@@ -26,16 +27,16 @@ namespace dragonpoop
         
         this->c = c;
         
-        this->world_sz = 300.0f;
-        this->land_sz = 50.0f;
-        this->tile_sz = 10.0f;
+        this->world_sz = 100.0f;
+        this->land_sz = 10.0f;
+        this->tile_sz = 1.0f;
         this->tex_sz = 10.0f;
         
         gl = (gfx_writelock *)o.writeLock( g, "dpland_man::dpland_man" );
         this->g = (gfx_ref *)gl->getRef();
         o.unlock();
         
-        this->_startTask( tp, 500 );
+        this->_startTask( tp, 200 );
     }
     
     //dtor
@@ -128,6 +129,11 @@ namespace dragonpoop
         dpland *p;
         int64_t ix, iz, ex, ez, x, z, step, half_world;
         float f;
+        int new_tile_ctr, old_tile_ctr;
+        gfx_readlock *gl;
+        shared_obj_guard o;
+        dpposition pp;
+        dpposition_inner pi;
         
         l = &this->tiles;
         for( i = l->begin(); i != l->end(); ++i )
@@ -136,8 +142,17 @@ namespace dragonpoop
             d.push_back( p );
         }
         
-        x = 0;
-        z = 0;
+        gl = (gfx_readlock *)o.tryReadLock( this->g, 10, "dpland_man::runTiles" );
+        if( !gl )
+            return;
+        gl->getCameraPosition( &pp );
+        o.unlock();
+        
+        pp.getData( &pi );
+        x = pi.start.whole.x / (int64_t)this->land_sz;
+        z = pi.start.whole.z / (int64_t)this->land_sz;
+        x *= (int64_t)this->land_sz;
+        z *= (int64_t)this->land_sz;
         
         step = (int64_t)this->land_sz;
         f = this->world_sz * 0.5f - this->land_sz * 0.5f;
@@ -145,13 +160,20 @@ namespace dragonpoop
         ez = (int64_t)this->world_sz;
         ex = ez;
         
+        new_tile_ctr = 0;
         for( iz = z - half_world; iz < ez; iz += step )
         {
             for( ix = x - half_world; ix < ex; ix += step )
             {
                 p = this->getTile( ix, iz );
                 if( !p )
-                    this->makeTile( thd, ix, iz );
+                {
+                    if( new_tile_ctr < 10 )
+                    {
+                        this->makeTile( thd, ix, iz );
+                        new_tile_ctr++;
+                    }
+                }
                 else
                     d.remove( p );
             }
@@ -161,8 +183,12 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            this->tiles.remove( p );
-            delete p;
+            if( old_tile_ctr < 10 )
+            {
+                this->tiles.remove( p );
+                delete p;
+                old_tile_ctr++;
+            }
         }
     
     }
