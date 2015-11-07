@@ -16,6 +16,8 @@
 #include "dpland.h"
 #include "../../core/dpthread/dpthread_lock.h"
 
+#include <math.h>
+
 namespace dragonpoop
 {
     
@@ -237,6 +239,48 @@ namespace dragonpoop
         {
             p = *i;
             ll->push_back( p );
+        }
+    }
+
+    // Aux function
+    inline int dpland_man__buildSky__index( int col_max, int i, int j )
+    {
+        return i + j * ( col_max + 1 );
+    }
+    
+    //build skydome
+    void dpland_man::buildSky( void )
+    {
+        int col_max, row_max, j, i;
+        dpvertex v;
+        float teta, fi, radius;
+        
+        // Fill coordinate positions [to change]
+        for( j = 0; j <= row_max; j++ )
+        {
+            for( i = 0; i <= col_max; i++ )
+            {
+                teta = ( (float)i / col_max ) * 2.0f * 3.14f;
+                fi = ( (float)j / row_max ) * 3.14f;
+                v.pos.x = radius * cosf( teta ) * sinf( fi );
+                v.pos.y = radius * cosf( fi );
+                v.pos.z = 1.0f * sinf( teta ) * sinf( fi );
+                this->vb.addVertex( &v );
+            }
+        }
+        
+        // Fill index
+        for( j = 0; j < row_max; j++ )
+        {
+            for( i = 0; i < col_max; i++ )
+            {
+                this->ib.addIndex( dpland_man__buildSky__index( col_max, i, j ) );
+                this->ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j + 1 ) );
+                this->ib.addIndex( dpland_man__buildSky__index( col_max, i, j + 1 ) );
+                this->ib.addIndex( dpland_man__buildSky__index( col_max, i, j ) );
+                this->ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j ) );
+                this->ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j + 1 ) );
+            }
         }
     }
     

@@ -5,6 +5,9 @@
 #include "../../core/shared_obj/shared_obj.h"
 #include "../dpposition/dpposition.h"
 #include "dpland_defines.h"
+#include "../dpvertex/dpvertex_buffer.h"
+#include "../dpvertex/dpindex_buffer.h"
+#include "../dpbitmap/dpbitmap.h"
 
 #include <stdint.h>
  
@@ -38,6 +41,18 @@ namespace dragonpoop
         dpland_man_task *gtsk;
         std::list<dpland *> tiles;
         float land_sz, tile_sz, tex_sz, world_sz;
+        struct
+        {
+            dpvertex_buffer vb;
+            dpindex_buffer ib;
+            dpbitmap bm_sun;
+            dpbitmap bm_sun_halo;
+            dpbitmap bm_sky;
+            dpbitmap bm_stars;
+            dpbitmap bm_moon;
+            dpbitmap bm_moon_halo;
+            float sun_time, moon_time;
+        };
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
@@ -51,6 +66,8 @@ namespace dragonpoop
         dpland *getTile( int64_t x, int64_t z );
         //makes a tile at coords
         void makeTile( dpthread_lock *thd, int64_t x, int64_t z );
+        //build skydome
+        void buildSky( void );
         
     protected:
         
