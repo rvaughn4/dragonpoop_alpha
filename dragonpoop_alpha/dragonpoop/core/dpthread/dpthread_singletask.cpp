@@ -100,6 +100,8 @@ namespace dragonpoop
         this->trun = 0;
         if( this->thd->joinable() )
             this->thd->join();
+        while( this->tisrun )
+            std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
     }
     
     //generate unique dpid
@@ -149,6 +151,7 @@ namespace dragonpoop
         shared_obj_guard g;
         uint64_t td, tt;
         
+        t->tisrun = 1;
         while( t->trun )
         {
             tl = t->lock();
@@ -218,6 +221,10 @@ namespace dragonpoop
             delete tl;
             std::this_thread::sleep_for( std::chrono::milliseconds( td ) );
         }
+        
+        t->tisrun = 0;
+        std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
+
     }
     
 };

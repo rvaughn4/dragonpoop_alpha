@@ -28,7 +28,7 @@ namespace dragonpoop
         unsigned int id;
         uint32_t idctr;
         dptask_ref *tsk;
-        std::atomic<bool> trun;
+        std::atomic<bool> trun, tisrun;
                 
     protected:
         

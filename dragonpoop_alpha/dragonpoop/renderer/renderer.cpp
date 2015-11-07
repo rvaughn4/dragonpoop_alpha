@@ -97,13 +97,14 @@ namespace dragonpoop
         this->new_gui_cl = 0;
         this->model_cl = 0;
         this->new_model_cl = 0;
+        this->land_cl = 0;
+        this->new_land_cl = 0;
     }
 
     //dtor
     renderer::~renderer( void )
     {
         shared_obj_guard o;
-        render_api_commandlist_ref *cl;
 
         this->_kill();
 
@@ -113,16 +114,20 @@ namespace dragonpoop
         delete this->thd;
 
         o.tryWriteLock( this, 3000, "renderer::~renderer" );
-        cl = this->new_gui_cl;
-        if( cl )
-            delete cl;
         if( this->gui_cl )
             delete this->gui_cl;
-        cl = this->new_model_cl;
-        if( cl )
-            delete cl;
         if( this->model_cl )
             delete this->model_cl;
+        if( this->land_cl )
+            delete this->land_cl;
+
+        if( this->new_gui_cl )
+            delete this->new_gui_cl;
+        if( this->new_model_cl )
+            delete this->new_model_cl;
+        if( this->new_land_cl )
+            delete this->new_land_cl;
+        
         delete this->tsk;
         delete this->gtsk;
         delete this->cs;
@@ -316,13 +321,6 @@ namespace dragonpoop
         render_api_commandlist_writelock *cll;
         renderer_commandlist_passer_writelock *cpl;
         
-        if( this->new_model_cl )
-        {
-            if( this->model_cl )
-                delete this->model_cl;
-            this->model_cl = this->new_model_cl;
-            this->new_model_cl = 0;
-        }
         if( this->new_gui_cl )
         {
             if( this->gui_cl )
@@ -330,11 +328,25 @@ namespace dragonpoop
             this->gui_cl = this->new_gui_cl;
             this->new_gui_cl = 0;
         }
+        if( this->new_model_cl )
+        {
+            if( this->model_cl )
+                delete this->model_cl;
+            this->model_cl = this->new_model_cl;
+            this->new_model_cl = 0;
+        }
+        if( this->new_land_cl )
+        {
+            if( this->land_cl )
+                delete this->land_cl;
+            this->land_cl = this->new_land_cl;
+            this->new_land_cl = 0;
+        }
         
-        if( !this->clpasser->model_ready && !this->clpasser->gui_ready )
+        if( !this->clpasser->model_ready )
             return;
         
-        if( this->clpasser->model_ready || this->clpasser->gui_ready )
+        if( this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready )
         {
         
             cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
@@ -342,9 +354,11 @@ namespace dragonpoop
             {
                 this->new_gui_cl = cpl->getGui();
                 this->new_model_cl = cpl->getModel();
+                this->new_land_cl = cpl->getLand();
                 cpl->setPosition( &this->cam_pos );
                 this->clpasser->model_ready = 0;
                 this->clpasser->gui_ready = 0;
+                this->clpasser->land_ready = 0;
             }
             
             o.unlock();
@@ -687,7 +701,7 @@ namespace dragonpoop
         if( !gl )
             return;
         
-        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 1, 0 ) );
+        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 3, 0 ) );
         gl->addRenderer( new x11_opengl_1o5_renderer_factory( 2, 1 ) );
     }
     

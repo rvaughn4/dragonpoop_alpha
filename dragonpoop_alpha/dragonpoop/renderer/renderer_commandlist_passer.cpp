@@ -14,6 +14,8 @@ namespace dragonpoop
     {
         this->rgui = 0;
         this->rmodel = 0;
+        this->rland = 0;
+        this->land_ready = 0;
         this->model_ready = 0;
         this->gui_ready = 0;
     }
@@ -33,6 +35,9 @@ namespace dragonpoop
         if( r )
             delete r;
         r = this->rmodel;
+        if( r )
+            delete r;
+        r = this->rland;
         if( r )
             delete r;
         o.unlock();
