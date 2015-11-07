@@ -343,26 +343,34 @@ namespace dragonpoop
             this->new_land_cl = 0;
         }
         
-        if( !this->clpasser->model_ready )
-            return;
-        
         if( this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready )
         {
         
             cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
             if( cpl )
             {
-                this->new_gui_cl = cpl->getGui();
-                this->new_model_cl = cpl->getModel();
-                this->new_land_cl = cpl->getLand();
+                if( this->clpasser->gui_ready )
+                {
+                    this->new_gui_cl = cpl->getGui();
+                    this->clpasser->gui_ready = 0;
+                }
+                if( this->clpasser->model_ready )
+                {
+                    this->new_model_cl = cpl->getModel();
+                    this->clpasser->model_ready = 0;
+                }
+                if( this->clpasser->land_ready )
+                {
+                    this->new_land_cl = cpl->getLand();
+                    this->clpasser->land_ready = 0;
+                }
                 cpl->setPosition( &this->cam_pos );
-                this->clpasser->model_ready = 0;
-                this->clpasser->gui_ready = 0;
-                this->clpasser->land_ready = 0;
             }
             
             o.unlock();
         }
+        else
+            return;
         
         al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
         if( !al )
@@ -381,6 +389,16 @@ namespace dragonpoop
         ctxl->clearColor( 0.5f, 0.5f, 1.0f );
         ctxl->clearDepth( 1.0f );
         
+        if( this->land_cl )
+        {
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->land_cl, 30, "renderer::render" );
+            if( !cll )
+                return;
+            if( !cll->execute( ctxl ) )
+                return;
+            ocl.unlock();
+        }
+
         if( this->model_cl )
         {
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
@@ -701,7 +719,7 @@ namespace dragonpoop
         if( !gl )
             return;
         
-        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 3, 0 ) );
+        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 1, 0 ) );
         gl->addRenderer( new x11_opengl_1o5_renderer_factory( 2, 1 ) );
     }
     

@@ -75,7 +75,7 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
-        this->_startTask( tp, 200 );
+        this->_startTask( tp, 50 );
     }
     
     //dtor
@@ -321,7 +321,7 @@ namespace dragonpoop
         if( !cpl )
             return;
         
-        cpl->setModel( this->clist );
+        cpl->setLand( this->clist );
         this->campos.copy( cpl->getPosition() );
         ocpl.unlock();
         
@@ -355,7 +355,16 @@ namespace dragonpoop
     //render lands
     void renderer_land_man::renderLands( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl )
     {
-
+        std::list<renderer_land *> *l;
+        std::list<renderer_land *>::iterator i;
+        renderer_land *p;
+        
+        l = &this->lands;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            p->render( thd, campos, m_world, ctx, cl );
+        }
     }
     
     //generate renderer land

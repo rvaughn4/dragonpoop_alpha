@@ -50,7 +50,6 @@ namespace dragonpoop
         m.copy( m_world );
         m.multiply( &ml );
         
-        clist->setShader( 0 );
         clist->setAlpha( 1 );
         clist->setMatrix( &m );
         clist->setTexture( 0, 0 );

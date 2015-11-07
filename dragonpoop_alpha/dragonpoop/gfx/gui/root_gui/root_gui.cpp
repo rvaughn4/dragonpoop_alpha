@@ -124,8 +124,8 @@ namespace dragonpoop
                 x.x = 1.1;
             pa.move( &x, this->t, this->t + 1000, 0 );
             
-          //  if( gl )
-              //  gl->setCameraPosition( &pp );
+            if( gl )
+                gl->setCameraPosition( &pp );
             if( al )
                 al->setPosition( &pa );
             o.unlock();

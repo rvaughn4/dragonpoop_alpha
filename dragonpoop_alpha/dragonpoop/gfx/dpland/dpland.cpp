@@ -1,5 +1,6 @@
 
 #include "dpland.h"
+#include <random>
 
 namespace dragonpoop
 {
@@ -70,13 +71,14 @@ namespace dragonpoop
     {
         dpvertex v;
         float x, z;
-        int ix, iz, ex, ez, i[ 2 ][ 2 ];
+        int ix, iz, ex, ez, i[ 2 ][ 2 ], cntv;
         
         x = land_sz / tile_sz;
-        ex = (int)x;
+        ex = (int)x + 1;
         ez = ex;
         
         z = -land_sz * 0.5f;
+        cntv = 0;
         for( iz = 0; iz < ez; iz++, z += tile_sz )
         {
             x = -land_sz * 0.5f;
@@ -84,7 +86,7 @@ namespace dragonpoop
             {
                 v.pos.x = x;
                 v.pos.z = z;
-                v.pos.y = (x + z) * 0.5f / land_sz;
+                v.pos.y = (float)rand() * 5.0f / (float)RAND_MAX;
                 v.normal.x = 0;
                 v.normal.y = 1;
                 v.normal.z = 0;
@@ -93,17 +95,21 @@ namespace dragonpoop
                 v.texcoords[ 1 ].s = this->tex_size * (float)ix / (float)ex;
                 v.texcoords[ 1 ].t = this->tex_size * (float)iz / (float)ez;
                 this->vb.addVertex( &v );
+                cntv++;
             }
         }
         
-        for( iz = 0; iz < ez - 1; iz++ )
+        for( iz = 0; iz < ez; iz++ )
         {
-            for( ix = 0; ix < ex - 1; ix++ )
+            for( ix = 0; ix < ex; ix++ )
             {
                 i[ 0 ][ 0 ] = ix + iz * ex;
                 i[ 0 ][ 1 ] = i[ 0 ][ 0 ] + 1;
                 i[ 1 ][ 0 ] = i[ 0 ][ 0 ] + ex;
                 i[ 1 ][ 1 ] = i[ 0 ][ 1 ] + ex;
+                
+                if( i[ 0 ][ 0 ] >= cntv || i[ 0 ][ 1 ] >= cntv || i[ 1 ][ 0 ] >= cntv || i[ 1 ][ 1 ] >= cntv )
+                    continue;
                 
                 this->ib.addIndex( i[ 0 ][ 0 ] );
                 this->ib.addIndex( i[ 1 ][ 0 ] );

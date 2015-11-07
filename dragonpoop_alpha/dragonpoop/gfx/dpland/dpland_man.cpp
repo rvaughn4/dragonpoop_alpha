@@ -26,9 +26,9 @@ namespace dragonpoop
         
         this->c = c;
         
-        this->world_sz = 1000.0f;
-        this->land_sz = 100.0f;
-        this->tile_sz = 2.0f;
+        this->world_sz = 300.0f;
+        this->land_sz = 50.0f;
+        this->tile_sz = 10.0f;
         this->tex_sz = 10.0f;
         
         gl = (gfx_writelock *)o.writeLock( g, "dpland_man::dpland_man" );
