@@ -257,6 +257,10 @@ namespace dragonpoop
         dpvertex v;
         float teta, fi, radius;
         
+        col_max = 10;
+        row_max = 10;
+        radius = 100.0f;
+        
         // Fill coordinate positions [to change]
         for( j = 0; j <= row_max; j++ )
         {

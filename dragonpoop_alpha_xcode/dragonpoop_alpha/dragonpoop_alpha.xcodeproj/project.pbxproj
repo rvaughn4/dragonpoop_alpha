@@ -303,6 +303,7 @@
 		79F81A751BEA2E13000F26B0 /* renderer_land_man_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F81A701BEA2E13000F26B0 /* renderer_land_man_writelock.cpp */; };
 		79F8520F1BC5326900EF9695 /* perf_stats_gui.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F8520A1BC5326900EF9695 /* perf_stats_gui.cpp */; };
 		79F852101BC5326900EF9695 /* perf_stats_gui_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79F8520C1BC5326900EF9695 /* perf_stats_gui_factory.cpp */; };
+		79FB27D11BEF5DB100DAA21F /* opengl1o5_x11_shader_sky.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FB27CF1BEF5DB100DAA21F /* opengl1o5_x11_shader_sky.cpp */; };
 		79FD4D5C1BCFCB7F00126995 /* model_loader_man_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FD4D521BCFCB7F00126995 /* model_loader_man_readlock.cpp */; };
 		79FD4D5D1BCFCB7F00126995 /* model_loader_man_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FD4D541BCFCB7F00126995 /* model_loader_man_ref.cpp */; };
 		79FD4D5E1BCFCB7F00126995 /* model_loader_man_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79FD4D561BCFCB7F00126995 /* model_loader_man_task.cpp */; };
@@ -1023,6 +1024,8 @@
 		79F8520C1BC5326900EF9695 /* perf_stats_gui_factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = perf_stats_gui_factory.cpp; sourceTree = "<group>"; };
 		79F8520D1BC5326900EF9695 /* perf_stats_gui_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = perf_stats_gui_factory.h; sourceTree = "<group>"; };
 		79F8520E1BC5326900EF9695 /* perf_stats_guis.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = perf_stats_guis.h; sourceTree = "<group>"; };
+		79FB27CF1BEF5DB100DAA21F /* opengl1o5_x11_shader_sky.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl1o5_x11_shader_sky.cpp; sourceTree = "<group>"; };
+		79FB27D01BEF5DB100DAA21F /* opengl1o5_x11_shader_sky.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl1o5_x11_shader_sky.h; sourceTree = "<group>"; };
 		79FD4D521BCFCB7F00126995 /* model_loader_man_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_man_readlock.cpp; sourceTree = "<group>"; };
 		79FD4D531BCFCB7F00126995 /* model_loader_man_readlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_loader_man_readlock.h; sourceTree = "<group>"; };
 		79FD4D541BCFCB7F00126995 /* model_loader_man_ref.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = model_loader_man_ref.cpp; sourceTree = "<group>"; };
@@ -1198,6 +1201,8 @@
 				7912477B1BE8C70000E7C56D /* opengl1o5_x11_shader_readlock.h */,
 				790C4D171BD6B1CE009BCF7E /* opengl1o5_x11_shader.cpp */,
 				790C4D181BD6B1CE009BCF7E /* opengl1o5_x11_shader.h */,
+				79FB27CF1BEF5DB100DAA21F /* opengl1o5_x11_shader_sky.cpp */,
+				79FB27D01BEF5DB100DAA21F /* opengl1o5_x11_shader_sky.h */,
 				790464D01BECB6EC00ED791B /* opengl1o5_x11_shader_land.cpp */,
 				790464D11BECB6EC00ED791B /* opengl1o5_x11_shader_land.h */,
 				7903063A1BDF835E00EA0A62 /* opengl1o5_x11_shader_gui.cpp */,
@@ -2429,6 +2434,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				79FB27D11BEF5DB100DAA21F /* opengl1o5_x11_shader_sky.cpp in Sources */,
 				79F703BB1BCE793E00B35B8B /* dpland_man_task.cpp in Sources */,
 				79FD4D5D1BCFCB7F00126995 /* model_loader_man_ref.cpp in Sources */,
 				7970E96E1B64F26E008E8328 /* dptaskpool.cpp in Sources */,

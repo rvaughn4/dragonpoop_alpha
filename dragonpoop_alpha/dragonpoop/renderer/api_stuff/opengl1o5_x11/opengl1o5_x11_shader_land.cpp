@@ -48,12 +48,12 @@ namespace dragonpoop
 
         glEnable( GL_DEPTH_TEST );
         glEnable( GL_TEXTURE_2D );
-        glEnable( GL_BLEND );
+        glDisable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
         glLoadMatrixf( m->getRaw4by4() );
         glColor4f( 1.0f, 1.0f, 1.0f, alpha );
         
-        glBindTexture( GL_TEXTURE_2D, t0 );
+        //glBindTexture( GL_TEXTURE_2D, t0 );
         this->renderVB( vb, ib );
         
         return 1;

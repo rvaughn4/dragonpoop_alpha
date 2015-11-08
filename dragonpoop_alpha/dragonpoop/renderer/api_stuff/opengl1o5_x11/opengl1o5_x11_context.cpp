@@ -10,6 +10,7 @@
 #include "opengl1o5_x11_shader_gui.h"
 #include "opengl1o5_x11_shader_model.h"
 #include "opengl1o5_x11_shader_land.h"
+#include "opengl1o5_x11_shader_sky.h"
 
 namespace dragonpoop
 {
@@ -104,7 +105,7 @@ namespace dragonpoop
         if( s.compare( "land" ) == 0 )
             return new opengl1o5_x11_shader_land( cl, mm );
         if( s.compare( "sky" ) == 0 )
-            return new opengl1o5_x11_shader_gui( cl, mm );
+            return new opengl1o5_x11_shader_sky( cl, mm );
         
         return 0;
     }
