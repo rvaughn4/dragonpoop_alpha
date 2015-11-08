@@ -87,7 +87,7 @@ namespace dragonpoop
         {
             float x, y, z;
         } cam_rot;
-        unsigned int render_tries;
+        unsigned int render_tries, dim_update_tick;
         
         
         //run renderer

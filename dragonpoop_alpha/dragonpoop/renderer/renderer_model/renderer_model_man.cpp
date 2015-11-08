@@ -362,14 +362,6 @@ namespace dragonpoop
         if( this->clpasser->t->model_ready )
             return;
         
-        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_model_man::swapList" );
-        if( !cpl )
-            return;
-        
-        cpl->setModel( this->clist );
-        this->campos.copy( cpl->getPosition() );
-        ocpl.unlock();
-        
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 100, "renderer_model_man::render" );
         if( !ctxl )
             return;
@@ -393,7 +385,16 @@ namespace dragonpoop
         
         cll->setPosition( &this->campos );
         if( cll->compile( ctxl ) )
-            this->clpasser->t->model_ready = 1;
+        {
+            cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_model_man::swapList" );
+            if( cpl )
+            {
+                cpl->setModel( this->clist );
+                this->campos.copy( cpl->getPosition() );
+                this->clpasser->t->model_ready = 1;
+                ocpl.unlock();
+            }
+        }
         
         delete sdr;
     }

@@ -84,7 +84,7 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
-        this->_startTask( tp, 200 );
+        this->_startTask( tp, 1 );
     }
     
     //dtor
@@ -118,23 +118,6 @@ namespace dragonpoop
     //compute matrix
     void renderer_land_man::computeMatrix( void )
     {
-        float sw, sh, rw, rh, r, dw, dh, w, h;
-        
-        w = this->clpasser->t->w;
-        h = this->clpasser->t->h;
-        sw = log_screen_width;
-        sh = log_screen_height;
-        
-        rw = sw / w;
-        rh = sh / h;
-        
-        r = rw;
-        if( r < rh )
-            r = rh;
-        dw = r - rw;
-        dh = r - rh;
-        
-        //this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 400.0f, 45.0f );
         this->m.setIdentity();
     }
     
@@ -218,7 +201,7 @@ namespace dragonpoop
         dpid_btree pt;
         
         t = thd->getTicks();
-        if( t - this->t_last_land_synced < 100 )
+        if( t - this->t_last_land_synced < 200 )
             return;
         this->t_last_land_synced = t;
         
@@ -329,14 +312,6 @@ namespace dragonpoop
         if( this->clpasser->t->land_ready )
             return;
         
-        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_land_man::swapList" );
-        if( !cpl )
-            return;
-        
-        cpl->setLand( this->clist );
-        this->campos.copy( cpl->getPosition() );
-        ocpl.unlock();
-        
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 100, "renderer_land_man::render" );
         if( !ctxl )
             return;
@@ -360,9 +335,18 @@ namespace dragonpoop
         
         cll->setPosition( &this->campos );
         if( cll->compile( ctxl ) )
-            this->clpasser->t->land_ready = 1;
+        {
+            cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_land_man::render" );
+            if( cpl )
+            {
+                cpl->setLand( this->clist );
+                this->campos.copy( cpl->getPosition() );
+                this->clpasser->t->land_ready = 1;
+                ocpl.unlock();
+            }
+        }
         
-        delete sdr;        
+        delete sdr;
     }
 
     //render into command list

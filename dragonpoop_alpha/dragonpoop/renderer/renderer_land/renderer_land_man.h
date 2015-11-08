@@ -64,6 +64,7 @@ namespace dragonpoop
         dpthread_singletask *thd;
         renderer_commandlist_passer_ref *clpasser;
         dpposition campos;
+        bool b_land_rdy;
         
         struct
         {

@@ -363,18 +363,12 @@ namespace dragonpoop
             this->new_sky_cl = 0;
         }
         
-        if( this->render_tries > 2 || this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready || this->clpasser->sky_ready )
+        if( this->clpasser->model_ready && this->clpasser->land_ready )
         {
         
-            this->render_tries = 0;
             cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
             if( cpl )
             {
-                if( this->clpasser->gui_ready )
-                {
-                    this->new_gui_cl = cpl->getGui();
-                    this->clpasser->gui_ready = 0;
-                }
                 if( this->clpasser->model_ready )
                 {
                     this->new_model_cl = cpl->getModel();
@@ -390,6 +384,11 @@ namespace dragonpoop
                     this->new_sky_cl = cpl->getSky();
                     this->clpasser->sky_ready = 0;
                 }
+                if( this->clpasser->gui_ready )
+                {
+                    this->new_gui_cl = cpl->getGui();
+                    this->clpasser->gui_ready = 0;
+                }
                 cpl->setPosition( &this->cam_pos );
             }
             
@@ -397,31 +396,60 @@ namespace dragonpoop
         }
         else
         {
-            this->render_tries++;
-            return;
+            if( this->render_tries > 2 )
+                this->render_tries = 0;
+            else
+            {
+                this->render_tries++;
+                return;
+            }
         }
         
-        al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
-        if( !al )
-            return;
-        w = al->getWidth();
-        h = al->getHeight();
-        this->clpasser->w = w;
-        this->clpasser->h = h;
-        this->calcMatrix();
+        this->dim_update_tick++;
+        if( this->dim_update_tick > 10 )
+        {
+            al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
+            if( al )
+            {
+                this->dimensions.w = al->getWidth();
+                this->dimensions.h = al->getHeight();
+                this->calcMatrix();
+                octx.unlock();
+            }
+            this->dim_update_tick = 0;
+        }
 
         ctxl = (render_api_context_writelock *)octx.tryWriteLock( this->main_ctx, 30, "renderer::render" );
         if( !ctxl )
             return;
         
         ctxl->makeActive();
-        ctxl->setViewport( w, h );
+        ctxl->setViewport( this->dimensions.w, this->dimensions.h );
         ctxl->clearColor( 0.8f, 0.8f, 1.0f );
         ctxl->clearDepth( 1.0f );
-
+        
         if( this->sky_cl )
         {
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky_cl, 30, "renderer::render" );
+            if( !cll )
+                return;
+            
+            m2.setIdentity();
+            m2.rotateX( this->cam_rot.x );
+            m2.rotateY( this->cam_rot.y + 90.0f );
+            m2.rotateZ( this->cam_rot.z );
+            m1.copy( &this->m_world );
+            m1.multiply( &m2 );
+
+            if( !cll->execute( ctxl, &m1 ) )
+                return;
+            ocl.unlock();
+        }
+        
+        ctxl->clearDepth( 1.0f );
+        if( this->model_cl )
+        {
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
             if( !cll )
                 return;
             
@@ -430,14 +458,15 @@ namespace dragonpoop
             m2.rotateX( this->cam_rot.x );
             m2.rotateY( this->cam_rot.y );
             m2.rotateZ( this->cam_rot.z );
+            this->cam_pos.getDifference( &clpos, thd->getTicks(), &diff );
+            m2.translate( diff.x, diff.y, diff.z );
             m1.copy( &this->m_world );
+            m1.multiply( &m2 );
             
             if( !cll->execute( ctxl, &m1 ) )
                 return;
             ocl.unlock();
         }
-        
-        ctxl->clearDepth( 1.0f );
 
         if( this->land_cl )
         {
@@ -459,29 +488,8 @@ namespace dragonpoop
                 return;
             ocl.unlock();
         }
-
-        if( this->model_cl )
-        {
-            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
-            if( !cll )
-                return;
-            
-            cll->getPosition( &clpos );
-            m2.setIdentity();
-            m2.rotateX( this->cam_rot.x );
-            m2.rotateY( this->cam_rot.y );
-            m2.rotateZ( this->cam_rot.z );
-            this->cam_pos.getDifference( &clpos, thd->getTicks(), &diff );
-            m2.translate( diff.x, diff.y, diff.z );
-            m1.copy( &this->m_world );
-            m1.multiply( &m2 );
-            
-            if( !cll->execute( ctxl, &m1 ) )
-                return;
-            ocl.unlock();
-        }
         
-        ctxl->clearDepth( 1.0f );
+       // ctxl->clearDepth( 1.0f );
         
         if( this->gui_cl )
         {
@@ -570,6 +578,16 @@ namespace dragonpoop
         if( t - this->t_last_input < 100 )
             return 1;
         this->t_last_input = t;
+
+        if( this->mouse.x < -0.9f )
+            this->cam_rot.y -= 0.5f;
+        if( this->mouse.x > 0.9f )
+            this->cam_rot.y += 0.5f;
+        if( this->mouse.y < -0.9f )
+            this->cam_rot.x -= 0.5f;
+        if( this->mouse.y > 0.9f )
+            this->cam_rot.x += 0.5f;
+        
         if( !al->hasKBInput() && !al->hasMouseInput() )
             return 1;
         
