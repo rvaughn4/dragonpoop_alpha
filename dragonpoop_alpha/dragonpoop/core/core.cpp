@@ -36,7 +36,7 @@ namespace dragonpoop
         delete this->orig_root;
         delete this->g;
         delete this->tp;
-        delete this->mm;
+//        delete this->mm;
     }
 
     //returns true if running

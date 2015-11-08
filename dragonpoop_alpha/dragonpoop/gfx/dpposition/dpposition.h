@@ -7,23 +7,20 @@
 
 namespace dragonpoop
 {
-    
+
+#pragma pack( 1 )
+    struct dpposition_inner_half
+    {
+        double x, y, z;
+        uint64_t t;
+        bool bReverse;
+    };
+#pragma pack()
+
 #pragma pack( 1 )
     struct dpposition_inner
     {
-        struct
-        {
-            struct
-            {
-                int64_t x, y, z;
-            } whole;
-            struct
-            {
-                float x, y, z;
-            } fract;
-            uint64_t t;
-            bool bReverse;
-        } start, end;
+        dpposition_inner_half start, end;
     };
 #pragma pack( 0 )
     
@@ -34,13 +31,6 @@ namespace dragonpoop
         
         dpposition_inner i;
         dpxyz_f old_rot;
-        
-        //get pos difference
-        void getDiff( double *dx, double *dy, double *dz );
-        //get pos difference with time
-        void getDiff( double *dx, double *dy, double *dz, uint64_t t_now );
-        //get pos difference
-        void getDiff( double *dx, double *dy, double *dz, dpposition *arg );
         
     protected:
         
@@ -74,6 +64,8 @@ namespace dragonpoop
         void stop( uint64_t t_epoch_now );
         //move immediatly
         void move( dpxyz_f *x );
+        //find current position
+        void getPosition( dpposition_inner_half *h, uint64_t t_now );
         
     };
     

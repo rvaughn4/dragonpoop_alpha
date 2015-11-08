@@ -41,7 +41,7 @@ namespace dragonpoop
         this->getPosition( &p );
         p.getData( &pi );
 
-        if( p.isMoving( t ) && pi.end.whole.y != pi.start.whole.y )
+        if( p.isMoving( t ) && pi.end.y != pi.start.y )
         {
             *next_state = new dpactor_animate_state_fly( a );
             return;

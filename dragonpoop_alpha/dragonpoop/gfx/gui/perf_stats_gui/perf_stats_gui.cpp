@@ -110,9 +110,9 @@ namespace dragonpoop
         gl->getCameraPosition( &pp );
         pp.getData( &ppi );
         ss << "\r\nCamera \r\n";
-        ss << "\tX " << ppi.end.whole.x << " +  " << ppi.end.fract.x << " meters\r\n";
-        ss << "\tY " << ppi.end.whole.y << " +  " << ppi.end.fract.y << " meters\r\n";
-        ss << "\tZ " << ppi.end.whole.z << " +  " << ppi.end.fract.z << " meters\r\n";
+        ss << "\tX " << ppi.end.x << " meters\r\n";
+        ss << "\tY " << ppi.end.y << " meters\r\n";
+        ss << "\tZ " << ppi.end.z << " meters\r\n";
         
         //renderer stats
         rr = gl->getRenderer();

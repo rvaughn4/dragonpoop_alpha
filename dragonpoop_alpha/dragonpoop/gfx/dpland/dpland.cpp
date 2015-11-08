@@ -28,12 +28,9 @@ namespace dragonpoop
     {
         dpposition_inner pi;
         
-        pi.start.whole.x = this->pos.x;
-        pi.start.whole.y = 0;
-        pi.start.whole.z = this->pos.z;
-        pi.start.fract.x = 0;
-        pi.start.fract.y = 0;
-        pi.start.fract.z = 0;
+        pi.start.x = this->pos.x;
+        pi.start.y = 0;
+        pi.start.z = this->pos.z;
         pi.start.t = 0;
         pi.start.bReverse = 0;
         pi.end = pi.start;

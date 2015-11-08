@@ -46,7 +46,7 @@ namespace dragonpoop
             *next_state = new dpactor_animate_state_idle( a );
             return;
         }
-        if( pi.end.whole.y != pi.start.whole.y )
+        if( pi.end.y != pi.start.y )
         {
             *next_state = new dpactor_animate_state_fly( a );
             return;

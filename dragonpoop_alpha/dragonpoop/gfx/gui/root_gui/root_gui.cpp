@@ -96,7 +96,7 @@ namespace dragonpoop
             if( skey->compare( "Page Up" ) == 0 )
                 x.y = 1.1;
             if( skey->compare( "Page Down" ) == 0 )
-                x.y = -pi.end.whole.y - pi.end.fract.y;
+                x.y = -pi.end.y;
             if( skey->compare( "Up" ) == 0 )
                 x.z = -1.1;
             if( skey->compare( "Down" ) == 0 )
@@ -113,7 +113,7 @@ namespace dragonpoop
             if( skey->compare( "Page Up" ) == 0 )
                 x.y = 1.1;
             if( skey->compare( "Page Down" ) == 0 )
-                x.y = -pi.end.whole.y - pi.end.fract.y;
+                x.y = -pi.end.y;
             if( skey->compare( "Up" ) == 0 )
                 x.z = -1.1;
             if( skey->compare( "Down" ) == 0 )

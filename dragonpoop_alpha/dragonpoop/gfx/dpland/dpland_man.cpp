@@ -154,8 +154,8 @@ namespace dragonpoop
         o.unlock();
         
         pp.getData( &pi );
-        x = pi.start.whole.x / (int64_t)this->land_sz;
-        z = pi.start.whole.z / (int64_t)this->land_sz;
+        x = pi.start.x / (int64_t)this->land_sz;
+        z = pi.start.z / (int64_t)this->land_sz;
         x *= (int64_t)this->land_sz;
         z *= (int64_t)this->land_sz;
         
