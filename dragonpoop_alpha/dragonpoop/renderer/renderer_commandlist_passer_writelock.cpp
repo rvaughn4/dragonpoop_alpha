@@ -65,4 +65,16 @@ namespace dragonpoop
         return this->t->getLand();
     }
     
+    //set sky commandlist
+    void renderer_commandlist_passer_writelock::setSky( render_api_commandlist_ref *r )
+    {
+        this->t->setSky( r );
+    }
+    
+    //get sky commandlist
+    render_api_commandlist_ref *renderer_commandlist_passer_writelock::getSky( void )
+    {
+        return this->t->getSky();
+    }
+    
 };

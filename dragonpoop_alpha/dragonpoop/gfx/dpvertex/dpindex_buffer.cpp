@@ -158,4 +158,22 @@ namespace dragonpoop
         this->buffer.ptr = 0;
     }
 
+    //bounds correction
+    void dpindex_buffer::fixBounds( dpvertex_buffer *vb )
+    {
+        unsigned int i, sz, vsz;
+        dpindex *b, *p;
+        
+        vsz = vb->getSize();
+        sz = this->getSize();
+        b = this->getBuffer();
+        
+        for( i = 0; i < sz; i++ )
+        {
+            p = &b[ i ];
+            if( p->i >= sz )
+                p->i = 0;
+        }
+    }
+    
 };

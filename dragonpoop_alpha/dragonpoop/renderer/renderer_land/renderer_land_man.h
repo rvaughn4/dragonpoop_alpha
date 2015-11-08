@@ -39,6 +39,8 @@ namespace dragonpoop
     class dpthread_singletask;
     class renderer_commandlist_passer;
     class renderer_commandlist_passer_ref;
+    class render_api_vertexbuffer_ref;
+    class render_api_indexbuffer_ref;
     
     class renderer_land_man : public shared_obj
     {
@@ -62,6 +64,13 @@ namespace dragonpoop
         renderer_commandlist_passer_ref *clpasser;
         dpposition campos;
         
+        struct
+        {
+            render_api_commandlist_ref *clist;
+            render_api_vertexbuffer_ref *vb;
+            render_api_indexbuffer_ref *ib;
+        } sky;
+        
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
@@ -76,6 +85,10 @@ namespace dragonpoop
         void render( dpthread_lock *thd );
         //compute matrix
         void computeMatrix( void );
+        //render lands
+        void renderLands( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
+        //render sky
+        void renderSky( dpthread_lock *thd );
         
     protected:
         
@@ -87,8 +100,6 @@ namespace dragonpoop
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //delete lands
         void deleteLands( void );
-        //render lands
-        void renderLands( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
         //generate renderer land
         virtual renderer_land *genLand( dpland *ml );
         //run from manager thread

@@ -19,6 +19,7 @@ namespace dragonpoop
         this->l = this->lm->genMutex();
         this->tsk = 0;
         this->trun = 1;
+        this->tisrun = 1;
         this->thd = new std::thread( dpthread_st_threadproc, this );
     }
     

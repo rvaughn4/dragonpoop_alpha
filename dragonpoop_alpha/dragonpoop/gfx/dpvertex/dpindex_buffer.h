@@ -47,6 +47,8 @@ namespace dragonpoop
         bool findIndex( dpvertex_buffer *vb, dpvertex *v, dpindex *i );
         //clear
         void clear( void );
+        //bounds correction
+        void fixBounds( dpvertex_buffer *vb );
 
     };
 

@@ -34,6 +34,8 @@ namespace dragonpoop
         this->tile_sz = 1.0f;
         this->tex_sz = 10.0f;
         
+        this->buildSky();
+        
         gl = (gfx_writelock *)o.writeLock( g, "dpland_man::dpland_man" );
         this->g = (gfx_ref *)gl->getRef();
         o.unlock();
@@ -265,7 +267,7 @@ namespace dragonpoop
                 v.pos.x = radius * cosf( teta ) * sinf( fi );
                 v.pos.y = radius * cosf( fi );
                 v.pos.z = 1.0f * sinf( teta ) * sinf( fi );
-                this->vb.addVertex( &v );
+                this->sky.vb.addVertex( &v );
             }
         }
         
@@ -274,14 +276,22 @@ namespace dragonpoop
         {
             for( i = 0; i < col_max; i++ )
             {
-                this->ib.addIndex( dpland_man__buildSky__index( col_max, i, j ) );
-                this->ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j + 1 ) );
-                this->ib.addIndex( dpland_man__buildSky__index( col_max, i, j + 1 ) );
-                this->ib.addIndex( dpland_man__buildSky__index( col_max, i, j ) );
-                this->ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j ) );
-                this->ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j + 1 ) );
+                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i, j ) );
+                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j + 1 ) );
+                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i, j + 1 ) );
+                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i, j ) );
+                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j ) );
+                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j + 1 ) );
             }
         }
+        
+        this->sky.ib.fixBounds( &this->sky.vb );
+    }
+    
+    //get sky
+    dpland_skydome *dpland_man::getSky( void )
+    {
+        return &this->sky;
     }
     
 };

@@ -99,6 +99,8 @@ namespace dragonpoop
         this->new_model_cl = 0;
         this->land_cl = 0;
         this->new_land_cl = 0;
+        this->sky_cl = 0;
+        this->new_sky_cl = 0;
     }
 
     //dtor
@@ -120,6 +122,8 @@ namespace dragonpoop
             delete this->model_cl;
         if( this->land_cl )
             delete this->land_cl;
+        if( this->sky_cl )
+            delete this->sky_cl;
 
         if( this->new_gui_cl )
             delete this->new_gui_cl;
@@ -127,6 +131,8 @@ namespace dragonpoop
             delete this->new_model_cl;
         if( this->new_land_cl )
             delete this->new_land_cl;
+        if( this->new_sky_cl )
+            delete this->new_sky_cl;
         
         delete this->tsk;
         delete this->gtsk;
@@ -342,8 +348,15 @@ namespace dragonpoop
             this->land_cl = this->new_land_cl;
             this->new_land_cl = 0;
         }
+        if( this->new_sky_cl )
+        {
+            if( this->sky_cl )
+                delete this->sky_cl;
+            this->sky_cl = this->new_sky_cl;
+            this->new_sky_cl = 0;
+        }
         
-        if( this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready )
+        if( this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready || this->clpasser->sky_ready )
         {
         
             cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
@@ -363,6 +376,11 @@ namespace dragonpoop
                 {
                     this->new_land_cl = cpl->getLand();
                     this->clpasser->land_ready = 0;
+                }
+                if( this->clpasser->sky_ready )
+                {
+                    this->new_sky_cl = cpl->getLand();
+                    this->clpasser->sky_ready = 0;
                 }
                 cpl->setPosition( &this->cam_pos );
             }
@@ -386,9 +404,21 @@ namespace dragonpoop
         
         ctxl->makeActive();
         ctxl->setViewport( w, h );
-        ctxl->clearColor( 0.5f, 0.5f, 1.0f );
+        ctxl->clearColor( 0.0f, 0.0f, 0.0f );
         ctxl->clearDepth( 1.0f );
+
+        if( this->sky_cl )
+        {
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky_cl, 30, "renderer::render" );
+            if( !cll )
+                return;
+            if( !cll->execute( ctxl ) )
+                return;
+            ocl.unlock();
+        }
         
+        ctxl->clearDepth( 1.0f );
+
         if( this->land_cl )
         {
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->land_cl, 30, "renderer::render" );
@@ -410,6 +440,7 @@ namespace dragonpoop
         }
         
         ctxl->clearDepth( 1.0f );
+        
         if( this->gui_cl )
         {
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 30, "renderer::render" );

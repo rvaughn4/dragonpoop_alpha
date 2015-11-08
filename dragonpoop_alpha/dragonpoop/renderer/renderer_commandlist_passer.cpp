@@ -15,9 +15,11 @@ namespace dragonpoop
         this->rgui = 0;
         this->rmodel = 0;
         this->rland = 0;
+        this->rsky = 0;
         this->land_ready = 0;
         this->model_ready = 0;
         this->gui_ready = 0;
+        this->sky_ready = 0;
     }
     
     //dtor
@@ -38,6 +40,9 @@ namespace dragonpoop
         if( r )
             delete r;
         r = this->rland;
+        if( r )
+            delete r;
+        r = this->rsky;
         if( r )
             delete r;
         o.unlock();
@@ -174,6 +179,43 @@ namespace dragonpoop
             return 0;
         delete r;
         this->rland = 0;
+        
+        r = (render_api_commandlist_ref *)l->getRef();
+        return r;
+    }
+    
+    //set sky commandlist
+    void renderer_commandlist_passer::setSky( render_api_commandlist_ref *r )
+    {
+        render_api_commandlist_writelock *l;
+        shared_obj_guard o;
+        
+        l = (render_api_commandlist_writelock *)o.tryWriteLock( r, 100, "renderer_commandlist_passer::setSky" );
+        if( !l )
+            return;
+        
+        r = this->rsky;
+        if( r )
+            delete r;
+        this->rsky = 0;
+        
+        r = (render_api_commandlist_ref *)l->getRef();
+        this->rsky = r;
+    }
+    
+    //get sky commandlist
+    render_api_commandlist_ref *renderer_commandlist_passer::getSky( void )
+    {
+        render_api_commandlist_writelock *l;
+        shared_obj_guard o;
+        render_api_commandlist_ref *r;
+        
+        r = this->rsky;
+        l = (render_api_commandlist_writelock *)o.tryWriteLock( r, 100, "renderer_commandlist_passer::getSky" );
+        if( !l )
+            return 0;
+        delete r;
+        this->rsky = 0;
         
         r = (render_api_commandlist_ref *)l->getRef();
         return r;

@@ -65,8 +65,8 @@ namespace dragonpoop
         renderer_commandlist_passer *clpasser;
         
         std::atomic<bool> bDoRun, bIsRun;
-        render_api_commandlist_ref *new_gui_cl, *new_model_cl, *new_land_cl;
-        render_api_commandlist_ref *gui_cl, *model_cl, *land_cl;
+        render_api_commandlist_ref *new_gui_cl, *new_model_cl, *new_land_cl, *new_sky_cl;
+        render_api_commandlist_ref *gui_cl, *model_cl, *land_cl, *sky_cl;
         
         uint64_t t_last_fps, ms_each_frame, t_last_input;
         float fps, fthiss;

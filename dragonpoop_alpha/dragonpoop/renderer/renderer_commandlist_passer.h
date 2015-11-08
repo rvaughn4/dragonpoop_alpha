@@ -15,9 +15,9 @@ namespace dragonpoop
         
     private:
         
-        std::atomic<render_api_commandlist_ref *> rmodel, rgui, rland;
+        std::atomic<render_api_commandlist_ref *> rmodel, rgui, rland, rsky;
         dpposition pos;
-        std::atomic<bool> model_ready, gui_ready, land_ready;
+        std::atomic<bool> model_ready, gui_ready, land_ready, sky_ready;
         float w, h;
         
     protected:
@@ -42,6 +42,10 @@ namespace dragonpoop
         void setLand( render_api_commandlist_ref *r );
         //get land commandlist
         render_api_commandlist_ref *getLand( void );
+        //set sky commandlist
+        void setSky( render_api_commandlist_ref *r );
+        //get sky commandlist
+        render_api_commandlist_ref *getSky( void );
         
     public:
         

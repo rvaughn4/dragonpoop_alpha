@@ -13,6 +13,7 @@ namespace dragonpoop
     class core;
     class dpthread_lock;
     class dpland;
+    struct dpland_skydome;
     
     class dpland_man_writelock : public shared_obj_writelock
     {
@@ -36,7 +37,9 @@ namespace dragonpoop
         void run( dpthread_lock *thd );
         //get tiles
         void getTiles( std::list<dpland *> *l );
-
+        //get sky
+        dpland_skydome *getSky( void );
+        
         friend class dpland_man;
     };
     

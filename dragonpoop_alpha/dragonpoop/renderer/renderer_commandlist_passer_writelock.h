@@ -42,6 +42,10 @@ namespace dragonpoop
         void setLand( render_api_commandlist_ref *r );
         //get land commandlist
         render_api_commandlist_ref *getLand( void );
+        //set sky commandlist
+        void setSky( render_api_commandlist_ref *r );
+        //get sky commandlist
+        render_api_commandlist_ref *getSky( void );
 
         friend class renderer_commandlist_passer;
     };

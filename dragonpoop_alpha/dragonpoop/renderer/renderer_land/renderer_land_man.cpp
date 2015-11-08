@@ -20,6 +20,7 @@
 #include "../renderer_writelock.h"
 #include "../../gfx/gfx_writelock.h"
 #include "../../gfx/gfx_ref.h"
+#include "../../gfx/dpland/dpland_man.h"
 #include "../../gfx/dpland/dpland_man_ref.h"
 #include "../../gfx/dpland/dpland_man_readlock.h"
 #include "renderer_land.h"
@@ -44,10 +45,13 @@ namespace dragonpoop
     //ctor
     renderer_land_man::renderer_land_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height ) : shared_obj( c->getMutexMaster() )
     {
-        shared_obj_guard o;
+        shared_obj_guard o, o1;
         gfx_writelock *gl;
         renderer_writelock *rl;
         renderer_commandlist_passer_writelock *cpl;
+        dpland_skydome *s;
+        render_api_context_writelock *ctxl;
+        dpland_man_readlock *ll;
         
         cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( clpasser, 5000, "renderer_land_man::renderer_land_man" );
         if( cpl )
@@ -56,6 +60,12 @@ namespace dragonpoop
             this->clpasser = 0;
         o.unlock();
         
+        this->g = c->getGfx();
+        gl = (gfx_writelock *)o.writeLock( this->g, "renderer_land_man::renderer_land_man" );
+        if( gl )
+            gl->getLand( &this->g_lands );
+        o.unlock();
+
         this->log_screen_height = log_screen_height;
         this->log_screen_width = log_screen_width;
         this->ctx = ctx;
@@ -63,10 +73,22 @@ namespace dragonpoop
         this->c = c;
         this->tpr = (dptaskpool_ref *)tp->getRef();
         
-        this->g = c->getGfx();
-        gl = (gfx_writelock *)o.writeLock( this->g, "renderer_land_man::renderer_land_man" );
-        if( gl )
-            gl->getLand( &this->g_lands );
+        ctxl = (render_api_context_writelock *)o.tryWriteLock( ctx, 5000, "renderer_land_man::renderer_land_man" );
+        ll = (dpland_man_readlock *)o1.tryReadLock( this->g_lands, 5000, "renderer_land_man::renderer_land_man" );
+
+        this->sky.clist = 0;
+        if( ctxl && ll )
+        {
+            s = ll->getSky();
+            this->sky.ib = ctxl->makeIndexBuffer( &s->ib );
+            this->sky.vb = ctxl->makeVertexBuffer( &s->vb );
+        }
+        else
+        {
+            this->sky.ib = 0;
+            this->sky.vb = 0;
+        }
+        o1.unlock();
         o.unlock();
         
         rl = (renderer_writelock *)o.writeLock( r, "renderer_land_man::renderer_land_man" );
@@ -278,6 +300,7 @@ namespace dragonpoop
     {
         this->sync( thd );
         this->runLands( thd );
+        this->renderSky( thd );
         this->render( thd );
     }
     
@@ -350,6 +373,59 @@ namespace dragonpoop
             this->clpasser->t->land_ready = 1;
         
         delete sdr;        
+    }
+
+    //render into command list
+    void renderer_land_man::renderSky( dpthread_lock *thd )
+    {
+        shared_obj_guard o, octxt, ocl;
+        render_api_context_writelock *ctxl;
+        render_api_commandlist_writelock *cll;
+        renderer_commandlist_passer_writelock *cpl;
+        shared_obj_guard ocpl;
+        render_api_shader_ref *sdr;
+        
+        if( this->clpasser->t->sky_ready )
+            return;
+        
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_land_man::renderSky" );
+        if( !cpl )
+            return;
+        
+        cpl->setSky( this->sky.clist );
+        ocpl.unlock();
+        
+        ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 100, "renderer_land_man::renderSky" );
+        if( !ctxl )
+            return;
+        
+        if( this->sky.clist )
+            delete this->sky.clist;
+        this->sky.clist = ctxl->makeCmdList();
+        if( !this->sky.clist )
+            return;
+        
+        cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky.clist, 100, "renderer_land_man::renderSky" );
+        if( !cll )
+            return;
+        
+        sdr = ctxl->makeShader( "sky" );
+        if( !sdr )
+            return;
+        
+        cll->setShader( sdr );
+        cll->setAlpha( 1.0f );
+        cll->setMatrix( &this->m );
+        cll->setTexture( 0, 0 );
+        cll->setTexture( 0, 1 );
+        cll->setIndexBuffer( this->sky.ib );
+        cll->setVertexBuffer( this->sky.vb );
+        cll->draw();
+        
+        if( cll->compile( ctxl ) )
+            this->clpasser->t->sky_ready = 1;
+        
+        delete sdr;
     }
     
     //render lands
