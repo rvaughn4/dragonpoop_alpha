@@ -84,7 +84,7 @@ namespace dragonpoop
         o.unlock();
         
         this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
-        this->_startTask( tp, 100 );
+        this->_startTask( tp, 200 );
     }
     
     //dtor

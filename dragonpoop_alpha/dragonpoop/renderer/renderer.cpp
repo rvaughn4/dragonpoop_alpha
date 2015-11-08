@@ -330,6 +330,9 @@ namespace dragonpoop
         render_api_writelock *al;
         render_api_commandlist_writelock *cll;
         renderer_commandlist_passer_writelock *cpl;
+        dpmatrix m1, m2;
+        dpxyz_f diff;
+        dpposition clpos;
         
         if( this->new_gui_cl )
         {
@@ -360,9 +363,10 @@ namespace dragonpoop
             this->new_sky_cl = 0;
         }
         
-        if( this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready || this->clpasser->sky_ready )
+        if( this->render_tries > 2 || this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready || this->clpasser->sky_ready )
         {
         
+            this->render_tries = 0;
             cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
             if( cpl )
             {
@@ -392,7 +396,10 @@ namespace dragonpoop
             o.unlock();
         }
         else
+        {
+            this->render_tries++;
             return;
+        }
         
         al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
         if( !al )
@@ -417,7 +424,15 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-            if( !cll->execute( ctxl, &this->m_world ) )
+            
+            cll->getPosition( &clpos );
+            m2.setIdentity();
+            m2.rotateX( this->cam_rot.x );
+            m2.rotateY( this->cam_rot.y );
+            m2.rotateZ( this->cam_rot.z );
+            m1.copy( &this->m_world );
+            
+            if( !cll->execute( ctxl, &m1 ) )
                 return;
             ocl.unlock();
         }
@@ -429,7 +444,18 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->land_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-            if( !cll->execute( ctxl, &this->m_world ) )
+            
+            cll->getPosition( &clpos );
+            m2.setIdentity();
+            m2.rotateX( this->cam_rot.x );
+            m2.rotateY( this->cam_rot.y );
+            m2.rotateZ( this->cam_rot.z );
+            this->cam_pos.getDifference( &clpos, thd->getTicks(), &diff );
+            m2.translate( diff.x, diff.y, diff.z );
+            m1.copy( &this->m_world );
+            m1.multiply( &m2 );
+            
+            if( !cll->execute( ctxl, &m1 ) )
                 return;
             ocl.unlock();
         }
@@ -439,7 +465,18 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-            if( !cll->execute( ctxl, &this->m_world ) )
+            
+            cll->getPosition( &clpos );
+            m2.setIdentity();
+            m2.rotateX( this->cam_rot.x );
+            m2.rotateY( this->cam_rot.y );
+            m2.rotateZ( this->cam_rot.z );
+            this->cam_pos.getDifference( &clpos, thd->getTicks(), &diff );
+            m2.translate( diff.x, diff.y, diff.z );
+            m1.copy( &this->m_world );
+            m1.multiply( &m2 );
+            
+            if( !cll->execute( ctxl, &m1 ) )
                 return;
             ocl.unlock();
         }
@@ -693,19 +730,23 @@ namespace dragonpoop
     void renderer::processMouseInput( renderer_gui_man_writelock *l, render_api_writelock *al, float x, float y, bool lb, bool rb )
     {
         float w, h;
+        dpxyz_f t;
 
         w = this->dimensions.w;
         h = this->dimensions.h;
-
-        l->processGuiMouseInput( w, h, x, y, lb, rb );
-        
         x = x / w;
         y = y / h;
         x = ( 2.0f * x ) - 1.0f;
         y = ( 2.0f * y ) - 1.0f;
-        
+        y = -y;
         this->mouse.x = x;
         this->mouse.y = y;
+        t.x = x;
+        t.y = y;
+        t.z = 0;
+        this->m_gui_undo.transform( &t );
+        
+        l->processGuiMouseInput( w, h, (t.x + 1.0f) * w * 0.5f, (t.y + 1.0f) * -h * 0.5f, lb, rb );
     }
     
     //process keyboard input
