@@ -100,7 +100,7 @@ namespace dragonpoop
     }
     
     //execute command list
-    bool render_api_commandlist::execute( render_api_context_writelock *r )
+    bool render_api_commandlist::execute( render_api_context_writelock *r, dpmatrix *m_world )
     {
         return 1;
     }
@@ -240,4 +240,16 @@ namespace dragonpoop
         this->cmds.push_back( c );
     }
     
+    //set position
+    void render_api_commandlist::setPosition( dpposition *p )
+    {
+        this->pos.copy( p );
+    }
+    
+    //get position
+    void render_api_commandlist::getPosition( dpposition *p )
+    {
+        p->copy( &this->pos );
+    }
+ 
 };

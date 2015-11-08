@@ -88,6 +88,10 @@ namespace dragonpoop
         }
         this->fps = this->fthiss = 0;
         g->getCameraPosition( &this->cam_pos );
+        this->cam_rot.x = 0;
+        this->cam_rot.y = 0;
+        this->cam_rot.z = 0;
+        
         this->bCamSync = 0;
         this->rgui_mgr = 0;
         this->rmodel_mgr = 0;
@@ -397,6 +401,7 @@ namespace dragonpoop
         h = al->getHeight();
         this->clpasser->w = w;
         this->clpasser->h = h;
+        this->calcMatrix();
 
         ctxl = (render_api_context_writelock *)octx.tryWriteLock( this->main_ctx, 30, "renderer::render" );
         if( !ctxl )
@@ -412,7 +417,7 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-            if( !cll->execute( ctxl ) )
+            if( !cll->execute( ctxl, &this->m_world ) )
                 return;
             ocl.unlock();
         }
@@ -424,7 +429,7 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->land_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-            if( !cll->execute( ctxl ) )
+            if( !cll->execute( ctxl, &this->m_world ) )
                 return;
             ocl.unlock();
         }
@@ -434,7 +439,7 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-            if( !cll->execute( ctxl ) )
+            if( !cll->execute( ctxl, &this->m_world ) )
                 return;
             ocl.unlock();
         }
@@ -446,7 +451,7 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-            if( !cll->execute( ctxl ) )
+            if( !cll->execute( ctxl, &this->m_gui ) )
                 return;
             ocl.unlock();
         }
@@ -521,7 +526,8 @@ namespace dragonpoop
         al->run();
         if( !al->isOpen() )
             this->c->kill();
-        
+        this->dimensions.w = al->getWidth();
+        this->dimensions.h = al->getHeight();
         
         t = thd->getTicks();
         if( t - this->t_last_input < 100 )
@@ -551,22 +557,24 @@ namespace dragonpoop
     //return screen/window width
     unsigned int renderer::getWidth( void )
     {
-        return 1;
+        return this->dimensions.w;
     }
 
     //return screen/window height
     unsigned int renderer::getHeight( void )
     {
-        return 1;
+        return this->dimensions.h;
     }
 
-    //prepare for rendering world
-    void renderer::prepareWorldRender( unsigned int w, unsigned int h )
+    //calculate matrixes
+    void renderer::calcMatrix( void )
     {
-        float sw, sh, rw, rh, r, dw, dh;
+        float sw, sh, rw, rh, r, dw, dh, ss, w, h;
         
         sw = 1920.0f;
         sh = 1080.0f;
+        w = this->getWidth();
+        h = this->getHeight();
         
         rw = sw / w;
         rh = sh / h;
@@ -578,16 +586,7 @@ namespace dragonpoop
         dh = r - rh;
         
         this->m_world.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 100.0f, 45.0f );
-    }
 
-    //prepare for rendering gui
-    void renderer::prepareGuiRender( unsigned int w, unsigned int h )
-    {
-        float sw, sh, rw, rh, r, dw, dh, ss;
-        
-        sw = 1920.0f;
-        sh = 1080.0f;
-        
         ss = sw * sw + sh * sh;
         ss = sqrtf( ss );
         
@@ -606,8 +605,9 @@ namespace dragonpoop
         
         this->m_gui.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, ss );
         this->m_gui_undo.inverse( &this->m_gui );
+        
     }
-
+    
     //generate renderer model
     renderer_model_man *renderer::genModelMan( dptaskpool_writelock *tp )
     {
@@ -694,10 +694,18 @@ namespace dragonpoop
     {
         float w, h;
 
-        w = al->getWidth();
-        h = al->getHeight();
+        w = this->dimensions.w;
+        h = this->dimensions.h;
 
         l->processGuiMouseInput( w, h, x, y, lb, rb );
+        
+        x = x / w;
+        y = y / h;
+        x = ( 2.0f * x ) - 1.0f;
+        y = ( 2.0f * y ) - 1.0f;
+        
+        this->mouse.x = x;
+        this->mouse.y = y;
     }
     
     //process keyboard input

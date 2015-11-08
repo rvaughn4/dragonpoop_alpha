@@ -60,7 +60,7 @@ namespace dragonpoop
     }
     
     //execute batch
-    bool opengl1o5_x11_commandlist_generic_batch::execute( render_api_context_writelock *ctx )
+    bool opengl1o5_x11_commandlist_generic_batch::execute( render_api_context_writelock *ctx, dpmatrix *m_world )
     {
         shared_obj_guard o;
         opengl1o5_x11_shader_readlock *l;
@@ -69,7 +69,7 @@ namespace dragonpoop
         if( !l )
             return 0;
         
-        return l->_render( ctx, t0, t1, &ib, &vb, &m, alpha );
+        return l->_render( ctx, t0, t1, &ib, &vb, &m, alpha, m_world );
     }
     
     

@@ -134,7 +134,8 @@ namespace dragonpoop
         dw = r - rw;
         dh = r - rh;
         
-        this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 400.0f, 45.0f );
+        //this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 400.0f, 45.0f );
+        this->m.setIdentity();
     }
     
     //return core
@@ -357,6 +358,7 @@ namespace dragonpoop
         cll->setShader( sdr );
         this->renderLands( thd, &this->campos, &this->m, ctxl, cll );
         
+        cll->setPosition( &this->campos );
         if( cll->compile( ctxl ) )
             this->clpasser->t->land_ready = 1;
         
@@ -437,6 +439,7 @@ namespace dragonpoop
         cll->setVertexBuffer( this->sky.vb );
         cll->draw();
         
+        cll->setPosition( &this->campos );
         if( cll->compile( ctxl ) )
             this->clpasser->t->sky_ready = 1;
         

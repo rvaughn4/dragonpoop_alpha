@@ -14,6 +14,7 @@ namespace dragonpoop
     class render_api_vertexbuffer_ref;
     class render_api_indexbuffer_ref;
     class dpmatrix;
+    class dpposition;
     
     class render_api_commandlist_writelock : public shared_obj_writelock
     {
@@ -34,7 +35,7 @@ namespace dragonpoop
         //compile command list
         bool compile( render_api_context_writelock *ctx );
         //execute command list
-        bool execute( render_api_context_writelock *r );
+        bool execute( render_api_context_writelock *r, dpmatrix *m_world );
         //delete commands
         void deleteCommands( void );
         //set shader command
@@ -51,7 +52,11 @@ namespace dragonpoop
         void setAlpha( float a );
         //draw command
         void draw( void );
-        
+        //set position
+        void setPosition( dpposition *p );
+        //get position
+        void getPosition( dpposition *p );
+
         friend class render_api_commandlist;
     };
     

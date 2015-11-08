@@ -4,6 +4,7 @@
 
 #include "render_api.h"
 #include "../../../gfx/dpmatrix/dpmatrix.h"
+#include "../../../gfx/dpposition/dpposition.h"
 
 #include <atomic>
 
@@ -32,6 +33,7 @@ namespace dragonpoop
         render_api_indexbuffer_ref *ib;
         dpmatrix m;
         float alpha;
+        dpposition pos;
         
     protected:
         
@@ -50,7 +52,7 @@ namespace dragonpoop
         //called during compile for each draw call
         virtual bool drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha );
         //execute command list
-        virtual bool execute( render_api_context_writelock *r );
+        virtual bool execute( render_api_context_writelock *r, dpmatrix *m_world );
         //set current matrix
         bool cmd_setMatrix( dpmatrix *m );
         //set current shader
@@ -81,6 +83,10 @@ namespace dragonpoop
         void setAlpha( float a );
         //draw command
         void draw( void );
+        //set position
+        void setPosition( dpposition *p );
+        //get position
+        void getPosition( dpposition *p );
         
     public:
         

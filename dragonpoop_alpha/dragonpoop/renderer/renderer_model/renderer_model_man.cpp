@@ -391,6 +391,7 @@ namespace dragonpoop
         cll->setShader( sdr );
         this->renderModels( thd, &this->campos, &this->m, ctxl, cll );
         
+        cll->setPosition( &this->campos );
         if( cll->compile( ctxl ) )
             this->clpasser->t->model_ready = 1;
         
@@ -416,7 +417,8 @@ namespace dragonpoop
         dw = r - rw;
         dh = r - rh;
         
-        this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 400.0f, 45.0f );
+        //this->m.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 400.0f, 45.0f );
+        this->m.setIdentity();
     }
     
     //delete models

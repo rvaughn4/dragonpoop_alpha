@@ -43,17 +43,23 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         render_api_shader_readlock *l;
+        dpmatrix mdummy;
         
         l = (render_api_shader_readlock *)o.tryReadLock( sdr, 100, "opengl1o5_x11_commandlist::drawCompile" );
         if( !l )
             return 0;
         
-        return l->render( ctx, t0, t1, ib, vb, m, alpha );
+        return l->render( ctx, t0, t1, ib, vb, m, alpha, &mdummy );
     }
     
     //execute command list
-    bool opengl1o5_x11_commandlist::execute( render_api_context_writelock *r )
+    bool opengl1o5_x11_commandlist::execute( render_api_context_writelock *r, dpmatrix *m_world )
     {
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        glMatrixMode( GL_MODELVIEW );
+        glLoadMatrixf( m_world->getRaw4by4() );
+        
         glCallList( this->dlist );
         return 1;
     }

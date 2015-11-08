@@ -27,7 +27,7 @@ namespace dragonpoop
     protected:
 
         //execute batch
-        virtual bool execute( render_api_context_writelock *ctx );
+        virtual bool execute( render_api_context_writelock *ctx, dpmatrix *m_world );
         
     public:
         

@@ -24,9 +24,9 @@ namespace dragonpoop
     }
     
     //execute command list
-    bool render_api_commandlist_writelock::execute( render_api_context_writelock *r )
+    bool render_api_commandlist_writelock::execute( render_api_context_writelock *r, dpmatrix *m_world )
     {
-        return this->t->execute( r );
+        return this->t->execute( r, m_world );
     }
     
     //delete commands
@@ -75,6 +75,18 @@ namespace dragonpoop
     void render_api_commandlist_writelock::draw( void )
     {
         this->t->draw();
+    }
+    
+    //set position
+    void render_api_commandlist_writelock::setPosition( dpposition *p )
+    {
+        this->t->setPosition( p );
+    }
+    
+    //get position
+    void render_api_commandlist_writelock::getPosition( dpposition *p )
+    {
+        this->t->getPosition( p );
     }
     
 };

@@ -43,7 +43,7 @@ namespace dragonpoop
     }
     
     //execute command list
-    bool render_api_commandlist_generic::execute( render_api_context_writelock *r )
+    bool render_api_commandlist_generic::execute( render_api_context_writelock *r, dpmatrix *m_world )
     {
         std::list<render_api_commandlist_generic_batch *> *l;
         std::list<render_api_commandlist_generic_batch *>::iterator i;
@@ -53,7 +53,7 @@ namespace dragonpoop
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            if( !p->execute( r ) )
+            if( !p->execute( r, m_world ) )
                 return 0;
         }
         
@@ -61,7 +61,7 @@ namespace dragonpoop
     }
     
     //execute batch
-    bool render_api_commandlist_generic::executeBatch( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
+    bool render_api_commandlist_generic::executeBatch( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, dpmatrix *m_world )
     {
         shared_obj_guard o;
         render_api_shader_readlock *l;
@@ -70,7 +70,7 @@ namespace dragonpoop
         if( !l )
             return 0;
         
-        return l->render( ctx, t0, t1, ib, vb, m, alpha );
+        return l->render( ctx, t0, t1, ib, vb, m, alpha, m_world );
     }
     
     //delete batches

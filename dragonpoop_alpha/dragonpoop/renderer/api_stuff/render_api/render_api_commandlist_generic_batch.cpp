@@ -62,9 +62,9 @@ namespace dragonpoop
     }
     
     //execute batch
-    bool render_api_commandlist_generic_batch::execute( render_api_context_writelock *ctx )
+    bool render_api_commandlist_generic_batch::execute( render_api_context_writelock *ctx, dpmatrix *m_world )
     {
-        return this->l->executeBatch( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m, this->alpha );
+        return this->l->executeBatch( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m, this->alpha, m_world );
     }
     
     

@@ -140,7 +140,8 @@ namespace dragonpoop
         dw *= 0.5f;
         dh *= 0.5f;
         
-        this->m.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, ss );
+        //this->m.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, ss );
+        this->m.setIdentity();
         this->m_undo.inverse( &this->m );
     }
     

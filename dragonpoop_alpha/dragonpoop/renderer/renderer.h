@@ -75,6 +75,20 @@ namespace dragonpoop
         dpposition cam_pos;
         renderer_state *cs;
         
+        struct
+        {
+            float x, y;
+        } mouse;
+        struct
+        {
+            float w, h;
+        } dimensions;
+        struct
+        {
+            float x, y, z;
+        } cam_rot;
+        
+        
         //run renderer
         void state_run( dpthread_lock *thd, renderer_writelock *rl );
         //init api
@@ -130,10 +144,8 @@ namespace dragonpoop
         virtual unsigned int getWidth( void );
         //return screen/window height
         virtual unsigned int getHeight( void );
-        //prepare for rendering world
-        virtual void prepareWorldRender( unsigned int w, unsigned int h );
-        //prepare for rendering gui
-        virtual void prepareGuiRender( unsigned int w, unsigned int h );
+        //calculate matrixes
+        void calcMatrix( void );        
         
         //generate renderer model
         virtual renderer_model_man *genModelMan( dptaskpool_writelock *tp );
