@@ -49,9 +49,6 @@ namespace dragonpoop
         gfx_writelock *gl;
         renderer_writelock *rl;
         renderer_commandlist_passer_writelock *cpl;
-        dpland_skydome *s;
-        render_api_context_writelock *ctxl;
-        dpland_man_readlock *ll;
         
         cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( clpasser, 5000, "renderer_land_man::renderer_land_man" );
         if( cpl )
@@ -73,23 +70,11 @@ namespace dragonpoop
         this->c = c;
         this->tpr = (dptaskpool_ref *)tp->getRef();
         
-        ctxl = (render_api_context_writelock *)o.tryWriteLock( ctx, 5000, "renderer_land_man::renderer_land_man" );
-        ll = (dpland_man_readlock *)o1.tryReadLock( this->g_lands, 5000, "renderer_land_man::renderer_land_man" );
-
         this->sky.clist = 0;
-        if( ctxl && ll )
-        {
-            s = ll->getSky();
-            this->sky.ib = ctxl->makeIndexBuffer( &s->ib );
-            this->sky.vb = ctxl->makeVertexBuffer( &s->vb );
-        }
-        else
-        {
-            this->sky.ib = 0;
-            this->sky.vb = 0;
-        }
-        o1.unlock();
-        o.unlock();
+        this->sky.ib = 0;
+        this->sky.vb = 0;
+        this->sky.tex_bg = 0;
+        this->sky.tex_sun = 0;
         
         rl = (renderer_writelock *)o.writeLock( r, "renderer_land_man::renderer_land_man" );
         if( rl )
@@ -300,6 +285,7 @@ namespace dragonpoop
     {
         this->sync( thd );
         this->runLands( thd );
+        this->runSky( thd );
         this->renderSky( thd );
         this->render( thd );
     }
@@ -413,10 +399,31 @@ namespace dragonpoop
         if( !sdr )
             return;
         
+        dpmatrix m1, m2;
+        static float rr;
+        rr += 1.0f;
+        
+
+        
+        m1.setIdentity();
+        m1.translate( 0, 0, -5.0f );
+        m1.rotateX( rr );
+        m2.copy( &this->m );
+        m2.multiply( &m1 );
+        
+        cll->setShader( sdr );
+        cll->setAlpha( 1.0f );
+        cll->setMatrix( &m2 );
+        cll->setTexture( this->sky.tex_sun, 0 );
+        cll->setTexture( 0, 1 );
+        cll->setIndexBuffer( this->sky.ib );
+        cll->setVertexBuffer( this->sky.vb );
+        cll->draw();
+
         cll->setShader( sdr );
         cll->setAlpha( 1.0f );
         cll->setMatrix( &this->m );
-        cll->setTexture( 0, 0 );
+        cll->setTexture( this->sky.tex_bg, 0 );
         cll->setTexture( 0, 1 );
         cll->setIndexBuffer( this->sky.ib );
         cll->setVertexBuffer( this->sky.vb );
@@ -455,5 +462,32 @@ namespace dragonpoop
         
         return new renderer_land( ml, ctx );
     }
+    
+    //run sky
+    void renderer_land_man::runSky( dpthread_lock *thd )
+    {
+        render_api_context_writelock *ctxl;
+        dpland_man_readlock *lr;
+        shared_obj_guard o, o1;
+        dpland_skydome *s;
+        
+        if( this->sky.vb )
+            return;
+        
+        ctxl = (render_api_context_writelock *)o.tryWriteLock( this->ctx, 100, "renderer_land_man::runSky" );
+        if( !ctxl )
+            return;
+        lr = (dpland_man_readlock *)o1.tryReadLock( this->g_lands, 100, "renderer_land_man::runSky" );
+        if( !lr )
+            return;
+        
+        s = lr->getSky();
+        this->sky.vb = ctxl->makeVertexBuffer( &s->vb );
+        this->sky.ib = ctxl->makeIndexBuffer( &s->ib );
+        this->sky.tex_bg = ctxl->makeTexture( &s->bm_sky );
+        this->sky.tex_sun = ctxl->makeTexture( &s->bm_sun );
+        
+    }
+    
     
 };

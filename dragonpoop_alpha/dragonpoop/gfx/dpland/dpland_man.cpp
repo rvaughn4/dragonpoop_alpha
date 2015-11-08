@@ -34,6 +34,7 @@ namespace dragonpoop
         this->tile_sz = 1.0f;
         this->tex_sz = 10.0f;
         
+        this->loadSky();
         this->buildSky();
         
         gl = (gfx_writelock *)o.writeLock( g, "dpland_man::dpland_man" );
@@ -184,6 +185,7 @@ namespace dragonpoop
         }
 
         l = &d;
+        old_tile_ctr = 0;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -244,51 +246,49 @@ namespace dragonpoop
         }
     }
 
-    // Aux function
-    inline int dpland_man__buildSky__index( int col_max, int i, int j )
-    {
-        return i + j * ( col_max + 1 );
-    }
-    
     //build skydome
     void dpland_man::buildSky( void )
     {
-        int col_max, row_max, j, i;
+        int col_max, row_max, j, i, x;
         dpvertex v;
-        float teta, fi, radius;
+        float teta, fi, radius, pie;
         
-        col_max = 10;
-        row_max = 10;
-        radius = 100.0f;
+        col_max = 30;
+        row_max = 30;
+        radius = 1.0f;
+        pie = 11.0f / 7.0f;
         
         // Fill coordinate positions [to change]
         for( j = 0; j <= row_max; j++ )
         {
             for( i = 0; i <= col_max; i++ )
             {
-                teta = ( (float)i / col_max ) * 2.0f * 3.14f;
-                fi = ( (float)j / row_max ) * 3.14f;
+                teta = ( (float)i * 2.0f / col_max ) * 2.0f * pie;
+                fi = ( (float)j * 2.0f / row_max ) * pie;
                 v.pos.x = radius * cosf( teta ) * sinf( fi );
                 v.pos.y = radius * cosf( fi );
-                v.pos.z = 1.0f * sinf( teta ) * sinf( fi );
+                v.pos.z = radius * sinf( teta ) * sinf( fi );
+                v.texcoords[ 0 ].s = (float)i / (float)col_max;
+                v.texcoords[ 0 ].t = (float)j / (float)row_max;
                 this->sky.vb.addVertex( &v );
             }
         }
-        
+
         // Fill index
         for( j = 0; j < row_max; j++ )
         {
             for( i = 0; i < col_max; i++ )
             {
-                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i, j ) );
-                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j + 1 ) );
-                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i, j + 1 ) );
-                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i, j ) );
-                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j ) );
-                this->sky.ib.addIndex( dpland_man__buildSky__index( col_max, i + 1, j + 1 ) );
+                x = i + j * ( col_max + 1 );
+                this->sky.ib.addIndex( x );
+                this->sky.ib.addIndex( x + col_max + 1 );
+                this->sky.ib.addIndex( x + 1 );
+                this->sky.ib.addIndex( x + 1 );
+                this->sky.ib.addIndex( x + col_max + 1 );
+                this->sky.ib.addIndex( x + col_max + 2 );
             }
         }
-        
+
         this->sky.ib.fixBounds( &this->sky.vb );
     }
     
@@ -296,6 +296,13 @@ namespace dragonpoop
     dpland_skydome *dpland_man::getSky( void )
     {
         return &this->sky;
+    }
+    
+    //load sky textures
+    void dpland_man::loadSky( void )
+    {
+        this->sky.bm_sky.loadFile( "skydome_bg.bmp" );
+        this->sky.bm_sun.loadFile( "sun.bmp" );
     }
     
 };

@@ -36,40 +36,24 @@ namespace dragonpoop
     //render gl
     bool opengl1o5_x11_shader_sky::_render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha )
     {
-        
+
         glDisable( GL_LIGHTING );
-        glEnable( GL_DEPTH_TEST );
+        glDisable( GL_DEPTH_TEST );
         glEnable( GL_TEXTURE_2D );
-        glDisable( GL_BLEND );
+        glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        glMatrixMode( GL_MODELVIEW );
+        glLoadIdentity();
         glLoadMatrixf( m->getRaw4by4() );
         glColor4f( 1.0f, 1.0f, 1.0f, alpha );
         
-        //glBindTexture( GL_TEXTURE_2D, t0 );
+        glBindTexture( GL_TEXTURE_2D, t0 );
         this->renderVB( vb, ib );
         
         return 1;
-    }
-    
-    //render vb
-    void opengl1o5_x11_shader_sky::renderVB( dpvertex_buffer *vb, dpindex_buffer *ib )
-    {
-        dpvertex *pv;//, *iv;
-        dpindex *pi;//, *ii;
-        
-        
-        if( sizeof( dpindex ) == sizeof( uint16_t ) )
-        {
-            pv = vb->getBuffer();
-            pi = ib->getBuffer();
-            
-            glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &pv->texcoords[ 0 ] );
-            glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &pv->normal );
-            glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &pv->pos );
-            glDrawElements( GL_TRIANGLES, ib->getSize(), GL_UNSIGNED_SHORT, pi );
-            
-            return;
-        }
     }
     
 };

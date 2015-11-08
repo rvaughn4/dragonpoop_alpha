@@ -45,11 +45,16 @@ namespace dragonpoop
         glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);	// Position The Light
         glEnable(GL_LIGHT1);								// Enable Light One
         glEnable( GL_LIGHTING );
-
+        
         glEnable( GL_DEPTH_TEST );
+        glDepthFunc( GL_LEQUAL );
         glEnable( GL_TEXTURE_2D );
         glDisable( GL_BLEND );
-        glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        glMatrixMode( GL_MODELVIEW );
+        glLoadIdentity();
         glLoadMatrixf( m->getRaw4by4() );
         glColor4f( 1.0f, 1.0f, 1.0f, alpha );
         

@@ -95,6 +95,10 @@ namespace dragonpoop
             pv = vb->getBuffer();
             pi = ib->getBuffer();
             
+            glEnableClientState( GL_NORMAL_ARRAY );
+            glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+            glEnableClientState( GL_VERTEX_ARRAY );
+            
             glTexCoordPointer( 2, GL_FLOAT, sizeof( dpvertex ), &pv->texcoords[ 0 ] );
             glNormalPointer( GL_FLOAT, sizeof( dpvertex ), &pv->normal );
             glVertexPointer( 3, GL_FLOAT, sizeof( dpvertex ), &pv->pos );

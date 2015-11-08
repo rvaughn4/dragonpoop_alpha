@@ -41,6 +41,7 @@ namespace dragonpoop
     class renderer_commandlist_passer_ref;
     class render_api_vertexbuffer_ref;
     class render_api_indexbuffer_ref;
+    class render_api_texture_ref;
     
     class renderer_land_man : public shared_obj
     {
@@ -69,6 +70,7 @@ namespace dragonpoop
             render_api_commandlist_ref *clist;
             render_api_vertexbuffer_ref *vb;
             render_api_indexbuffer_ref *ib;
+            render_api_texture_ref *tex_bg, *tex_sun;
         } sky;
         
         //start task
@@ -89,6 +91,8 @@ namespace dragonpoop
         void renderLands( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
         //render sky
         void renderSky( dpthread_lock *thd );
+        //run sky
+        void runSky( dpthread_lock *thd );
         
     protected:
         

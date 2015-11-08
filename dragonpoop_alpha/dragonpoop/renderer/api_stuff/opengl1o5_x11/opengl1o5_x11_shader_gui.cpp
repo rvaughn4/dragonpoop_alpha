@@ -37,11 +37,16 @@ namespace dragonpoop
     bool opengl1o5_x11_shader_gui::_render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha )
     {
 
-        glDisable( GL_DEPTH_TEST );
         glDisable( GL_LIGHTING );
+        glDisable( GL_DEPTH_TEST );
         glEnable( GL_TEXTURE_2D );
         glEnable( GL_BLEND );
         glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+        
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        glMatrixMode( GL_MODELVIEW );
+        glLoadIdentity();
         glLoadMatrixf( m->getRaw4by4() );
         glColor4f( 1.0f, 1.0f, 1.0f, alpha );
         

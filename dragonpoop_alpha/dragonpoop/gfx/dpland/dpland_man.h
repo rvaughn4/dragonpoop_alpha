@@ -70,6 +70,8 @@ namespace dragonpoop
         void makeTile( dpthread_lock *thd, int64_t x, int64_t z );
         //build skydome
         void buildSky( void );
+        //load sky textures
+        void loadSky( void );
         
     protected:
         

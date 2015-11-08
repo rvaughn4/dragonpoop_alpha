@@ -16,8 +16,6 @@ namespace dragonpoop
         
         //render gl
         virtual bool _render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha );
-        //render vb
-        void renderVB( dpvertex_buffer *vb, dpindex_buffer *ib );
 
     public:
         

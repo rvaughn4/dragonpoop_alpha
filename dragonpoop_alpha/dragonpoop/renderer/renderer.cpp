@@ -379,7 +379,7 @@ namespace dragonpoop
                 }
                 if( this->clpasser->sky_ready )
                 {
-                    this->new_sky_cl = cpl->getLand();
+                    this->new_sky_cl = cpl->getSky();
                     this->clpasser->sky_ready = 0;
                 }
                 cpl->setPosition( &this->cam_pos );
@@ -404,7 +404,7 @@ namespace dragonpoop
         
         ctxl->makeActive();
         ctxl->setViewport( w, h );
-        ctxl->clearColor( 0.0f, 0.0f, 0.0f );
+        ctxl->clearColor( 1.0f, 1.0f, 0.5f );
         ctxl->clearDepth( 1.0f );
 
         if( this->sky_cl )

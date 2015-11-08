@@ -171,7 +171,7 @@ namespace dragonpoop
         for( i = 0; i < sz; i++ )
         {
             p = &b[ i ];
-            if( p->i >= sz )
+            if( p->i >= vsz )
                 p->i = 0;
         }
     }
