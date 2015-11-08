@@ -52,8 +52,8 @@ namespace dragonpoop
         
         clist->setAlpha( 1 );
         clist->setMatrix( &m );
-        clist->setTexture( 0, 0 );
-        clist->setTexture( 0, 1 );
+        //clist->setTexture( 0, 0 );
+        //clist->setTexture( 0, 1 );
         clist->setIndexBuffer( this->ib );
         clist->setVertexBuffer( this->vb );
         clist->draw();

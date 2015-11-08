@@ -255,7 +255,7 @@ namespace dragonpoop
         
         col_max = 30;
         row_max = 30;
-        radius = 1.0f;
+        radius = 50.0f;
         pie = 11.0f / 7.0f;
         
         // Fill coordinate positions [to change]

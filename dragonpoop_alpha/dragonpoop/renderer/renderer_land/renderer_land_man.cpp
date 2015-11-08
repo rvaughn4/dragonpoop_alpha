@@ -76,6 +76,8 @@ namespace dragonpoop
         this->sky.tex_bg = 0;
         this->sky.tex_sun = 0;
         
+        this->grass = 0;
+        
         rl = (renderer_writelock *)o.writeLock( r, "renderer_land_man::renderer_land_man" );
         if( rl )
             this->r = (renderer_ref *)rl->getRef();
@@ -406,8 +408,8 @@ namespace dragonpoop
 
         
         m1.setIdentity();
-        m1.translate( 0, 0, -5.0f );
-        m1.rotateX( rr );
+        //m1.translate( 0, 0, -5.0f );
+        m1.rotateZ( rr );
         m2.copy( &this->m );
         m2.multiply( &m1 );
         
@@ -420,9 +422,15 @@ namespace dragonpoop
         cll->setVertexBuffer( this->sky.vb );
         cll->draw();
 
+        m1.setIdentity();
+        //m1.translate( 0, 0, -5.0f );
+        //m1.rotateZ( rr );
+        m2.copy( &this->m );
+        m2.multiply( &m1 );
+
         cll->setShader( sdr );
         cll->setAlpha( 1.0f );
-        cll->setMatrix( &this->m );
+        cll->setMatrix( &m2 );
         cll->setTexture( this->sky.tex_bg, 0 );
         cll->setTexture( 0, 1 );
         cll->setIndexBuffer( this->sky.ib );
@@ -441,6 +449,15 @@ namespace dragonpoop
         std::list<renderer_land *> *l;
         std::list<renderer_land *>::iterator i;
         renderer_land *p;
+        
+        if( !this->grass )
+        {
+            dpbitmap bm;
+            bm.loadFile( "grass.bmp" );
+            this->grass = ctx->makeTexture( &bm );
+        }
+        
+        cl->setTexture( this->grass, 0 );
         
         l = &this->lands;
         for( i = l->begin(); i != l->end(); ++i )
@@ -486,6 +503,7 @@ namespace dragonpoop
         this->sky.ib = ctxl->makeIndexBuffer( &s->ib );
         this->sky.tex_bg = ctxl->makeTexture( &s->bm_sky );
         this->sky.tex_sun = ctxl->makeTexture( &s->bm_sun );
+        
         
     }
     

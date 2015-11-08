@@ -404,7 +404,7 @@ namespace dragonpoop
         
         ctxl->makeActive();
         ctxl->setViewport( w, h );
-        ctxl->clearColor( 1.0f, 1.0f, 0.5f );
+        ctxl->clearColor( 0.8f, 0.8f, 1.0f );
         ctxl->clearDepth( 1.0f );
 
         if( this->sky_cl )

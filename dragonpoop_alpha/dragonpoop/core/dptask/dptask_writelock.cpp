@@ -1,6 +1,7 @@
 
 #include "dptask_writelock.h"
 #include "dptask.h"
+#include "../shared_obj/shared_obj_guard.h"
 
 namespace dragonpoop
 {
@@ -14,7 +15,6 @@ namespace dragonpoop
     //dtor
     dptask_writelock::~dptask_writelock( void )
     {
-
     }
 
     //run task

@@ -72,6 +72,7 @@ namespace dragonpoop
             render_api_indexbuffer_ref *ib;
             render_api_texture_ref *tex_bg, *tex_sun;
         } sky;
+        render_api_texture_ref *grass;
         
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
