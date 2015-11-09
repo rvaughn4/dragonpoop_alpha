@@ -53,6 +53,12 @@ namespace dragonpoop
         this->l->cmd_setAlpha( a );
     }
     
+    //set color
+    void render_api_command::setColor( float r, float g, float b )
+    {
+        this->l->cmd_setColor( r, g, b );
+    }
+    
     //draw
     void render_api_command::draw( render_api_context_writelock *ctx )
     {

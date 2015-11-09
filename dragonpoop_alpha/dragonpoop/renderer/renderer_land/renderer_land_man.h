@@ -71,7 +71,7 @@ namespace dragonpoop
             render_api_commandlist_ref *clist;
             render_api_vertexbuffer_ref *vb;
             render_api_indexbuffer_ref *ib;
-            render_api_texture_ref *tex_bg, *tex_sun;
+            render_api_texture_ref *tex_bg, *tex_sun, *tex_stars;
         } sky;
         render_api_texture_ref *grass;
         

@@ -50,6 +50,7 @@
 		790A78861B68DBA40046C55C /* model_animation_frame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A78831B68DBA40046C55C /* model_animation_frame.cpp */; };
 		790A788B1B68E3EA0046C55C /* model_frame_joint.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A78881B68E3EA0046C55C /* model_frame_joint.cpp */; };
 		790A8C821BDD676500CF311B /* render_api_command_set_alpha.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790A8C801BDD676500CF311B /* render_api_command_set_alpha.cpp */; };
+		790BCCEE1BF09A8A008FC647 /* render_api_command_set_color.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790BCCEC1BF09A8A008FC647 /* render_api_command_set_color.cpp */; };
 		790C4D561BD6B1CE009BCF7E /* opengl1o5_x11.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790C4D131BD6B1CE009BCF7E /* opengl1o5_x11.cpp */; };
 		790C4D571BD6B1CE009BCF7E /* opengl1o5_x11_context.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790C4D151BD6B1CE009BCF7E /* opengl1o5_x11_context.cpp */; };
 		790C4D581BD6B1CE009BCF7E /* opengl1o5_x11_shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 790C4D171BD6B1CE009BCF7E /* opengl1o5_x11_shader.cpp */; };
@@ -443,6 +444,8 @@
 		790A788A1B68E3EA0046C55C /* model_frame_joints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = model_frame_joints.h; sourceTree = "<group>"; };
 		790A8C801BDD676500CF311B /* render_api_command_set_alpha.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_command_set_alpha.cpp; sourceTree = "<group>"; };
 		790A8C811BDD676500CF311B /* render_api_command_set_alpha.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_command_set_alpha.h; sourceTree = "<group>"; };
+		790BCCEC1BF09A8A008FC647 /* render_api_command_set_color.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = render_api_command_set_color.cpp; sourceTree = "<group>"; };
+		790BCCED1BF09A8A008FC647 /* render_api_command_set_color.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = render_api_command_set_color.h; sourceTree = "<group>"; };
 		790C4D131BD6B1CE009BCF7E /* opengl1o5_x11.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl1o5_x11.cpp; sourceTree = "<group>"; };
 		790C4D141BD6B1CE009BCF7E /* opengl1o5_x11.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opengl1o5_x11.h; sourceTree = "<group>"; };
 		790C4D151BD6B1CE009BCF7E /* opengl1o5_x11_context.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = opengl1o5_x11_context.cpp; sourceTree = "<group>"; };
@@ -1236,6 +1239,8 @@
 				790C4D7D1BD6B55A009BCF7E /* render_api_command_set_texture.h */,
 				790C4D7E1BD6B55A009BCF7E /* render_api_command_set_vertexbuffer.cpp */,
 				790C4D7F1BD6B55A009BCF7E /* render_api_command_set_vertexbuffer.h */,
+				790BCCEC1BF09A8A008FC647 /* render_api_command_set_color.cpp */,
+				790BCCED1BF09A8A008FC647 /* render_api_command_set_color.h */,
 				790C4D201BD6B1CE009BCF7E /* render_api_command.cpp */,
 				790C4D211BD6B1CE009BCF7E /* render_api_command.h */,
 				790C4D241BD6B1CE009BCF7E /* render_api_commandlist_readlock.cpp */,
@@ -2502,6 +2507,7 @@
 				79B931621B6E8C4B0054295B /* model_loader_ms3d_state_make_triangles.cpp in Sources */,
 				790006491BA24D2700E5D2EC /* model_saver_ms3d_state_write_header.cpp in Sources */,
 				790759751BD0F38900F9D2F1 /* renderer_state_close.cpp in Sources */,
+				790BCCEE1BF09A8A008FC647 /* render_api_command_set_color.cpp in Sources */,
 				79F107221B6ED076000723E4 /* model_instance_joint.cpp in Sources */,
 				79ADC8C41BDCF1B200D90DB2 /* opengl1o5_x11_commandlist.cpp in Sources */,
 				79FD4D6F1BCFDBA800126995 /* model_man.cpp in Sources */,

@@ -424,7 +424,7 @@ namespace dragonpoop
         
         ctxl->makeActive();
         ctxl->setViewport( this->dimensions.w, this->dimensions.h );
-        ctxl->clearColor( 0.8f, 0.8f, 1.0f );
+        ctxl->clearColor( 0.0f, 0.0f, 0.0f );
         ctxl->clearDepth( 1.0f );
         
         if( this->sky_cl )

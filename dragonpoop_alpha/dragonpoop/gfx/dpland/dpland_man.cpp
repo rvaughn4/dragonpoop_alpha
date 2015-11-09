@@ -249,12 +249,13 @@ namespace dragonpoop
     //build skydome
     void dpland_man::buildSky( void )
     {
-        int col_max, row_max, j, i, x;
+        int col_max, row_max, j, i, x, hole;
         dpvertex v;
         float teta, fi, radius, pie;
         
         col_max = 30;
         row_max = 30;
+        hole = 3;
         radius = 10.0f;
         pie = 11.0f / 7.0f;
         
@@ -264,12 +265,12 @@ namespace dragonpoop
             for( i = 0; i <= col_max; i++ )
             {
                 teta = ( (float)i * 2.0f / col_max ) * 2.0f * pie;
-                fi = ( (float)j * 2.0f / row_max ) * pie;
+                fi = ( (float)( j + hole / 2 ) * 2.0f / ( row_max + hole ) ) * pie;
                 v.pos.x = radius * cosf( teta ) * sinf( fi );
                 v.pos.y = radius * cosf( fi );
                 v.pos.z = radius * sinf( teta ) * sinf( fi );
                 v.texcoords[ 0 ].s = (float)i / (float)col_max;
-                v.texcoords[ 0 ].t = (float)j / (float)row_max;
+                v.texcoords[ 0 ].t = (float)( j + hole / 2 ) / (float)( row_max + hole );
                 this->sky.vb.addVertex( &v );
             }
         }
@@ -303,6 +304,7 @@ namespace dragonpoop
     {
         this->sky.bm_sky.loadFile( "skydome_bg.bmp" );
         this->sky.bm_sun.loadFile( "sun.bmp" );
+        this->sky.bm_stars.loadFile( "stars.bmp" );
     }
     
 };

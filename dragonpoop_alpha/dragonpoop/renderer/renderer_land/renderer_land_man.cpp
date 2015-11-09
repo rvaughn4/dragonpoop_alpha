@@ -391,16 +391,25 @@ namespace dragonpoop
         static float rr;
         rr += 1.0f;
         
-
+        cll->setShader( sdr );
+        cll->setAlpha( 0.5f );
+        cll->setColor( 1.0f, 1.0f, 1.0f );
+        cll->setMatrix( &this->m );
+        cll->setTexture( this->sky.tex_stars, 0 );
+        cll->setTexture( 0, 1 );
+        cll->setIndexBuffer( this->sky.ib );
+        cll->setVertexBuffer( this->sky.vb );
+        cll->draw();
         
         m1.setIdentity();
         //m1.translate( 0, 0, -5.0f );
-       // m1.rotateZ( rr );
+        m1.rotateZ( rr );
         m2.copy( &this->m );
         m2.multiply( &m1 );
         
         cll->setShader( sdr );
         cll->setAlpha( 1.0f );
+        cll->setColor( 1.0f, 1.0f, 0.8f );
         cll->setMatrix( &m2 );
         cll->setTexture( this->sky.tex_sun, 0 );
         cll->setTexture( 0, 1 );
@@ -408,15 +417,10 @@ namespace dragonpoop
         cll->setVertexBuffer( this->sky.vb );
         cll->draw();
 
-        m1.setIdentity();
-        //m1.translate( 0, 0, -5.0f );
-        //m1.rotateZ( rr );
-        m2.copy( &this->m );
-        m2.multiply( &m1 );
-
         cll->setShader( sdr );
+        cll->setColor( 0.3f, 0.2f, 0.0f );
         cll->setAlpha( 1.0f );
-        cll->setMatrix( &m2 );
+        cll->setMatrix( &this->m );
         cll->setTexture( this->sky.tex_bg, 0 );
         cll->setTexture( 0, 1 );
         cll->setIndexBuffer( this->sky.ib );
@@ -490,6 +494,7 @@ namespace dragonpoop
         this->sky.ib = ctxl->makeIndexBuffer( &s->ib );
         this->sky.tex_bg = ctxl->makeTexture( &s->bm_sky );
         this->sky.tex_sun = ctxl->makeTexture( &s->bm_sun );
+        this->sky.tex_stars = ctxl->makeTexture( &s->bm_stars );
         
         
     }

@@ -34,6 +34,8 @@ namespace dragonpoop
         void setIndexBuffer( render_api_indexbuffer_ref *r );
         //set alpha
         void setAlpha( float a );
+        //set color
+        void setColor( float r, float g, float b );
         //draw
         void draw( render_api_context_writelock *ctx );
         

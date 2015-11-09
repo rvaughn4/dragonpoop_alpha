@@ -11,6 +11,7 @@
 #include "render_api_command_set_indexbuffer.h"
 #include "render_api_command_set_shader.h"
 #include "render_api_command_set_alpha.h"
+#include "render_api_command_set_color.h"
 #include "render_api_command_set_matrix.h"
 #include "render_api_command_set_texture.h"
 #include "render_api_command_set_vertexbuffer.h"
@@ -30,7 +31,7 @@ namespace dragonpoop
         this->alpha = 1;
         this->r = 1;
         this->g = 1;
-        this->b = 0;
+        this->b = 1;
     }
     
     //dtor
@@ -247,7 +248,9 @@ namespace dragonpoop
     //set color command
     void render_api_commandlist::setColor( float r, float g, float b )
     {
-        
+        render_api_command *c;
+        c = new render_api_command_set_color( this, r, g, b );
+        this->cmds.push_back( c );
     }
     
     //draw command
