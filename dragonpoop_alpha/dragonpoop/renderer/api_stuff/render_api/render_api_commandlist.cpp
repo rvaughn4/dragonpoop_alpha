@@ -28,6 +28,9 @@ namespace dragonpoop
         this->vb = 0;
         this->ib = 0;
         this->alpha = 1;
+        this->r = 1;
+        this->g = 1;
+        this->b = 0;
     }
     
     //dtor
@@ -94,7 +97,7 @@ namespace dragonpoop
     }
     
     //called during compile for each draw call
-    bool render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
+    bool render_api_commandlist::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, float r, float g, float b )
     {
         return 1;
     }
@@ -148,10 +151,19 @@ namespace dragonpoop
         return 1;
     }
     
+    //set current color
+    bool render_api_commandlist::cmd_setColor( float r, float g, float b )
+    {
+        this->r = r;
+        this->g = g;
+        this->b = b;
+        return 1;
+    }
+    
     //draw
     bool render_api_commandlist::cmd_draw( render_api_context_writelock *ctx )
     {
-        return this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m, this->alpha );
+        return this->drawCompile( ctx, this->sdr, this->t0, this->t1, this->vb, this->ib, &this->m, this->alpha, this->r, this->g, this->b );
     }
     
     //set current matrix
@@ -230,6 +242,12 @@ namespace dragonpoop
         render_api_command *c;
         c = new render_api_command_set_alpha( this, a );
         this->cmds.push_back( c );
+    }
+    
+    //set color command
+    void render_api_commandlist::setColor( float r, float g, float b )
+    {
+        
     }
     
     //draw command

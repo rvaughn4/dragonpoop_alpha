@@ -322,7 +322,6 @@ namespace dragonpoop
     //render
     void renderer::render( dpthread_lock *thd, renderer_writelock *rl )
     {
-        unsigned int w, h;
         uint64_t t, td;
         float f0;
         shared_obj_guard o, octx, ocl;
@@ -436,7 +435,7 @@ namespace dragonpoop
             
             m2.setIdentity();
             m2.rotateX( this->cam_rot.x );
-            m2.rotateY( this->cam_rot.y + 90.0f );
+            m2.rotateY( this->cam_rot.y - 90.0f );
             m2.rotateZ( this->cam_rot.z );
             m1.copy( &this->m_world );
             m1.multiply( &m2 );

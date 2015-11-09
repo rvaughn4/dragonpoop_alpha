@@ -70,6 +70,12 @@ namespace dragonpoop
     {
         this->t->setAlpha( a );
     }
+
+    //set color command
+    void render_api_commandlist_writelock::setColor( float r, float g, float b )
+    {
+        this->t->setColor( r, g, b );
+    }
     
     //draw command
     void render_api_commandlist_writelock::draw( void )

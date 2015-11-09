@@ -34,10 +34,10 @@ namespace dragonpoop
     }
     
     //called during compile for each draw call
-    bool render_api_commandlist_generic::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
+    bool render_api_commandlist_generic::drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, float r, float g, float bb )
     {
         render_api_commandlist_generic_batch *b;
-        b = this->genBatch( ctx, sdr, t0, t1, vb, ib, m, alpha );
+        b = this->genBatch( ctx, sdr, t0, t1, vb, ib, m, alpha, r, g, bb );
         this->cmds.push_back( b );
         return 1;
     }
@@ -61,7 +61,7 @@ namespace dragonpoop
     }
     
     //execute batch
-    bool render_api_commandlist_generic::executeBatch( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, dpmatrix *m_world )
+    bool render_api_commandlist_generic::executeBatch( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, dpmatrix *m_world, float r, float g, float b )
     {
         shared_obj_guard o;
         render_api_shader_readlock *l;
@@ -70,7 +70,7 @@ namespace dragonpoop
         if( !l )
             return 0;
         
-        return l->render( ctx, t0, t1, ib, vb, m, alpha, m_world );
+        return l->render( ctx, t0, t1, ib, vb, m, alpha, m_world, r, g, b );
     }
     
     //delete batches
@@ -90,9 +90,9 @@ namespace dragonpoop
     }
     
     //generate batch
-    render_api_commandlist_generic_batch *render_api_commandlist_generic::genBatch( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha )
+    render_api_commandlist_generic_batch *render_api_commandlist_generic::genBatch( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, float r, float g, float b )
     {
-        return new render_api_commandlist_generic_batch( this, sdr, t0, t1, vb, ib, m, alpha );
+        return new render_api_commandlist_generic_batch( this, sdr, t0, t1, vb, ib, m, alpha, r, g, b );
     }
     
 };

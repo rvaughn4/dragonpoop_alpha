@@ -50,6 +50,8 @@ namespace dragonpoop
         void setMatrix( dpmatrix *m );
         //set alpha command
         void setAlpha( float a );
+        //set color command
+        void setColor( float r, float g, float b );
         //draw command
         void draw( void );
         //set position

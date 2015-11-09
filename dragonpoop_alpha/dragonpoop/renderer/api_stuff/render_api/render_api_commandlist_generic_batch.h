@@ -21,7 +21,7 @@ namespace dragonpoop
         render_api_vertexbuffer_ref *vb;
         render_api_indexbuffer_ref *ib;
         dpmatrix m;
-        float alpha;
+        float alpha, r, g, b;
         int tex_index;
         
     protected:
@@ -32,7 +32,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        render_api_commandlist_generic_batch( render_api_commandlist_generic *l, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha );
+        render_api_commandlist_generic_batch( render_api_commandlist_generic *l, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, float r, float g, float b );
         //dtor
         virtual ~render_api_commandlist_generic_batch( void );
         

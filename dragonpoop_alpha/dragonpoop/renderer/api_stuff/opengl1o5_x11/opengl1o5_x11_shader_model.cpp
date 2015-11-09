@@ -34,7 +34,7 @@ namespace dragonpoop
     }
     
     //render gl
-    bool opengl1o5_x11_shader_model::_render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha, dpmatrix *m_world )
+    bool opengl1o5_x11_shader_model::_render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha, dpmatrix *m_world, float r, float g, float b )
     {
         
         float LightAmbient[]=		{ 0.5f, 0.5f, 0.5f, 1.0f };
@@ -55,7 +55,7 @@ namespace dragonpoop
         glPushMatrix();
         glMultMatrixf( m_world->getRaw4by4() );
         glMultMatrixf( m->getRaw4by4() );
-        glColor4f( 1.0f, 1.0f, 1.0f, alpha );
+        glColor4f( r, g, b, alpha );
         
         glBindTexture( GL_TEXTURE_2D, t0 );
         this->renderVB( vb, ib );

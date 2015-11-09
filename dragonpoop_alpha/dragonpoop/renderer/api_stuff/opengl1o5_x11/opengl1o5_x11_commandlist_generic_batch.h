@@ -20,7 +20,7 @@ namespace dragonpoop
         opengl1o5_x11_commandlist_generic *l;
         render_api_shader_ref *sdr;
         dpmatrix m;
-        float alpha;
+        float alpha, r, g, b;
         unsigned int t0, t1;
         dpvertex_buffer vb;
         dpindex_buffer ib;
@@ -33,7 +33,7 @@ namespace dragonpoop
     public:
         
         //ctor
-        opengl1o5_x11_commandlist_generic_batch( opengl1o5_x11_commandlist_generic *l, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha );
+        opengl1o5_x11_commandlist_generic_batch( opengl1o5_x11_commandlist_generic *l, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, float r, float g, float b );
         //dtor
         virtual ~opengl1o5_x11_commandlist_generic_batch( void );
         

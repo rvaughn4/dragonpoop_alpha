@@ -31,7 +31,7 @@ namespace dragonpoop
     public:
         
         //render vb
-        bool render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m, float alpha, dpmatrix *m_world );
+        bool render( render_api_context_writelock *ctx, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_indexbuffer_ref *ib, render_api_vertexbuffer_ref *vb, dpmatrix *m, float alpha, dpmatrix *m_world, float r, float g, float b );
         
         friend class render_api_shader;
     };

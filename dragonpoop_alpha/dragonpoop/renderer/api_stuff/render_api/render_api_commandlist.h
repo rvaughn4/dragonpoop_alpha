@@ -32,7 +32,7 @@ namespace dragonpoop
         render_api_vertexbuffer_ref *vb;
         render_api_indexbuffer_ref *ib;
         dpmatrix m;
-        float alpha;
+        float alpha, r, g, b;
         dpposition pos;
         
     protected:
@@ -50,7 +50,7 @@ namespace dragonpoop
         //called at end of compile
         virtual void endCompile( render_api_context_writelock *ctx );
         //called during compile for each draw call
-        virtual bool drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha );
+        virtual bool drawCompile( render_api_context_writelock *ctx, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, float r, float g, float b );
         //execute command list
         virtual bool execute( render_api_context_writelock *r, dpmatrix *m_world );
         //set current matrix
@@ -65,6 +65,8 @@ namespace dragonpoop
         bool cmd_setIndexBuffer( render_api_indexbuffer_ref *r );
         //set current alpha
         bool cmd_setAlpha( float a );
+        //set current color
+        bool cmd_setColor( float r, float g, float b );
         //draw
         bool cmd_draw( render_api_context_writelock *ctx );
         //delete commands
@@ -81,6 +83,8 @@ namespace dragonpoop
         void setMatrix( dpmatrix *m );
         //set alpha command
         void setAlpha( float a );
+        //set color command
+        void setColor( float r, float g, float b );
         //draw command
         void draw( void );
         //set position

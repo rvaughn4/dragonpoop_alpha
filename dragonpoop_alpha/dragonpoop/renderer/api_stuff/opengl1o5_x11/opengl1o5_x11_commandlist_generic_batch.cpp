@@ -15,7 +15,7 @@ namespace dragonpoop
 {
     
     //ctor
-    opengl1o5_x11_commandlist_generic_batch::opengl1o5_x11_commandlist_generic_batch( opengl1o5_x11_commandlist_generic *l, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha ) : render_api_commandlist_generic_batch( l, sdr, t0, t1, vb, ib, m, alpha )
+    opengl1o5_x11_commandlist_generic_batch::opengl1o5_x11_commandlist_generic_batch( opengl1o5_x11_commandlist_generic *l, render_api_shader_ref *sdr, render_api_texture_ref *t0, render_api_texture_ref *t1, render_api_vertexbuffer_ref *vb, render_api_indexbuffer_ref *ib, dpmatrix *m, float alpha, float r, float g, float b ) : render_api_commandlist_generic_batch( l, sdr, t0, t1, vb, ib, m, alpha, r, g, b )
     {
         shared_obj_guard o;
         shared_obj_writelock *wl;
@@ -50,6 +50,9 @@ namespace dragonpoop
 
         this->m.copy( m );
         this->alpha = alpha;
+        this->r = r;
+        this->g = g;
+        this->b = b;
         this->l = l;
     }
     
@@ -69,7 +72,7 @@ namespace dragonpoop
         if( !l )
             return 0;
         
-        return l->_render( ctx, t0, t1, &ib, &vb, &m, alpha, m_world );
+        return l->_render( ctx, t0, t1, &ib, &vb, &m, alpha, m_world, r, g, b );
     }
     
     

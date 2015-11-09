@@ -18,9 +18,9 @@ namespace dragonpoop
     }
     
     //render gl
-    bool opengl1o5_x11_shader_readlock::_render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha, dpmatrix *m_world )
+    bool opengl1o5_x11_shader_readlock::_render( render_api_context_writelock *ctx, unsigned int t0, unsigned int t1, dpindex_buffer *ib, dpvertex_buffer *vb, dpmatrix *m, float alpha, dpmatrix *m_world, float r, float g, float b )
     {
-        return this->t->_render( ctx, t0, t1, ib, vb, m, alpha, m_world );
+        return this->t->_render( ctx, t0, t1, ib, vb, m, alpha, m_world, r, g, b );
     }
 
 };

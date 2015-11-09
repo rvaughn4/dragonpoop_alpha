@@ -395,7 +395,7 @@ namespace dragonpoop
         
         m1.setIdentity();
         //m1.translate( 0, 0, -5.0f );
-        m1.rotateZ( rr );
+       // m1.rotateZ( rr );
         m2.copy( &this->m );
         m2.multiply( &m1 );
         
