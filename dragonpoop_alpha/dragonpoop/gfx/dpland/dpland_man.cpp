@@ -266,9 +266,9 @@ namespace dragonpoop
             {
                 teta = ( (float)i * 2.0f / col_max ) * 2.0f * pie;
                 fi = ( (float)( j + hole / 2 ) * 2.0f / ( row_max + hole ) ) * pie;
-                v.pos.x = radius * cosf( teta ) * sinf( fi );
+                v.pos.x = radius * cosf( teta ) * sinf( fi ) * 0.2f;
                 v.pos.y = radius * cosf( fi );
-                v.pos.z = radius * sinf( teta ) * sinf( fi );
+                v.pos.z = radius * sinf( teta ) * sinf( fi ) * 0.2f;
                 v.texcoords[ 0 ].s = (float)i / (float)col_max;
                 v.texcoords[ 0 ].t = (float)( j + hole / 2 ) / (float)( row_max + hole );
                 this->sky.vb.addVertex( &v );
