@@ -98,6 +98,11 @@
 		791316431BF1F1E700FCE7D7 /* dpsky_man_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7913163A1BF1F1E700FCE7D7 /* dpsky_man_ref.cpp */; };
 		791316441BF1F1E700FCE7D7 /* dpsky_man_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7913163C1BF1F1E700FCE7D7 /* dpsky_man_task.cpp */; };
 		791316451BF1F1E700FCE7D7 /* dpsky_man_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7913163E1BF1F1E700FCE7D7 /* dpsky_man_writelock.cpp */; };
+		791316521BF1FFD500FCE7D7 /* renderer_sky_man.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 791316471BF1FFD500FCE7D7 /* renderer_sky_man.cpp */; };
+		791316531BF1FFD500FCE7D7 /* renderer_sky_man_readlock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 791316491BF1FFD500FCE7D7 /* renderer_sky_man_readlock.cpp */; };
+		791316541BF1FFD500FCE7D7 /* renderer_sky_man_ref.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7913164B1BF1FFD500FCE7D7 /* renderer_sky_man_ref.cpp */; };
+		791316551BF1FFD500FCE7D7 /* renderer_sky_man_task.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7913164D1BF1FFD500FCE7D7 /* renderer_sky_man_task.cpp */; };
+		791316561BF1FFD500FCE7D7 /* renderer_sky_man_writelock.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7913164F1BF1FFD500FCE7D7 /* renderer_sky_man_writelock.cpp */; };
 		79145C441BCA7DE900DC5434 /* dpactor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C1D1BCA7DE900DC5434 /* dpactor.cpp */; };
 		79145C461BCA7DE900DC5434 /* dpactor_model_state.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C211BCA7DE900DC5434 /* dpactor_model_state.cpp */; };
 		79145C471BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 79145C231BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp */; };
@@ -548,6 +553,17 @@
 		7913163E1BF1F1E700FCE7D7 /* dpsky_man_writelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpsky_man_writelock.cpp; sourceTree = "<group>"; };
 		7913163F1BF1F1E700FCE7D7 /* dpsky_man_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpsky_man_writelock.h; sourceTree = "<group>"; };
 		791316401BF1F1E700FCE7D7 /* dpskys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpskys.h; sourceTree = "<group>"; };
+		791316471BF1FFD500FCE7D7 /* renderer_sky_man.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_sky_man.cpp; sourceTree = "<group>"; };
+		791316481BF1FFD500FCE7D7 /* renderer_sky_man.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_sky_man.h; sourceTree = "<group>"; };
+		791316491BF1FFD500FCE7D7 /* renderer_sky_man_readlock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_sky_man_readlock.cpp; sourceTree = "<group>"; };
+		7913164A1BF1FFD500FCE7D7 /* renderer_sky_man_readlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_sky_man_readlock.h; sourceTree = "<group>"; };
+		7913164B1BF1FFD500FCE7D7 /* renderer_sky_man_ref.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_sky_man_ref.cpp; sourceTree = "<group>"; };
+		7913164C1BF1FFD500FCE7D7 /* renderer_sky_man_ref.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_sky_man_ref.h; sourceTree = "<group>"; };
+		7913164D1BF1FFD500FCE7D7 /* renderer_sky_man_task.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_sky_man_task.cpp; sourceTree = "<group>"; };
+		7913164E1BF1FFD500FCE7D7 /* renderer_sky_man_task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_sky_man_task.h; sourceTree = "<group>"; };
+		7913164F1BF1FFD500FCE7D7 /* renderer_sky_man_writelock.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer_sky_man_writelock.cpp; sourceTree = "<group>"; };
+		791316501BF1FFD500FCE7D7 /* renderer_sky_man_writelock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_sky_man_writelock.h; sourceTree = "<group>"; };
+		791316511BF1FFD500FCE7D7 /* renderer_skys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = renderer_skys.h; sourceTree = "<group>"; };
 		79145C1D1BCA7DE900DC5434 /* dpactor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor.cpp; sourceTree = "<group>"; };
 		79145C1E1BCA7DE900DC5434 /* dpactor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dpactor.h; sourceTree = "<group>"; };
 		79145C211BCA7DE900DC5434 /* dpactor_model_state.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dpactor_model_state.cpp; sourceTree = "<group>"; };
@@ -1375,6 +1391,24 @@
 			path = dpsky;
 			sourceTree = "<group>";
 		};
+		791316461BF1FFD500FCE7D7 /* renderer_sky */ = {
+			isa = PBXGroup;
+			children = (
+				791316471BF1FFD500FCE7D7 /* renderer_sky_man.cpp */,
+				791316481BF1FFD500FCE7D7 /* renderer_sky_man.h */,
+				791316491BF1FFD500FCE7D7 /* renderer_sky_man_readlock.cpp */,
+				7913164A1BF1FFD500FCE7D7 /* renderer_sky_man_readlock.h */,
+				7913164B1BF1FFD500FCE7D7 /* renderer_sky_man_ref.cpp */,
+				7913164C1BF1FFD500FCE7D7 /* renderer_sky_man_ref.h */,
+				7913164D1BF1FFD500FCE7D7 /* renderer_sky_man_task.cpp */,
+				7913164E1BF1FFD500FCE7D7 /* renderer_sky_man_task.h */,
+				7913164F1BF1FFD500FCE7D7 /* renderer_sky_man_writelock.cpp */,
+				791316501BF1FFD500FCE7D7 /* renderer_sky_man_writelock.h */,
+				791316511BF1FFD500FCE7D7 /* renderer_skys.h */,
+			);
+			path = renderer_sky;
+			sourceTree = "<group>";
+		};
 		79145C1C1BCA7DE900DC5434 /* dpactor */ = {
 			isa = PBXGroup;
 			children = (
@@ -1920,6 +1954,7 @@
 				79F4263D1BE21F7100B4AD9D /* renderer_commandlist_passer.cpp */,
 				79F4263E1BE21F7100B4AD9D /* renderer_commandlist_passer.h */,
 				7970E95C1B64F26E008E8328 /* renderers.h */,
+				791316461BF1FFD500FCE7D7 /* renderer_sky */,
 				79F81A691BEA2E13000F26B0 /* renderer_land */,
 				79EC61551BDB75D9009B2E89 /* x11_opengl_1o5_renderer */,
 				79EEECEA1BB6C1BD00FD3AD8 /* renderer_gui */,
@@ -2650,6 +2685,7 @@
 				799FC16D1B756F6F00E1A212 /* renderer_model_instance.cpp in Sources */,
 				79FD4D5E1BCFCB7F00126995 /* model_loader_man_task.cpp in Sources */,
 				790464D21BECB6EC00ED791B /* opengl1o5_x11_shader_land.cpp in Sources */,
+				791316531BF1FFD500FCE7D7 /* renderer_sky_man_readlock.cpp in Sources */,
 				79145C471BCA7DE900DC5434 /* dpactor_model_state_load_high.cpp in Sources */,
 				79FD4D5F1BCFCB7F00126995 /* model_loader_man_writelock.cpp in Sources */,
 				79F26F291BCC91A40025418D /* dpland.cpp in Sources */,
@@ -2689,6 +2725,7 @@
 				7970E97B1B64F26E008E8328 /* shared_obj_refkernal.cpp in Sources */,
 				79F81A741BEA2E13000F26B0 /* renderer_land_man_ref.cpp in Sources */,
 				79F81A731BEA2E13000F26B0 /* renderer_land_man_readlock.cpp in Sources */,
+				791316521BF1FFD500FCE7D7 /* renderer_sky_man.cpp in Sources */,
 				7907597B1BD0F38900F9D2F1 /* renderer_state_init_model.cpp in Sources */,
 				790C4D5E1BD6B1CE009BCF7E /* render_api_commandlist_readlock.cpp in Sources */,
 				7970E9821B64F26E008E8328 /* dpvertex_buffer.cpp in Sources */,
@@ -2731,6 +2768,7 @@
 				7970E9671B64F26E008E8328 /* dpmutex_writelock.cpp in Sources */,
 				7970E9681B64F26E008E8328 /* dpsponlock.cpp in Sources */,
 				79F578B51BA9939B00046726 /* model_loader_dpmodel.cpp in Sources */,
+				791316541BF1FFD500FCE7D7 /* renderer_sky_man_ref.cpp in Sources */,
 				79FFA2921BA63D0700971BAB /* model_saver_dpmodel.cpp in Sources */,
 				790C4D831BD6B55A009BCF7E /* render_api_command_set_texture.cpp in Sources */,
 				79E7446D1B6CE616005BFDE0 /* model_loader_readlock.cpp in Sources */,
@@ -2766,6 +2804,7 @@
 				79FDF6501BD8D9B90018AC5D /* render_api_indexbuffer.cpp in Sources */,
 				79B4C4B81BCB2F950003C080 /* dpactor_animate_state_walk.cpp in Sources */,
 				7970E9601B64F26E008E8328 /* multibytetree.cpp in Sources */,
+				791316561BF1FFD500FCE7D7 /* renderer_sky_man_writelock.cpp in Sources */,
 				794610EF1B6D42CE00311E86 /* model_loader_ms3d_state_parse_animation.cpp in Sources */,
 				790C4D631BD6B1CE009BCF7E /* render_api_context_ref.cpp in Sources */,
 				79145C4E1BCA7DE900DC5434 /* dpactor_model_state_run_low.cpp in Sources */,
@@ -2791,6 +2830,7 @@
 				7906ABE81B9B5B29002C26A2 /* model_saver_ms3d_state_cleanup.cpp in Sources */,
 				7970E9891B64F26E008E8328 /* gfx_writelock.cpp in Sources */,
 				7970E9A21B64F664008E8328 /* model_material.cpp in Sources */,
+				791316551BF1FFD500FCE7D7 /* renderer_sky_man_task.cpp in Sources */,
 				79F107211B6ED076000723E4 /* model_instance_group.cpp in Sources */,
 				790C4D801BD6B55A009BCF7E /* render_api_command_draw.cpp in Sources */,
 				79F81A751BEA2E13000F26B0 /* renderer_land_man_writelock.cpp in Sources */,
