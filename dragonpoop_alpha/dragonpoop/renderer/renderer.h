@@ -45,6 +45,7 @@ namespace dragonpoop
     class dpthread_singletask;
     class renderer_commandlist_passer;
     class renderer_land_man;
+    class renderer_sky_man;
 
     class renderer : public shared_obj
     {
@@ -58,6 +59,7 @@ namespace dragonpoop
         renderer_gui_man *rgui_mgr;
         renderer_model_man *rmodel_mgr;
         renderer_land_man *rland_mgr;
+        renderer_sky_man *rsky_mgr;
         dptaskpool_ref *tp;
         dpthread_singletask *thd;
         render_api *api;
@@ -154,6 +156,8 @@ namespace dragonpoop
         virtual renderer_gui_man *genGuiMan( dptaskpool_writelock *tp );
         //generate renderer land manager
         virtual renderer_land_man *genLandMan( dptaskpool_writelock *tp );
+        //generate renderer sky manager
+        virtual renderer_sky_man *genSkyMan( dptaskpool_writelock *tp );
         
         //returns fps
         float getFps( void );

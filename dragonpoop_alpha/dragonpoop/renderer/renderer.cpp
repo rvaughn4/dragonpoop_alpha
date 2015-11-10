@@ -43,6 +43,9 @@
 #include "renderer_land/renderer_land_man.h"
 #include "renderer_land/renderer_land_man_writelock.h"
 #include "renderer_land/renderer_land_man_readlock.h"
+#include "renderer_sky/renderer_sky_man.h"
+#include "renderer_sky/renderer_sky_man_writelock.h"
+#include "renderer_sky/renderer_sky_man_readlock.h"
 #include "api_stuff/render_api/render_api.h"
 #include "api_stuff/render_api/render_api_writelock.h"
 #include "api_stuff/render_api/render_api_context_ref.h"
@@ -96,6 +99,7 @@ namespace dragonpoop
         this->rgui_mgr = 0;
         this->rmodel_mgr = 0;
         this->rland_mgr = 0;
+        this->rsky_mgr = 0;
         this->cs = new renderer_state_init_api( this );
         this->gui_cl = 0;
         this->new_gui_cl = 0;
@@ -252,6 +256,7 @@ namespace dragonpoop
         
         this->rmodel_mgr = this->genModelMan( tp );
         this->rland_mgr = this->genLandMan( tp );
+        this->rsky_mgr = this->genSkyMan( tp );
 
         return this->rmodel_mgr != 0;
     }
@@ -313,6 +318,8 @@ namespace dragonpoop
     //init model manager
     void renderer::state_deinitModel( dpthread_lock *thd, renderer_writelock *rl )
     {
+        delete this->rsky_mgr;
+        this->rsky_mgr = 0;
         delete this->rland_mgr;
         this->rland_mgr = 0;
         delete this->rmodel_mgr;
@@ -711,6 +718,23 @@ namespace dragonpoop
             return 0;
         
         return new renderer_land_man( this->c, this, tp, ctx, this->clpasser, 1920, 1080 );
+    }
+
+    //generate renderer sky manager
+    renderer_sky_man *renderer::genSkyMan( dptaskpool_writelock *tp )
+    {
+        shared_obj_guard o;
+        render_api_writelock *l;
+        render_api_context_ref *ctx;
+        
+        l = (render_api_writelock *)o.tryWriteLock( this->api, 5000, "renderer::genSkyMan" );
+        if( !l )
+            return 0;
+        ctx = l->getContext();
+        if( !ctx )
+            return 0;
+        
+        return new renderer_sky_man( this->c, this, tp, ctx, this->clpasser, 1920, 1080 );
     }
     
     //returns fps
