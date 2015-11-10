@@ -31,6 +31,7 @@ namespace dragonpoop
         friend class renderer_gui_man;
         friend class renderer_model_man;
         friend class renderer_land_man;
+        friend class renderer_sky_man;
     };
     
 };

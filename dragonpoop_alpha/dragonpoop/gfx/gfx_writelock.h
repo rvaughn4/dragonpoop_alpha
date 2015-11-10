@@ -37,6 +37,9 @@ namespace dragonpoop
     class dpland_man_ref;
     class dpland_man_readlock;
     class dpland_man_writelock;
+    class dpsky_man_ref;
+    class dpsky_man_readlock;
+    class dpsky_man_writelock;
 
     class gfx_writelock : public shared_obj_writelock
     {
@@ -96,6 +99,12 @@ namespace dragonpoop
         bool getLand( dpland_man_readlock **r, shared_obj_guard *o );
         //get land
         bool getLand( dpland_man_writelock **r, shared_obj_guard *o );
+        //get sky
+        bool getSky( dpsky_man_ref **r );
+        //get sky
+        bool getSky( dpsky_man_readlock **r, shared_obj_guard *o );
+        //get sky
+        bool getSky( dpsky_man_writelock **r, shared_obj_guard *o );
 
         friend class gfx;
     };

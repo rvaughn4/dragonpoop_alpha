@@ -143,4 +143,22 @@ namespace dragonpoop
         return this->t->changeRenderer( cname );
     }
     
+    //get sky
+    bool gfx_writelock::getSky( dpsky_man_ref **r )
+    {
+        return this->t->getSky( r );
+    }
+    
+    //get sky
+    bool gfx_writelock::getSky( dpsky_man_readlock **r, shared_obj_guard *o )
+    {
+        return this->t->getSky( r, o );
+    }
+    
+    //get sky
+    bool gfx_writelock::getSky( dpsky_man_writelock **r, shared_obj_guard *o )
+    {
+        return this->t->getSky( r, o );
+    }
+    
 };
