@@ -61,6 +61,27 @@ namespace dragonpoop
         dpthread_singletask *thd;
         renderer_commandlist_passer_ref *clpasser;
         
+        struct
+        {
+            struct
+            {
+                struct
+                {
+                    render_api_vertexbuffer_ref *vb;
+                    render_api_indexbuffer_ref *ib;
+                } front, back, left, right, top, bottom;
+            } skybox;
+            
+            struct
+            {
+                struct
+                {
+                    render_api_texture_ref *front, *back, *top, *bottom, *left, *right;
+                } stars, mask;
+            } skyboxtex;
+            
+        } stuff;
+        
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task

@@ -70,6 +70,7 @@ namespace dragonpoop
         this->land_mgr = new dpland_man( c, this, tp );
         this->actor_mgr = new dpactor_man( c, this, tp );
         this->gui_mgr = new gui_man( c, this, tp );
+        this->sky_man = new dpsky_man( c, this, tp );
         this->r = 0;
         
         renderer::addRenderers( this );
@@ -93,6 +94,7 @@ namespace dragonpoop
         delete this->actor_mgr;
         delete this->land_mgr;
         delete this->model_mgr;
+        delete this->sky_man;
         
         if( this->root_g )
             delete this->root_g;

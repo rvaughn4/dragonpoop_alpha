@@ -9,7 +9,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#define opengl1o5_x11_max_contexts 4
+#define opengl1o5_x11_max_contexts 10
 
 namespace dragonpoop
 {

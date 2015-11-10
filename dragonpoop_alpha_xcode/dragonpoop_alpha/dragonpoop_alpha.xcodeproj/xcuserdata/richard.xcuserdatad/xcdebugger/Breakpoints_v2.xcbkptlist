@@ -9,13 +9,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer.cpp"
-            timestampString = "468846109.76123"
+            filePath = "../../dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.cpp"
+            timestampString = "468849670.993764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "790"
-            endingLineNumber = "790"
-            landmarkName = "renderer::processMouseInput( renderer_gui_man_writelock *l, render_api_writelock *al, float x, float y, bool lb, bool rb )"
+            startingLineNumber = "264"
+            endingLineNumber = "264"
+            landmarkName = "renderer_sky_man::render( dpthread_lock *thd )"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -130,30 +130,30 @@ namespace dragonpoop
         vb = &this->stuff.skybox.front.vb;
         ib = &this->stuff.skybox.front.ib;
         
-        v.pos.x = -1;
-        v.pos.y = 1;
-        v.pos.z = -1;
+        v.pos.x = -10;
+        v.pos.y = 10;
+        v.pos.z = 10;
         v.texcoords[ 0 ].s = 0;
         v.texcoords[ 0 ].t = 0;
         vb->addVertex( &v );
         
-        v.pos.x = 1;
-        v.pos.y = 1;
-        v.pos.z = -1;
+        v.pos.x = 10;
+        v.pos.y = 10;
+        v.pos.z = 10;
         v.texcoords[ 0 ].s = 1;
         v.texcoords[ 0 ].t = 0;
         vb->addVertex( &v );
         
-        v.pos.x = -1;
-        v.pos.y = -1;
-        v.pos.z = -1;
+        v.pos.x = -10;
+        v.pos.y = -10;
+        v.pos.z = 10;
         v.texcoords[ 0 ].s = 0;
         v.texcoords[ 0 ].t = 1;
         vb->addVertex( &v );
         
-        v.pos.x = 1;
-        v.pos.y = -1;
-        v.pos.z = -1;
+        v.pos.x = 10;
+        v.pos.y = -10;
+        v.pos.z = 10;
         v.texcoords[ 0 ].s = 1;
         v.texcoords[ 0 ].t = 1;
         vb->addVertex( &v );

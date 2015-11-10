@@ -23,6 +23,7 @@
 #include "../../gfx/dpsky/dpsky_man.h"
 #include "../../gfx/dpsky/dpsky_man_ref.h"
 #include "../../gfx/dpsky/dpsky_man_readlock.h"
+#include "../../gfx/dpsky/dpsky.h"
 #include "../api_stuff/render_api/render_api_shader_ref.h"
 #include "../api_stuff/render_api/render_api_context_ref.h"
 #include "../api_stuff/render_api/render_api_context_writelock.h"
@@ -66,6 +67,7 @@ namespace dragonpoop
         this->clist = 0;
         this->c = c;
         this->tpr = (dptaskpool_ref *)tp->getRef();
+        memset( &this->stuff, 0, sizeof( this->stuff ) );
         
         rl = (renderer_writelock *)o.writeLock( r, "renderer_sky_man::renderer_sky_man" );
         if( rl )
@@ -237,24 +239,15 @@ namespace dragonpoop
         sdr = ctxl->makeShader( "sky" );
         if( !sdr )
             return;
-        /*
+
+        
         dpmatrix m1, m2;
         static float rr;
         rr += 1.0f;
         
-        cll->setShader( sdr );
-        cll->setAlpha( 0.5f );
-        cll->setColor( 1.0f, 1.0f, 1.0f );
-        cll->setMatrix( &this->m );
-        cll->setTexture( this->sky.tex_stars, 0 );
-        cll->setTexture( 0, 1 );
-        cll->setIndexBuffer( this->sky.ib );
-        cll->setVertexBuffer( this->sky.vb );
-        cll->draw();
-        
         m1.setIdentity();
         //m1.translate( 0, 0, -5.0f );
-        m1.rotateZ( rr );
+       // m1.rotateZ( rr );
         m2.copy( &this->m );
         m2.multiply( &m1 );
         
@@ -262,22 +255,11 @@ namespace dragonpoop
         cll->setAlpha( 1.0f );
         cll->setColor( 1.0f, 1.0f, 0.8f );
         cll->setMatrix( &m2 );
-        cll->setTexture( this->sky.tex_sun, 0 );
+        cll->setTexture( this->stuff.skyboxtex.stars.front, 0 );
         cll->setTexture( 0, 1 );
-        cll->setIndexBuffer( this->sky.ib );
-        cll->setVertexBuffer( this->sky.vb );
+        cll->setIndexBuffer( this->stuff.skybox.front.ib );
+        cll->setVertexBuffer( this->stuff.skybox.front.vb );
         cll->draw();
-        
-        cll->setShader( sdr );
-        cll->setColor( 0.3f, 0.2f, 0.0f );
-        cll->setAlpha( 1.0f );
-        cll->setMatrix( &this->m );
-        cll->setTexture( this->sky.tex_bg, 0 );
-        cll->setTexture( 0, 1 );
-        cll->setIndexBuffer( this->sky.ib );
-        cll->setVertexBuffer( this->sky.vb );
-        cll->draw();
-        */
 
         if( cll->compile( ctxl ) )
             this->clpasser->t->sky_ready = 1;
@@ -289,6 +271,27 @@ namespace dragonpoop
     //run sky
     void renderer_sky_man::runSky( dpthread_lock *thd )
     {
+        dpsky_man_readlock *l;
+        render_api_context_writelock *c;
+        shared_obj_guard o1, o2;
+        dpsky_stuff *s;
+        
+        if( this->stuff.skybox.front.vb )
+            return;
+        
+        l = (dpsky_man_readlock *)o1.tryReadLock( this->g_skys, 100, "renderer_sky_man::runSky" );
+        if( !l )
+            return;
+        c = (render_api_context_writelock *)o2.tryWriteLock( this->ctx, 100, "renderer_sky_man::runSky" );
+        if( !c )
+            return;
+        
+        s = l->getSky();
+        
+        this->stuff.skybox.front.vb = c->makeVertexBuffer( &s->skybox.front.vb );
+        this->stuff.skybox.front.ib = c->makeIndexBuffer( &s->skybox.front.ib );
+        
+        this->stuff.skyboxtex.stars.front = c->makeTexture( &s->skyboxtex.stars.front );
     }
     
     
