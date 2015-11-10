@@ -45,6 +45,10 @@
 #include "dpland/dpland_man_ref.h"
 #include "dpland/dpland_man_readlock.h"
 #include "dpland/dpland_man_writelock.h"
+#include "dpsky/dpsky_man.h"
+#include "dpsky/dpsky_man_ref.h"
+#include "dpsky/dpsky_man_readlock.h"
+#include "dpsky/dpsky_man_writelock.h"
 
 namespace dragonpoop
 {
@@ -342,6 +346,31 @@ namespace dragonpoop
     bool gfx::getLand( dpland_man_writelock **r, shared_obj_guard *o )
     {
         *r = (dpland_man_writelock *)o->tryWriteLock( this->land_mgr, 1000, "gfx::getLand" );
+        return *r != 0;
+    }
+    
+    //get sky
+    bool gfx::getSky( dpsky_man_ref **r )
+    {
+        shared_obj_guard o;
+        dpsky_man_writelock *l;
+        if( !this->getSky( &l, &o ) )
+            return 0;
+        *r = (dpsky_man_ref *)l->getRef();
+        return 1;
+    }
+    
+    //get sky
+    bool gfx::getSky( dpsky_man_readlock **r, shared_obj_guard *o )
+    {
+        *r = (dpsky_man_readlock *)o->tryReadLock( this->sky_man, 1000, "gfx::getSky" );
+        return *r != 0;
+    }
+    
+    //get sky
+    bool gfx::getSky( dpsky_man_writelock **r, shared_obj_guard *o )
+    {
+        *r = (dpsky_man_writelock *)o->tryWriteLock( this->sky_man, 1000, "gfx::getSky" );
         return *r != 0;
     }
     

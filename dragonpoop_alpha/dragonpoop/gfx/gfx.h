@@ -50,6 +50,10 @@ namespace dragonpoop
     class dpactor_man_readlock;
     class dpactor_man_writelock;
     class renderer_factory;
+    class dpsky_man;
+    class dpsky_man_ref;
+    class dpsky_man_readlock;
+    class dpsky_man_writelock;
 
     class gfx : public shared_obj
     {
@@ -62,6 +66,7 @@ namespace dragonpoop
         dpactor_man *actor_mgr;
         model_man *model_mgr;
         gui_man *gui_mgr;
+        dpsky_man *sky_man;
         
         core *c;
         std::list<renderer_factory *> renderer_factories;
@@ -131,6 +136,12 @@ namespace dragonpoop
         bool getLand( dpland_man_readlock **r, shared_obj_guard *o );
         //get land
         bool getLand( dpland_man_writelock **r, shared_obj_guard *o );
+        //get sky
+        bool getSky( dpsky_man_ref **r );
+        //get sky
+        bool getSky( dpsky_man_readlock **r, shared_obj_guard *o );
+        //get sky
+        bool getSky( dpsky_man_writelock **r, shared_obj_guard *o );
         //add renderer factory
         void addRenderer( renderer_factory *f );
         //change renderer
