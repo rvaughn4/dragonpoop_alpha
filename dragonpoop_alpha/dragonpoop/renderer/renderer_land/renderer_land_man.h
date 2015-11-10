@@ -64,15 +64,6 @@ namespace dragonpoop
         dpthread_singletask *thd;
         renderer_commandlist_passer_ref *clpasser;
         dpposition campos;
-        bool b_land_rdy;
-        
-        struct
-        {
-            render_api_commandlist_ref *clist;
-            render_api_vertexbuffer_ref *vb;
-            render_api_indexbuffer_ref *ib;
-            render_api_texture_ref *tex_bg, *tex_sun, *tex_stars;
-        } sky;
         render_api_texture_ref *grass;
         
         //start task
@@ -91,10 +82,6 @@ namespace dragonpoop
         void computeMatrix( void );
         //render lands
         void renderLands( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
-        //render sky
-        void renderSky( dpthread_lock *thd );
-        //run sky
-        void runSky( dpthread_lock *thd );
         
     protected:
         

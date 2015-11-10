@@ -34,11 +34,5 @@ namespace dragonpoop
     {
         this->t->getTiles( l );
     }
-
-    //get sky
-    dpland_skydome *dpland_man_writelock::getSky( void )
-    {
-        return this->t->getSky();
-    }
     
 };

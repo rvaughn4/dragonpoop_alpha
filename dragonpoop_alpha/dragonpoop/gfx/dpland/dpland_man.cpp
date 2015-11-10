@@ -33,10 +33,7 @@ namespace dragonpoop
         this->land_sz = 10.0f;
         this->tile_sz = 1.0f;
         this->tex_sz = 10.0f;
-        
-        this->loadSky();
-        this->buildSky();
-        
+
         gl = (gfx_writelock *)o.writeLock( g, "dpland_man::dpland_man" );
         this->g = (gfx_ref *)gl->getRef();
         o.unlock();
@@ -244,67 +241,6 @@ namespace dragonpoop
             p = *i;
             ll->push_back( p );
         }
-    }
-
-    //build skydome
-    void dpland_man::buildSky( void )
-    {
-        int col_max, row_max, j, i, x, hole;
-        dpvertex v;
-        float teta, fi, radius, pie;
-        
-        col_max = 30;
-        row_max = 30;
-        hole = 3;
-        radius = 10.0f;
-        pie = 11.0f / 7.0f;
-        
-        // Fill coordinate positions [to change]
-        for( j = 0; j <= row_max; j++ )
-        {
-            for( i = 0; i <= col_max; i++ )
-            {
-                teta = ( (float)i * 2.0f / col_max ) * 2.0f * pie;
-                fi = ( (float)( j + hole / 2 ) * 2.0f / ( row_max + hole ) ) * pie;
-                v.pos.x = radius * cosf( teta ) * sinf( fi ) * 0.2f;
-                v.pos.y = radius * cosf( fi );
-                v.pos.z = radius * sinf( teta ) * sinf( fi ) * 0.2f;
-                v.texcoords[ 0 ].s = (float)i / (float)col_max;
-                v.texcoords[ 0 ].t = (float)( j + hole / 2 ) / (float)( row_max + hole );
-                this->sky.vb.addVertex( &v );
-            }
-        }
-
-        // Fill index
-        for( j = 0; j < row_max; j++ )
-        {
-            for( i = 0; i < col_max; i++ )
-            {
-                x = i + j * ( col_max + 1 );
-                this->sky.ib.addIndex( x );
-                this->sky.ib.addIndex( x + col_max + 1 );
-                this->sky.ib.addIndex( x + 1 );
-                this->sky.ib.addIndex( x + 1 );
-                this->sky.ib.addIndex( x + col_max + 1 );
-                this->sky.ib.addIndex( x + col_max + 2 );
-            }
-        }
-
-        this->sky.ib.fixBounds( &this->sky.vb );
-    }
-    
-    //get sky
-    dpland_skydome *dpland_man::getSky( void )
-    {
-        return &this->sky;
-    }
-    
-    //load sky textures
-    void dpland_man::loadSky( void )
-    {
-        this->sky.bm_sky.loadFile( "skydome_bg.bmp" );
-        this->sky.bm_sun.loadFile( "sun.bmp" );
-        this->sky.bm_stars.loadFile( "stars.bmp" );
     }
     
 };

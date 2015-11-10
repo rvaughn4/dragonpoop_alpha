@@ -26,19 +26,6 @@ namespace dragonpoop
     class gfx;
     class dpland;
 
-    struct dpland_skydome
-    {
-        dpvertex_buffer vb;
-        dpindex_buffer ib;
-        dpbitmap bm_sun;
-        dpbitmap bm_sun_halo;
-        dpbitmap bm_sky;
-        dpbitmap bm_stars;
-        dpbitmap bm_moon;
-        dpbitmap bm_moon_halo;
-        float sun_time, moon_time;
-    };
-    
     class dpland_man : public shared_obj
     {
         
@@ -54,7 +41,6 @@ namespace dragonpoop
         dpland_man_task *gtsk;
         std::list<dpland *> tiles;
         float land_sz, tile_sz, tex_sz, world_sz;
-        dpland_skydome sky;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
@@ -68,10 +54,6 @@ namespace dragonpoop
         dpland *getTile( int64_t x, int64_t z );
         //makes a tile at coords
         void makeTile( dpthread_lock *thd, int64_t x, int64_t z );
-        //build skydome
-        void buildSky( void );
-        //load sky textures
-        void loadSky( void );
         
     protected:
         
@@ -85,8 +67,6 @@ namespace dragonpoop
         void run( dpthread_lock *thd, dpland_man_writelock *g );
         //get tiles
         void getTiles( std::list<dpland *> *l );
-        //get sky
-        dpland_skydome *getSky( void );
         
     public:
         

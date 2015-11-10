@@ -12,7 +12,6 @@ namespace dragonpoop
     class dpland_man;
     class core;
     class dpland;
-    struct dpland_skydome;
     
     class dpland_man_readlock : public shared_obj_readlock
     {
@@ -34,8 +33,6 @@ namespace dragonpoop
         core *getCore( void );
         //get tiles
         void getTiles( std::list<dpland *> *l );
-        //get sky
-        dpland_skydome *getSky( void );
 
         friend class dpland_man;
     };
