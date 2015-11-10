@@ -23,4 +23,10 @@ namespace dragonpoop
         return this->t->getCore();
     }
     
+    //return sky stuff
+    dpsky_stuff *dpsky_man_readlock::getSky( void )
+    {
+        return this->t->getSky();
+    }
+    
 };

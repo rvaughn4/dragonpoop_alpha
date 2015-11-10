@@ -12,6 +12,7 @@ namespace dragonpoop
     class dpsky_man;
     class core;
     class dpthread_lock;
+    struct dpsky_stuff;
     
     class dpsky_man_writelock : public shared_obj_writelock
     {
@@ -33,7 +34,9 @@ namespace dragonpoop
         core *getCore( void );
         //run
         void run( dpthread_lock *thd );
-        
+        //return sky stuff
+        dpsky_stuff *getSky( void );
+
         friend class dpsky_man;
     };
     

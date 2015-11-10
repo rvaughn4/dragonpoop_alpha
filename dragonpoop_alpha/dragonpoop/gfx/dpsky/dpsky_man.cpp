@@ -123,12 +123,62 @@ namespace dragonpoop
     //build skydome
     void dpsky_man::buildSky( void )
     {
-
+        dpvertex_buffer *vb;
+        dpindex_buffer *ib;
+        dpvertex v;
+        
+        vb = &this->stuff.skybox.front.vb;
+        ib = &this->stuff.skybox.front.ib;
+        
+        v.pos.x = -1;
+        v.pos.y = 1;
+        v.pos.z = -1;
+        v.texcoords[ 0 ].s = 0;
+        v.texcoords[ 0 ].t = 0;
+        vb->addVertex( &v );
+        
+        v.pos.x = 1;
+        v.pos.y = 1;
+        v.pos.z = -1;
+        v.texcoords[ 0 ].s = 1;
+        v.texcoords[ 0 ].t = 0;
+        vb->addVertex( &v );
+        
+        v.pos.x = -1;
+        v.pos.y = -1;
+        v.pos.z = -1;
+        v.texcoords[ 0 ].s = 0;
+        v.texcoords[ 0 ].t = 1;
+        vb->addVertex( &v );
+        
+        v.pos.x = 1;
+        v.pos.y = -1;
+        v.pos.z = -1;
+        v.texcoords[ 0 ].s = 1;
+        v.texcoords[ 0 ].t = 1;
+        vb->addVertex( &v );
+        
+        ib->addIndex( 0 );
+        ib->addIndex( 2 );
+        ib->addIndex( 1 );
+        ib->addIndex( 1 );
+        ib->addIndex( 2 );
+        ib->addIndex( 3 );
+        
     }
     
     //load sky textures
     void dpsky_man::loadSky( void )
     {
+        
+        this->stuff.skyboxtex.stars.front.loadFile( "skybox_stars_front.bmp" );
     }
+    
+    //return sky stuff
+    dpsky_stuff *dpsky_man::getSky( void )
+    {
+        return &this->stuff;
+    }
+    
     
 };

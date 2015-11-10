@@ -3,9 +3,7 @@
 #define dragonpoop_dpsky_man_h
 
 #include "../../core/shared_obj/shared_obj.h"
-#include "../dpvertex/dpvertex_buffer.h"
-#include "../dpvertex/dpindex_buffer.h"
-#include "../dpbitmap/dpbitmap.h"
+#include "dpsky.h"
 
 namespace dragonpoop
 {
@@ -30,6 +28,7 @@ namespace dragonpoop
         gfx_ref *g;
         dptask *tsk;
         dpsky_man_task *gtsk;
+        dpsky_stuff stuff;
         
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
@@ -52,6 +51,8 @@ namespace dragonpoop
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //run
         void run( dpthread_lock *thd, dpsky_man_writelock *g );
+        //return sky stuff
+        dpsky_stuff *getSky( void );
         
     public:
         

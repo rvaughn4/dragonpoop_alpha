@@ -29,4 +29,10 @@ namespace dragonpoop
         this->t->run( thd, this );
     }
     
+    //return sky stuff
+    dpsky_stuff *dpsky_man_writelock::getSky( void )
+    {
+        return this->t->getSky();
+    }
+    
 };

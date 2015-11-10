@@ -11,6 +11,7 @@ namespace dragonpoop
     
     class dpsky_man;
     class core;
+    struct dpsky_stuff;
     
     class dpsky_man_readlock : public shared_obj_readlock
     {
@@ -30,6 +31,8 @@ namespace dragonpoop
         
         //return core
         core *getCore( void );
+        //return sky stuff
+        dpsky_stuff *getSky( void );
 
         friend class dpsky_man;
     };
