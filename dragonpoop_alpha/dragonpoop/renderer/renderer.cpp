@@ -442,7 +442,7 @@ namespace dragonpoop
             
             m2.setIdentity();
             m2.rotateX( this->cam_rot.x );
-            m2.rotateY( this->cam_rot.y - 90.0f );
+            m2.rotateY( this->cam_rot.y );
             m2.rotateZ( this->cam_rot.z );
             m1.copy( &this->m_world );
             m1.multiply( &m2 );
@@ -580,19 +580,20 @@ namespace dragonpoop
         this->dimensions.w = al->getWidth();
         this->dimensions.h = al->getHeight();
         
-        t = thd->getTicks();
-        if( t - this->t_last_input < 100 )
-            return 1;
-        this->t_last_input = t;
-
         if( this->mouse.x < -0.9f )
             this->cam_rot.y -= 0.5f;
         if( this->mouse.x > 0.9f )
             this->cam_rot.y += 0.5f;
         if( this->mouse.y < -0.9f )
-            this->cam_rot.x -= 0.5f;
-        if( this->mouse.y > 0.9f )
             this->cam_rot.x += 0.5f;
+        if( this->mouse.y > 0.9f )
+            this->cam_rot.x -= 0.5f;
+
+        t = thd->getTicks();
+        if( t - this->t_last_input < 100 )
+            return 1;
+        this->t_last_input = t;
+
         
         if( !al->hasKBInput() && !al->hasMouseInput() )
             return 1;

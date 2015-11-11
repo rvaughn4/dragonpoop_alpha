@@ -181,11 +181,23 @@ namespace dragonpoop
     void renderer_sky_man::sync( dpthread_lock *thd )
     {
         uint64_t t;
+        shared_obj_guard o;
+        dpsky_man_readlock *l;
+        dpsky_stuff *s;
+        
         
         t = thd->getTicks();
         if( t - this->t_last_sky_synced < 200 )
             return;
         this->t_last_sky_synced = t;
+        
+        
+        l = (dpsky_man_readlock *)o.tryReadLock( this->g_skys, 100, "renderer_sky_man::runSky" );
+        if( !l )
+            return;
+        s = l->getSky();
+        
+        this->stuff.sky_time = s->sky_time;
     }
     
     //run from manager thread
@@ -244,6 +256,13 @@ namespace dragonpoop
         dpmatrix m1, m2;
         static float rr;
         rr += 1.0f;
+        float abs_sky_time;
+        
+        abs_sky_time = this->stuff.sky_time;
+        if( abs_sky_time < 0 )
+            abs_sky_time = -abs_sky_time;
+        this->stuff.smooth_sky_time += ( abs_sky_time - this->stuff.smooth_sky_time ) * 0.3f;
+        abs_sky_time = this->stuff.smooth_sky_time;
         
         m1.setIdentity();
         //m1.translate( 0, 0, -5.0f );
@@ -252,15 +271,52 @@ namespace dragonpoop
         m2.multiply( &m1 );
         
         cll->setShader( sdr );
-        cll->setAlpha( 1.0f );
-        cll->setColor( 1.0f, 1.0f, 0.8f );
         cll->setMatrix( &m2 );
-        cll->setTexture( this->stuff.skyboxtex.stars.front, 0 );
         cll->setTexture( 0, 1 );
+
+        cll->setColor( 1, 1, 1 );
+        cll->setAlpha( abs_sky_time );
+        
+        cll->setTexture( this->stuff.skyboxtex.stars.front, 0 );
         cll->setIndexBuffer( this->stuff.skybox.front.ib );
         cll->setVertexBuffer( this->stuff.skybox.front.vb );
         cll->draw();
 
+        cll->setTexture( this->stuff.skyboxtex.stars.back, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.back.ib );
+        cll->setVertexBuffer( this->stuff.skybox.back.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.stars.top, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.top.ib );
+        cll->setVertexBuffer( this->stuff.skybox.top.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.stars.bottom, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.bottom.ib );
+        cll->setVertexBuffer( this->stuff.skybox.bottom.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.stars.left, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.left.ib );
+        cll->setVertexBuffer( this->stuff.skybox.left.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.stars.right, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.right.ib );
+        cll->setVertexBuffer( this->stuff.skybox.right.vb );
+        cll->draw();
+
+        
+        cll->setColor( 0.85f * abs_sky_time, 0.9f * abs_sky_time, 1.0f * abs_sky_time + 0.2f * ( 1.0f - abs_sky_time ) );
+
+        cll->setTexture( this->stuff.skyboxtex.mask.front, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.front.ib );
+        cll->setVertexBuffer( this->stuff.skybox.front.vb );
+        cll->draw();
+        
+        
+        
         if( cll->compile( ctxl ) )
             this->clpasser->t->sky_ready = 1;
         
@@ -290,8 +346,28 @@ namespace dragonpoop
         
         this->stuff.skybox.front.vb = c->makeVertexBuffer( &s->skybox.front.vb );
         this->stuff.skybox.front.ib = c->makeIndexBuffer( &s->skybox.front.ib );
+        this->stuff.skybox.back.vb = c->makeVertexBuffer( &s->skybox.back.vb );
+        this->stuff.skybox.back.ib = c->makeIndexBuffer( &s->skybox.back.ib );
+        this->stuff.skybox.top.vb = c->makeVertexBuffer( &s->skybox.top.vb );
+        this->stuff.skybox.top.ib = c->makeIndexBuffer( &s->skybox.top.ib );
+        this->stuff.skybox.bottom.vb = c->makeVertexBuffer( &s->skybox.bottom.vb );
+        this->stuff.skybox.bottom.ib = c->makeIndexBuffer( &s->skybox.bottom.ib );
+        this->stuff.skybox.left.vb = c->makeVertexBuffer( &s->skybox.left.vb );
+        this->stuff.skybox.left.ib = c->makeIndexBuffer( &s->skybox.left.ib );
+        this->stuff.skybox.right.vb = c->makeVertexBuffer( &s->skybox.right.vb );
+        this->stuff.skybox.right.ib = c->makeIndexBuffer( &s->skybox.right.ib );
+
+        
+        this->stuff.skyboxtex.mask.front = c->makeTexture( &s->skyboxtex.mask.front );
+        
         
         this->stuff.skyboxtex.stars.front = c->makeTexture( &s->skyboxtex.stars.front );
+        this->stuff.skyboxtex.stars.back = c->makeTexture( &s->skyboxtex.stars.back );
+        this->stuff.skyboxtex.stars.top = c->makeTexture( &s->skyboxtex.stars.top );
+        this->stuff.skyboxtex.stars.bottom = c->makeTexture( &s->skyboxtex.stars.bottom );
+        this->stuff.skyboxtex.stars.left = c->makeTexture( &s->skyboxtex.stars.left );
+        this->stuff.skyboxtex.stars.right = c->makeTexture( &s->skyboxtex.stars.right );
+
     }
     
     

@@ -28,6 +28,8 @@ namespace dragonpoop
             } stars, mask;
         } skyboxtex;
         
+        
+        float sky_time;
     };
 
 };

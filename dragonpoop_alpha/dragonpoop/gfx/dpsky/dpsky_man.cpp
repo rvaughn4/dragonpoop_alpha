@@ -118,6 +118,10 @@ namespace dragonpoop
     void dpsky_man::run( dpthread_lock *thd, dpsky_man_writelock *g )
     {
 
+        this->stuff.sky_time += 0.1f;
+        if( this->stuff.sky_time > 1.0f )
+            this->stuff.sky_time = -1.0f;
+        
     }
     
     //build skydome
@@ -126,36 +130,237 @@ namespace dragonpoop
         dpvertex_buffer *vb;
         dpindex_buffer *ib;
         dpvertex v;
+        float radius, tex_1, tex_0;
         
+        radius = 50.0f;
+        tex_1 = 0.9995f;
+        tex_0 = 0.0005f;
+        
+        //front
         vb = &this->stuff.skybox.front.vb;
         ib = &this->stuff.skybox.front.ib;
         
-        v.pos.x = -10;
-        v.pos.y = 10;
-        v.pos.z = 10;
-        v.texcoords[ 0 ].s = 0;
-        v.texcoords[ 0 ].t = 0;
+        v.pos.x = radius;
+        v.pos.y = radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_0;
         vb->addVertex( &v );
         
-        v.pos.x = 10;
-        v.pos.y = 10;
-        v.pos.z = 10;
-        v.texcoords[ 0 ].s = 1;
-        v.texcoords[ 0 ].t = 0;
+        v.pos.x = -radius;
+        v.pos.y = radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_0;
         vb->addVertex( &v );
         
-        v.pos.x = -10;
-        v.pos.y = -10;
-        v.pos.z = 10;
-        v.texcoords[ 0 ].s = 0;
-        v.texcoords[ 0 ].t = 1;
+        v.pos.x = radius;
+        v.pos.y = -radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_1;
         vb->addVertex( &v );
         
-        v.pos.x = 10;
-        v.pos.y = -10;
-        v.pos.z = 10;
-        v.texcoords[ 0 ].s = 1;
-        v.texcoords[ 0 ].t = 1;
+        v.pos.x = -radius;
+        v.pos.y = -radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        ib->addIndex( 0 );
+        ib->addIndex( 2 );
+        ib->addIndex( 1 );
+        ib->addIndex( 1 );
+        ib->addIndex( 2 );
+        ib->addIndex( 3 );
+        
+        //back
+        vb = &this->stuff.skybox.back.vb;
+        ib = &this->stuff.skybox.back.ib;
+        
+        v.pos.x = -radius;
+        v.pos.y = radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = -radius;
+        v.pos.y = -radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = -radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        ib->addIndex( 0 );
+        ib->addIndex( 2 );
+        ib->addIndex( 1 );
+        ib->addIndex( 1 );
+        ib->addIndex( 2 );
+        ib->addIndex( 3 );
+        
+        //top
+        vb = &this->stuff.skybox.top.vb;
+        ib = &this->stuff.skybox.top.ib;
+        
+        v.pos.x = -radius;
+        v.pos.y = radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = -radius;
+        v.pos.y = radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        ib->addIndex( 0 );
+        ib->addIndex( 2 );
+        ib->addIndex( 1 );
+        ib->addIndex( 1 );
+        ib->addIndex( 2 );
+        ib->addIndex( 3 );
+
+        //bottom
+        vb = &this->stuff.skybox.bottom.vb;
+        ib = &this->stuff.skybox.bottom.ib;
+        
+        v.pos.x = -radius;
+        v.pos.y = -radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = -radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = -radius;
+        v.pos.y = -radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = -radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        ib->addIndex( 0 );
+        ib->addIndex( 2 );
+        ib->addIndex( 1 );
+        ib->addIndex( 1 );
+        ib->addIndex( 2 );
+        ib->addIndex( 3 );
+        
+        //left
+        vb = &this->stuff.skybox.left.vb;
+        ib = &this->stuff.skybox.left.ib;
+        
+        v.pos.x = -radius;
+        v.pos.y = radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = -radius;
+        v.pos.y = radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = -radius;
+        v.pos.y = -radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        v.pos.x = -radius;
+        v.pos.y = -radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        ib->addIndex( 0 );
+        ib->addIndex( 2 );
+        ib->addIndex( 1 );
+        ib->addIndex( 1 );
+        ib->addIndex( 2 );
+        ib->addIndex( 3 );
+
+        //right
+        vb = &this->stuff.skybox.right.vb;
+        ib = &this->stuff.skybox.right.ib;
+        
+        v.pos.x = radius;
+        v.pos.y = radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = -radius;
+        v.pos.z = radius;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+        
+        v.pos.x = radius;
+        v.pos.y = -radius;
+        v.pos.z = -radius;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_1;
         vb->addVertex( &v );
         
         ib->addIndex( 0 );
@@ -170,8 +375,15 @@ namespace dragonpoop
     //load sky textures
     void dpsky_man::loadSky( void )
     {
+
+        this->stuff.skyboxtex.mask.front.loadFile( "skybox_mask_front.bmp" );
         
         this->stuff.skyboxtex.stars.front.loadFile( "skybox_stars_front.bmp" );
+        this->stuff.skyboxtex.stars.back.loadFile( "skybox_stars_back.bmp" );
+        this->stuff.skyboxtex.stars.top.loadFile( "skybox_stars_up.bmp" );
+        this->stuff.skyboxtex.stars.bottom.loadFile( "skybox_stars_down.bmp" );
+        this->stuff.skyboxtex.stars.left.loadFile( "skybox_stars_left.bmp" );
+        this->stuff.skyboxtex.stars.right.loadFile( "skybox_stars_right.bmp" );
     }
     
     //return sky stuff

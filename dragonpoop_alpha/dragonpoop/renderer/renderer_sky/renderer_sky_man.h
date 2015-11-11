@@ -80,6 +80,7 @@ namespace dragonpoop
                 } stars, mask;
             } skyboxtex;
             
+            float sky_time, smooth_sky_time;
         } stuff;
         
         //start task
