@@ -223,6 +223,7 @@ namespace dragonpoop
         renderer_commandlist_passer_writelock *cpl;
         shared_obj_guard ocpl;
         render_api_shader_ref *sdr;
+        float f;
         
         if( this->clpasser->t->sky_ready )
             return;
@@ -308,11 +309,38 @@ namespace dragonpoop
         cll->draw();
 
         
-        cll->setColor( 0.85f * abs_sky_time, 0.9f * abs_sky_time, 1.0f * abs_sky_time + 0.2f * ( 1.0f - abs_sky_time ) );
+        cll->setAlpha( 1.0f );
+        f = 1.0f - abs_sky_time;
+        cll->setColor( 0.85f * f, 0.9f * f, 1.0f * f + 0.2f * abs_sky_time );
 
         cll->setTexture( this->stuff.skyboxtex.mask.front, 0 );
         cll->setIndexBuffer( this->stuff.skybox.front.ib );
         cll->setVertexBuffer( this->stuff.skybox.front.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.mask.back, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.back.ib );
+        cll->setVertexBuffer( this->stuff.skybox.back.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.mask.top, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.top.ib );
+        cll->setVertexBuffer( this->stuff.skybox.top.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.mask.left, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.left.ib );
+        cll->setVertexBuffer( this->stuff.skybox.left.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.mask.right, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.right.ib );
+        cll->setVertexBuffer( this->stuff.skybox.right.vb );
+        cll->draw();
+        
+        cll->setTexture( this->stuff.skyboxtex.mask.bottom, 0 );
+        cll->setIndexBuffer( this->stuff.skybox.bottom.ib );
+        cll->setVertexBuffer( this->stuff.skybox.bottom.vb );
         cll->draw();
         
         
@@ -359,7 +387,11 @@ namespace dragonpoop
 
         
         this->stuff.skyboxtex.mask.front = c->makeTexture( &s->skyboxtex.mask.front );
-        
+        this->stuff.skyboxtex.mask.back = c->makeTexture( &s->skyboxtex.mask.back );
+        this->stuff.skyboxtex.mask.top = c->makeTexture( &s->skyboxtex.mask.top );
+        this->stuff.skyboxtex.mask.bottom = c->makeTexture( &s->skyboxtex.mask.bottom );
+        this->stuff.skyboxtex.mask.left = c->makeTexture( &s->skyboxtex.mask.left );
+        this->stuff.skyboxtex.mask.right = c->makeTexture( &s->skyboxtex.mask.right );
         
         this->stuff.skyboxtex.stars.front = c->makeTexture( &s->skyboxtex.stars.front );
         this->stuff.skyboxtex.stars.back = c->makeTexture( &s->skyboxtex.stars.back );

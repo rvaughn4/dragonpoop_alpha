@@ -377,6 +377,11 @@ namespace dragonpoop
     {
 
         this->stuff.skyboxtex.mask.front.loadFile( "skybox_mask_front.bmp" );
+        this->stuff.skyboxtex.mask.back.loadFile( "skybox_mask_back.bmp" );
+        this->stuff.skyboxtex.mask.top.loadFile( "skybox_mask_up.bmp" );
+        this->stuff.skyboxtex.mask.bottom.loadFile( "skybox_mask_down.bmp" );
+        this->stuff.skyboxtex.mask.left.loadFile( "skybox_mask_left.bmp" );
+        this->stuff.skyboxtex.mask.right.loadFile( "skybox_mask_right.bmp" );
         
         this->stuff.skyboxtex.stars.front.loadFile( "skybox_stars_front.bmp" );
         this->stuff.skyboxtex.stars.back.loadFile( "skybox_stars_back.bmp" );
