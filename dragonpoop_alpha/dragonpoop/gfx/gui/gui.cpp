@@ -23,7 +23,7 @@
 
 namespace dragonpoop
 {
-    
+
     //ctor
     gui::gui( gfx_writelock *g, dpid id ) : shared_obj( g->getCore()->getMutexMaster() )
     {
@@ -56,7 +56,7 @@ namespace dragonpoop
         this->margin_size = 0;
         this->bIsFade = 1;
     }
-    
+
     //dtor
     gui::~gui( void )
     {
@@ -71,7 +71,7 @@ namespace dragonpoop
         if( this->r )
             delete this->r;
         delete this->mgr;
-        
+
         while( !this->mse.empty() )
         {
             gui_mouse_event *e;
@@ -79,7 +79,7 @@ namespace dragonpoop
             this->mse.pop();
             delete e;
         }
-        
+
         while( !this->kbe.empty() )
         {
             gui_kb_event *e;
@@ -87,41 +87,41 @@ namespace dragonpoop
             this->kbe.pop();
             delete e;
         }
-        
+
         o.unlock();
     }
-    
+
     //return core
     core *gui::getCore( void )
     {
         return this->c;
     }
-    
+
     //generate read lock
     shared_obj_readlock *gui::genReadLock( shared_obj *p, dpmutex_readlock *l )
     {
         return new gui_readlock( (gui *)p, l );
     }
-    
+
     //generate write lock
     shared_obj_writelock *gui::genWriteLock( shared_obj *p, dpmutex_writelock *l )
     {
         return new gui_writelock( (gui *)p, l );
     }
-    
+
     //generate ref
     shared_obj_ref *gui::genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k )
     {
         return new gui_ref( (gui *)p, k );
     }
-    
+
     //run gui
     void gui::run( dpthread_lock *thd, gui_writelock *g )
     {
         shared_obj_guard o;
         renderer_gui_writelock *l;
         uint64_t t;
-        
+
         t = thd->getTicks();
         if( this->z == 0 )
         {
@@ -135,7 +135,7 @@ namespace dragonpoop
         }
         if( this->z != 0 && !cur_flash )
             this->redraw_timer = 0;
-        
+
         if( this->redraw_timer && t - this->t_last_redraw > this->redraw_timer )
         {
             this->redraw();
@@ -144,7 +144,7 @@ namespace dragonpoop
             else
                 this->cur_flash = 0;
         }
-        
+
         if( this->bRedraw && t - this->t_last_redraw > 100 )
         {
             this->t_last_redraw = t;
@@ -155,17 +155,17 @@ namespace dragonpoop
                 this->bBgChanged = 1;
                 this->bWasBgDrawn = 1;
             }
-            
+
             if( ( !this->bWasFgDrawn || this->bRepaintFg ) && this->bHasFg )
             {
                 this->repaintFg( g, &this->fgtex, this->pos.w, this->pos.h );
                 this->bFgChanged = 1;
                 this->bWasFgDrawn = 1;
             }
-            
+
             this->bRedraw = 0;
         }
-        
+
         if( this->bPosChanged || this->bBgChanged || this->bFgChanged )
         {
             if( this->r )
@@ -184,58 +184,58 @@ namespace dragonpoop
                 this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
             }
         }
-        
+
         while( !this->mse.empty() )
         {
             gui_mouse_event *e;
             e = this->mse.front();
             this->mse.pop();
-            
+
             if( this->bOldLb != e->lb )
                this->setFocus();
             if( this->bOldLb != e->lb )
                 this->handleMouseClick( e->x, e->y, 0, e->lb );
             if( this->bOldRb != e->rb )
                 this->handleMouseClick( e->x, e->y, 1, e->rb );
-            
+
             this->bOldLb = e->lb;
             this->bOldRb = e->rb;
-            
+
             delete e;
         }
-        
+
         while( !this->kbe.empty() )
         {
             gui_kb_event *e;
             e = this->kbe.front();
             this->kbe.pop();
-            
+
             this->handleKbEvent( &e->sname, e->bDown );
-            
+
             delete e;
         }
-        
+
         this->doProcessing( thd, g );
     }
-    
+
     //do processing
     void gui::doProcessing( dpthread_lock *thd, gui_writelock *g )
     {
-        
+
     }
-    
+
     //returns id
     dpid gui::getId( void )
     {
         return this->id;
     }
-    
+
     //compares id
     bool gui::compareId( dpid id )
     {
         return dpid_compare( &this->id, &id );
     }
-    
+
     //set width and height
     void gui::setWidthHeight( float w, float h )
     {
@@ -244,7 +244,7 @@ namespace dragonpoop
         this->redraw();
         this->bPosChanged = 1;
     }
-    
+
     //set top left pos
     void gui::setPosition( float x, float y )
     {
@@ -252,84 +252,84 @@ namespace dragonpoop
         this->pos.y = y;
         this->bPosChanged = 1;
     }
-    
+
     //get dimensions
     void gui::getDimensions( gui_dims *p )
     {
         *p = this->pos;
     }
-    
+
     //cause redraw of background and forground texture
     void gui::redraw( void )
     {
         this->bRedraw = 1;
     }
-    
+
     //set background redraw mode
     void gui::enableBgRedraw( bool b )
     {
         this->bRepaintBg = b;
     }
-    
+
     //set forground redraw mode
     void gui::enableFgRedraw( bool b )
     {
         this->bRepaintFg = b;
     }
-    
+
     //set background mode
     void gui::enableBg( bool b )
     {
         this->bHasBg = b;
     }
-    
+
     //set forground mode
     void gui::enableFg( bool b )
     {
         this->bHasFg = b;
     }
-    
+
     //returns true if has background texture
     bool gui::hasBg( void )
     {
         return this->bHasBg;
     }
-    
+
     //returns true if has forground texture
     bool gui::hasFg( void )
     {
         return this->bHasFg;
     }
-    
+
     //override to paint background texture
     void gui::repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h )
     {
-        
+
     }
-    
+
     //override to paint forground texture
     void gui::repaintFg( gui_writelock *g, dpbitmap *bm, float w, float h )
     {
         dprgba c;
-        
+
         if( !this->hasFg() )
         {
             bm->reset();
             return;
         }
-        
+
         if( w > 128 && sz_div )
             w = w / sz_div;
         if( h > 128 && sz_div )
             h = h / sz_div;
-        
+
         bm->resize( w, h );
         c.r = c.b = c.g = c.a = 0;
         bm->clear( &c );
-        
+
         this->drawText( bm );
     }
-    
+
     //reset text loc
     void gui::resetTxtLoc( void )
     {
@@ -337,18 +337,18 @@ namespace dragonpoop
         this->last_txt_line = 0;
         this->txt_loc.clear();
     }
-    
+
     //add text loc
     void gui::addTxtLoc( float x, float y, float w, float h, unsigned int line_no, unsigned int char_no )
     {
         gui_txt_loc l;
-        
+
         if( line_no != this->last_txt_line )
         {
             this->line_front = (unsigned int)this->txt_loc.size();
             this->last_txt_line = line_no;
         }
-        
+
         l.x = x;
         l.y = y;
         l.w = w;
@@ -356,10 +356,10 @@ namespace dragonpoop
         l.front = this->line_front;
         l.line_no = line_no;
         l.char_no = char_no;
-        
+
         this->txt_loc.push_back( l );
     }
-    
+
     //override to customize font rendering
     void gui::drawText( dpbitmap *bm )
     {
@@ -372,21 +372,21 @@ namespace dragonpoop
         dpfont f;
         bool cur_drawn;
         dpxywh cur_pos;
-        
+
         w = bm->getWidth();
         h = bm->getHeight();
-        
+
         fnt_face.assign( "sans" );
-        
+
         fnt_size = this->fnt_size;
         if( !fnt_size )
             fnt_size = ( w + h ) / 20;
         if( this->sz_div )
             fnt_size /= this->sz_div;
         sdw_off = fnt_size / 120 + 1;
-        
+
         clr = this->fnt_clr;
-        
+
         clr_dark.r = clr.r * 0.125f;
         clr_dark.g = clr.g * 0.125f;
         clr_dark.b = clr.b * 0.125f;
@@ -395,17 +395,17 @@ namespace dragonpoop
         clr_light.g = clr.g * 0.3f + 170;
         clr_light.b = clr.b * 0.3f + 170;
         clr_light.a = clr.a * 0.5f;
-        
+
         if( !f.openFont( fnt_face.c_str(), fnt_size ) )
             return;
-        
+
         e = (unsigned int)this->stxt.length();
         cb = (unsigned char *)this->stxt.c_str();
         this->resetTxtLoc();
-        
+
         w -= this->margin_size + this->margin_size;
         h -= this->margin_size + this->margin_size;
-        
+
         x = y = this->margin_size;
         cw = lch = 0;
         ln = 0;
@@ -413,9 +413,9 @@ namespace dragonpoop
         for( i = 0; i < e; i++ )
         {
             c = cb[ i ];
-            
+
             //handle inline codes first
-            
+
             //27 /e font size
             if( c == 27 && e - i >= 4 )
             {
@@ -436,11 +436,11 @@ namespace dragonpoop
                     if( !f.openFont( fnt_face.c_str(), fnt_size ) )
                         return;
                 }
-                    
+
                 i += 3;
                 continue;
             }
-            
+
             //12 /f font face
             if( c == 12 && e - i >= 4 )
             {
@@ -460,36 +460,36 @@ namespace dragonpoop
                     if( !f.openFont( fnt_face.c_str(), fnt_size ) )
                         return;
                 }
-                
+
                 continue;
             }
-            
+
             //7 /a font color
             if( c == 7 && e - i >= 10 )
             {
                 std::stringstream ssr, ssg, ssb;
-                
+
                 i += 1;
                 s.assign( (char *)&cb[ i ], 3 );
                 ssr << s;
                 ssr >> d;
                 clr.r = d;
-                
+
                 i += 3;
                 s.assign( (char *)&cb[ i ], 3 );
                 ssg << s;
                 ssg >> d;
                 clr.g = d;
-                
+
                 i += 3;
                 s.assign( (char *)&cb[ i ], 3 );
                 ssb << s;
                 ssb >> d;
                 clr.b = d;
-                
+
                 i += 2;
                 clr.a = 255;
-                
+
                 clr_dark.r = clr.r * 0.125f;
                 clr_dark.g = clr.g * 0.125f;
                 clr_dark.b = clr.b * 0.125f;
@@ -498,10 +498,10 @@ namespace dragonpoop
                 clr_light.g = clr.g * 0.3f + 170;
                 clr_light.b = clr.b * 0.3f + 170;
                 clr_light.a = clr.a * 0.5f;
-                
+
                 continue;
             }
-            
+
             // \r
             if( c == 13 )
             {
@@ -512,8 +512,8 @@ namespace dragonpoop
             if( c == 10 )
             {
                 x = this->margin_size;
-                if( lch < fnt_size )
-                    lch = fnt_size;
+                if( lch < (int)fnt_size )
+                    lch = (int)fnt_size;
                 y += lch;
                 ln++;
                 continue;
@@ -522,17 +522,17 @@ namespace dragonpoop
             if( c == 9 )
             {
                 tt = 0;
-                while( tt <= x )
+                while( (int)tt <= x )
                     tt += 4 * fnt_size;
                 x = tt;
                 continue;
             }
-            
+
             f.draw( c, 0, 0, 0, &cw, &ch, 0 );
             if( cw + x > w )
             {
                 x = this->margin_size;
-                if( lch < fnt_size )
+                if( lch < (int)fnt_size )
                     lch = fnt_size;
                 y += lch;
                 lch = ch;
@@ -542,7 +542,7 @@ namespace dragonpoop
                 lch = ch;
             if( x + cw > w || y + ch > h )
                 return;
-            
+
             if(
                     ( !cur_drawn && i >= this->cursor )
                     ||
@@ -570,7 +570,7 @@ namespace dragonpoop
                 f.draw( c, x + sdw_off, y + sdw_off, bm, 0, 0, &clr_dark );
                 f.draw( c, x, y, bm, 0, 0, &clr );
             }
-            
+
             if( this->sz_div )
                 this->addTxtLoc( x * this->sz_div, y * this->sz_div, cw * this->sz_div, ch * this->sz_div, ln, i );
             else
@@ -586,21 +586,21 @@ namespace dragonpoop
             cur_pos.h = fnt_size * 5 / 4;
             bm->clear( &clr, &cur_pos );
         }
-        
+
     }
-    
+
     //set parent id
     void gui::setParentId( dpid id )
     {
         this->pid = id;
     }
-    
+
     //get parent id
     dpid gui::getParentId( void )
     {
         return this->pid;
     }
-    
+
     //returns true if has renderer
     bool gui::hasRenderer( void )
     {
@@ -608,17 +608,17 @@ namespace dragonpoop
             return 0;
         return 1;
     }
-    
+
     //set renderer
     void gui::setRenderer( renderer_gui *g )
     {
         shared_obj_guard o;
         renderer_gui_writelock *l;
-        
+
         if( this->r )
             delete this->r;
         this->r = 0;
-        
+
         l = (renderer_gui_writelock *)o.tryWriteLock( g, 300, "gui::setRenderer" );
         if( !l )
             return;
@@ -630,19 +630,19 @@ namespace dragonpoop
     {
         return &this->bgtex;
     }
-    
+
     //returns pointer to fg texture
     dpbitmap *gui::getFg( void )
     {
         return &this->fgtex;
     }
-    
+
     //returns z order
     unsigned int gui::getZ( void )
     {
         return this->z;
     }
-    
+
     //sets focus
     void gui::setFocus( void )
     {
@@ -652,11 +652,11 @@ namespace dragonpoop
         gui_writelock *pl;
         gui_ref *p;
         std::list<gui_ref *>::iterator i;
-        
+
         ml = (gui_man_readlock *)o1.tryReadLock( this->mgr, 1000, "gui::setFocus" );
         if( !ml )
             return;
-        
+
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
@@ -670,31 +670,31 @@ namespace dragonpoop
             }
         }
         o.unlock();
-        
+
         this->bPosChanged = 1;
         this->z = 0;
     }
-    
+
     //returns true if has focus
     bool gui::hasFocus( void )
     {
         return this->z == 0;
     }
- 
+
     //process mouse input
     void gui::processMouse( float x, float y, bool lb, bool rb )
     {
         gui_mouse_event *e;
-        
+
         e = new gui_mouse_event();
         e->lb = lb;
         e->rb = rb;
         e->x = x;
         e->y = y;
-        
+
         this->mse.push( e );
     }
-    
+
     //process kb input
     void gui::processKb( std::string *skey, bool bDown )
     {
@@ -703,10 +703,10 @@ namespace dragonpoop
         e = new gui_kb_event();
         e->sname.assign( *skey );
         e->bDown = bDown;
-        
+
         this->kbe.push( e );
     }
-    
+
     //override to handle mouse button
     void gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
     {
@@ -728,7 +728,7 @@ namespace dragonpoop
                 this->redraw();
         }
     }
-    
+
     //override to handle keyboard button
     void gui::handleKbEvent( std::string *skey, bool isDown )
     {
@@ -738,35 +738,35 @@ namespace dragonpoop
 
             if( this->bIsEdit )
             {
-                
+
                 if( skey->size() == 1 )
                 {
                     this->insert( skey->c_str() );
                     this->redraw();
                     return;
                 }
-                
+
                 if( skey->compare( "Enter" ) == 0 || skey->compare( "Return" ) == 0 )
                 {
                     this->insert( "\n" );
                     this->redraw();
                     return;
                 }
-                
+
                 if( skey->compare( "Tab" ) == 0 )
                 {
                     this->insert( "\t" );
                     this->redraw();
                     return;
                 }
-                
+
                 if( skey->compare( "Backspace" ) == 0 )
                 {
                     this->backspace();
                     this->redraw();
                     return;
                 }
-                
+
                 if( skey->compare( "Delete" ) == 0 )
                 {
                     this->delete_();
@@ -774,7 +774,7 @@ namespace dragonpoop
                     return;
                 }
             }
-            
+
             if( skey->compare( "Left" ) == 0 )
             {
                 this->left();
@@ -782,7 +782,7 @@ namespace dragonpoop
                     this->redraw();
                 return;
             }
-            
+
             if( skey->compare( "Right" ) == 0 )
             {
                 this->right();
@@ -799,7 +799,7 @@ namespace dragonpoop
         }
         else
         {
-            
+
             if( skey->compare( "Shift" ) == 0 )
             {
                 this->bShiftDown = 0;
@@ -808,7 +808,7 @@ namespace dragonpoop
 
         }
     }
-    
+
     //set text
     void gui::setText( const char *c )
     {
@@ -816,7 +816,7 @@ namespace dragonpoop
         this->cursor = (unsigned int)this->stxt.length();
         this->bIsSel = 0;
     }
-    
+
     //set text
     void gui::setText( std::string *s )
     {
@@ -824,31 +824,31 @@ namespace dragonpoop
         this->cursor = (unsigned int)this->stxt.length();
         this->bIsSel = 0;
     }
-    
+
     //get text
     void gui::getText( std::string *s )
     {
         s->assign( this->stxt );
     }
-    
+
     //set font size
     void gui::setFontSize( unsigned int s )
     {
         this->fnt_size = s;
     }
-    
+
     //get font size
     unsigned int gui::getFontSize( void )
     {
         return this->fnt_size;
     }
-    
+
     //set font color
     void gui::setFontColor( dprgba *c )
     {
         this->fnt_clr = *c;
     }
-    
+
     //get font color
     dprgba *gui::getFontColor( void )
     {
@@ -860,21 +860,21 @@ namespace dragonpoop
     {
         if( this->bIsSel )
             return this->delete_();
-        
+
         if( this->cursor > this->stxt.size() )
             this->cursor = (unsigned int)this->stxt.size();
         if( this->cursor < 1 )
             return;
-        
+
         this->cursor--;
         this->stxt.replace( this->cursor, 1, "" );
     }
-    
+
     //delete text
     void gui::delete_( void )
     {
         unsigned int a, b;
-        
+
         if( this->bIsSel )
         {
             if( this->cursor <= this->sel_cursor )
@@ -895,7 +895,7 @@ namespace dragonpoop
             a = this->cursor;
             b = this->cursor + 1;
         }
-        
+
         if( a > this->stxt.size() )
             a = (unsigned int)this->stxt.size();
         if( b > this->stxt.size() )
@@ -905,14 +905,14 @@ namespace dragonpoop
         this->stxt.replace( a, b - a + 1, "" );
         this->cursor = a;
     }
-    
+
     //insert text
     void gui::insert( const char *c )
     {
         std::string s( c );
-        
+
         unsigned int a, b;
-        
+
         if( this->bIsSel )
         {
             if( this->cursor <= this->sel_cursor )
@@ -933,30 +933,30 @@ namespace dragonpoop
             a = this->cursor;
             b = this->cursor;
         }
-        
+
         if( a > this->stxt.size() )
             a = (unsigned int)this->stxt.size();
         if( b > this->stxt.size() )
             b = (unsigned int)this->stxt.size();
-        
+
         if( a >= this->stxt.size() )
         {
             this->stxt.append( s );
             this->cursor = a + (unsigned int)s.size();
             return;
         }
-        
+
         if( a == b )
         {
             this->stxt.insert( a, s );
             this->cursor = a + (unsigned int)s.size();
             return;
         }
-        
+
         this->stxt.replace( a, b - a + 1, s );
         this->cursor = a + (unsigned int)s.size();
     }
-    
+
     //move cursor left
     void gui::left( void )
     {
@@ -977,7 +977,7 @@ namespace dragonpoop
         }
         this->cur_flash = 1;
     }
-    
+
     //move cursor right
     void gui::right( void )
     {
@@ -998,49 +998,49 @@ namespace dragonpoop
         }
         this->cur_flash = 1;
     }
-    
+
     //move cursor to end
     void gui::end( void )
     {
-        
+
     }
-    
+
     //move cursor to home
     void gui::home( void )
     {
-        
+
     }
-    
+
     //move cursor to top
     void gui::top( void )
     {
         this->cursor = 0;
     }
-    
+
     //move cursor to bottom
     void gui::bottom( void )
     {
         this->cursor = (unsigned int)this->stxt.size();
     }
-    
+
     //move cursor up
     void gui::up( void )
     {
-        
+
     }
-    
+
     //move cursor down
     void gui::down( void )
     {
-        
+
     }
-    
+
     //find cursor by mouse coords
     unsigned int gui::findCursor( float x, float y )
     {
         unsigned int i, e, f;
         gui_txt_loc *t;
-        
+
         e = (unsigned int)this->txt_loc.size();
         for( f = i = 0; i < e; i++ )
         {
@@ -1048,7 +1048,7 @@ namespace dragonpoop
             if( t->x <= x && t->y <= y )
                 f = t->char_no;
         }
-        
+
         return f;
     }
 
@@ -1056,10 +1056,10 @@ namespace dragonpoop
     bool gui::getSelectedText( std::string *s, bool bDoCut )
     {
         unsigned int a, b;
-        
+
         if( !this->bIsSel || this->cursor == this->sel_cursor )
             return 0;
-        
+
         if( this->cursor <= this->sel_cursor )
         {
             a = this->cursor;
@@ -1071,7 +1071,7 @@ namespace dragonpoop
             a = this->sel_cursor;
         }
         this->bIsSel = 0;
-        
+
         if( a > this->stxt.size() )
             a = (unsigned int)this->stxt.size();
         if( b > this->stxt.size() )
@@ -1080,78 +1080,78 @@ namespace dragonpoop
             return 0;
 
         s->assign( this->stxt.substr( a, b - a + 1 ) );
-        
+
         //if( bDoCut )
           //  this->delete_();
-        
+
         return 1;
     }
-    
+
     //sets selected text in gui (paste)
     bool gui::setSelectedText( std::string *s )
     {
         this->insert( s->c_str() );
         return 1;
     }
-    
+
     //add gui
     void gui::addGui( gui *g )
     {
         gui_man_writelock *gl;
         shared_obj_guard o, o1;
         gui_writelock *gul;
-        
+
         gl = (gui_man_writelock *)o.tryWriteLock( this->mgr, 2000, "gui::addGui" );
         if( !gl )
             return;
         gul = (gui_writelock *)o1.tryWriteLock( g, 2000, "gui::addGui" );
         if( !gul )
             return;
-        
+
         gul->setParentId( this->id );
         o1.unlock();
-        
+
         gl->addGui( g );
     }
-    
+
     //set editable
     void gui::setEditMode( bool b )
     {
         this->bIsEdit = b;
     }
-    
+
     //returns true if editable
     bool gui::isEditable( void )
     {
         return this->bIsEdit;
     }
-    
+
     //sets hoverable
     void gui::setHoverMode( bool b )
     {
         this->bIsHover = b;
     }
-    
+
     //returns true if hoverable
     bool gui::isHoverable( void )
     {
         return this->bIsHover;
     }
-    
+
     //generates new id
     dpid gui::genId( void )
     {
         dptaskpool_ref *r;
         dptaskpool_writelock *l;
         shared_obj_guard o;
-        
+
         r = this->c->getTaskpool();
         if( !r )
             return dpid_null();
         l = (dptaskpool_writelock *)o.tryWriteLock( r, 2000, "gui::genId" );
         if( !l )
             return dpid_null();
-        
+
         return l->genId();
     }
 
@@ -1160,23 +1160,23 @@ namespace dragonpoop
     {
         this->margin_size = m;
     }
-    
+
     //get margin size
     unsigned int gui::getMargin( void )
     {
         return this->margin_size;
     }
-    
+
     //returns true if gui should swoosh in and out
     bool gui::isFade( void )
     {
         return this->bIsFade;
     }
-    
+
     //sets fade mode
     void gui::setFade( bool b )
     {
         this->bIsFade = b;
     }
-    
+
 };

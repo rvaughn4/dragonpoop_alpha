@@ -1,7 +1,0 @@
-
-#ifndef dragonpoop_openglx_1o5_renderer_model_instance_groups_h
-#define dragonpoop_openglx_1o5_renderer_model_instance_groups_h
-
-#include "openglx_1o5_renderer_model_group_instance.h"
-
-#endif

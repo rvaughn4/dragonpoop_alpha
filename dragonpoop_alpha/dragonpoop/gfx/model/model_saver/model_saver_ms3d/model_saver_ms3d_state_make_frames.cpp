@@ -13,22 +13,24 @@
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include "../../model_animation_frame/model_animation_frame.h"
 
+#include <algorithm>
+
 namespace dragonpoop
 {
-    
+
     //ctor
     model_saver_ms3d_state_make_frames::model_saver_ms3d_state_make_frames( dpbuffer *b, model_ref *m )
     {
         this->b = b;
         this->m = m;
     }
-    
+
     //dtor
     model_saver_ms3d_state_make_frames::~model_saver_ms3d_state_make_frames( void )
     {
-        
+
     }
-    
+
     //run state, returns next state
     model_saver_state *model_saver_ms3d_state_make_frames::run( dpthread_lock *thd, model_saver_writelock *ml )
     {
@@ -39,29 +41,29 @@ namespace dragonpoop
         std::vector<ms3d_model_animation_m> *la;
         std::vector<ms3d_model_frame> *lf;
         unsigned int i, e;
-        
+
         m = (model_readlock *)o.readLock( this->m, "model_saver_ms3d_state_make_frames::run" );
         if( !m )
             return new model_saver_ms3d_state_cleanup( this->b, this->m, 0 );
         t = (model_saver_ms3d *)ml->getSaver();
-        
+
         lf = t->frames;
         if( lf )
             delete lf;
         lf = new std::vector<ms3d_model_frame>();
         t->frames = lf;
-        
+
         la = t->anims;
         if( !la )
             return new model_saver_ms3d_state_cleanup( this->b, this->m, 0 );
-        
+
         e = (unsigned int)la->size();
         for( i = 0; i < e; i++ )
         {
             ma = &( *la )[ i ];
             this->makeFrames( t, ma, m );
         }
-        
+
         o.unlock();
 
         return new model_saver_ms3d_state_make_joints( this->b, this->m );
@@ -78,7 +80,7 @@ namespace dragonpoop
         std::vector<ms3d_model_frame> llf;
         std::vector<float> lt;
         unsigned int j, k, r, d;
-        
+
         lf = t->frames;
         m->getAnimationFrames( &l, a->id );
         for( i = l.begin(); i != l.end(); ++i )
@@ -88,13 +90,13 @@ namespace dragonpoop
             f.t = p->getTime();
             f.id = p->getFrameId();
             f.afid = p->getId();
-            
+
             lt.push_back( f.t );
             llf.push_back( f );
         }
-        
+
         std::sort( lt.begin(), lt.end() );
-        
+
         k = (unsigned int)lt.size();
         d = (unsigned int)llf.size();
         for( j = 0; j < k; j++ )
@@ -108,7 +110,7 @@ namespace dragonpoop
                 }
             }
         }
-    
+
     }
-    
+
 };

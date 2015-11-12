@@ -65,18 +65,18 @@ namespace dragonpoop
         render_api *api;
         render_api_context_ref *main_ctx;
         renderer_commandlist_passer *clpasser;
-        
+
         std::atomic<bool> bDoRun, bIsRun;
         render_api_commandlist_ref *new_gui_cl, *new_model_cl, *new_land_cl, *new_sky_cl;
         render_api_commandlist_ref *gui_cl, *model_cl, *land_cl, *sky_cl;
-        
+
         uint64_t t_last_fps, ms_each_frame, t_last_input;
         float fps, fthiss;
         bool bActive, bActiveOld, bCamSync;
         dpmatrix m_world, m_gui, m_gui_undo;
         dpposition cam_pos;
         renderer_state *cs;
-        
+
         struct
         {
             float x, y;
@@ -90,8 +90,8 @@ namespace dragonpoop
             float x, y, z;
         } cam_rot;
         unsigned int render_tries, dim_update_tick;
-        
-        
+
+
         //run renderer
         void state_run( dpthread_lock *thd, renderer_writelock *rl );
         //init api
@@ -122,7 +122,7 @@ namespace dragonpoop
         void render( dpthread_lock *thd, renderer_writelock *rl );
         //sync camera
         void _syncCam( void );
-        
+
     protected:
 
         //generate read lock
@@ -148,8 +148,8 @@ namespace dragonpoop
         //return screen/window height
         virtual unsigned int getHeight( void );
         //calculate matrixes
-        void calcMatrix( void );        
-        
+        void calcMatrix( void );
+
         //generate renderer model
         virtual renderer_model_man *genModelMan( dptaskpool_writelock *tp );
         //generate renderer gui manager
@@ -158,7 +158,7 @@ namespace dragonpoop
         virtual renderer_land_man *genLandMan( dptaskpool_writelock *tp );
         //generate renderer sky manager
         virtual renderer_sky_man *genSkyMan( dptaskpool_writelock *tp );
-        
+
         //returns fps
         float getFps( void );
         //return ms each frame
@@ -207,10 +207,10 @@ namespace dragonpoop
         friend class renderer_model_man;
         friend class renderer_gui_man;
         friend class renderer_task;
-        
+
         friend class openglx_1o5_renderer;
     };
-    
+
 };
 
 #endif

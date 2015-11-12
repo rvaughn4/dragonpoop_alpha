@@ -3,23 +3,23 @@
 #define dragonpoop_opengl1o5_x11_context_h
 
 #include "opengl1o5_x11.h"
-#include "render_api_context.h"
+#include "../render_api/render_api_context.h"
 
 namespace dragonpoop
 {
-    
+
     class opengl1o5_x11_context : public render_api_context
     {
-        
+
     private:
-        
+
         GLXContext ctx;
         Window win;
         Display *dpy;
         bool bUseDl;
-        
+
     protected:
-        
+
         //generate commandlist
         virtual render_api_commandlist *genCmdList( render_api_context_writelock *cl, dpmutex_master *mm );
         //clear screen
@@ -42,14 +42,14 @@ namespace dragonpoop
         virtual render_api_indexbuffer *genIndexBuffer( dpmutex_master *mm, render_api_context_writelock *cl, dpindex_buffer *vb );
 
     public:
-        
+
         //ctor
         opengl1o5_x11_context( render_api_writelock *r, dpmutex_master *mm, GLXContext ctx, Window win, Display *dpy, bool bUseDl );
         //dtor
         virtual ~opengl1o5_x11_context( void );
-        
+
     };
-    
+
 };
 
 #endif

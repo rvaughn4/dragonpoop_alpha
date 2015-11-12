@@ -48,7 +48,7 @@ namespace dragonpoop
     model::~model( void )
     {
         shared_obj_guard o;
-        
+
         o.tryWriteLock( this, 5000, "model::~model" );
         o.unlock();
         this->unlink();
@@ -90,18 +90,18 @@ namespace dragonpoop
         uint64_t t;
         shared_obj_guard o;
         renderer_model_readlock *rl;
-        
+
         t = thd->getTicks();
         if( t - this->last_ran_time < 10 )
             return;
         this->last_ran_time = t;
-        
+
         if( this->bSync )
         {
             this->findSize();
             this->computeFrameWeights( g );
             this->syncInstances( thd, g, ms_each_frame );
-        
+
             this->bSync = 0;
             if( !this->r )
                 return;
@@ -110,14 +110,14 @@ namespace dragonpoop
                 rl->sync();
             o.unlock();
         }
-        
+
         this->ran_time = t;
         if( t - this->last_comp_time > 4000 )
         {
             this->last_comp_time = t;
             this->runComponents();
         }
-        
+
         this->runInstances( thd, g, ms_each_frame );
     }
 
@@ -231,10 +231,10 @@ namespace dragonpoop
         model_component *c;
 
         c = (model_component *)this->comps.byid.findLeaf( id );
-        
+
         if( !c || c->getType() != mtype )
             return 0;
-        
+
         return c;
     }
 
@@ -244,7 +244,7 @@ namespace dragonpoop
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;
         model_component *c;
-        
+
         l = &this->comps.lst;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -254,17 +254,17 @@ namespace dragonpoop
             if( c->compareName( s ) )
                 return c;
         }
-        
+
         return 0;
     }
-    
+
     //find components
     void model::getComponents( std::list<model_component *> *ll )
     {
         std::list<model_component *> *l;
         std::list<model_component *>::iterator i;
         model_component *c;
-        
+
         l = &this->comps.lst;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -303,7 +303,7 @@ namespace dragonpoop
         std::list<model_component *> l;
         std::list<model_component *>::iterator i;
         model_component *c;
-        
+
         this->comps.byowner.findLeaves( p1, (std::list<void *> *)&l );
 
         for( i = l.begin(); i != l.end(); ++i )
@@ -553,19 +553,19 @@ namespace dragonpoop
         p = new model_instance( thd, id, ml );
         if( !p )
             return 0;
-        
+
         this->instances.push_back( p );
         pl = (model_instance_writelock *)o.writeLock( p, "model::makeInstance" );
         if( !pl )
             return 0;
-        
+
         if( this->r )
         {
             rl = (renderer_model_readlock *)o2.tryReadLock( this->r, 400, "model::makeInstance" );
             if( rl )
                 rl->sync();
         }
-        
+
         return (model_instance_ref *)pl->getRef();
     }
 
@@ -578,7 +578,7 @@ namespace dragonpoop
         model_instance_writelock *pl;
         shared_obj_guard o;
         dpid iid;
-        
+
         l = &this->instances;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -591,10 +591,10 @@ namespace dragonpoop
                 continue;
             return (model_instance_ref *)pl->getRef();
         }
-        
+
         return 0;
     }
-    
+
     //get instances
     void model::getInstances( std::list<model_instance_ref *> *ll )
     {
@@ -680,7 +680,7 @@ namespace dragonpoop
         std::list<model_animation *>::iterator i;
         model_animation *p;
         std::string s;
-        
+
         s.assign( cname );
         this->getAnimations( &l );
         for( i = l.begin(); i != l.end(); ++i )
@@ -689,10 +689,10 @@ namespace dragonpoop
             if( p->compareName( &s ) )
                 return p;
         }
-        
+
         return 0;
     }
-    
+
     //get animations
     void model::getAnimations( std::list<model_animation *> *l )
     {
@@ -747,7 +747,7 @@ namespace dragonpoop
     {
         this->getComponentsByParent( model_component_type_vertex_joint, p1, (std::list<model_component *> *)l );
     }
-    
+
     //get vertex joints
     void model::getVertexJoints( std::list<model_vertex_joint *> *l, dpid p1, dpid p2 )
     {
@@ -762,19 +762,19 @@ namespace dragonpoop
         this->addComponent( c );
         return c;
     }
-    
+
     //find frame
     model_frame *model::findFrame( dpid id )
     {
         return (model_frame *)this->findComponent( model_component_type_frame, id );
     }
-    
+
     //get frame
     void model::getFrames( std::list<model_frame *> *l )
     {
         this->getComponents( model_component_type_frame, (std::list<model_component *> *)l );
     }
-    
+
     //add animation frame
     model_animation_frame *model::makeAnimationFrame( dpid id, dpid animation_id, dpid frame_id, unsigned int time_ms )
     {
@@ -784,25 +784,25 @@ namespace dragonpoop
         this->addComponent( c, animation_id, frame_id );
         return c;
     }
-    
+
     //find animation frame
     model_animation_frame *model::findAnimationFrame( dpid id )
     {
         return (model_animation_frame *)this->findComponent( model_component_type_animation_frame, id );
     }
-    
+
     //get animation frame
     void model::getAnimationFrames( std::list<model_animation_frame *> *l )
     {
         this->getComponents( model_component_type_animation_frame, (std::list<model_component *> *)l );
     }
-    
+
     //get animation frame by frame or animation id
     void model::getAnimationFrames( std::list<model_animation_frame *> *l, dpid parent_id )
     {
         this->getComponentsByParent( model_component_type_animation_frame, parent_id, (std::list<model_component *> *)l );
     }
-    
+
     //add FrameJoint
     model_frame_joint *model::makeFrameJoint( dpid id, dpid frame_id, dpid joint_id )
     {
@@ -811,36 +811,36 @@ namespace dragonpoop
         this->addComponent( c, frame_id, joint_id );
         return c;
     }
-    
+
     //find FrameJoint
     model_frame_joint *model::findFrameJoint( dpid id )
     {
         return (model_frame_joint *)this->findComponent( model_component_type_frame_joint, id );
     }
-    
+
     //get FrameJoints
     void model::getFrameJoints( std::list<model_frame_joint *> *l )
     {
         this->getComponents( model_component_type_frame_joint, (std::list<model_component *> *)l );
     }
-    
+
     //get FrameJoints by frame or animation id
     void model::getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id )
     {
         this->getComponentsByParent( model_component_type_frame_joint, parent_id, (std::list<model_component *> *)l );
     }
-    
+
     //get FrameJoints by frame and animation id
     void model::getFrameJoints( std::list<model_frame_joint *> *l, dpid parent_id_1, dpid parent_id_2 )
     {
         this->getComponentsByParents( model_component_type_frame_joint, parent_id_1, parent_id_2, (std::list<model_component *> *)l );
     }
-    
+
     //write model header to file/memory
     bool model::writeHeader( dpbuffer *b )
     {
         model_header_v2 h;
-        
+
         h.h.h.version = 2;
         h.h.h.size = sizeof( h );
         h.h.cnt_components = (unsigned int)this->comps.lst.size();
@@ -849,25 +849,25 @@ namespace dragonpoop
         h.size = this->size;
         h.cnt_triangles = this->cnt_triangles;
         h.cnt_verts = this->cnt_verts;
-        
+
         if( !b->writeBytes( (uint8_t *)&h, sizeof( h ) ) )
             return 0;
         if( h.h.name_size && !b->writeBytes( (uint8_t *)this->sname.c_str(), h.h.name_size ) )
             return 0;
         if( h.h.cmt_size && !b->writeBytes( (uint8_t *)this->scmmt.c_str(), h.h.cmt_size ) )
             return 0;
-        
+
         return 1;
     }
-    
+
     //read model header from file/memory
     bool model::readHeader( dpbuffer *b, unsigned int *cnt_components )
     {
         model_header_v2 h;
-        int i;
+        unsigned int i;
         dpbuffer_dynamic nb;
         uint8_t v;
-        
+
         i = b->getReadCursor();
         if( !b->readBytes( (uint8_t *)&h, sizeof( h.h.h ) ) )
             return 0;
@@ -880,19 +880,19 @@ namespace dragonpoop
         if( h.h.h.size >= sizeof( h ) && h.h.h.version >= 2 )
             if( !b->readBytes( (uint8_t *)&h, sizeof( h ) ) )
                 return 0;
-        
+
         if( h.h.h.version >= 2 )
         {
             this->size = h.size;
             this->cnt_triangles = h.cnt_triangles;
             this->cnt_verts = h.cnt_verts;
         }
-        
+
         i += h.h.h.size;
         b->setReadCursor( i );
         if( cnt_components )
             *cnt_components = h.h.cnt_components;
-        
+
         nb.clear();
         for( i = 0; i < h.h.name_size; i++ )
         {
@@ -914,20 +914,20 @@ namespace dragonpoop
         if( nb.getSize() != h.h.cmt_size )
             return 0;
         this->scmmt.copy( nb.getBuffer(), nb.getSize() );
-        
+
         return 1;
     }
-    
+
     //read and create model component from file/memory
     bool model::readComponent( dpbuffer *b, model_component **c )
     {
         model_component *p;
         uint16_t mtype;
         dpid id;
-        
+
         dpid_zero( &id );
         model_component::readType( b, &mtype );
-        
+
         switch( mtype )
         {
             case model_component_type_vertex:
@@ -969,7 +969,7 @@ namespace dragonpoop
             default:
                 p = 0;
         }
-        
+
         if( !p )
             return 0;
         if( !p->read( b ) )
@@ -977,7 +977,7 @@ namespace dragonpoop
             delete p;
             return 0;
         }
-        
+
         switch( mtype )
         {
             case model_component_type_triangle_vertex:
@@ -1003,7 +1003,7 @@ namespace dragonpoop
             *c = p;
         return 1;
     }
-    
+
     //find the maximum size of the model
     void model::findSize( void )
     {
@@ -1013,23 +1013,23 @@ namespace dragonpoop
         model_vertex *p;
         dpxyz_f x, low, hi, cen;
         float c;
-        
+
         low.x = low.y = low.z = 0;
         hi.x = hi.y = hi.z = 0;
         cen.x = cen.y = cen.z = 0;
         c = 1;
-        
+
         this->getVertexes( &l );
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
             p->getPosition( &x );
-            
+
             cen.x += x.x;
             cen.y += x.y;
             cen.z += x.z;
             c++;
-            
+
             if( x.x > hi.x )
                 hi.x = x.x;
             if( x.y > hi.y )
@@ -1044,48 +1044,48 @@ namespace dragonpoop
             if( x.z < low.z )
                 low.z = x.z;
         }
-        
+
         this->size.x = hi.x - low.x;
         this->size.y = hi.y - low.y;
         this->size.z = hi.z - low.z;
-        
+
         this->center.x = cen.x / c;
         this->center.y = cen.y / c;
         this->center.z = cen.z / c;
-        
+
         this->cnt_verts = (unsigned int)l.size();
         this->sz_verts = this->cnt_verts * sizeof( model_vertex );
         l.clear();
-        
+
         this->getTriangles( (std::list<model_triangle *> *)&lt );
         this->cnt_triangles = (unsigned int)lt.size();
         this->sz_triangles = this->cnt_triangles * ( sizeof( model_vertex ) + 3 * sizeof( model_triangle_vertex ) );
         lt.clear();
-        
+
         this->getJoints( (std::list<model_joint *> *)&lt );
         this->cnt_joints = (unsigned int)lt.size();
         this->sz_joints = this->cnt_joints * sizeof( model_joint );
         lt.clear();
-        
+
         this->getFrames( (std::list<model_frame *> *)&lt );
         this->cnt_frames = (unsigned int)lt.size();
         this->sz_frames = this->cnt_frames * ( sizeof( model_frame ) + this->cnt_joints * sizeof( model_frame_joint ) );
         lt.clear();
-        
+
         this->getAnimations( (std::list<model_animation *> *)&lt );
         this->cnt_animations = (unsigned int)lt.size();
         this->sz_animations = this->cnt_frames * ( this->cnt_joints * sizeof( model_frame_joint ) + sizeof( model_frame ) + sizeof( model_animation_frame ) );
         this->sz_animations += this->cnt_animations * sizeof( model_animation );
         lt.clear();
     }
-    
+
     //compute weights of frames
     void model::computeFrameWeights( model_writelock *ml )
     {
         std::list<model_frame *> l;
         std::list<model_frame *>::iterator i;
         model_frame *p;
-        
+
         this->getFrames( &l );
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -1093,7 +1093,7 @@ namespace dragonpoop
             p->computeWeight( ml );
         }
     }
-    
+
     //get model dimensions
     void model::getSize( dpxyz_f *x )
     {
@@ -1105,13 +1105,13 @@ namespace dragonpoop
     {
         *x = this->center;
     }
-    
+
     void model::runComponents( void )
     {
         std::list<model_component *> *l, d;
         std::list<model_component *>::iterator i;
         model_component *p;
-        
+
         l = &this->comps.lst;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -1128,14 +1128,14 @@ namespace dragonpoop
             delete p;
         }
     }
-    
+
     //eliminate excess frames to bring animations down in resolution
     void model::reduceFrames( model_writelock *ml, unsigned int ms_res )
     {
         std::list<model_animation *> l;
         std::list<model_animation *>::iterator i;
         model_animation *p;
-        
+
         this->getAnimations( &l );
         for( i = l.begin(); i != l.end(); ++i )
         {
@@ -1143,29 +1143,29 @@ namespace dragonpoop
             p->reduceFrames( ml, ms_res );
         }
     }
-    
+
     //return instance count
     unsigned int model::getInstanceCount( void )
     {
         return (unsigned int)this->instances.size();
     }
-    
+
     //add ref count
     void model::addRefCount( void )
     {
         this->ref_ctr = this->ref_ctr + 1;
     }
-    
+
     //remove ref count
     void model::decRefCount( void )
     {
         this->ref_ctr = this->ref_ctr - 1;
     }
-    
+
     //get ref count
     int model::getRefCount( void )
     {
         return this->ref_ctr;
     }
-    
+
 };

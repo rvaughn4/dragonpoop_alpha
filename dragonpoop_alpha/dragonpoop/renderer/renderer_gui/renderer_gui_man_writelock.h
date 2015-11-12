@@ -5,10 +5,11 @@
 #include "../../core/shared_obj/shared_obj_writelock.h"
 #include "../../core/dpid/dpid.h"
 #include <list>
+#include <string>
 
 namespace dragonpoop
 {
-    
+
     class renderer_gui_man;
     class core;
     class dpthread_lock;
@@ -18,23 +19,23 @@ namespace dragonpoop
     class dpmatrix;
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
-    
+
     class renderer_gui_man_writelock : public shared_obj_writelock
     {
-        
+
     private:
-        
+
         renderer_gui_man *t;
-        
+
     protected:
-        
+
         //ctor
         renderer_gui_man_writelock( renderer_gui_man *t, dpmutex_writelock *l );
         //dtor
         virtual ~renderer_gui_man_writelock( void );
-        
+
     public:
-        
+
         //return core
         core *getCore( void );
         //delete guis
@@ -53,10 +54,10 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //run
         void run( dpthread_lock *thd );
-        
+
         friend class renderer_gui_man;
     };
-    
+
 };
 
 #endif
