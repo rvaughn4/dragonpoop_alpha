@@ -15,23 +15,24 @@ namespace dragonpoop
     class render_api_shader_ref;
     class render_api_vertexbuffer_ref;
     class render_api_indexbuffer_ref;
+    class dpthread_lock;
 
     class render_api_context_writelock : public shared_obj_writelock
     {
-        
+
     private:
-        
+
         render_api_context *t;
-        
+
     protected:
-        
+
         //ctor
         render_api_context_writelock( render_api_context *t, dpmutex_writelock *l );
         //dtor
         virtual ~render_api_context_writelock( void );
-        
+
     public:
-        
+
         //make commandlist
         render_api_commandlist_ref *makeCmdList( void );
         //delete commandlists
@@ -43,7 +44,7 @@ namespace dragonpoop
         //present backbuffer
         void flipBackBuffer( void );
         //make context active in thread
-        void makeActive( void );
+        void makeActive( dpthread_lock *thd );
         //set viewport
         void setViewport( float w, float h );
         //make a texture
@@ -59,7 +60,7 @@ namespace dragonpoop
 
         friend class render_api_context;
     };
-    
+
 };
 
 #endif

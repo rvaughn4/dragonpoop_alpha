@@ -41,7 +41,7 @@
 
 namespace dragonpoop
 {
-    
+
     //ctor
     renderer_land_man::renderer_land_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height ) : shared_obj( c->getMutexMaster() )
     {
@@ -49,14 +49,14 @@ namespace dragonpoop
         gfx_writelock *gl;
         renderer_writelock *rl;
         renderer_commandlist_passer_writelock *cpl;
-        
+
         cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( clpasser, 5000, "renderer_land_man::renderer_land_man" );
         if( cpl )
             this->clpasser = (renderer_commandlist_passer_ref *)cpl->getRef();
         else
             this->clpasser = 0;
         o.unlock();
-        
+
         this->g = c->getGfx();
         gl = (gfx_writelock *)o.writeLock( this->g, "renderer_land_man::renderer_land_man" );
         if( gl )
@@ -70,31 +70,31 @@ namespace dragonpoop
         this->c = c;
         this->tpr = (dptaskpool_ref *)tp->getRef();
         this->grass = 0;
-        
+
         rl = (renderer_writelock *)o.writeLock( r, "renderer_land_man::renderer_land_man" );
         if( rl )
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
-        
+
         this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
         this->_startTask( tp, 1 );
     }
-    
+
     //dtor
     renderer_land_man::~renderer_land_man( void )
     {
         shared_obj_guard o;
-        
+
         o.tryWriteLock( this, 5000, "renderer_land_man::~renderer_land_man" );
         this->deleteLands();
         o.unlock();
         this->unlink();
         delete this->thd;
-        
+
         o.tryWriteLock( this, 5000, "renderer_land_man::~renderer_land_man" );
         this->_killTask();
         o.unlock();
-        
+
         o.tryWriteLock( this, 5000, "renderer_land_man::~renderer_land_man" );
         this->_deleteTask();
         if( this->clist )
@@ -107,45 +107,45 @@ namespace dragonpoop
         delete this->clpasser;
         o.unlock();
     }
-    
+
     //compute matrix
     void renderer_land_man::computeMatrix( void )
     {
         this->m.setIdentity();
     }
-    
+
     //return core
     core *renderer_land_man::getCore( void )
     {
         return this->c;
     }
-    
+
     //generate read lock
     shared_obj_readlock *renderer_land_man::genReadLock( shared_obj *p, dpmutex_readlock *l )
     {
         return new renderer_land_man_readlock( (renderer_land_man *)p, l );
     }
-    
+
     //generate write lock
     shared_obj_writelock *renderer_land_man::genWriteLock( shared_obj *p, dpmutex_writelock *l )
     {
         return new renderer_land_man_writelock( (renderer_land_man *)p, l );
     }
-    
+
     //generate ref
     shared_obj_ref *renderer_land_man::genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k )
     {
         return new renderer_land_man_ref( (renderer_land_man *)p, k );
     }
-    
+
     //start task
     void renderer_land_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
         dpthread_lock *thdl;
-        
+
         this->gtsk = new renderer_land_man_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, "renderer_land_man" );
-        
+
         thdl = this->thd->lock();
         if( thdl )
         {
@@ -153,21 +153,21 @@ namespace dragonpoop
             delete thdl;
         }
     }
-    
+
     //kill task
     void renderer_land_man::_killTask( void )
     {
         dptask_writelock *tl;
         shared_obj_guard o;
-        
+
         if( !this->tsk )
             return;
-        
+
         tl = (dptask_writelock *)o.writeLock( this->tsk, "renderer_land_man::_killTask" );
         tl->kill();
         o.unlock();
     }
-    
+
     //delete task
     void renderer_land_man::_deleteTask( void )
     {
@@ -178,7 +178,7 @@ namespace dragonpoop
             delete this->gtsk;
         this->gtsk = 0;
     }
-    
+
     //sync lands
     void renderer_land_man::sync( dpthread_lock *thd )
     {
@@ -192,12 +192,12 @@ namespace dragonpoop
         std::list<dpland *>::iterator ig;
         dpland *pg;
         dpid_btree pt;
-        
+
         t = thd->getTicks();
         if( t - this->t_last_land_synced < 200 )
             return;
         this->t_last_land_synced = t;
-        
+
         //build list of lands
         l = &this->lands;
         for( i = l->begin(); i != l->end(); ++i )
@@ -205,11 +205,11 @@ namespace dragonpoop
             p = *i;
             pt.addLeaf( p->getId(), p );
         }
-        
+
         mrl = (dpland_man_readlock *)o2.tryReadLock( this->g_lands, 100, "renderer_land_man::sync" );
         if( !mrl )
             return;
-        
+
         //find lands, sync them, and remove from list
         mrl->getTiles( &lg );
         for( ig = lg.begin(); ig != lg.end(); ++ig )
@@ -221,7 +221,7 @@ namespace dragonpoop
             else
                 pt.removeLeaf( p );
         }
-        
+
         //build list of lands to delete
         l = &this->lands;
         for( i = l->begin(); i != l->end(); ++i )
@@ -230,10 +230,10 @@ namespace dragonpoop
             if( pt.findLeaf( p->getId() ) )
                 d.push_back( p );
         }
-        
+
         if( d.empty() && ng.empty() )
             return;
-        
+
         //kill unmatched lands
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
@@ -242,23 +242,23 @@ namespace dragonpoop
             this->lands.remove( p );
             delete p;
         }
-        
+
         //create new lands
         for( ig = ng.begin(); ig != ng.end(); ++ig )
         {
             pg = *ig;
-            p = this->genLand( pg );
+            p = this->genLand( pg, thd );
             if( p )
                 this->lands.push_back( p );
         }
     }
-    
+
     //run lands
     void renderer_land_man::runLands( dpthread_lock *thd )
     {
         this->computeMatrix();
     }
-    
+
     //run from manager thread
     void renderer_land_man::run( dpthread_lock *thd, renderer_land_man_writelock *l )
     {
@@ -266,14 +266,14 @@ namespace dragonpoop
         this->runLands( thd );
         this->render( thd );
     }
-    
+
     //delete lands
     void renderer_land_man::deleteLands( void )
     {
         std::list<renderer_land *> *l, d;
         std::list<renderer_land *>::iterator i;
         renderer_land *p;
-        
+
         l = &this->lands;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -281,7 +281,7 @@ namespace dragonpoop
             d.push_back( p );
         }
         l->clear();
-        
+
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -289,7 +289,7 @@ namespace dragonpoop
             delete p;
         }
     }
-    
+
     //render into command list
     void renderer_land_man::render( dpthread_lock *thd )
     {
@@ -299,31 +299,32 @@ namespace dragonpoop
         renderer_commandlist_passer_writelock *cpl;
         shared_obj_guard ocpl;
         render_api_shader_ref *sdr;
-        
+
         if( this->clpasser->t->land_ready )
             return;
-        
+
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 100, "renderer_land_man::render" );
         if( !ctxl )
             return;
-        
+
+        ctxl->makeActive( thd );
         if( this->clist )
             delete this->clist;
         this->clist = ctxl->makeCmdList();
         if( !this->clist )
             return;
-        
+
         cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->clist, 100, "renderer_land_man::render" );
         if( !cll )
             return;
-        
+
         sdr = ctxl->makeShader( "land" );
         if( !sdr )
             return;
-        
+
         cll->setShader( sdr );
         this->renderLands( thd, &this->campos, &this->m, ctxl, cll );
-        
+
         cll->setPosition( &this->campos );
         if( cll->compile( ctxl ) )
         {
@@ -336,7 +337,7 @@ namespace dragonpoop
                 ocpl.unlock();
             }
         }
-        
+
         delete sdr;
     }
 
@@ -346,16 +347,16 @@ namespace dragonpoop
         std::list<renderer_land *> *l;
         std::list<renderer_land *>::iterator i;
         renderer_land *p;
-        
+
         if( !this->grass )
         {
             dpbitmap bm;
             bm.loadFile( "grass.bmp" );
             this->grass = ctx->makeTexture( &bm );
         }
-        
+
         cl->setTexture( this->grass, 0 );
-        
+
         l = &this->lands;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -363,18 +364,19 @@ namespace dragonpoop
             p->render( thd, campos, m_world, ctx, cl );
         }
     }
-    
+
     //generate renderer land
-    renderer_land *renderer_land_man::genLand( dpland *ml )
+    renderer_land *renderer_land_man::genLand( dpland *ml, dpthread_lock *thd )
     {
         render_api_context_writelock *ctx;
         shared_obj_guard o;
-        
+
         ctx = (render_api_context_writelock *)o.tryWriteLock( this->ctx, 300, "renderer_land_man::genLand" );
         if( !ctx )
             return 0;
-        
+
+        ctx->makeActive( thd );
         return new renderer_land( ml, ctx );
     }
-    
+
 };

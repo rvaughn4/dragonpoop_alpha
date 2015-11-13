@@ -17,6 +17,7 @@ namespace dragonpoop
         Window win;
         Display *dpy;
         bool bUseDl;
+        unsigned int tid;
 
     protected:
 
@@ -29,7 +30,7 @@ namespace dragonpoop
         //present backbuffer
         virtual void flipBackBuffer( void );
         //make context active in thread
-        virtual void makeActive( void );
+        virtual void makeActive( dpthread_lock *thd );
         //set viewport
         virtual void setViewport( float w, float h );
         //gen shader

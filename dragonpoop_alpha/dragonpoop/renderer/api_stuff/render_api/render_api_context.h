@@ -7,7 +7,7 @@
 
 namespace dragonpoop
 {
-    
+
     class render_api_ref;
     class render_api_writelock;
     class render_api_commandlist;
@@ -27,12 +27,13 @@ namespace dragonpoop
     class dpbitmap;
     class dpvertex_buffer;
     class dpindex_buffer;
+    class dpthread_lock;
 
     class render_api_context : public shared_obj
     {
-        
+
     private:
-        
+
         dpmutex_master *mm;
         render_api_ref *r;
         std::list<render_api_commandlist *> cmds;
@@ -40,7 +41,7 @@ namespace dragonpoop
         std::list<render_api_texture *> textures;
         std::list<render_api_vertexbuffer *> vertexbuffers;
         std::list<render_api_indexbuffer *> indexbuffers;
-        
+
         //run command lists
         void runLists( void );
         //run shaders
@@ -51,9 +52,9 @@ namespace dragonpoop
         void runVertexBuffers( void );
         //run index buffers
         void runIndexBuffers( void );
-        
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -73,7 +74,7 @@ namespace dragonpoop
         //present backbuffer
         virtual void flipBackBuffer( void );
         //make context active in thread
-        virtual void makeActive( void );
+        virtual void makeActive( dpthread_lock *thd );
         //set viewport
         virtual void setViewport( float w, float h );
         //run context, delete old lists
@@ -104,19 +105,19 @@ namespace dragonpoop
         void deleteVertexBuffers( void );
         //delete index buffers
         void deleteIndexBuffers( void );
-        
+
     public:
-        
+
         //ctor
         render_api_context( render_api_writelock *r, dpmutex_master *mm );
         //dtor
         virtual ~render_api_context( void );
-        
+
         friend class render_api_context_ref;
         friend class render_api_context_readlock;
         friend class render_api_context_writelock;
     };
-    
+
 };
 
 #endif

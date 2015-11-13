@@ -85,19 +85,19 @@ namespace dragonpoop
         shared_obj_guard o;
 
         o.tryWriteLock( this, 5000, "renderer_sky_man::~renderer_sky_man" );
-        this->deleteSky();
+        this->_killTask();
+        o.unlock();
+
+        o.tryWriteLock( this, 5000, "renderer_sky_man::~renderer_sky_man" );
         o.unlock();
         this->unlink();
         delete this->thd;
 
         o.tryWriteLock( this, 5000, "renderer_sky_man::~renderer_sky_man" );
-        this->_killTask();
-        o.unlock();
-
-        o.tryWriteLock( this, 5000, "renderer_sky_man::~renderer_sky_man" );
         this->_deleteTask();
         if( this->clist )
             delete this->clist;
+        this->deleteSky();
         delete this->ctx;
         delete this->r;
         delete this->g;
@@ -204,10 +204,10 @@ namespace dragonpoop
     //run from manager thread
     void renderer_sky_man::run( dpthread_lock *thd, renderer_sky_man_writelock *l )
     {
-        this->sync( thd );
         this->computeMatrix();
         this->runSky( thd );
         this->render( thd );
+        this->sync( thd );
     }
 
     //delete skys
@@ -240,6 +240,7 @@ namespace dragonpoop
         if( !ctxl )
             return;
 
+        ctxl->makeActive( thd );
         if( this->clist )
             delete this->clist;
         this->clist = ctxl->makeCmdList();
@@ -372,6 +373,7 @@ namespace dragonpoop
             return;
 
         s = l->getSky();
+        c->makeActive( thd );
 
         this->stuff.skybox.front.vb = c->makeVertexBuffer( &s->skybox.front.vb );
         this->stuff.skybox.front.ib = c->makeIndexBuffer( &s->skybox.front.ib );

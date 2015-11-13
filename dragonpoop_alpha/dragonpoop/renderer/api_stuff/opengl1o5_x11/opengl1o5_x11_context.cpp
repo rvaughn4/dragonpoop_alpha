@@ -11,6 +11,7 @@
 #include "opengl1o5_x11_shader_model.h"
 #include "opengl1o5_x11_shader_land.h"
 #include "opengl1o5_x11_shader_sky.h"
+#include "../../../core/dpthread/dpthread_lock.h"
 
 namespace dragonpoop
 {
@@ -22,6 +23,7 @@ namespace dragonpoop
         this->ctx = ctx;
         this->win = win;
         this->dpy = dpy;
+        this->tid = 0;
     }
 
     //dtor
@@ -70,8 +72,11 @@ namespace dragonpoop
     }
 
     //make context active in thread
-    void opengl1o5_x11_context::makeActive( void )
+    void opengl1o5_x11_context::makeActive( dpthread_lock *thd )
     {
+        if( thd->getId() == this->tid )
+            return;
+            this->tid = thd->getId();
         glXMakeCurrent( this->dpy, this->win, this->ctx );
     }
 

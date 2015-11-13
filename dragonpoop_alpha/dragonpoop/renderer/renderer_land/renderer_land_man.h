@@ -11,7 +11,7 @@
 
 namespace dragonpoop
 {
-    
+
     class dpthread_lock;
     class core;
     class renderer_land_man_ref;
@@ -42,12 +42,12 @@ namespace dragonpoop
     class render_api_vertexbuffer_ref;
     class render_api_indexbuffer_ref;
     class render_api_texture_ref;
-    
+
     class renderer_land_man : public shared_obj
     {
-        
+
     private:
-        
+
         core *c;
         gfx_ref *g;
         dptask *tsk;
@@ -65,7 +65,7 @@ namespace dragonpoop
         renderer_commandlist_passer_ref *clpasser;
         dpposition campos;
         render_api_texture_ref *grass;
-        
+
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
@@ -82,9 +82,9 @@ namespace dragonpoop
         void computeMatrix( void );
         //render lands
         void renderLands( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl );
-        
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -94,24 +94,24 @@ namespace dragonpoop
         //delete lands
         void deleteLands( void );
         //generate renderer land
-        virtual renderer_land *genLand( dpland *ml );
+        virtual renderer_land *genLand( dpland *ml, dpthread_lock *thd );
         //run from manager thread
         void run( dpthread_lock *thd, renderer_land_man_writelock *l );
-        
+
     public:
-        
+
         //ctor
         renderer_land_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height );
         //dtor
         virtual ~renderer_land_man( void );
         //return core
         core *getCore( void );
-        
+
         friend class renderer_land_man_readlock;
         friend class renderer_land_man_writelock;
-        
+
     };
-    
+
 };
 
 #endif
