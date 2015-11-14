@@ -1,70 +1,100 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_layout_file>
 	<ActiveTarget name="Debug" />
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpfont/dpfont.cpp" open="1" top="0" tabpos="4">
+	<File name="../dragonpoop_alpha/dragonpoop/core/cores.h" open="0" top="0" tabpos="0">
+		<Cursor position="152" topLine="0" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/core/shared_obj/shared_objs.h" open="0" top="0" tabpos="0">
+		<Cursor position="274" topLine="0" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/dragonpoop.h" open="0" top="0" tabpos="0">
+		<Cursor position="133" topLine="0" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpactor/dpactor.cpp" open="1" top="0" tabpos="2">
+		<Cursor position="7199" topLine="236" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpfont/dpfont.cpp" open="0" top="0" tabpos="4">
 		<Cursor position="189" topLine="0" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.cpp" open="1" top="0" tabpos="6">
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/dpland/dpland_man.cpp" open="1" top="0" tabpos="3">
+		<Cursor position="847" topLine="0" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/gfx_writelock.h" open="0" top="0" tabpos="0">
+		<Cursor position="633" topLine="54" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_joint_cache/model_instance_joint_cache.cpp" open="0" top="0" tabpos="6">
 		<Cursor position="2198" topLine="76" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_commandlist.cpp" open="1" top="0" tabpos="15">
-		<Cursor position="724" topLine="3" />
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_materials.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="2822" topLine="69" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_context.cpp" open="1" top="1" tabpos="5">
+	<File name="../dragonpoop_alpha/dragonpoop/gfx/model/models.h" open="0" top="0" tabpos="0">
+		<Cursor position="964" topLine="0" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_commandlist.cpp" open="1" top="0" tabpos="4">
+		<Cursor position="811" topLine="3" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_context.cpp" open="0" top="0" tabpos="5">
 		<Cursor position="969" topLine="17" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_context.h" open="1" top="0" tabpos="11">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_context.h" open="0" top="0" tabpos="11">
 		<Cursor position="379" topLine="6" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_texture.cpp" open="1" top="0" tabpos="17">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_texture.cpp" open="0" top="0" tabpos="17">
 		<Cursor position="429" topLine="0" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_commandlist.cpp" open="1" top="0" tabpos="16">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_commandlist.cpp" open="0" top="0" tabpos="16">
 		<Cursor position="1027" topLine="42" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context.cpp" open="1" top="0" tabpos="9">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context.cpp" open="0" top="0" tabpos="9">
 		<Cursor position="4431" topLine="129" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context.h" open="1" top="0" tabpos="10">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context.h" open="0" top="0" tabpos="10">
 		<Cursor position="2417" topLine="69" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context_readlock.h" open="1" top="0" tabpos="12">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context_readlock.h" open="0" top="0" tabpos="12">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context_writelock.cpp" open="1" top="0" tabpos="14">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context_writelock.cpp" open="0" top="0" tabpos="14">
 		<Cursor position="1249" topLine="9" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context_writelock.h" open="1" top="0" tabpos="13">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context_writelock.h" open="0" top="0" tabpos="13">
 		<Cursor position="494" topLine="0" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer.cpp" open="1" top="0" tabpos="18">
-		<Cursor position="12586" topLine="390" />
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/x11_window/x11_window.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="652" topLine="51" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.cpp" open="1" top="0" tabpos="7">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer.cpp" open="1" top="1" tabpos="5">
+		<Cursor position="13323" topLine="432" />
+	</File>
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.cpp" open="0" top="0" tabpos="7">
 		<Cursor position="13073" topLine="415" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.h" open="1" top="0" tabpos="22">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.h" open="0" top="0" tabpos="22">
 		<Cursor position="656" topLine="0" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man_writelock.h" open="1" top="0" tabpos="1">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man_writelock.h" open="0" top="0" tabpos="1">
 		<Cursor position="221" topLine="0" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_land/renderer_land_man.cpp" open="1" top="0" tabpos="20">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_land/renderer_land_man.cpp" open="0" top="0" tabpos="20">
 		<Cursor position="7561" topLine="175" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_land/renderer_land_man.h" open="1" top="0" tabpos="21">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_land/renderer_land_man.h" open="0" top="0" tabpos="21">
 		<Cursor position="3023" topLine="69" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp" open="1" top="0" tabpos="19">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model.cpp" open="0" top="0" tabpos="19">
 		<Cursor position="0" topLine="0" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model_man.cpp" open="1" top="0" tabpos="8">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model_man.cpp" open="0" top="0" tabpos="8">
 		<Cursor position="10253" topLine="246" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model_material/renderer_model_material.cpp" open="1" top="0" tabpos="2">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model_material/renderer_model_material.cpp" open="0" top="0" tabpos="2">
 		<Cursor position="321" topLine="0" />
 	</File>
-	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.cpp" open="1" top="0" tabpos="3">
+	<File name="../dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.cpp" open="0" top="0" tabpos="3">
 		<Cursor position="3665" topLine="70" />
+	</File>
+	<File name="../dragonpoop_alpha/main.cpp" open="1" top="0" tabpos="1">
+		<Cursor position="265" topLine="0" />
 	</File>
 </CodeBlocks_layout_file>

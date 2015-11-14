@@ -1706,7 +1706,7 @@
 	"renderer_writelock.h"
 	"renderer.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/main.cpp
+1447497964 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/main.cpp
 	"dragonpoop/dragonpoop.h"
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/dragonpoop.h
@@ -1765,7 +1765,7 @@
 	"dpactor/dpactors.h"
 	"dpland/dplands.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/models.h
+1447495786 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/models.h
 	"model.h"
 	"model_ref.h"
 	"model_readlock.h"
@@ -1785,6 +1785,10 @@
 	"model_vertex_joint/model_vertex_joints.h"
 	"model_instance/model_instances.h"
 	"model_loader/model_loaders.h"
+	"model_man.h"
+	"model_man_ref.h"
+	"model_man_readlock.h"
+	"model_man_writelock.h"
 
 1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_vertex/model_vertexes.h
 	"model_vertex.h"
@@ -3868,7 +3872,7 @@
 	<thread>
 	<atomic>
 
-1447320218 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpactor/dpactor.cpp
+1447497915 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpactor/dpactor.cpp
 	"dpactor.h"
 	"dpactor_ref.h"
 	"dpactor_readlock.h"
@@ -4113,7 +4117,7 @@
 	"../dpvertex/dpvertex_buffer.h"
 	"../dpvertex/dpindex_buffer.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpland/dpland_man.cpp
+1447498469 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpland/dpland_man.cpp
 	"dpland_man.h"
 	"dpland_man_ref.h"
 	"dpland_man_readlock.h"

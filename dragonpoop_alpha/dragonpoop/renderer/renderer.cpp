@@ -453,7 +453,7 @@ namespace dragonpoop
         }
 
         ctxl->clearDepth( 1.0f );
-        if( this->model_cl )
+        if( 0 )//this->model_cl )
         {
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
             if( !cll )

@@ -242,7 +242,7 @@ namespace dragonpoop
     //load low model
     bool dpactor::loadLow( model_loader_ref **ldr )
     {
-        return this->_load( &this->models.low.m, &this->models.low.mi, ldr, "test_low", "", "3drt_dragon_low.dpmodel" );
+        return this->_load( &this->models.low.m, &this->models.low.mi, ldr, "test_low", "", "3drt_felhound_low.dpmodel" );
     }
 
     //make low model instance
@@ -260,7 +260,7 @@ namespace dragonpoop
     //load med model
     bool dpactor::loadMed( model_loader_ref **ldr )
     {
-        return this->_load( &this->models.med.m, &this->models.med.mi, ldr, "test_med", "", "3drt_dragon_medium.dpmodel" );
+        return this->_load( &this->models.med.m, &this->models.med.mi, ldr, "test_med", "", "3drt_felhound_medium.dpmodel" );
     }
 
     //make med model instance
@@ -278,7 +278,7 @@ namespace dragonpoop
     //load high model
     bool dpactor::loadHigh( model_loader_ref **ldr )
     {
-        return this->_load( &this->models.high.m, &this->models.high.mi, ldr, "test_high", "", "3drt_dragon_high.dpmodel" );
+        return this->_load( &this->models.high.m, &this->models.high.mi, ldr, "test_high", "", "3drt_felhound_medium.dpmodel" );
     }
 
     //make high model instance
