@@ -5,18 +5,19 @@
 
 namespace dragonpoop
 {
-    
+
     //ctor
     x11_window::x11_window( float w, float h, const char *ctitle ) : window( w, h, ctitle )
     {
         Colormap cmap;
-        
+
         //open display
+        XInitThreads();
         this->bIsOpen = 0;
         this->dpy = XOpenDisplay( 0 );
         this->win = 0;
         this->screen = DefaultScreen( this->dpy );
-        
+
         //set visual format
         static int attrListSgl[] =
         {
@@ -45,12 +46,12 @@ namespace dragonpoop
             this->dpy = 0;
             return;
         }
-        
+
         //colormap
         cmap = XCreateColormap( this->dpy, RootWindow( this->dpy, vi->screen ), vi->visual, AllocNone );
         this->attr.colormap = cmap;
         this->attr.border_pixel = 0;
-        
+
         //create window
         this->attr.event_mask = PropertyChangeMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask | PointerMotionMask;
         this->win = XCreateWindow( this->dpy, RootWindow( this->dpy, vi->screen ), 0, 0, w, h, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &this->attr );
@@ -60,23 +61,23 @@ namespace dragonpoop
             this->dpy = 0;
             return;
         }
-        
+
         //setup close button event
         this->wm_delete_window = XInternAtom( this->dpy, "WM_DELETE_WINDOW", True );
         XSetWMProtocols( this->dpy, this->win, &this->wm_delete_window, 1 );
-        
+
         //selection property
         this->selprop = XInternAtom( this->dpy, "SELECTION_PROPERTY", True );
         this->a_targets = XInternAtom( this->dpy, "TARGETS", 1 );
         this->a_clipboard = XInternAtom( this->dpy, "CLIPBOARD", 1 );
-        
+
         //set title
         XSetStandardProperties( this->dpy, this->win, ctitle, ctitle, None, NULL, 0, NULL );
         XMapRaised( this->dpy, this->win );
-        
+
         this->bIsOpen = 1;
     }
-    
+
     //dtor
     x11_window::~x11_window( void )
     {
@@ -86,16 +87,16 @@ namespace dragonpoop
             XCloseDisplay( this->dpy );
         }
     }
-    
+
     //run x11_window
     void x11_window::run( void )
     {
         XEvent event;
         window_mouse_input m;
-        
+
         if( XPending( this->dpy ) < 1 )
             return;
-        
+
         XNextEvent( this->dpy, &event );
         switch( event.type )
         {
@@ -149,7 +150,7 @@ namespace dragonpoop
             {
                 XEvent rpy;
                 XSelectionEvent *r = &rpy.xselection;
-                
+
                 r->type = SelectionNotify;
                 r->time = event.xselectionrequest.time;
                 r->target = event.xselectionrequest.target;
@@ -159,7 +160,7 @@ namespace dragonpoop
                 r->display = event.xselectionrequest.display;
                 r->serial = event.xselectionrequest.serial;
                 r->send_event = event.xselectionrequest.send_event;
-                
+
                 if( r->target == XA_STRING )
                 {
                     std::string s;
@@ -169,14 +170,14 @@ namespace dragonpoop
                         XChangeProperty( this->dpy, this->win, this->selprop, XA_STRING, 8, PropModeReplace, (unsigned char *)s.c_str(), (int)s.length() );
                     }
                 }
-                
+
                 if( this->a_targets && r->target == this->a_targets )
                 {
                     Atom supported[]={ XA_STRING };
                     r->property = this->selprop;
                     XChangeProperty( this->dpy, this->win, this->selprop, this->a_targets, 8, PropModeReplace, (unsigned char *)&supported, sizeof( supported ) );
                 }
-                
+
                 XSendEvent( this->dpy, this->win, 0, PropertyChangeMask, &rpy );
                 break;
             }
@@ -185,85 +186,85 @@ namespace dragonpoop
                 int act_fmt;
                 unsigned long itms_returned, itms_remain;
                 char *buf;
-                
+
                 if( event.xselection.target != XA_STRING || !event.xselection.property )
                     break;
-                
+
                 //event.xselection.property
                 if( XGetWindowProperty( event.xselection.display, event.xselection.requestor, event.xselection.property, 0, 4096, 1, XA_STRING, &act_type, &act_fmt, &itms_returned, &itms_remain, (unsigned char **)&buf ) != Success )
                     break;
-                
+
                 if( act_fmt == 8 && act_type == XA_STRING && itms_returned )
                 {
                     std::string s;
                     s.assign( buf, itms_returned );
                     //this->setSelectedText( &s );
                 }
-                
+
                 XFree( buf );
                 break;
             case SelectionClear:
-                
+
                 break;
             default:
                 break;
         }
-        
-        
+
+
     }
-    
+
     //returns true if x11_window is open
     bool x11_window::isOpen( void )
     {
         return this->bIsOpen;
     }
-    
+
     //returns x11_window width
     float x11_window::getWidth( void )
     {
         return this->w;
     }
-    
+
     //returns x11_window height
     float x11_window::getHeight( void )
     {
         return this->h;
     }
-    
+
     //return x11 window
     Window x11_window::getWindow( void )
     {
         return this->win;
     }
-    
+
     //return screen
     int x11_window::getScreen( void )
     {
         return this->screen;
     }
-    
+
     //return display
     Display *x11_window::getDisplay( void )
     {
         return this->dpy;
     }
-    
+
     //return vi
     XVisualInfo *x11_window::getVi( void )
     {
         return this->vi;
     }
-    
+
     //process keyboard input
     void x11_window::processKb( KeySym k, bool isDown )
     {
         unsigned char c[ 2 ];
         std::string s;
         window_kb_input m;
-        
+
         //http://tronche.com/gui/x/icccm/sec-2.html#s-2.1
         //https://en.wikipedia.org/wiki/ASCII
-        
+
         if( this->bctrl && k == 99 )//ctrl c
         {
             XSetSelectionOwner( this->dpy, XA_PRIMARY, this->win, CurrentTime );
@@ -281,11 +282,11 @@ namespace dragonpoop
             XConvertSelection( this->dpy, XA_PRIMARY, XA_STRING, None, this->win, CurrentTime );
             return;
         }
-        
+
         if( k >= 32 && k <= 127 )
         {
             c[ 1 ] = 0;
-            
+
             if( !this->bshift && !this->bcaps )
             {
                 c[ 0 ] = (unsigned char)k;
@@ -361,7 +362,7 @@ namespace dragonpoop
                             break;
                     }
                 }
-                
+
                 if( k >= 97 && k <= 122 && !( this->bshift && this->bcaps ) )
                     k -= 97 - 65;
                 c[ 0 ] = (unsigned char)k;
@@ -370,7 +371,7 @@ namespace dragonpoop
         }
         else
         {
-            
+
             switch( k )
             {
                 case XK_Caps_Lock:
@@ -477,14 +478,14 @@ namespace dragonpoop
                     break;
                 default:
                     c[ 1 ] = 0;
-                    
+
                     //numpad 0 - 9
                     if( k >= XK_KP_0 && k <= XK_KP_9 )
                     {
                         c[ 0 ] = k - XK_KP_0 + 48;
                         s.assign( (const char *)c );
                     }
-                    
+
                     //F1 - F9
                     if( k >= XK_F1 && k <= XK_F9 )
                     {
@@ -492,7 +493,7 @@ namespace dragonpoop
                         s.assign( "F" );
                         s.append( (const char *)c );
                     }
-                    
+
                     //F10 - F19
                     if( k >= XK_F10 && k <= XK_F19 )
                     {
@@ -502,12 +503,12 @@ namespace dragonpoop
                     }
             }
         }
-        
+
         if( s.size() < 1 )
             return;
         m.sname.assign( s );
         m.bDown = isDown;
         this->addKBInput( &m );
     }
-    
+
 };
