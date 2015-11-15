@@ -82,7 +82,7 @@ namespace dragonpoop
         m->addReadThread( i );
 
         this->slk->unlock();
-        
+
         return r;
     }
 
@@ -105,7 +105,7 @@ namespace dragonpoop
         m->addWriteThread( i );
 
         this->slk->unlock();
-        
+
         return r;
     }
 
@@ -146,7 +146,7 @@ namespace dragonpoop
             return l;
         while( t )
         {
-            for( i = 0; i < 20; i++ )
+            for( i = 0; i < 2; i++ )
             {
                 l = this->genWriteLock( m, t );
                 if( l )
@@ -164,13 +164,13 @@ namespace dragonpoop
     {
         dpmutex_readlock *l;
         unsigned int i;
-        
+
         l = this->genReadLock( m, t );
         if( l )
             return l;
         while( t )
         {
-            for( i = 0; i < 20; i++ )
+            for( i = 0; i < 2; i++ )
             {
                 l = this->genReadLock( m, t );
                 if( l )

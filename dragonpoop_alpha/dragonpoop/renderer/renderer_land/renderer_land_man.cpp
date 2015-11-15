@@ -77,7 +77,7 @@ namespace dragonpoop
         o.unlock();
 
         this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
-        this->_startTask( tp, 1 );
+        this->_startTask( tp, 30 );
     }
 
     //dtor
@@ -192,9 +192,10 @@ namespace dragonpoop
         std::list<dpland *>::iterator ig;
         dpland *pg;
         dpid_btree pt;
+        unsigned int new_ctr;
 
         t = thd->getTicks();
-        if( t - this->t_last_land_synced < 200 )
+        if( t - this->t_last_land_synced < 30 )
             return;
         this->t_last_land_synced = t;
 
@@ -206,7 +207,7 @@ namespace dragonpoop
             pt.addLeaf( p->getId(), p );
         }
 
-        mrl = (dpland_man_readlock *)o2.tryReadLock( this->g_lands, 100, "renderer_land_man::sync" );
+        mrl = (dpland_man_readlock *)o2.tryReadLock( this->g_lands, 10, "renderer_land_man::sync" );
         if( !mrl )
             return;
 
@@ -244,9 +245,13 @@ namespace dragonpoop
         }
 
         //create new lands
+        new_ctr = 0;
         for( ig = ng.begin(); ig != ng.end(); ++ig )
         {
             pg = *ig;
+            if( new_ctr > 1 )
+                continue;
+            new_ctr++;
             p = this->genLand( pg, thd );
             if( p )
                 this->lands.push_back( p );
@@ -371,7 +376,7 @@ namespace dragonpoop
         render_api_context_writelock *ctx;
         shared_obj_guard o;
 
-        ctx = (render_api_context_writelock *)o.tryWriteLock( this->ctx, 300, "renderer_land_man::genLand" );
+        ctx = (render_api_context_writelock *)o.tryWriteLock( this->ctx, 10, "renderer_land_man::genLand" );
         if( !ctx )
             return 0;
 

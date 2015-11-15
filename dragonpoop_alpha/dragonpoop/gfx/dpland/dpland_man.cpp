@@ -170,7 +170,7 @@ namespace dragonpoop
                 p = this->getTile( ix, iz );
                 if( !p )
                 {
-                    if( new_tile_ctr < 10 )
+                    if( new_tile_ctr < 5 )
                     {
                         this->makeTile( thd, ix, iz );
                         new_tile_ctr++;

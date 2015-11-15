@@ -18,34 +18,34 @@
 
 namespace dragonpoop
 {
-    
+
     //ctor
     root_gui::root_gui( gfx_writelock *g, dpid id ) : gui( g, id )
     {
         dpactor_man_writelock *al;
         shared_obj_guard o;
-        
+
         this->g = (gfx_ref *)g->getRef();
-        
+
         this->enableBg( 0 );
         this->enableFg( 0 );
         this->setEditMode( 0 );
         this->setFade( 0 );
         this->setPosition( 0, 0 );
         this->setWidthHeight( 1920, 1080 );
-        
+
         this->perf_stats = 0;
-        
+
         this->perf_open = 0;
         this->esc_menu = 0;
         this->esc_menu_is_show = 0;
         this->esc_menu_do_show = 1;
-        
+
         g->getActors( &al, &o );
         this->a = new dpactor( g->getCore() );
         al->addActor( this->a );
     }
-    
+
     //dtor
     root_gui::~root_gui( void )
     {
@@ -54,17 +54,17 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "root_gui::~root_gui" );
         o.unlock();
         this->unlink();
-        
+
         o.tryWriteLock( this, 5000, "root_gui::~root_gui" );
         delete this->a;
         if( this->esc_menu )
             delete this->esc_menu;
         if( this->perf_stats )
             delete this->perf_stats;
-        delete this->g;        
+        delete this->g;
         o.unlock();
     }
-    
+
     //override to handle keyboard button
     void root_gui::handleKbEvent( std::string *skey, bool isDown )
     {
@@ -74,25 +74,27 @@ namespace dragonpoop
         dpposition_inner pi;
         dpxyz_f x;
         dpactor_writelock *al;
-        
+
         this->gui::handleKbEvent( skey, isDown );
-        
+
         if( skey->compare( "Escape" ) == 0 && isDown )
             this->showEscapeMenu();
-        
+
         if( isDown && ( skey->compare( "Up" ) == 0 || skey->compare( "Left" ) == 0 || skey->compare( "Right" ) == 0 || skey->compare( "Down" ) == 0 || skey->compare( "Page Up" ) == 0 || skey->compare( "Page Down" ) == 0 ) )
         {
-            gl = (gfx_writelock *)o.tryWriteLock( this->g, 100, "" );
-            if( gl )
-                gl->getCameraPosition( &pp );
-            al = (dpactor_writelock *)o1.tryWriteLock( this->a, 100, "" );
-            if( al )
-                al->getPosition( &pa );
+            gl = (gfx_writelock *)o.tryWriteLock( this->g, 10, "root_gui::handleKbEvent" );
+            if( !gl )
+                return;
+            al = (dpactor_writelock *)o1.tryWriteLock( this->a, 10, "root_gui::handleKbEvent" );
+            if( !al )
+                return;
+            al->getPosition( &pa );
+            gl->getCameraPosition( &pp );
             pa.getData( &pi );
             x.x = 0;
             x.y = 0;
             x.z = 0;
-            
+
             if( skey->compare( "Page Up" ) == 0 )
                 x.y = 1.1;
             if( skey->compare( "Page Down" ) == 0 )
@@ -123,16 +125,13 @@ namespace dragonpoop
             if( skey->compare( "Right" ) == 0 )
                 x.x = 1.1;
             pa.move( &x, this->t, this->t + 1000, 0 );
-            
-            if( gl )
-                gl->setCameraPosition( &pp );
-            if( al )
-                al->setPosition( &pa );
-            o.unlock();
+
+            gl->setCameraPosition( &pp );
+            al->setPosition( &pa );
         }
-    
+
     }
-    
+
     //override to do processing
     void root_gui::doProcessing( dpthread_lock *thd, gui_writelock *g )
     {
@@ -141,10 +140,10 @@ namespace dragonpoop
         menu_gui_writelock *mw;
         gfx_writelock *gl;
         uint64_t t;
-        
+
         this->t = thd->getTicks();
         this->gui::doProcessing( thd, g );
-        
+
         if( this->esc_menu_do_show != this->esc_menu_is_show )
         {
             if( this->esc_menu_do_show )
@@ -153,13 +152,13 @@ namespace dragonpoop
                     delete this->esc_menu;
                 this->esc_menu = 0;
                 this->esc_menu_is_show = 0;
-                
+
                 gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
                 if( gl )
                 {
                     this->esc_menu = new menu_gui( gl, this->genId(), this->getId(), 0, 0, 300, 40, 40, "Escape Menu" );
                     this->addGui( this->esc_menu );
-                    
+
                     mw = (menu_gui_writelock *)o.tryWriteLock( this->esc_menu, 1000, "root_gui::doProcessing" );
                     if( mw )
                         this->populateEscapeMenu( mw );
@@ -174,7 +173,7 @@ namespace dragonpoop
                 this->esc_menu_is_show = 0;
             }
         }
-        
+
         if( this->esc_menu_is_show && this->esc_menu )
         {
             t = thd->getTicks();
@@ -186,13 +185,13 @@ namespace dragonpoop
                     this->processEscapeMenu( mr );
             }
         }
-        
+
         if( this->perf_open )
         {
             if( this->perf_stats )
                 delete this->perf_stats;
             this->perf_stats = 0;
-            
+
             gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
             if( gl )
             {
@@ -206,9 +205,9 @@ namespace dragonpoop
             delete this->perf_stats;
             this->perf_stats = 0;
         }
-        
+
     }
-    
+
     //populate escape menu
     void root_gui::populateEscapeMenu( menu_gui_writelock *m )
     {
@@ -217,7 +216,7 @@ namespace dragonpoop
         m->addButton( "Quit Game" );
         m->addButton( "Close This Menu" );
     }
-    
+
     //process escape menu clicks
     void root_gui::processEscapeMenu( menu_gui_readlock *m )
     {
@@ -239,23 +238,23 @@ namespace dragonpoop
             return;
         }
     }
-    
+
     //hide escape menu
     void root_gui::hideEscapeMenu( void )
     {
         this->esc_menu_do_show = 0;
     }
-    
+
     //show escape menu
     void root_gui::showEscapeMenu( void )
     {
         this->esc_menu_do_show = 1;
     }
-    
+
     //show perf stats
     void root_gui::showPerfStats( void )
     {
         this->perf_open = 1;
     }
-    
+
 };
