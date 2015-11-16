@@ -6223,3 +6223,8 @@
 	"dpland_man_readlock.h"
 	"dpland_man_writelock.h"
 
+1444043134 /usr/include/freetype2/ft2build.h
+	<config/ftheader.h>
+
+1444043134 /usr/include/freetype2/config/ftheader.h
+
