@@ -414,17 +414,17 @@ namespace dragonpoop
     bool dpactor::convertName( std::string *sin, std::string *sout )
     {
         if( sin->compare( "idle" ) == 0 )
-            sout->assign( "idle-ground" );
+            sout->assign( "idle_01" );
         if( sin->compare( "walk" ) == 0 )
-            sout->assign( "walk-1" );
+            sout->assign( "walk" );
         if( sin->compare( "fly_start" ) == 0 )
-            sout->assign( "fly start" );
+            sout->assign( "stand_up" );
         if( sin->compare( "fly_stop" ) == 0 )
-            sout->assign( "fly end" );
+            sout->assign( "walk" );
         if( sin->compare( "fly_idle" ) == 0 )
-            sout->assign( "flying idle" );
+            sout->assign( "idle_01" );
         if( sin->compare( "fly" ) == 0 )
-            sout->assign( "fly_forward" );
+            sout->assign( "walk" );
         return 1;
     }
 
