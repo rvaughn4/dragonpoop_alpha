@@ -118,7 +118,7 @@ namespace dragonpoop
     void dpsky_man::run( dpthread_lock *thd, dpsky_man_writelock *g )
     {
 
-        this->stuff.sky_time += 0.1f;
+        this->stuff.sky_time += 0.01f;
         if( this->stuff.sky_time > 1.0f )
             this->stuff.sky_time = -1.0f;
 
@@ -130,8 +130,10 @@ namespace dragonpoop
         dpvertex_buffer *vb;
         dpindex_buffer *ib;
         dpvertex v;
-        float radius, tex_1, tex_0;
+        float radius, tex_1, tex_0, dist, billradius;
 
+        billradius = 1.0f;
+        dist = 30.0f;
         radius = 50.0f;
         tex_1 = 0.9995f;
         tex_0 = 0.0005f;
@@ -370,12 +372,49 @@ namespace dragonpoop
         ib->addIndex( 2 );
         ib->addIndex( 3 );
 
+        //billboard
+        vb = &this->stuff.billboard.vb;
+        ib = &this->stuff.billboard.ib;
+
+        v.pos.x = billradius;
+        v.pos.y = billradius;
+        v.pos.z = -dist;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+
+        v.pos.x = -billradius;
+        v.pos.y = billradius;
+        v.pos.z = -dist;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_0;
+        vb->addVertex( &v );
+
+        v.pos.x = billradius;
+        v.pos.y = -billradius;
+        v.pos.z = -dist;
+        v.texcoords[ 0 ].s = tex_0;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+
+        v.pos.x = -billradius;
+        v.pos.y = -billradius;
+        v.pos.z = -dist;
+        v.texcoords[ 0 ].s = tex_1;
+        v.texcoords[ 0 ].t = tex_1;
+        vb->addVertex( &v );
+
+        ib->addIndex( 0 );
+        ib->addIndex( 2 );
+        ib->addIndex( 1 );
+        ib->addIndex( 1 );
+        ib->addIndex( 2 );
+        ib->addIndex( 3 );
     }
 
     //load sky textures
     void dpsky_man::loadSky( void )
     {
-
         this->stuff.skyboxtex.mask.front.loadFile( "skybox_mask_front.bmp" );
         this->stuff.skyboxtex.mask.back.loadFile( "skybox_mask_back.bmp" );
         this->stuff.skyboxtex.mask.top.loadFile( "skybox_mask_up.bmp" );
@@ -389,6 +428,9 @@ namespace dragonpoop
         this->stuff.skyboxtex.stars.bottom.loadFile( "skybox_stars_down.bmp" );
         this->stuff.skyboxtex.stars.left.loadFile( "skybox_stars_left.bmp" );
         this->stuff.skyboxtex.stars.right.loadFile( "skybox_stars_right.bmp" );
+
+        this->stuff.billboardtex.sun.loadFile( "sun.bmp" );
+        this->stuff.billboardtex.moon.loadFile( "sun.bmp" );
     }
 
     //return sky stuff

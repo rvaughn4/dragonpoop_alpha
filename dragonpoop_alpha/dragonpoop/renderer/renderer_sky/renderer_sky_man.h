@@ -11,7 +11,7 @@
 
 namespace dragonpoop
 {
-    
+
     class dpthread_lock;
     class core;
     class renderer_sky_man_ref;
@@ -40,12 +40,12 @@ namespace dragonpoop
     class render_api_vertexbuffer_ref;
     class render_api_indexbuffer_ref;
     class render_api_texture_ref;
-    
+
     class renderer_sky_man : public shared_obj
     {
-        
+
     private:
-        
+
         core *c;
         gfx_ref *g;
         dptask *tsk;
@@ -60,7 +60,7 @@ namespace dragonpoop
         float log_screen_width, log_screen_height;
         dpthread_singletask *thd;
         renderer_commandlist_passer_ref *clpasser;
-        
+
         struct
         {
             struct
@@ -71,7 +71,13 @@ namespace dragonpoop
                     render_api_indexbuffer_ref *ib;
                 } front, back, left, right, top, bottom;
             } skybox;
-            
+
+            struct
+            {
+                render_api_vertexbuffer_ref *vb;
+                render_api_indexbuffer_ref *ib;
+            } billboard;
+
             struct
             {
                 struct
@@ -79,10 +85,15 @@ namespace dragonpoop
                     render_api_texture_ref *front, *back, *top, *bottom, *left, *right;
                 } stars, mask;
             } skyboxtex;
-            
+
+            struct
+            {
+                render_api_texture_ref *sun, *moon;
+            } billboardtex;
+
             float sky_time, smooth_sky_time;
         } stuff;
-        
+
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
@@ -97,9 +108,9 @@ namespace dragonpoop
         void computeMatrix( void );
         //run sky
         void runSky( dpthread_lock *thd );
-        
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -110,21 +121,21 @@ namespace dragonpoop
         void deleteSky( void );
         //run from manager thread
         void run( dpthread_lock *thd, renderer_sky_man_writelock *l );
-        
+
     public:
-        
+
         //ctor
         renderer_sky_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height );
         //dtor
         virtual ~renderer_sky_man( void );
         //return core
         core *getCore( void );
-        
+
         friend class renderer_sky_man_readlock;
         friend class renderer_sky_man_writelock;
-        
+
     };
-    
+
 };
 
 #endif

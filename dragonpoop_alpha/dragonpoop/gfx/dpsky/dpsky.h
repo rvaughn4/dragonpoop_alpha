@@ -19,7 +19,13 @@ namespace dragonpoop
                 dpindex_buffer ib;
             } front, back, top, bottom, left, right;
         } skybox;
-        
+
+        struct
+        {
+            dpvertex_buffer vb;
+            dpindex_buffer ib;
+        } billboard;
+
         struct
         {
             struct
@@ -27,8 +33,12 @@ namespace dragonpoop
                 dpbitmap front, back, top, bottom, left, right;
             } stars, mask;
         } skyboxtex;
-        
-        
+
+        struct
+        {
+            dpbitmap sun, moon;
+        } billboardtex;
+
         float sky_time;
     };
 

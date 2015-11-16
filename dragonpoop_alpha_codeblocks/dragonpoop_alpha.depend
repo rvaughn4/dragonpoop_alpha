@@ -1706,7 +1706,7 @@
 	"renderer_writelock.h"
 	"renderer.h"
 
-1447665036 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/main.cpp
+1447665137 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/main.cpp
 	"dragonpoop/dragonpoop.h"
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/dragonpoop.h
@@ -3775,7 +3775,7 @@
 	"../../core/shared_obj/shared_obj.h"
 	"dpsky.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpsky/dpsky.h
+1447665422 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpsky/dpsky.h
 	"../dpvertex/dpvertex_buffer.h"
 	"../dpvertex/dpindex_buffer.h"
 	"../dpbitmap/dpbitmap.h"
@@ -4183,7 +4183,7 @@
 	<string.h>
 	<math.h>
 
-1447660503 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpsky/dpsky_man.cpp
+1447666355 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpsky/dpsky_man.cpp
 	"dpsky_man.h"
 	"dpsky_man_ref.h"
 	"dpsky_man_readlock.h"
@@ -5654,7 +5654,7 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_land/renderer_land_man_readlock.h
 	"../../core/shared_obj/shared_obj_readlock.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.h
+1447665432 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.h
 	"../../core/shared_obj/shared_obj.h"
 	"../../core/dpid/dpid.h"
 	"../../gfx/dpmatrix/dpmatrix.h"
@@ -5983,7 +5983,7 @@
 	"renderer_model_man_writelock.h"
 	"renderer_model_man.h"
 
-1447405207 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.cpp
+1447666347 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.cpp
 	"renderer_sky_man.h"
 	"renderer_sky_man_ref.h"
 	"renderer_sky_man_readlock.h"

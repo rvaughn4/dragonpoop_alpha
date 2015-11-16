@@ -76,7 +76,7 @@ namespace dragonpoop
         o.unlock();
 
         this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
-        this->_startTask( tp, 1 );
+        this->_startTask( tp, 100 );
     }
 
     //dtor
@@ -310,7 +310,6 @@ namespace dragonpoop
         cll->setVertexBuffer( this->stuff.skybox.right.vb );
         cll->draw();
 
-
         cll->setAlpha( 1.0f );
         f = 1.0f - abs_sky_time;
         cll->setColor( 0.85f * f, 0.9f * f, 1.0f * f + 0.2f * abs_sky_time );
@@ -345,7 +344,22 @@ namespace dragonpoop
         cll->setVertexBuffer( this->stuff.skybox.bottom.vb );
         cll->draw();
 
+        m1.setIdentity();
+        //m1.translate( 0, 0, -5.0f );
+        m1.rotateX( this->stuff.sky_time * -180.0f );
+        m2.copy( &this->m );
+        m2.multiply( &m1 );
+        cll->setMatrix( &m2 );
 
+
+        cll->setAlpha( 1.0f );
+        f = 1.0f - abs_sky_time;
+        cll->setColor( 0.85f * f, 0.9f * f, 1.0f * f + 0.2f * abs_sky_time );
+
+        cll->setTexture( this->stuff.billboardtex.sun, 0 );
+        cll->setIndexBuffer( this->stuff.billboard.ib );
+        cll->setVertexBuffer( this->stuff.billboard.vb );
+        cll->draw();
 
         if( cll->compile( ctxl ) )
             this->clpasser->t->sky_ready = 1;
@@ -388,6 +402,8 @@ namespace dragonpoop
         this->stuff.skybox.right.vb = c->makeVertexBuffer( &s->skybox.right.vb );
         this->stuff.skybox.right.ib = c->makeIndexBuffer( &s->skybox.right.ib );
 
+        this->stuff.billboard.vb = c->makeVertexBuffer( &s->billboard.vb );
+        this->stuff.billboard.ib = c->makeIndexBuffer( &s->billboard.ib );
 
         this->stuff.skyboxtex.mask.front = c->makeTexture( &s->skyboxtex.mask.front );
         this->stuff.skyboxtex.mask.back = c->makeTexture( &s->skyboxtex.mask.back );
@@ -403,6 +419,8 @@ namespace dragonpoop
         this->stuff.skyboxtex.stars.left = c->makeTexture( &s->skyboxtex.stars.left );
         this->stuff.skyboxtex.stars.right = c->makeTexture( &s->skyboxtex.stars.right );
 
+        this->stuff.billboardtex.sun = c->makeTexture( &s->billboardtex.sun );
+        this->stuff.billboardtex.moon = c->makeTexture( &s->billboardtex.moon );
     }
 
 
