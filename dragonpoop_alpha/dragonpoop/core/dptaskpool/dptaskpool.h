@@ -4,6 +4,7 @@
 
 #include "../shared_obj/shared_obj.h"
 #include "../../core/dpid/dpid.h"
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -14,6 +15,10 @@ namespace dragonpoop
     class dptaskpool_writelock;
     class dpthread_lock;
     class dptask_writelock;
+    class dpthread_interface;
+
+    #define dptaskpool_max_threads 16
+    #define dptaskpool_max_tasks 100
 
     class dptaskpool : public shared_obj
     {
@@ -21,17 +26,10 @@ namespace dragonpoop
     private:
 
         //threads
-        struct
-        {
-            unsigned int cnt, max, acnt;
-            dpthread **buffer;
-        } threads;
-        //tasks
-        struct
-        {
-            unsigned int cnt, max;
-            dptask_ref **buffer;
-        } tasks;
+        std::atomic<dpthread_interface *> threads[ dptaskpool_max_threads ];
+        //tasks not yet added
+        std::atomic<dptask_ref *> tasks[ dptaskpool_max_tasks ];
+        //mutex master
         dpmutex_master *mm;
 
 
@@ -56,9 +54,9 @@ namespace dragonpoop
         //pop task from pool
         dptask_ref *popTask( void );
         //push thread into pool
-        void pushThread( dpthread *t );
+        void pushThread( dpthread_interface *t );
         //pop thread from pool
-        dpthread *popThread( void );
+        dpthread_interface *popThread( void );
         //generate id
         dpid genId( void );
         //lock a thread from pool
@@ -76,7 +74,7 @@ namespace dragonpoop
         friend class dptaskpool_writelock;
         friend class dpthread;
     };
-    
+
 };
 
 #endif

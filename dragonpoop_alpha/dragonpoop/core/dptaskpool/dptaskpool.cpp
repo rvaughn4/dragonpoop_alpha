@@ -16,15 +16,20 @@ namespace dragonpoop
     //ctor
     dptaskpool::dptaskpool( dpmutex_master *mm, unsigned int thread_cnt ) : shared_obj( mm )
     {
+        int i;
+
         this->mm = mm;
-        memset( &this->tasks, 0, sizeof( this->tasks ) );
-        memset( &this->threads, 0, sizeof( this->threads ) );
-        
+
+        for( i = 0; i < dptaskpool_max_tasks; i++ )
+            this->tasks[ i ] = 0;
+        for( i = 0; i < dptaskpool_max_threads; i++ )
+            this->threads[ i ] = 0;
+
         if( !thread_cnt )
             thread_cnt = std::thread::hardware_concurrency();
         if( thread_cnt < 3 )
             thread_cnt = 3;
-        
+
         this->setThreadCount( thread_cnt );
     }
 
@@ -32,13 +37,13 @@ namespace dragonpoop
     dptaskpool::~dptaskpool( void )
     {
         dptask_ref *r;
-        dpthread *t;
+        dpthread_interface *t;
         shared_obj_guard o;
-        
+
         o.tryWriteLock( this, 5000, "dptaskpool::~dptaskpool" );
         o.unlock();
         this->unlink();
-        
+
         t = this->popThread();
         while( t )
         {
@@ -55,10 +60,6 @@ namespace dragonpoop
         }
 
         o.tryWriteLock( this, 5000, "dptaskpool::~dptaskpool" );
-        if( this->threads.buffer )
-            free( this->threads.buffer );
-        if( this->tasks.buffer )
-            free( this->tasks.buffer );
         o.unlock();
     }
 
@@ -107,12 +108,12 @@ namespace dragonpoop
         at = (dptask_ref *)tl->getRef();
         this->pushTask( at );
     }
-    
+
     //adjust thread count
     void dptaskpool::setThreadCount( unsigned int c )
     {
         unsigned int j;
-        dpthread *t;
+        dpthread_interface *t;
 
         j = this->getThreadCount();
 
@@ -120,7 +121,7 @@ namespace dragonpoop
         {
             while( j < c )
             {
-                t = new dpthread( this->mm, j + 1, (dptaskpool_ref *)this->getRef() );
+                t = new dpthread( this->mm, j + 1 );
                 this->pushThread( t );
                 j++;
             }
@@ -139,60 +140,46 @@ namespace dragonpoop
     //return thread count
     unsigned int dptaskpool::getThreadCount( void )
     {
-        return this->threads.acnt;
+        int i, r;
+
+        r = 0;
+        for( i = 0; i < dptaskpool_max_threads; i++ )
+        {
+            if( this->threads[ i ] != 0 )
+                r++;
+        }
+
+        return r;
     }
 
     //push task into pool
     void dptaskpool::pushTask( dptask_ref *t )
     {
-        unsigned int nc, nm, i;
-        dptask_ref **nb;
+        int i;
 
-        if( this->tasks.buffer )
+        for( i = 0; i < dptaskpool_max_tasks; i++ )
         {
-            for( i = 0; i < this->tasks.cnt; i++ )
-            {
-                if( this->tasks.buffer[ i ] )
-                    continue;
-                this->tasks.buffer[ i ] = t;
-                return;
-            }
+            if( this->tasks[ i ] != 0 )
+                continue;
+            this->tasks[ i ] = t;
+            return;
         }
 
-        nc = this->tasks.cnt + 1;
-        if( !this->tasks.buffer || nc >= this->tasks.max )
-        {
-            nm = nc * 2 + 3;
-            nb = (dptask_ref **)malloc( nm * sizeof(dptask_ref *) );
-            memset( nb, 0, nm * sizeof(dptask_ref *) );
-            if( this->tasks.buffer )
-            {
-                memcpy( nb, this->tasks.buffer, this->tasks.max * sizeof(dptask_ref *) );
-                free( this->tasks.buffer );
-            }
-            this->tasks.buffer = nb;
-            this->tasks.max = nm;
-        }
-
-        this->tasks.buffer[ nc - 1 ] = t;
-        this->tasks.cnt = nc;
+        delete t;
     }
 
     //pop task from pool
     dptask_ref *dptaskpool::popTask( void )
     {
-        unsigned int i;
+        int i;
         dptask_ref *r;
 
-        if( !this->tasks.buffer )
-            return 0;
-
-        for( i = 0; i < this->tasks.cnt; i++ )
+        for( i = 0; i < dptaskpool_max_tasks; i++ )
         {
-            r = this->tasks.buffer[ i ];
-            if( !r )
+            if( this->tasks[ i ] == 0 )
                 continue;
-            this->tasks.buffer[ i ] = 0;
+            r = this->tasks[ i ];
+            this->tasks[ i ] = 0;
             return r;
         }
 
@@ -200,59 +187,33 @@ namespace dragonpoop
     }
 
     //push thread into pool
-    void dptaskpool::pushThread( dpthread *t )
+    void dptaskpool::pushThread( dpthread_interface *t )
     {
-        unsigned int nc, nm, i;
-        dpthread **nb;
+        int i;
 
-        if( this->threads.buffer )
+        for( i = 0; i < dptaskpool_max_threads; i++ )
         {
-            for( i = 0; i < this->threads.cnt; i++ )
-            {
-                if( this->threads.buffer[ i ] )
-                    continue;
-                this->threads.buffer[ i ] = t;
-                this->threads.acnt++;
-                return;
-            }
+            if( this->threads[ i ] != 0 )
+                continue;
+            this->threads[ i ] = t;
+            return;
         }
 
-        nc = this->threads.cnt + 1;
-        if( !this->threads.buffer || nc >= this->threads.max )
-        {
-            nm = nc * 2 + 3;
-            nb = (dpthread **)malloc( nm * sizeof(dpthread *) );
-            memset( nb, 0, nm * sizeof(dpthread *) );
-            if( this->threads.buffer )
-            {
-                memcpy( nb, this->threads.buffer, this->threads.max * sizeof(dpthread *) );
-                free( this->threads.buffer );
-            }
-            this->threads.buffer = nb;
-            this->threads.max = nm;
-        }
-
-        this->threads.buffer[ nc - 1 ] = t;
-        this->threads.cnt = nc;
-        this->threads.acnt++;
+        delete t;
     }
 
     //pop thread from pool
-    dpthread *dptaskpool::popThread( void )
+    dpthread_interface *dptaskpool::popThread( void )
     {
-        unsigned int i;
-        dpthread *r;
+        int i;
+        dpthread_interface *r;
 
-        if( !this->threads.buffer )
-            return 0;
-
-        for( i = 0; i < this->threads.cnt; i++ )
+        for( i = 0; i < dptaskpool_max_threads; i++ )
         {
-            r = this->threads.buffer[ i ];
-            if( !r )
+            if( this->threads[ i ] == 0 )
                 continue;
-            this->threads.buffer[ i ] = 0;
-            this->threads.acnt--;
+            r = this->threads[ i ];
+            this->threads[ i ] = 0;
             return r;
         }
 
@@ -269,24 +230,24 @@ namespace dragonpoop
         if( !thd )
             return r;
         r = thd->genId();
-        
+
         delete thd;
         return r;
     }
-    
+
     //lock a thread from pool
     dpthread_lock *dptaskpool::lockThread( void )
     {
+        dpthread_interface *t;
         dpthread_lock *thd;
-        dpthread *t;
-        
-        if( this->threads.cnt < 1 )
+
+        t = this->popThread();
+        if( !t )
             return 0;
-        
-        t = this->threads.buffer[ 0 ];
+        this->pushThread( t );
+
         thd = t->lock();
-        
         return thd;
     }
-    
+
 };

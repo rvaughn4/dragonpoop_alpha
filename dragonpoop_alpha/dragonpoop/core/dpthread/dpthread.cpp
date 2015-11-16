@@ -15,26 +15,21 @@ namespace dragonpoop
     //ctor
     dpthread::dpthread( dpmutex_master *ml, unsigned int id )
     {
-        this->id = id;
-        this->lm = ml;
-        this->tp = 0;
-        this->trun = 1;
-        this->b_lowpri = 0;
-        this->b_hipri = 0;
-        this->l = this->lm->genMutex();
-        memset( &this->tasks, 0, sizeof( this->tasks ) );
-        this->thd = new std::thread( dpthread_threadproc, this );
-    }
+        int i;
 
-    //ctor
-    dpthread::dpthread( dpmutex_master *ml, unsigned int id, dptaskpool_ref *tp )
-    {
         this->id = id;
         this->lm = ml;
-        this->tp = tp;
         this->trun = 1;
         this->l = this->lm->genMutex();
-        memset( &this->tasks, 0, sizeof( this->tasks ) );
+
+        for( i = 0; i < dpthread_max_tasks; i++ )
+        {
+            this->tasks.dynamic_notran[ i ] = 0;
+            this->tasks.dynamic_ran[ i ] = 0;
+            this->tasks.static_notran[ i ] = 0;
+            this->tasks.static_ran[ i ] = 0;
+        }
+
         this->thd = new std::thread( dpthread_threadproc, this );
     }
 
@@ -47,18 +42,76 @@ namespace dragonpoop
         this->lm->destroyMutex( &this->l );
     }
 
+    //add static task
+    bool dpthread::addStatic( dptask_ref *t )
+    {
+        int i;
+
+        for( i = 0; i < dpthread_max_tasks; i++ )
+        {
+            if( this->tasks.static_notran[ i ] != 0 )
+                continue;
+            this->tasks.static_notran[ i ] = t;
+            return 1;
+        }
+
+        return 0;
+    }
+
+    //add dynamic task
+    bool dpthread::addDynamic( dptask_ref *t )
+    {
+        int i;
+
+        for( i = 0; i < dpthread_max_tasks; i++ )
+        {
+            if( this->tasks.dynamic_notran[ i ] != 0 )
+                continue;
+            this->tasks.dynamic_notran[ i ] = t;
+            return 1;
+        }
+
+        return 0;
+    }
+
+    //remove static task
+    dptask_ref *dpthread::removeDynamic( void )
+    {
+        int i;
+        dptask_ref *r;
+
+        for( i = 0; i < dpthread_max_tasks; i++ )
+        {
+            if( this->tasks.dynamic_notran[ i ] == 0 )
+                continue;
+            r = this->tasks.dynamic_notran[ i ];
+            this->tasks.dynamic_notran[ i ] = 0;
+            return r;
+        }
+
+        return 0;
+    }
+
     //add new task (creates a ref)
     void dpthread::addTask( dptask_ref *t )
     {
         dptask_ref *at;
         dptask_writelock *tl;
         shared_obj_guard g;
+        bool b = 0;
 
         tl = (dptask_writelock *)g.writeLock( t, "dpthread::addTask" );
         if( !tl )
             return;
         at = (dptask_ref *)tl->getRef();
-        this->pushToRun( at );
+
+        if( tl->isSingleThread() )
+            b = this->addStatic( at );
+        else
+            b = this->addDynamic( at );
+
+        if( !b )
+            delete at;
     }
 
     //add new task (creates a ref)
@@ -67,28 +120,25 @@ namespace dragonpoop
         dptask_ref *at;
         dptask_writelock *tl;
         shared_obj_guard g;
+        bool b = 0;
 
         tl = (dptask_writelock *)g.writeLock( t, "dpthread::addTask" );
         if( !tl )
             return;
         at = (dptask_ref *)tl->getRef();
-        this->pushToRun( at );
+
+        if( tl->isSingleThread() )
+            b = this->addStatic( at );
+        else
+            b = this->addDynamic( at );
+
+        if( !b )
+            delete at;
     }
 
     //add task pool
     void dpthread::addPool( dptaskpool *tp )
     {
-        dptaskpool_writelock *tpl;
-        shared_obj_guard g;
-
-        if( this->tp )
-            delete this->tp;
-        this->tp = 0;
-
-        tpl = (dptaskpool_writelock *)g.writeLock( tp, "dpthread::addPool" );
-        if( !tpl )
-            return;
-        this->tp = (dptaskpool_ref *)tpl->getRef();
     }
 
     //get tick count in ms
@@ -115,215 +165,31 @@ namespace dragonpoop
         return new dpthread_lock( this, wl );
     }
 
-    //add task to run
-    void dpthread::pushToRun( dptask_ref *t )
-    {
-        unsigned int nc, nm, i;
-        dptask_ref **nb;
-        dpthread_tasklist *tl;
-
-        tl = &this->tasks.torun;
-        if( tl->buffer && tl->cnt < tl->max )
-        {
-            for( i = 0; i < tl->cnt; i++ )
-            {
-                if( !tl->buffer[ i ] )
-                {
-                    tl->buffer[ i ] = t;
-                    return;
-                }
-            }
-        }
-
-        nc = tl->cnt + 1;
-        if( !tl->buffer || tl->max <= nc )
-        {
-            nm = 3 + nc * 2;
-            nb = (dptask_ref **)malloc( sizeof(dptask_ref *) * nm );
-            if( !nb )
-                return;
-            memset( nb, 0, sizeof(dptask_ref *) * nm );
-            if( tl->buffer )
-            {
-                memcpy( nb, tl->buffer, tl->cnt * sizeof(dptask_ref *) );
-                free( tl->buffer );
-            }
-            tl->buffer = nb;
-            tl->max = nm;
-        }
-
-        tl->buffer[ nc - 1 ] = t;
-        tl->cnt++;
-    }
-
-    //get and remove task from to run
-    dptask_ref *dpthread::popToRun( void )
-    {
-        unsigned int i;
-        dptask_ref *t;
-        dpthread_tasklist *tl;
-
-        tl = &this->tasks.torun;
-        if( !tl->buffer )
-            return 0;
-
-        for( i = 0; i < tl->cnt; i++ )
-        {
-            t = tl->buffer[ i ];
-            if( t )
-            {
-                tl->buffer[ i ] = 0;
-                return t;
-            }
-        }
-
-        return 0;
-    }
-
-    //add task to beenran
-    void dpthread::pushBeenRan( dptask_ref *t )
-    {
-        unsigned int nc, nm, i;
-        dptask_ref **nb;
-        dpthread_tasklist *tl;
-
-        tl = &this->tasks.beenran;
-        if( tl->buffer && tl->cnt < tl->max )
-        {
-            for( i = 0; i < tl->cnt; i++ )
-            {
-                if( !tl->buffer[ i ] )
-                {
-                    tl->buffer[ i ] = t;
-                    return;
-                }
-            }
-        }
-
-        nc = tl->cnt + 1;
-        if( !tl->buffer || tl->max <= nc )
-        {
-            nm = 3 + nc * 2;
-            nb = (dptask_ref **)malloc( sizeof(dptask_ref *) * nm );
-            if( !nb )
-                return;
-            memset( nb, 0, sizeof(dptask_ref *) * nm );
-            if( tl->buffer )
-            {
-                memcpy( nb, tl->buffer, tl->cnt * sizeof(dptask_ref *) );
-                free( tl->buffer );
-            }
-            tl->buffer = nb;
-            tl->max = nm;
-        }
-
-        tl->buffer[ nc - 1 ] = t;
-        tl->cnt++;
-    }
-
-    //get and remove task from beenran
-    dptask_ref *dpthread::popBeenRan( void )
-    {
-        unsigned int i;
-        dptask_ref *t;
-        dpthread_tasklist *tl;
-
-        tl = &this->tasks.beenran;
-        if( !tl->buffer )
-            return 0;
-
-        for( i = 0; i < tl->cnt; i++ )
-        {
-            t = tl->buffer[ i ];
-            if( t )
-            {
-                tl->buffer[ i ] = 0;
-                return t;
-            }
-        }
-
-        return 0;
-    }
-
-    //get new task from pool
-    void dpthread::getTaskFromPool( void )
-    {
-        dptask_ref *t;
-        dptaskpool_writelock *tpl;
-        shared_obj_guard g;
-
-        if( !this->tp )
-            return;
-        tpl = (dptaskpool_writelock *)g.tryWriteLock( this->tp, 3, "dpthread::getTaskFromPool" );
-        if( !tpl )
-            return;
-
-        t = tpl->p->popTask();
-        this->pushToRun( t );
-    }
-
-    //dump old task back to pool
-    void dpthread::dumpTaskToPool( void )
-    {
-        dptask_ref *t;
-        dptask_readlock *tl;
-        dptaskpool_writelock *tpl;
-        shared_obj_guard g, g0;
-
-        if( !this->tp )
-            return;
-        tpl = (dptaskpool_writelock *)g.tryWriteLock( this->tp, 3, "dpthread::dumpTaskToPool" );
-        if( !tpl )
-            return;
-
-        t = this->popBeenRan();
-        if( !t )
-            return;
-
-        tl = (dptask_readlock *)g0.tryReadLock( t, 3, "dpthread::dumpTaskToPool" );
-        if( !tl )
-        {
-            tpl->p->pushTask( t );
-            return;
-        }
-        if( tl->isSingleThread() )
-        {
-            this->pushToRun( t );
-            return;
-        }
-        tpl->p->pushTask( t );
-    }
-
     //delete all tasks (or throw them on pool)
     void dpthread::deleteTasks( void )
     {
-        unsigned int i, j;
         dptask_ref *t;
-        dpthread_tasklist *tl;
+        int i;
 
-        for( j = 0; j < 2; j++ )
+        for( i = 0; i < dpthread_max_tasks; i++ )
         {
-            if( j == 1 )
-                tl = &this->tasks.beenran;
-            else
-                tl = &this->tasks.torun;
-
-            if( !tl->buffer )
-            {
-                tl->cnt = tl->max = 0;
-                continue;
-            }
-
-            for( i = 0; i < tl->cnt; i++ )
-            {
-                t = tl->buffer[ i ];
+            t = this->tasks.dynamic_notran[ i ];
+            if( t )
                 delete t;
-            }
-
-            free( tl->buffer );
-            tl->cnt = tl->max = 0;
+            this->tasks.dynamic_notran[ i ] = 0;
+            t = this->tasks.dynamic_ran[ i ];
+            if( t )
+                delete t;
+            this->tasks.dynamic_ran[ i ] = 0;
+            t = this->tasks.static_notran[ i ];
+            if( t )
+                delete t;
+            this->tasks.static_notran[ i ] = 0;
+            t = this->tasks.static_ran[ i ];
+            if( t )
+                delete t;
+            this->tasks.static_ran[ i ] = 0;
         }
-
     }
 
     //return id
@@ -379,32 +245,50 @@ namespace dragonpoop
         dpthread_lock *tl;
         dptask_ref *r;
         dptask_writelock *rl;
-        shared_obj_guard g;
+        shared_obj_guard o;
         uint64_t td, lowest_delay;
+        int i, j;
 
-        lowest_delay = 2000;
+        lowest_delay = 200;
         while( t->trun )
         {
-            if( t->b_lowpri )
-            {
-                if( lowest_delay < 200 )
-                    lowest_delay = 200;
-            }
-            if( t->b_hipri )
-            {
-                if( lowest_delay > 20 )
-                    lowest_delay = 20;
-                if( lowest_delay < 17 )
-                    lowest_delay = 1;
-                else
-                    lowest_delay -= 16;
-            }
-  
+            lowest_delay++;
+
             tl = t->lock();
             if( !tl )
             {
                 std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay ) );
                 continue;
+            }
+
+            for( i = 0; i < dpthread_max_tasks; i++ )
+            {
+
+                r = t->tasks.static_ran[ i ];
+                t->tasks.static_ran[ i ] = 0;
+                if( r )
+                {
+                    for( j = 0; j < dpthread_max_tasks; j++ )
+                    {
+                        if( t->tasks.static_notran[ j ] != 0 )
+                            continue;
+                        t->tasks.static_notran[ j ] = r;
+                        j = dpthread_max_tasks;
+                    }
+                }
+
+                r = t->tasks.dynamic_ran[ i ];
+                t->tasks.dynamic_ran[ i ] = 0;
+                if( r )
+                {
+                    for( j = 0; j < dpthread_max_tasks; j++ )
+                    {
+                        if( t->tasks.dynamic_notran[ j ] != 0 )
+                            continue;
+                        t->tasks.dynamic_notran[ j ] = r;
+                        j = dpthread_max_tasks;
+                    }
+                }
             }
 
             std::chrono::time_point<std::chrono::steady_clock> tp_now;
@@ -414,81 +298,68 @@ namespace dragonpoop
             t->ticks = d_s.count() * 1000 * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
             t->epoch = d_s.count() * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
 
-            r = t->popToRun();
-            if( !r )
+            for( i = 0; i < dpthread_max_tasks; i++ )
             {
-                r = t->popBeenRan();
-                while( r )
+
+                r = t->tasks.static_notran[ i ];
+                if( r )
                 {
-                    t->pushToRun( r );
-                    r = t->popBeenRan();
+                    rl = (dptask_writelock *)o.tryWriteLock( r, 3, "dpthread_threadproc" );
+                    if( rl )
+                    {
+                        td = t->ticks - rl->getLastTime();
+                        if( td >= rl->getDelay() )
+                        {
+                            rl->run( rl, tl );
+                            td = rl->getDelay();
+                            if( lowest_delay > td )
+                                lowest_delay = td;
+                            rl->setLastTime( t->ticks );
+                            t->tasks.static_notran[ i ] = 0;
+                            for( j = 0; j < dpthread_max_tasks; j++ )
+                            {
+                                if( t->tasks.static_ran[ j ] != 0 )
+                                    continue;
+                                t->tasks.static_ran[ j ] = r;
+                                j = dpthread_max_tasks;
+                            }
+                        }
+                        o.unlock();
+                    }
                 }
-                delete tl;
-                std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay ) );
 
-                tl = t->lock();
-                if( !tl )
-                    continue;
-                if( lowest_delay < 200 )
-                    lowest_delay += 1;
-                if( lowest_delay > 200 )
-                    lowest_delay = 200;
-                t->getTaskFromPool();
-                delete tl;
-                
-                continue;
+                r = t->tasks.dynamic_notran[ i ];
+                if( r )
+                {
+                    rl = (dptask_writelock *)o.tryWriteLock( r, 3, "dpthread_threadproc" );
+                    if( rl )
+                    {
+                        td = t->ticks - rl->getLastTime();
+                        if( td >= rl->getDelay() )
+                        {
+                            rl->run( rl, tl );
+                            td = rl->getDelay();
+                            if( lowest_delay > td )
+                                lowest_delay = td;
+                            rl->setLastTime( t->ticks );
+                            t->tasks.dynamic_notran[ i ] = 0;
+                            for( j = 0; j < dpthread_max_tasks; j++ )
+                            {
+                                if( t->tasks.dynamic_ran[ j ] != 0 )
+                                    continue;
+                                t->tasks.dynamic_ran[ j ] = r;
+                                j = dpthread_max_tasks;
+                            }
+                        }
+                        o.unlock();
+                    }
+                }
             }
-
-            if( !r->isLinked() )
-            {
-                delete r;
-                delete tl;
-                continue;
-            }
-
-            rl = (dptask_writelock *)g.tryWriteLock( r, 3, "dpthread_threadproc" );
-            if( !rl )
-            {
-                t->pushBeenRan( r );
-                delete tl;
-                g.unlock();
-                continue;
-            }
-
-            td = rl->getDelay();
-            if( !t->b_hipri && td < 3 )
-                td = 3;
-            if( lowest_delay > td )
-                lowest_delay = td;
-            td = rl->getLastTime();
-            if( t->ticks > td )
-                td = t->ticks - rl->getLastTime();
-            else
-                td = rl->getDelay();
-            if( td < rl->getDelay() )
-            {
-                t->pushBeenRan( r );
-                delete tl;
-                g.unlock();
-                continue;
-            }
-
-            if( !rl->isAlive() )
-            {
-                delete tl;
-                g.unlock();
-                delete r;
-                continue;
-            }
-
-            rl->run( rl, tl );
-            rl->setLastTime( t->ticks );
-            t->dumpTaskToPool();
-            t->pushBeenRan( r );
-            g.unlock();
 
             delete tl;
+            std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay ) );
         }
+
     }
 
 };

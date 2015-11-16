@@ -23,38 +23,34 @@ namespace dragonpoop
 
     void dpthread_threadproc( dpthread *t );
 
+    #define dpthread_max_tasks 100
+
     class dpthread : public dpthread_interface
     {
 
     private:
 
-        dptaskpool_ref *tp;
         dpmutex *l;
         dpmutex_master *lm;
         struct
         {
-            dpthread_tasklist torun, beenran;
+            std::atomic<dptask_ref *> static_ran[dpthread_max_tasks], static_notran[dpthread_max_tasks], dynamic_ran[dpthread_max_tasks], dynamic_notran[dpthread_max_tasks];
         } tasks;
         uint64_t ticks, epoch;
         std::thread *thd;
-        std::atomic<bool> trun, b_lowpri, b_hipri;
+        std::atomic<bool> trun;
         unsigned int id;
         uint32_t idctr;
 
-        //add task to run
-        void pushToRun( dptask_ref *t );
-        //get and remove task from to run
-        dptask_ref *popToRun( void );
-        //add task to beenran
-        void pushBeenRan( dptask_ref *t );
-        //get and remove task from beenran
-        dptask_ref *popBeenRan( void );
-        //delete all tasks (or throw them on pool)
+        //add static task
+        bool addStatic( dptask_ref *t );
+        //add dynamic task
+        bool addDynamic( dptask_ref *t );
+        //remove static task
+        dptask_ref *removeDynamic( void );
+        //delete all tasks
         void deleteTasks( void );
-        //get new task from pool
-        void getTaskFromPool( void );
-        //dump old task back to pool
-        void dumpTaskToPool( void );
+
 
     protected:
 
@@ -69,8 +65,6 @@ namespace dragonpoop
 
         //ctor
         dpthread( dpmutex_master *ml, unsigned int id );
-        //ctor
-        dpthread( dpmutex_master *ml, unsigned int id, dptaskpool_ref *tp );
         //dtor
         virtual ~dpthread( void );
         //get tick count in ms

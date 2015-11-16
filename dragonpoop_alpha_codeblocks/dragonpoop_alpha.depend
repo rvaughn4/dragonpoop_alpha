@@ -110,9 +110,10 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/shared_obj/shared_obj_writelock.h
 	"shared_obj_lock.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.h
+1447676654 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.h
 	"../shared_obj/shared_obj.h"
 	"../../core/dpid/dpid.h"
+	<atomic>
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/shared_obj/shared_obj.h
 	"shared_obj_interface.h"
@@ -235,7 +236,7 @@
 	"dptask.h"
 	"../shared_obj/shared_obj_guard.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.cpp
+1447678899 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.cpp
 	"dptaskpool.h"
 	"dptaskpool_ref.h"
 	"dptaskpool_readlock.h"
@@ -259,11 +260,11 @@
 	"dpthread.h"
 	"dpthread_lock.h"
 
-1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_interface.h
+1447676831 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_interface.h
 	<stdint.h>
 	"../dpid/dpid.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.h
+1447678939 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.h
 	"dpthread_interface.h"
 	<thread>
 	<atomic>
@@ -283,7 +284,7 @@
 	"dptaskpool_writelock.h"
 	"dptaskpool.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.cpp
+1447678984 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.cpp
 	"dpthread.h"
 	"dpthread_lock.h"
 	"../dpmutex/dpmutexes.h"
@@ -1540,7 +1541,7 @@
 	"openglx_1o5_renderer_writelock.h"
 	"openglx_1o5_renderer.h"
 
-1447586616 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
+1447675677 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
 	"renderer.h"
 	"../core/core.h"
 	"../core/dptask/dptasks.h"
@@ -4183,7 +4184,7 @@
 	<string.h>
 	<math.h>
 
-1447666355 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpsky/dpsky_man.cpp
+1447666429 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpsky/dpsky_man.cpp
 	"dpsky_man.h"
 	"dpsky_man_ref.h"
 	"dpsky_man_readlock.h"
@@ -5602,7 +5603,7 @@
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state.h
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_api.h
+1447675581 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_api.h
 	"renderer_state.h"
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.h
@@ -5983,7 +5984,7 @@
 	"renderer_model_man_writelock.h"
 	"renderer_model_man.h"
 
-1447666347 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.cpp
+1447675465 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_sky/renderer_sky_man.cpp
 	"renderer_sky_man.h"
 	"renderer_sky_man_ref.h"
 	"renderer_sky_man_readlock.h"
@@ -6086,23 +6087,23 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_deinit_model.h
 	"renderer_state.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_api.cpp
+1447675689 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_api.cpp
 	"renderer_state_init_api.h"
 	"renderer_state_init_gui.h"
 	"renderer_state_deinit_api.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_gui.h
+1447675562 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_gui.h
 	"renderer_state.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_gui.cpp
+1447675705 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_gui.cpp
 	"renderer_state_init_gui.h"
 	"renderer_state_init_model.h"
 	"renderer_state_deinit_gui.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_model.h
+1447675572 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_model.h
 	"renderer_state.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_model.cpp
+1447675698 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_state_init_model.cpp
 	"renderer_state_init_model.h"
 	"renderer_state_start_api.h"
 	"renderer_state_deinit_model.h"

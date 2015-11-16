@@ -23,8 +23,6 @@ namespace dragonpoop
 
         //ctor
         dpthread_interface( void );
-        //lock
-        virtual dpthread_lock *lock( void ) = 0;
         //add new task (creates a ref)
         virtual void addTask( dptask_ref *t ) = 0;
         //add new task (creates a ref)
@@ -46,10 +44,12 @@ namespace dragonpoop
         virtual void kill( void ) = 0;
         //generate unique dpid
         virtual dpid genId( void ) = 0;
+        //lock
+        virtual dpthread_lock *lock( void ) = 0;
 
         friend class dpthread_lock;
     };
-    
+
 };
 
 #endif

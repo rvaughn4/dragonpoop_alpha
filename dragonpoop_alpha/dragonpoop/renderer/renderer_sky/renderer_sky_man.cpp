@@ -225,6 +225,8 @@ namespace dragonpoop
         shared_obj_guard ocpl;
         render_api_shader_ref *sdr;
         float f;
+        dpmatrix m1, m2;
+        float abs_sky_time, abs_smooth_sky_time, daylight;
 
         if( this->clpasser->t->sky_ready )
             return;
@@ -255,17 +257,37 @@ namespace dragonpoop
         if( !sdr )
             return;
 
-
-        dpmatrix m1, m2;
-        static float rr;
-        rr += 1.0f;
-        float abs_sky_time;
-
         abs_sky_time = this->stuff.sky_time;
         if( abs_sky_time < 0 )
             abs_sky_time = -abs_sky_time;
-        this->stuff.smooth_sky_time += ( abs_sky_time - this->stuff.smooth_sky_time ) * 0.3f;
-        abs_sky_time = this->stuff.smooth_sky_time;
+        abs_smooth_sky_time = this->stuff.smooth_sky_time;
+        if( abs_smooth_sky_time < 0 )
+            abs_smooth_sky_time = -abs_smooth_sky_time;
+        abs_smooth_sky_time += ( abs_sky_time - abs_smooth_sky_time ) * 0.3f;
+        if( this->stuff.sky_time < 0 )
+            this->stuff.smooth_sky_time = -abs_smooth_sky_time;
+        else
+            this->stuff.smooth_sky_time = abs_smooth_sky_time;
+        if( this->stuff.smooth_sky_time > 0 )
+        {
+            if( abs_smooth_sky_time < 0.5f )
+                daylight = ( 0.5f - abs_smooth_sky_time );
+            else
+                daylight = abs_smooth_sky_time - 0.5f;
+        }
+        else
+        {
+            if( abs_smooth_sky_time < 0.2f )
+                daylight = abs_smooth_sky_time / 0.2f * 0.5f + 0.5f;
+            else
+            {
+                if( abs_smooth_sky_time > 0.8f )
+                    daylight = ( ( 1.0f - abs_smooth_sky_time ) / 0.2f ) * 0.5f + 0.5f;
+                else
+                    daylight = 1.0f;
+            }
+        }
+
 
         m1.setIdentity();
         //m1.translate( 0, 0, -5.0f );
@@ -278,7 +300,7 @@ namespace dragonpoop
         cll->setTexture( 0, 1 );
 
         cll->setColor( 1, 1, 1 );
-        cll->setAlpha( abs_sky_time );
+        cll->setAlpha( 1.0f - daylight );
 
         cll->setTexture( this->stuff.skyboxtex.stars.front, 0 );
         cll->setIndexBuffer( this->stuff.skybox.front.ib );
@@ -311,8 +333,7 @@ namespace dragonpoop
         cll->draw();
 
         cll->setAlpha( 1.0f );
-        f = 1.0f - abs_sky_time;
-        cll->setColor( 0.85f * f, 0.9f * f, 1.0f * f + 0.2f * abs_sky_time );
+        cll->setColor( 0.85f * daylight, 0.9f * daylight, 0.9f * daylight + 0.1f );
 
         cll->setTexture( this->stuff.skyboxtex.mask.front, 0 );
         cll->setIndexBuffer( this->stuff.skybox.front.ib );
@@ -346,15 +367,14 @@ namespace dragonpoop
 
         m1.setIdentity();
         //m1.translate( 0, 0, -5.0f );
-        m1.rotateX( this->stuff.sky_time * -180.0f );
+        m1.rotateX( this->stuff.smooth_sky_time * -180.0f );
         m2.copy( &this->m );
         m2.multiply( &m1 );
         cll->setMatrix( &m2 );
 
 
         cll->setAlpha( 1.0f );
-        f = 1.0f - abs_sky_time;
-        cll->setColor( 0.85f * f, 0.9f * f, 1.0f * f + 0.2f * abs_sky_time );
+        cll->setColor( 0.5f + 0.5f * daylight, 0.25f + 0.75f * daylight, 0.1f + 0.75f * daylight );
 
         cll->setTexture( this->stuff.billboardtex.sun, 0 );
         cll->setIndexBuffer( this->stuff.billboard.ib );

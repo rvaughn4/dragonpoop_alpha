@@ -236,7 +236,7 @@ namespace dragonpoop
         dptaskpool_writelock *tp;
         shared_obj_guard o;
 
-        tp = (dptaskpool_writelock *)o.tryWriteLock( this->tp, 1000, "renderer::state_initGui" );
+        tp = (dptaskpool_writelock *)o.tryWriteLock( this->tp, 10, "renderer::state_initGui" );
         if( !tp )
             return 0;
 
@@ -250,7 +250,7 @@ namespace dragonpoop
         dptaskpool_writelock *tp;
         shared_obj_guard o;
 
-        tp = (dptaskpool_writelock *)o.tryWriteLock( this->tp, 1000, "renderer::state_initGui" );
+        tp = (dptaskpool_writelock *)o.tryWriteLock( this->tp, 10, "renderer::state_initGui" );
         if( !tp )
             return 0;
 
