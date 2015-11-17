@@ -16,6 +16,9 @@ namespace dragonpoop
     class dpthread_lock;
     class dptask_writelock;
     class dpthread_interface;
+    class dptask_writelock;
+    class dpthread_lock;
+    class dptaskpool_task;
 
     #define dptaskpool_max_threads 16
     #define dptaskpool_max_tasks 100
@@ -31,7 +34,19 @@ namespace dragonpoop
         std::atomic<dptask_ref *> tasks[ dptaskpool_max_tasks ];
         //mutex master
         dpmutex_master *mm;
+        //task
+        dptask *tsk;
+        dptaskpool_task *tptsk;
 
+
+        //find thread with fewest tasks
+        dpthread_interface *getThread_fewestTasks( void );
+        //find thread with no static tasks
+        dpthread_interface *getThread_noStatic( void );
+        //find thread with highest usage
+        dpthread_interface *getThread_highUsage( void );
+        //find thread with lowest usage
+        dpthread_interface *getThread_lowUsage( void );
 
     protected:
 
@@ -61,6 +76,8 @@ namespace dragonpoop
         dpid genId( void );
         //lock a thread from pool
         dpthread_lock *lockThread( void );
+        //run taskpool
+        void run( dptask_writelock *tl, dpthread_lock *th );
 
     public:
 

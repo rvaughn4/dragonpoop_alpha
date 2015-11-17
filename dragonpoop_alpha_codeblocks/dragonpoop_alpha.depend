@@ -103,14 +103,14 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/shared_obj/shared_obj_lock.h
 	"shared_obj_interface.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_writelock.h
+1447751046 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_writelock.h
 	"../shared_obj/shared_obj_writelock.h"
 	"../../core/dpid/dpid.h"
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/shared_obj/shared_obj_writelock.h
 	"shared_obj_lock.h"
 
-1447676654 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.h
+1447752589 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.h
 	"../shared_obj/shared_obj.h"
 	"../../core/dpid/dpid.h"
 	<atomic>
@@ -236,7 +236,7 @@
 	"dptask.h"
 	"../shared_obj/shared_obj_guard.h"
 
-1447678899 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.cpp
+1447752741 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.cpp
 	"dptaskpool.h"
 	"dptaskpool_ref.h"
 	"dptaskpool_readlock.h"
@@ -244,9 +244,9 @@
 	"../dptask/dptasks.h"
 	"../dpthread/dpthreads.h"
 	"../shared_obj/shared_obj_guard.h"
-	<stdlib.h>
-	<string.h>
+	"dptaskpool_task.h"
 	<thread>
+	<vector>
 
 1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptask/dptasks.h
 	"dptask_ref.h"
@@ -260,16 +260,16 @@
 	"dpthread.h"
 	"dpthread_lock.h"
 
-1447676831 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_interface.h
+1447748480 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_interface.h
 	<stdint.h>
 	"../dpid/dpid.h"
 
-1447678939 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.h
+1447748378 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.h
 	"dpthread_interface.h"
 	<thread>
 	<atomic>
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_lock.h
+1447748485 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_lock.h
 	"dpthread_interface.h"
 
 1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_readlock.cpp
@@ -280,11 +280,11 @@
 	"dptaskpool_ref.h"
 	"dptaskpool.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_writelock.cpp
+1447751143 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_writelock.cpp
 	"dptaskpool_writelock.h"
 	"dptaskpool.h"
 
-1447678984 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.cpp
+1447748459 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread.cpp
 	"dpthread.h"
 	"dpthread_lock.h"
 	"../dpmutex/dpmutexes.h"
@@ -298,7 +298,7 @@
 1439721298 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_interface.cpp
 	"dpthread_interface.h"
 
-1439721298 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_lock.cpp
+1447748523 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_lock.cpp
 	"dpthread_lock.h"
 	"../dpmutex/dpmutex_writelock.h"
 
@@ -3858,7 +3858,7 @@
 
 1447319774 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpbtree/dptree_wrapper.cpp
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_singletask.cpp
+1447748556 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_singletask.cpp
 	"dpthread_singletask.h"
 	"dpthread_lock.h"
 	"../dpmutex/dpmutexes.h"
@@ -3868,7 +3868,7 @@
 	<string.h>
 	<chrono>
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_singletask.h
+1447748533 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpthread/dpthread_singletask.h
 	"dpthread_interface.h"
 	<thread>
 	<atomic>
@@ -6228,4 +6228,19 @@
 	<config/ftheader.h>
 
 1444043134 /usr/include/freetype2/config/ftheader.h
+
+1447751134 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_task.cpp
+	"dptaskpool_task.h"
+	"dptaskpool.h"
+	"dptaskpool_writelock.h"
+	"dptaskpool_ref.h"
+	"../dptask/dptask_writelock.h"
+	"../shared_obj/shared_obj_guard.h"
+	"../dpthread/dpthread_lock.h"
+	<thread>
+
+1447751115 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_task.h
+	"../dptask/dptask_owner.h"
+	"dptaskpool.h"
+	<atomic>
 

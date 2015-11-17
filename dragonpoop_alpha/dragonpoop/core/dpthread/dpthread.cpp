@@ -21,6 +21,7 @@ namespace dragonpoop
         this->lm = ml;
         this->trun = 1;
         this->l = this->lm->genMutex();
+        this->usage = 0;
 
         for( i = 0; i < dpthread_max_tasks; i++ )
         {
@@ -92,6 +93,39 @@ namespace dragonpoop
         return 0;
     }
 
+    //returns usage
+    float dpthread::getUsage( void )
+    {
+        return this->usage;
+    }
+
+    //removes a dynamic task
+    dptask_ref *dpthread::getTask( void )
+    {
+        return this->removeDynamic();
+    }
+
+    //returns task count
+    unsigned int dpthread::countTasks( void )
+    {
+        unsigned int i, c;
+
+        c = 0;
+        for( i = 0; i < dpthread_max_tasks; i++ )
+        {
+            if( this->tasks.dynamic_notran[ i ] != 0 )
+                c++;
+            if( this->tasks.dynamic_ran[ i ] != 0 )
+                c++;
+            if( this->tasks.static_notran[ i ] != 0 )
+                c++;
+            if( this->tasks.static_ran[ i ] != 0 )
+                c++;
+        }
+
+        return c;
+    }
+
     //add new task (creates a ref)
     void dpthread::addTask( dptask_ref *t )
     {
@@ -136,9 +170,20 @@ namespace dragonpoop
             delete at;
     }
 
-    //add task pool
-    void dpthread::addPool( dptaskpool *tp )
+    //returns true if has static tasks
+    bool dpthread::hasStaticTask( void )
     {
+        int i;
+
+        for( i = 0; i < dpthread_max_tasks; i++ )
+        {
+            if( this->tasks.static_notran[ i ] != 0 )
+                return 1;
+            if( this->tasks.static_ran[ i ] != 0 )
+                return 1;
+        }
+
+        return 0;
     }
 
     //get tick count in ms
@@ -248,6 +293,8 @@ namespace dragonpoop
         shared_obj_guard o;
         uint64_t td, lowest_delay;
         int i, j;
+        std::chrono::time_point<std::chrono::steady_clock> tp_now;
+        std::chrono::steady_clock::duration d_s;
 
         lowest_delay = 200;
         while( t->trun )
@@ -291,10 +338,8 @@ namespace dragonpoop
                 }
             }
 
-            std::chrono::time_point<std::chrono::steady_clock> tp_now;
             tp_now = std::chrono::steady_clock::now();
-            std::chrono::steady_clock::duration d_s = tp_now.time_since_epoch();
-
+            d_s = tp_now.time_since_epoch();
             t->ticks = d_s.count() * 1000 * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
             t->epoch = d_s.count() * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
 
@@ -356,8 +401,19 @@ namespace dragonpoop
                 }
             }
 
+            tp_now = std::chrono::steady_clock::now();
+            d_s = tp_now.time_since_epoch();
+            td = d_s.count() * 1000 * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
+            td -= t->ticks;
+            if( lowest_delay < td )
+                lowest_delay = td;
+            if( lowest_delay )
+                t->usage = (float)td / (float)lowest_delay;
+            else
+                t->usage = 1;
             delete tl;
-            std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay ) );
+
+            std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay - td ) );
         }
 
     }

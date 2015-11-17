@@ -12,6 +12,8 @@ namespace dragonpoop
     class dptask_ref;
     class dptask;
     class dpthread_lock;
+    class dptask_writelock;
+    class dpthread_lock;
 
     class dptaskpool_writelock : public shared_obj_writelock
     {
@@ -39,11 +41,13 @@ namespace dragonpoop
         dpid genId( void );
         //lock a thread from pool
         dpthread_lock *lockThread( void );
+        //run taskpool
+        void run( dptask_writelock *tl, dpthread_lock *th );
 
         friend class dptaskpool;
         friend class dpthread;
     };
-    
+
 };
 
 #endif

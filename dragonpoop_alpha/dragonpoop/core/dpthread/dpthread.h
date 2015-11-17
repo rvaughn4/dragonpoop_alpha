@@ -41,6 +41,7 @@ namespace dragonpoop
         std::atomic<bool> trun;
         unsigned int id;
         uint32_t idctr;
+        float usage;
 
         //add static task
         bool addStatic( dptask_ref *t );
@@ -58,8 +59,14 @@ namespace dragonpoop
         virtual void addTask( dptask_ref *t );
         //add new task (creates a ref)
         virtual void addTask( dptask *t );
-        //add task pool
-        virtual void addPool( dptaskpool *tp );
+        //returns true if has static tasks
+        virtual bool hasStaticTask( void );
+        //returns usage
+        virtual float getUsage( void );
+        //removes a dynamic task
+        virtual dptask_ref *getTask( void );
+        //returns task count
+        virtual unsigned int countTasks( void );
 
     public:
 

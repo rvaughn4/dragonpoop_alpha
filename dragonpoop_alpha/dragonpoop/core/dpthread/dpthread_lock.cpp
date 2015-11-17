@@ -47,11 +47,6 @@ namespace dragonpoop
     {
         this->t->addTask( t );
     }
-    //add task pool
-    void dpthread_lock::addPool( dptaskpool *tp )
-    {
-        this->t->addPool( tp );
-    }
 
     //return id
     unsigned int dpthread_lock::getId( void )
@@ -69,6 +64,30 @@ namespace dragonpoop
     dpid dpthread_lock::genId( void )
     {
         return this->t->genId();
+    }
+
+    //returns true if has static tasks
+    bool dpthread_lock::hasStaticTask( void )
+    {
+        return this->t->hasStaticTask();
+    }
+
+    //returns usage
+    float dpthread_lock::getUsage( void )
+    {
+        return this->t->getUsage();
+    }
+
+    //removes a dynamic task
+    dptask_ref *dpthread_lock::getTask( void )
+    {
+        return this->t->getTask();
+    }
+
+    //returns task count
+    unsigned int dpthread_lock::countTasks( void )
+    {
+        return this->t->countTasks();
     }
 
 };

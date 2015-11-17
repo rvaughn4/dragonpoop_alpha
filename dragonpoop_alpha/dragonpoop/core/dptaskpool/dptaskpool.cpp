@@ -6,9 +6,10 @@
 #include "../dptask/dptasks.h"
 #include "../dpthread/dpthreads.h"
 #include "../shared_obj/shared_obj_guard.h"
-#include <stdlib.h>
-#include <string.h>
+#include "dptaskpool_task.h"
+
 #include <thread>
+#include <vector>
 
 namespace dragonpoop
 {
@@ -17,6 +18,7 @@ namespace dragonpoop
     dptaskpool::dptaskpool( dpmutex_master *mm, unsigned int thread_cnt ) : shared_obj( mm )
     {
         int i;
+        dpthread_lock *tl;
 
         this->mm = mm;
 
@@ -31,6 +33,15 @@ namespace dragonpoop
             thread_cnt = 3;
 
         this->setThreadCount( thread_cnt );
+
+        this->tptsk = new dptaskpool_task( this );
+        this->tsk = new dptask( this->mm, this->tptsk, 1000, 1, "task pool manager" );
+
+        tl = this->lockThread();
+        if( !tl )
+            return;
+        tl->addTask( this->tsk );
+        delete tl;
     }
 
     //dtor
@@ -248,6 +259,196 @@ namespace dragonpoop
 
         thd = t->lock();
         return thd;
+    }
+
+    //run taskpool
+    void dptaskpool::run( dptask_writelock *tskl, dpthread_lock *th )
+    {
+        unsigned int i;
+        dpthread_interface *t;
+        dpthread_lock *tl;
+        dptask_ref *r;
+        dptask_readlock *rl;
+        shared_obj_guard o;
+        bool b;
+        std::vector<dptask_ref *> skipped;
+
+
+        r = this->popTask();
+        while( r )
+        {
+            rl = (dptask_readlock *)o.tryReadLock( r, 10, "dptaskpool::run" );
+            if( !rl )
+                skipped.push_back( r );
+            else
+            {
+                b = rl->isSingleThread();
+                o.unlock();
+
+                if( b )
+                {
+                    t = this->getThread_noStatic();
+                    if( !t )
+                        b = 0;
+                    else
+                    {
+                        tl = t->lock();
+                        if( !tl )
+                            b = 0;
+                        else
+                        {
+                            tl->addTask( r );
+                            delete tl;
+                        }
+                    }
+
+                }
+
+                if( !b )
+                {
+                    t = this->getThread_fewestTasks();
+                    if( !t )
+                        skipped.push_back( r );
+                    else
+                    {
+                        tl = t->lock();
+                        if( !tl )
+                            skipped.push_back( r );
+                        else
+                        {
+                            tl->addTask( r );
+                            delete tl;
+                        }
+                    }
+                }
+            }
+            r = this->popTask();
+        }
+
+        for( i = 0; i < skipped.size(); i++ )
+        {
+            r = skipped[ i ];
+            this->pushTask( r );
+        }
+        skipped.clear();
+
+    }
+
+    //find thread with fewest tasks
+    dpthread_interface *dptaskpool::getThread_fewestTasks( void )
+    {
+        unsigned int i, mtc, tc;
+        dpthread_interface *r, *t;
+        dpthread_lock *tl;
+
+        mtc = 2000;
+        r = 0;
+        for( i = 0; i < dptaskpool_max_threads; i++ )
+        {
+            if( this->threads[ i ] == 0 )
+                continue;
+            t = this->threads[ i ];
+            tl = t->lock();
+            if( !tl )
+                continue;
+            tc = tl->countTasks();
+            if( tc < mtc )
+            {
+                mtc = tc;
+                r = t;
+            }
+            delete tl;
+        }
+
+        return r;
+    }
+
+    //find thread with no static tasks
+    dpthread_interface *dptaskpool::getThread_noStatic( void )
+    {
+        unsigned int i;
+        dpthread_interface *t;
+        dpthread_lock *tl;
+
+        for( i = 0; i < dptaskpool_max_threads; i++ )
+        {
+            if( this->threads[ i ] == 0 )
+                continue;
+            t = this->threads[ i ];
+            tl = t->lock();
+            if( !tl )
+                continue;
+
+            if( !tl->hasStaticTask() )
+            {
+                delete tl;
+                return t;
+            }
+
+            delete tl;
+        }
+
+        return 0;
+    }
+
+    //find thread with highest usage
+    dpthread_interface *dptaskpool::getThread_highUsage( void )
+    {
+        unsigned int i;
+        dpthread_interface *r, *t;
+        dpthread_lock *tl;
+        float mtc, tc;
+
+        mtc = 0;
+        r = 0;
+        for( i = 0; i < dptaskpool_max_threads; i++ )
+        {
+            if( this->threads[ i ] == 0 )
+                continue;
+            t = this->threads[ i ];
+            tl = t->lock();
+            if( !tl )
+                continue;
+            tc = tl->getUsage();
+            if( tc > mtc )
+            {
+                mtc = tc;
+                r = t;
+            }
+            delete tl;
+        }
+
+        return r;
+    }
+
+    //find thread with lowest usage
+    dpthread_interface *dptaskpool::getThread_lowUsage( void )
+    {
+        unsigned int i;
+        dpthread_interface *r, *t;
+        dpthread_lock *tl;
+        float mtc, tc;
+
+        mtc = 2;
+        r = 0;
+        for( i = 0; i < dptaskpool_max_threads; i++ )
+        {
+            if( this->threads[ i ] == 0 )
+                continue;
+            t = this->threads[ i ];
+            tl = t->lock();
+            if( !tl )
+                continue;
+            tc = tl->getUsage();
+            if( tc < mtc )
+            {
+                mtc = tc;
+                r = t;
+            }
+            delete tl;
+        }
+
+        return r;
     }
 
 };

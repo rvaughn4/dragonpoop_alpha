@@ -34,7 +34,7 @@ namespace dragonpoop
     {
         this->p->addTask( t );
     }
-    
+
     //generate id
     dpid dptaskpool_writelock::genId( void )
     {
@@ -46,5 +46,11 @@ namespace dragonpoop
     {
         return this->p->lockThread();
     }
-    
+
+    //run taskpool
+    void dptaskpool_writelock::run( dptask_writelock *tl, dpthread_lock *th )
+    {
+        this->p->run( tl, th );
+    }
+
 };

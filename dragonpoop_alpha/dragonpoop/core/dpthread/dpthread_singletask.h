@@ -8,19 +8,19 @@
 
 namespace dragonpoop
 {
-    
+
     class dpthread_lock;
     class dpmutex;
     class dpmutex_master;
     class dpthread_singletask;
-    
+
     void dpthread_st_threadproc( dpthread_singletask *t );
-    
+
     class dpthread_singletask : public dpthread_interface
     {
-        
+
     private:
-        
+
         dpmutex *l;
         dpmutex_master *lm;
         uint64_t ticks, epoch;
@@ -29,18 +29,24 @@ namespace dragonpoop
         uint32_t idctr;
         dptask_ref *tsk;
         std::atomic<bool> trun, tisrun;
-                
+
     protected:
-        
+
         //add new task (creates a ref)
         virtual void addTask( dptask_ref *t );
         //add new task (creates a ref)
         virtual void addTask( dptask *t );
-        //add task pool
-        virtual void addPool( dptaskpool *tp );
-        
+        //returns true if has static tasks
+        virtual bool hasStaticTask( void );
+        //returns usage
+        virtual float getUsage( void );
+        //removes a dynamic task
+        virtual dptask_ref *getTask( void );
+        //returns task count
+        virtual unsigned int countTasks( void );
+
     public:
-        
+
         //ctor
         dpthread_singletask( dpmutex_master *ml, unsigned int id );
         //dtor
@@ -57,11 +63,11 @@ namespace dragonpoop
         virtual void kill( void );
         //generate unique dpid
         virtual dpid genId( void );
-        
+
         friend void dpthread_st_threadproc( dpthread_singletask *t );
     };
-    
-    
+
+
 };
 
 #endif
