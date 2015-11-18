@@ -317,6 +317,7 @@ namespace dragonpoop
                         else
                         {
                             tl->addTask( r );
+                            delete r;
                             delete tl;
                         }
                     }
@@ -331,6 +332,34 @@ namespace dragonpoop
             this->pushTask( r );
         }
         skipped.clear();
+
+        t = this->getThread_highUsage();
+        if( !t )
+            return;
+        tl = t->lock();
+        if( !tl )
+            return;
+        r = tl->getTask();
+        delete tl;
+
+        if( !r )
+            return;
+
+        t = this->getThread_lowUsage();
+        if( !t )
+        {
+            this->pushTask( r );
+            return;
+        }
+        tl = t->lock();
+        if( !tl )
+        {
+            this->pushTask( r );
+            return;
+        }
+        tl->addTask( r );
+        delete r;
+        delete tl;
 
     }
 

@@ -139,21 +139,32 @@ namespace dragonpoop
     dpmutex_writelock *dpmutex_master::writeLock( dpmutex *m, uint64_t t )
     {
         dpmutex_writelock *l;
-        unsigned int i;
+        uint64_t ts, tn;
+        bool b;
+        std::chrono::time_point<std::chrono::steady_clock> tp_now;
+        std::chrono::steady_clock::duration d_s;
+
+        tp_now = std::chrono::steady_clock::now();
+        d_s = tp_now.time_since_epoch();
+        ts = d_s.count() * 1000 * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
 
         l = this->genWriteLock( m, t );
         if( l )
             return l;
-        while( t )
+        b = 1;
+        while( b )
         {
-            for( i = 0; i < 2; i++ )
-            {
-                l = this->genWriteLock( m, t );
-                if( l )
-                    return l;
-            }
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-            t--;
+            l = this->genWriteLock( m, t );
+            if( l )
+                return l;
+
+            tp_now = std::chrono::steady_clock::now();
+            d_s = tp_now.time_since_epoch();
+            tn = d_s.count() * 1000 * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
+
+            if( tn - ts > t )
+                b = 0;
+
         }
 
         return 0;
@@ -163,21 +174,31 @@ namespace dragonpoop
     dpmutex_readlock *dpmutex_master::readLock( dpmutex *m, uint64_t t )
     {
         dpmutex_readlock *l;
-        unsigned int i;
+        std::chrono::time_point<std::chrono::steady_clock> tp_now;
+        std::chrono::steady_clock::duration d_s;
+        uint64_t ts, tn;
+        bool b;
+
+        tp_now = std::chrono::steady_clock::now();
+        d_s = tp_now.time_since_epoch();
+        ts = d_s.count() * 1000 * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
 
         l = this->genReadLock( m, t );
         if( l )
             return l;
-        while( t )
+        b = 1;
+        while( b )
         {
-            for( i = 0; i < 2; i++ )
-            {
-                l = this->genReadLock( m, t );
-                if( l )
-                    return l;
-            }
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
-            t--;
+            l = this->genReadLock( m, t );
+            if( l )
+                return l;
+
+            tp_now = std::chrono::steady_clock::now();
+            d_s = tp_now.time_since_epoch();
+            tn = d_s.count() * 1000 * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
+
+            if( tn - ts > t )
+                b = 0;
         }
 
         return 0;

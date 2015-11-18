@@ -111,6 +111,8 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_readlock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_ref.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_ref.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_task.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_task.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_writelock.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_writelock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpools.h" />

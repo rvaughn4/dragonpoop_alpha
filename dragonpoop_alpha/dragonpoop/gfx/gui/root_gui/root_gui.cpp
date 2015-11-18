@@ -68,7 +68,7 @@ namespace dragonpoop
     //override to handle keyboard button
     void root_gui::handleKbEvent( std::string *skey, bool isDown )
     {
-        shared_obj_guard o, o1;
+        shared_obj_guard o;
         gfx_writelock *gl;
         dpposition pp, pa;
         dpposition_inner pi;
@@ -85,11 +85,15 @@ namespace dragonpoop
             gl = (gfx_writelock *)o.tryWriteLock( this->g, 10, "root_gui::handleKbEvent" );
             if( !gl )
                 return;
-            al = (dpactor_writelock *)o1.tryWriteLock( this->a, 10, "root_gui::handleKbEvent" );
+            gl->getCameraPosition( &pp );
+            o.unlock();
+
+            al = (dpactor_writelock *)o.tryWriteLock( this->a, 10, "root_gui::handleKbEvent" );
             if( !al )
                 return;
             al->getPosition( &pa );
-            gl->getCameraPosition( &pp );
+            o.unlock();
+
             pa.getData( &pi );
             x.x = 0;
             x.y = 0;
@@ -126,8 +130,17 @@ namespace dragonpoop
                 x.x = 1.1;
             pa.move( &x, this->t, this->t + 1000, 0 );
 
+            gl = (gfx_writelock *)o.tryWriteLock( this->g, 10, "root_gui::handleKbEvent" );
+            if( !gl )
+                return;
             gl->setCameraPosition( &pp );
+            o.unlock();
+
+            al = (dpactor_writelock *)o.tryWriteLock( this->a, 10, "root_gui::handleKbEvent" );
+            if( !al )
+                return;
             al->setPosition( &pa );
+            o.unlock();
         }
 
     }

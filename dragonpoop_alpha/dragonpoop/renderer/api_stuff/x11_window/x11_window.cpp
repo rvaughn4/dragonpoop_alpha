@@ -94,123 +94,123 @@ namespace dragonpoop
         XEvent event;
         window_mouse_input m;
 
-        if( XPending( this->dpy ) < 1 )
-            return;
-
-        XNextEvent( this->dpy, &event );
-        switch( event.type )
+        while( XPending( this->dpy ) >= 1 )
         {
-            case ConfigureNotify:
-                if(
-                   ( event.xconfigure.width != (int)this->w )
-                   ||
-                   ( event.xconfigure.height != (int)this->h )
-                   )
-                {
-                    this->w = event.xconfigure.width;
-                    this->h = event.xconfigure.height;
-                }
-                break;
-            case MotionNotify:
-                m.x = event.xbutton.x;
-                m.y = event.xbutton.y;
-                m.lb = this->lb;
-                m.rb = this->rb;
-                this->addMouseInput( &m );
-                break;
-            case ButtonPress:
-                this->lb |= event.xbutton.button == Button1;
-                this->rb |= event.xbutton.button == Button2;
-                m.x = event.xbutton.x;
-                m.y = event.xbutton.y;
-                m.lb = this->lb;
-                m.rb = this->rb;
-                this->addMouseInput( &m );
-                break;
-            case ButtonRelease:
-                this->lb &= event.xbutton.button != Button1;
-                this->rb &= event.xbutton.button != Button2;
-                m.x = event.xbutton.x;
-                m.y = event.xbutton.y;
-                m.lb = this->lb;
-                m.rb = this->rb;
-                this->addMouseInput( &m );
-                break;
-            case KeyPress:
-                this->processKb( XLookupKeysym( &event.xkey, 0 ), 1 );
-                break;
-            case KeyRelease:
-                this->processKb( XLookupKeysym( &event.xkey, 0 ), 0 );
-                break;
-            case ClientMessage:
-                if( (Atom)event.xclient.data.l[0] == this->wm_delete_window )
-                    this->bIsOpen = 0;
-                break;
-            case SelectionRequest:
+
+            XNextEvent( this->dpy, &event );
+            switch( event.type )
             {
-                XEvent rpy;
-                XSelectionEvent *r = &rpy.xselection;
-
-                r->type = SelectionNotify;
-                r->time = event.xselectionrequest.time;
-                r->target = event.xselectionrequest.target;
-                r->selection = event.xselectionrequest.selection;
-                r->property = None;
-                r->requestor = event.xselectionrequest.requestor;
-                r->display = event.xselectionrequest.display;
-                r->serial = event.xselectionrequest.serial;
-                r->send_event = event.xselectionrequest.send_event;
-
-                if( r->target == XA_STRING )
-                {
-                    std::string s;
-                    if( /*this->getSelectedText( &s, this->bdocut ) && */s.length() )
+                case ConfigureNotify:
+                    if(
+                       ( event.xconfigure.width != (int)this->w )
+                       ||
+                       ( event.xconfigure.height != (int)this->h )
+                       )
                     {
-                        r->property = this->selprop;
-                        XChangeProperty( this->dpy, this->win, this->selprop, XA_STRING, 8, PropModeReplace, (unsigned char *)s.c_str(), (int)s.length() );
+                        this->w = event.xconfigure.width;
+                        this->h = event.xconfigure.height;
                     }
-                }
-
-                if( this->a_targets && r->target == this->a_targets )
+                    break;
+                case MotionNotify:
+                    m.x = event.xbutton.x;
+                    m.y = event.xbutton.y;
+                    m.lb = this->lb;
+                    m.rb = this->rb;
+                    this->addMouseInput( &m );
+                    break;
+                case ButtonPress:
+                    this->lb |= event.xbutton.button == Button1;
+                    this->rb |= event.xbutton.button == Button2;
+                    m.x = event.xbutton.x;
+                    m.y = event.xbutton.y;
+                    m.lb = this->lb;
+                    m.rb = this->rb;
+                    this->addMouseInput( &m );
+                    break;
+                case ButtonRelease:
+                    this->lb &= event.xbutton.button != Button1;
+                    this->rb &= event.xbutton.button != Button2;
+                    m.x = event.xbutton.x;
+                    m.y = event.xbutton.y;
+                    m.lb = this->lb;
+                    m.rb = this->rb;
+                    this->addMouseInput( &m );
+                    break;
+                case KeyPress:
+                    this->processKb( XLookupKeysym( &event.xkey, 0 ), 1 );
+                    break;
+                case KeyRelease:
+                    this->processKb( XLookupKeysym( &event.xkey, 0 ), 0 );
+                    break;
+                case ClientMessage:
+                    if( (Atom)event.xclient.data.l[0] == this->wm_delete_window )
+                        this->bIsOpen = 0;
+                    break;
+                case SelectionRequest:
                 {
-                    Atom supported[]={ XA_STRING };
-                    r->property = this->selprop;
-                    XChangeProperty( this->dpy, this->win, this->selprop, this->a_targets, 8, PropModeReplace, (unsigned char *)&supported, sizeof( supported ) );
-                }
+                    XEvent rpy;
+                    XSelectionEvent *r = &rpy.xselection;
 
-                XSendEvent( this->dpy, this->win, 0, PropertyChangeMask, &rpy );
-                break;
+                    r->type = SelectionNotify;
+                    r->time = event.xselectionrequest.time;
+                    r->target = event.xselectionrequest.target;
+                    r->selection = event.xselectionrequest.selection;
+                    r->property = None;
+                    r->requestor = event.xselectionrequest.requestor;
+                    r->display = event.xselectionrequest.display;
+                    r->serial = event.xselectionrequest.serial;
+                    r->send_event = event.xselectionrequest.send_event;
+
+                    if( r->target == XA_STRING )
+                    {
+                        std::string s;
+                        if( /*this->getSelectedText( &s, this->bdocut ) && */s.length() )
+                        {
+                            r->property = this->selprop;
+                            XChangeProperty( this->dpy, this->win, this->selprop, XA_STRING, 8, PropModeReplace, (unsigned char *)s.c_str(), (int)s.length() );
+                        }
+                    }
+
+                    if( this->a_targets && r->target == this->a_targets )
+                    {
+                        Atom supported[]={ XA_STRING };
+                        r->property = this->selprop;
+                        XChangeProperty( this->dpy, this->win, this->selprop, this->a_targets, 8, PropModeReplace, (unsigned char *)&supported, sizeof( supported ) );
+                    }
+
+                    XSendEvent( this->dpy, this->win, 0, PropertyChangeMask, &rpy );
+                    break;
+                }
+                case SelectionNotify:
+                    Atom act_type;
+                    int act_fmt;
+                    unsigned long itms_returned, itms_remain;
+                    char *buf;
+
+                    if( event.xselection.target != XA_STRING || !event.xselection.property )
+                        break;
+
+                    //event.xselection.property
+                    if( XGetWindowProperty( event.xselection.display, event.xselection.requestor, event.xselection.property, 0, 4096, 1, XA_STRING, &act_type, &act_fmt, &itms_returned, &itms_remain, (unsigned char **)&buf ) != Success )
+                        break;
+
+                    if( act_fmt == 8 && act_type == XA_STRING && itms_returned )
+                    {
+                        std::string s;
+                        s.assign( buf, itms_returned );
+                        //this->setSelectedText( &s );
+                    }
+
+                    XFree( buf );
+                    break;
+                case SelectionClear:
+
+                    break;
+                default:
+                    break;
             }
-            case SelectionNotify:
-                Atom act_type;
-                int act_fmt;
-                unsigned long itms_returned, itms_remain;
-                char *buf;
 
-                if( event.xselection.target != XA_STRING || !event.xselection.property )
-                    break;
-
-                //event.xselection.property
-                if( XGetWindowProperty( event.xselection.display, event.xselection.requestor, event.xselection.property, 0, 4096, 1, XA_STRING, &act_type, &act_fmt, &itms_returned, &itms_remain, (unsigned char **)&buf ) != Success )
-                    break;
-
-                if( act_fmt == 8 && act_type == XA_STRING && itms_returned )
-                {
-                    std::string s;
-                    s.assign( buf, itms_returned );
-                    //this->setSelectedText( &s );
-                }
-
-                XFree( buf );
-                break;
-            case SelectionClear:
-
-                break;
-            default:
-                break;
         }
-
-
     }
 
     //returns true if x11_window is open
