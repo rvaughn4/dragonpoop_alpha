@@ -67,8 +67,6 @@ namespace dragonpoop
     //ctor
     renderer::renderer( core *c, gfx_writelock *g, dptaskpool_writelock *tp ) : shared_obj( c->getMutexMaster() )
     {
-        dpthread_lock *thdl;
-
         this->clpasser = new renderer_commandlist_passer( c->getMutexMaster() );
         this->api = 0;
         this->main_ctx = 0;
@@ -80,16 +78,11 @@ namespace dragonpoop
         this->bActive = 1;
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
-        this->thd = new dpthread_singletask( c->getMutexMaster(), 301 );
         this->gtsk = new renderer_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3, 1, "renderer" );
-        thdl = this->thd->lock();
-        if( thdl )
-        {
-            thdl->addTask( this->tsk );
-            delete thdl;
-        }
+        tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
+
         g->getCameraPosition( &this->cam_pos );
         this->cam_rot.x = 0;
         this->cam_rot.y = 0;
@@ -121,7 +114,6 @@ namespace dragonpoop
         o.tryWriteLock( this, 3000, "renderer::~renderer" );
         o.unlock();
         this->unlink();
-        delete this->thd;
 
         o.tryWriteLock( this, 3000, "renderer::~renderer" );
         if( this->gui_cl )

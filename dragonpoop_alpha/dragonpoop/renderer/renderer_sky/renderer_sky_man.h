@@ -34,7 +34,6 @@ namespace dragonpoop
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
     class render_api_shader_ref;
-    class dpthread_singletask;
     class renderer_commandlist_passer;
     class renderer_commandlist_passer_ref;
     class render_api_vertexbuffer_ref;
@@ -58,7 +57,6 @@ namespace dragonpoop
         render_api_commandlist_ref *clist;
         dpmatrix m, m_undo;
         float log_screen_width, log_screen_height;
-        dpthread_singletask *thd;
         renderer_commandlist_passer_ref *clpasser;
 
         struct

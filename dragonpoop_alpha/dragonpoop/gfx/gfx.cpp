@@ -72,7 +72,7 @@ namespace dragonpoop
         this->gui_mgr = new gui_man( c, this, tp );
         this->sky_man = new dpsky_man( c, this, tp );
         this->r = 0;
-        
+
         renderer::addRenderers( this );
     }
 
@@ -80,29 +80,29 @@ namespace dragonpoop
     gfx::~gfx( void )
     {
         shared_obj_guard o;
-        
+
         o.tryWriteLock( this, 5000, "gfx::~gfx" );
         o.unlock();
         this->unlink();
-        
+
         this->_killTask();
         this->_deleteTask();
-        
+
         o.tryWriteLock( this, 5000, "gfx::~gfx" );
-        
+
         delete this->gui_mgr;
         delete this->actor_mgr;
         delete this->land_mgr;
         delete this->model_mgr;
         delete this->sky_man;
-        
+
         if( this->root_g )
             delete this->root_g;
         this->root_g = 0;
         if( this->root_factory )
             delete this->root_factory;
         this->root_factory = 0;
-        
+
         delete this->r;
         this->r = 0;
         o.unlock();
@@ -115,27 +115,27 @@ namespace dragonpoop
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 100, 0, "gfx" );
         tp->addTask( this->tsk );
     }
-    
+
     //stop gfx task
     void gfx::kill( void )
     {
         this->_killTask();
     }
-    
+
     //kill task
     void gfx::_killTask( void )
     {
         dptask_writelock *tl;
         shared_obj_guard o;
-        
+
         if( !this->tsk )
             return;
-        
+
         tl = (dptask_writelock *)o.writeLock( this->tsk, "_gfx::killTask" );
         tl->kill();
         o.unlock();
     }
-    
+
     //delete task
     void gfx::_deleteTask( void )
     {
@@ -146,7 +146,7 @@ namespace dragonpoop
             delete this->gtsk;
         this->gtsk = 0;
     }
-    
+
     //returns true if running
     bool gfx::isRunning( void )
     {
@@ -183,7 +183,7 @@ namespace dragonpoop
         uint64_t t;
         shared_obj_guard o;
         renderer_readlock *l;
-        
+
         t = thd->getTicks();
         if( this->r && t - this->last_r_poll > 4000 )
         {
@@ -196,61 +196,61 @@ namespace dragonpoop
             }
             o.unlock();
         }
-        
+
         if( !this->r )
             this->changeRenderer( 0 );
-        
+
     }
-    
+
     //return fps
     float gfx::getFps( void )
     {
         return this->fps;
     }
-    
+
     //return ms each frame
     unsigned int gfx::getMsEachFrame( void )
     {
         return this->ms_each_frame;
     }
-    
+
     //return renderer
     renderer_ref *gfx::getRenderer( void )
     {
         shared_obj_guard o;
         renderer_writelock *l;
-        
+
         if( !this->r )
             return 0;
         l = (renderer_writelock *)o.tryWriteLock( this->r, 1000, "gfx::getRenderer" );
         if( !l )
             return 0;
-        
+
         return (renderer_ref *)l->getRef();
     }
-    
+
     //get camera position
     void gfx::getCameraPosition( dpposition *p )
     {
         p->copy( &this->cam_pos );
     }
-    
+
     //set camera position
     void gfx::setCameraPosition( dpposition *p )
     {
         shared_obj_guard o;
         renderer_writelock *l;
-        
+
         this->cam_pos.copy( p );
 
         if( !this->r )
             return;
-        l = (renderer_writelock *)o.tryWriteLock( this->r, 1000, "gfx::setCameraPosition" );
+        l = (renderer_writelock *)o.tryWriteLock( this->r, 10, "gfx::setCameraPosition" );
         if( !l )
             return;
         l->syncCamera();
     }
-    
+
     //get models
     bool gfx::getModels( model_man_ref **r )
     {
@@ -261,21 +261,21 @@ namespace dragonpoop
         *r = (model_man_ref *)l->getRef();
         return 1;
     }
-    
+
     //get models
     bool gfx::getModels( model_man_readlock **r, shared_obj_guard *o )
     {
         *r = (model_man_readlock *)o->tryReadLock( this->model_mgr, 1000, "gfx::getModels" );
         return *r != 0;
     }
-    
+
     //get models
     bool gfx::getModels( model_man_writelock **r, shared_obj_guard *o )
     {
         *r = (model_man_writelock *)o->tryWriteLock( this->model_mgr, 1000, "gfx::getModels" );
         return *r != 0;
     }
-    
+
     //get guis
     bool gfx::getGuis( gui_man_ref **r )
     {
@@ -286,21 +286,21 @@ namespace dragonpoop
         *r = (gui_man_ref *)l->getRef();
         return 1;
     }
-    
+
     //get guis
     bool gfx::getGuis( gui_man_readlock **r, shared_obj_guard *o )
     {
         *r = (gui_man_readlock *)o->tryReadLock( this->gui_mgr, 1000, "gfx::getGuis" );
         return *r != 0;
     }
-    
+
     //get guis
     bool gfx::getGuis( gui_man_writelock **r, shared_obj_guard *o )
     {
         *r = (gui_man_writelock *)o->tryWriteLock( this->gui_mgr, 1000, "gfx::getGuis" );
         return *r != 0;
     }
- 
+
     //get actors
     bool gfx::getActors( dpactor_man_ref **r )
     {
@@ -311,21 +311,21 @@ namespace dragonpoop
         *r = (dpactor_man_ref *)l->getRef();
         return 1;
     }
-    
+
     //get actors
     bool gfx::getActors( dpactor_man_readlock **r, shared_obj_guard *o )
     {
         *r = (dpactor_man_readlock *)o->tryReadLock( this->actor_mgr, 1000, "gfx::getActors" );
         return *r != 0;
     }
-    
+
     //get actors
     bool gfx::getActors( dpactor_man_writelock **r, shared_obj_guard *o )
     {
         *r = (dpactor_man_writelock *)o->tryWriteLock( this->actor_mgr, 1000, "gfx::getActors" );
         return *r != 0;
     }
-    
+
     //get land
     bool gfx::getLand( dpland_man_ref **r )
     {
@@ -336,21 +336,21 @@ namespace dragonpoop
         *r = (dpland_man_ref *)l->getRef();
         return 1;
     }
-    
+
     //get land
     bool gfx::getLand( dpland_man_readlock **r, shared_obj_guard *o )
     {
         *r = (dpland_man_readlock *)o->tryReadLock( this->land_mgr, 1000, "gfx::getLand" );
         return *r != 0;
     }
-    
+
     //get land
     bool gfx::getLand( dpland_man_writelock **r, shared_obj_guard *o )
     {
         *r = (dpland_man_writelock *)o->tryWriteLock( this->land_mgr, 1000, "gfx::getLand" );
         return *r != 0;
     }
-    
+
     //get sky
     bool gfx::getSky( dpsky_man_ref **r )
     {
@@ -361,27 +361,27 @@ namespace dragonpoop
         *r = (dpsky_man_ref *)l->getRef();
         return 1;
     }
-    
+
     //get sky
     bool gfx::getSky( dpsky_man_readlock **r, shared_obj_guard *o )
     {
         *r = (dpsky_man_readlock *)o->tryReadLock( this->sky_man, 1000, "gfx::getSky" );
         return *r != 0;
     }
-    
+
     //get sky
     bool gfx::getSky( dpsky_man_writelock **r, shared_obj_guard *o )
     {
         *r = (dpsky_man_writelock *)o->tryWriteLock( this->sky_man, 1000, "gfx::getSky" );
         return *r != 0;
     }
-    
+
     //add renderer factory
     void gfx::addRenderer( renderer_factory *f )
     {
         this->renderer_factories.push_back( f );
     }
-    
+
     //change renderer
     bool gfx::changeRenderer( const char *cname )
     {
@@ -393,21 +393,21 @@ namespace dragonpoop
         gfx_writelock *gl;
         dptaskpool_writelock *tp;
         shared_obj_guard og, ot;
-        
+
         gl = (gfx_writelock *)og.tryWriteLock( this, 5000, "gfx::changeRenderer" );
         if( !gl )
             return 0;
         tp = (dptaskpool_writelock *)ot.tryWriteLock( this->tpr, 5000, "gfx::changeRenderer" );
         if( !tp )
             return 0;
-        
+
         if( cname )
             sname.assign( cname );
         if( sname.length() < 1 )
             cname = 0;
         f = 0;
         hs = 0;
-        
+
         l = &this->renderer_factories;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -422,14 +422,14 @@ namespace dragonpoop
             f = p;
             hs = s;
         }
-        
+
         if( !f )
             return 0;
         if( this->r )
             delete this->r;
-        
+
         this->r = f->makeRenderer( c, gl, tp );
         return this->r != 0;
     }
-    
+
 };

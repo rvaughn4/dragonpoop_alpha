@@ -82,7 +82,6 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
 
-        this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
         this->_startTask( tp, 20 );
     }
 
@@ -95,7 +94,6 @@ namespace dragonpoop
         this->deleteGuis();
         o.unlock();
         this->unlink();
-        delete this->thd;
 
         o.tryWriteLock( this, 5000, "renderer_gui_man::~renderer_gui_man" );
         this->_killTask();
@@ -117,32 +115,8 @@ namespace dragonpoop
     //compute matrix
     void renderer_gui_man::computeMatrix( void )
     {
-        float sw, sh, rw, rh, r, dw, dh, ss, w, h;
-
-        w = this->clpasser->t->w;
-        h = this->clpasser->t->h;
-        sw = this->log_screen_width;
-        sh = this->log_screen_height;
-
-        ss = sw * sw + sh * sh;
-        ss = sqrtf( ss );
-
-        rw = sw / w;
-        rh = sh / h;
-
-        r = rw;
-        if( r < rh )
-            r = rh;
-        w = w * r;
-        h = h * r;
-        dw = w - sw;
-        dh = h - sh;
-        dw *= 0.5f;
-        dh *= 0.5f;
-
-        //this->m.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, ss );
         this->m.setIdentity();
-        this->m_undo.inverse( &this->m );
+        this->m_undo.setIdentity();
     }
 
     //return core
@@ -172,17 +146,9 @@ namespace dragonpoop
     //start task
     void renderer_gui_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
-        dpthread_lock *thdl;
-
         this->gtsk = new renderer_gui_man_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, "renderer_gui_man" );
-
-        thdl = this->thd->lock();
-        if( thdl )
-        {
-            thdl->addTask( this->tsk );
-            delete thdl;
-        }
+        tp->addTask( this->tsk );
     }
 
     //kill task

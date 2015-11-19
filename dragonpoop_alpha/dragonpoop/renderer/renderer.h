@@ -42,7 +42,6 @@ namespace dragonpoop
     class render_api_context_ref;
     class render_api_commandlist_ref;
     class renderer_gui_man_writelock;
-    class dpthread_singletask;
     class renderer_commandlist_passer;
     class renderer_land_man;
     class renderer_sky_man;
@@ -61,7 +60,6 @@ namespace dragonpoop
         renderer_land_man *rland_mgr;
         renderer_sky_man *rsky_mgr;
         dptaskpool_ref *tp;
-        dpthread_singletask *thd;
         render_api *api;
         render_api_context_ref *main_ctx;
         renderer_commandlist_passer *clpasser;

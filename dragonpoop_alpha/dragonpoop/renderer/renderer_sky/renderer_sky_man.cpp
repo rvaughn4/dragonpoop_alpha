@@ -12,7 +12,6 @@
 #include "../../core/dptaskpool/dptaskpool_ref.h"
 #include "../../core/dptaskpool/dptaskpool_writelock.h"
 #include "../../core/dptaskpool/dptaskpool_readlock.h"
-#include "../../core/dpthread/dpthread_singletask.h"
 #include "../../core/dpthread/dpthread_lock.h"
 #include "../renderer.h"
 #include "../renderer_ref.h"
@@ -75,7 +74,6 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
 
-        this->thd = new dpthread_singletask( c->getMutexMaster(), 302 );
         this->_startTask( tp, 100 );
     }
 
@@ -91,7 +89,6 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "renderer_sky_man::~renderer_sky_man" );
         o.unlock();
         this->unlink();
-        delete this->thd;
 
         o.tryWriteLock( this, 5000, "renderer_sky_man::~renderer_sky_man" );
         this->_deleteTask();
@@ -140,17 +137,9 @@ namespace dragonpoop
     //start task
     void renderer_sky_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
-        dpthread_lock *thdl;
-
         this->gtsk = new renderer_sky_man_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, "renderer_sky_man" );
-
-        thdl = this->thd->lock();
-        if( thdl )
-        {
-            thdl->addTask( this->tsk );
-            delete thdl;
-        }
+        tp->addTask( this->tsk );
     }
 
     //kill task

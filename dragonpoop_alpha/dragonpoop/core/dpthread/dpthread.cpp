@@ -296,7 +296,7 @@ namespace dragonpoop
         std::chrono::time_point<std::chrono::steady_clock> tp_now;
         std::chrono::steady_clock::duration d_s;
 
-        lowest_delay = 200;
+        lowest_delay = 50;
         while( t->trun )
         {
             lowest_delay++;
@@ -349,7 +349,7 @@ namespace dragonpoop
                 r = t->tasks.static_notran[ i ];
                 if( r )
                 {
-                    rl = (dptask_writelock *)o.tryWriteLock( r, 3, "dpthread_threadproc" );
+                    rl = (dptask_writelock *)o.tryWriteLock( r, 10, "dpthread_threadproc" );
                     if( rl )
                     {
                         td = t->ticks - rl->getLastTime();
@@ -376,7 +376,7 @@ namespace dragonpoop
                 r = t->tasks.dynamic_notran[ i ];
                 if( r )
                 {
-                    rl = (dptask_writelock *)o.tryWriteLock( r, 3, "dpthread_threadproc" );
+                    rl = (dptask_writelock *)o.tryWriteLock( r, 10, "dpthread_threadproc" );
                     if( rl )
                     {
                         td = t->ticks - rl->getLastTime();

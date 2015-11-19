@@ -81,7 +81,6 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
 
-        this->thd = new dpthread_singletask( c->getMutexMaster(), 303 );
         this->_startTask( tp, 3 );
     }
 
@@ -95,7 +94,6 @@ namespace dragonpoop
         this->deleteModels();
         o.unlock();
         this->unlink();
-        delete this->thd;
 
         o.tryWriteLock( this, 5000, "renderer_model_man::~renderer_model_man" );
         this->_killTask();
@@ -142,17 +140,9 @@ namespace dragonpoop
     //start task
     void renderer_model_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
-        dpthread_lock *thdl;
-
         this->gtsk = new renderer_model_man_task( this );
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, "renderer_model_man" );
-
-        thdl = this->thd->lock();
-        if( thdl )
-        {
-            thdl->addTask( this->tsk );
-            delete thdl;
-        }
+        tp->addTask( this->tsk );
     }
 
     //kill task

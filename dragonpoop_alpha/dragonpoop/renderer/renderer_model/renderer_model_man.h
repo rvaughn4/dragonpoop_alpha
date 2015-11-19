@@ -11,7 +11,7 @@
 
 namespace dragonpoop
 {
-    
+
     class dpthread_lock;
     class core;
     class renderer_model_man_ref;
@@ -37,15 +37,14 @@ namespace dragonpoop
     class render_api_commandlist_writelock;
     class render_api_shader_ref;
     class dpposition;
-    class dpthread_singletask;
     class renderer_commandlist_passer;
     class renderer_commandlist_passer_ref;
-    
+
     class renderer_model_man : public shared_obj
     {
-        
+
     private:
-        
+
         core *c;
         gfx_ref *g;
         dptask *tsk;
@@ -61,7 +60,6 @@ namespace dragonpoop
         float log_screen_width, log_screen_height;
         dpposition campos;
         std::atomic<bool> listReady;
-        dpthread_singletask *thd;
         renderer_commandlist_passer_ref * clpasser;
 
         //start task
@@ -84,7 +82,7 @@ namespace dragonpoop
         void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
 
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -99,7 +97,7 @@ namespace dragonpoop
         void run( dpthread_lock *thd, renderer_model_man_writelock *g );
 
     public:
-        
+
         //ctor
         renderer_model_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height );
         //dtor
@@ -109,9 +107,9 @@ namespace dragonpoop
 
         friend class renderer_model_man_readlock;
         friend class renderer_model_man_writelock;
-        
+
     };
-    
+
 };
 
 #endif
