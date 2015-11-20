@@ -833,7 +833,7 @@ namespace dragonpoop
             return;
 
         gl->addRenderer( new x11_opengl_1o5_renderer_factory( 1, 0 ) );
-        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 2, 1 ) );
+        //gl->addRenderer( new x11_opengl_1o5_renderer_factory( 2, 1 ) );
     }
 
     //gets selected text from gui (copy or cut)
