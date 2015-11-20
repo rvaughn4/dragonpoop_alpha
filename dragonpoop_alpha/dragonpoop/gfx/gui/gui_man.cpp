@@ -45,7 +45,7 @@ namespace dragonpoop
         this->g = (gfx_ref *)gl->getRef();
         o.unlock();
 
-        this->_startTask( tp, 200 );
+        this->_startTask( tp, 100 );
     }
 
     //dtor

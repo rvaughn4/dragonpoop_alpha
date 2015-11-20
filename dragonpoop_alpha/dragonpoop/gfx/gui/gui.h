@@ -14,7 +14,7 @@
 
 namespace dragonpoop
 {
-    
+
     class dptaskpool_writelock;
     class dptask;
     class dpthread_lock;
@@ -27,36 +27,36 @@ namespace dragonpoop
     class renderer_gui;
     class renderer_gui_ref;
     class gui_man_ref;
-    
+
     struct gui_dims
     {
         float x, y, w, h;
         float border_w, border_tex_w;
     };
-    
+
     struct gui_txt_loc
     {
         float x, y, w, h;
         unsigned int front, line_no, char_no;
     };
-    
+
     struct gui_kb_event
     {
         std::string sname;
         bool bDown;
     };
-    
+
     struct gui_mouse_event
     {
         float x, y;
         bool lb, rb;
     };
-    
+
     class gui : public shared_obj
     {
-        
+
     private:
-        
+
         core *c;
         dpid id, pid;
         dpbitmap fgtex, bgtex;
@@ -76,7 +76,7 @@ namespace dragonpoop
         uint64_t t_last_redraw;
         std::queue<gui_kb_event *> kbe;
         std::queue<gui_mouse_event *> mse;
-        
+
         //reset text loc
         void resetTxtLoc( void );
         //add text loc
@@ -85,7 +85,7 @@ namespace dragonpoop
         unsigned int findCursor( float x, float y );
 
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -149,9 +149,9 @@ namespace dragonpoop
         //process kb input
         void processKb( std::string *skey, bool bDown );
         //override to handle mouse button
-        virtual void handleMouseClick( float x, float y, bool isRight, bool isDown );
+        virtual bool handleMouseClick( float x, float y, bool isRight, bool isDown );
         //override to handle keyboard button
-        virtual void handleKbEvent( std::string *skey, bool isDown );
+        virtual bool handleKbEvent( std::string *skey, bool isDown );
         //set text
         void setText( const char *c );
         //set text
@@ -212,23 +212,23 @@ namespace dragonpoop
         bool isFade( void );
         //sets fade mode
         void setFade( bool b );
-        
+
     public:
-        
+
         //ctor
         gui( gfx_writelock *g, dpid id );
         //dtor
         virtual ~gui( void );
         //return core
         core *getCore( void );
-        
+
         friend class gui_readlock;
         friend class gui_writelock;
         friend class gfx;
         friend class gui_factory;
-        
+
     };
-    
+
 };
 
 #endif

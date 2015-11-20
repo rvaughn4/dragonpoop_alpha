@@ -144,7 +144,7 @@ namespace dragonpoop
             d.push_back( p );
         }
 
-        gl = (gfx_readlock *)o.tryReadLock( this->g, 10, "dpland_man::runTiles" );
+        gl = (gfx_readlock *)o.tryReadLock( this->g, 100, "dpland_man::runTiles" );
         if( !gl )
             return;
         gl->getCameraPosition( &pp );

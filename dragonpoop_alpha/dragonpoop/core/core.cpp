@@ -25,7 +25,7 @@ namespace dragonpoop
 
         tpl = (dptaskpool_writelock *)g.writeLock( this->tp, "core::core" );
         this->g = new gfx( this, tpl );
-        
+
         this->orig_root = new root_gui_factory( this );
         this->setRootGui( this->orig_root );
     }
@@ -104,13 +104,14 @@ namespace dragonpoop
         gfx_writelock *gl;
         gui_man_writelock *guil;
         shared_obj_guard o, o1;
-        
-        gl = (gfx_writelock *)o.writeLock( this->g, "core::getGfx" );
+
+        gl = (gfx_writelock *)o.writeLock( this->g, "core::setRootGui" );
         if( !gl )
             return;
         if( !gl->getGuis( &guil, &o1 ) )
             return;
+        o.unlock();
         guil->setRootGui( g );
     }
- 
+
 };

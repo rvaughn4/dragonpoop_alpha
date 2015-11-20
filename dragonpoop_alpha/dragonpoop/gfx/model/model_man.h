@@ -7,7 +7,7 @@
 
 namespace dragonpoop
 {
-    
+
     class dpthread_lock;
     class core;
     class model_man_ref;
@@ -25,12 +25,12 @@ namespace dragonpoop
     class model_saver_ref;
     class model_instance_ref;
     class dptaskpool_ref;
-    
+
     class model_man : public shared_obj
     {
-        
+
     private:
-        
+
         core *c;
         gfx_ref *g;
         dptask *tsk;
@@ -39,7 +39,8 @@ namespace dragonpoop
         int model_cnt, instance_cnt;
         model_loader_man *loader_mgr;
         dptaskpool_ref *tpr;
-        
+        unsigned int ms_each_frame;
+
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
         //kill task
@@ -50,9 +51,9 @@ namespace dragonpoop
         void deleteModels( void );
         //run all models
         void runModels( dpthread_lock *thd );
-        
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -77,21 +78,21 @@ namespace dragonpoop
         unsigned int getModelCount( void );
         //return model instance count
         unsigned int getInstanceCount( void );
-        
+
     public:
-        
+
         //ctor
         model_man( core *c, gfx *g, dptaskpool_writelock *tp );
         //dtor
         virtual ~model_man( void );
         //return core
         core *getCore( void );
-        
+
         friend class model_man_readlock;
         friend class model_man_writelock;
-        
+
     };
-    
+
 };
 
 #endif

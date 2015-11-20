@@ -66,7 +66,7 @@ namespace dragonpoop
     }
 
     //override to handle keyboard button
-    void root_gui::handleKbEvent( std::string *skey, bool isDown )
+    bool root_gui::handleKbEvent( std::string *skey, bool isDown )
     {
         shared_obj_guard o;
         gfx_writelock *gl;
@@ -75,22 +75,23 @@ namespace dragonpoop
         dpxyz_f x;
         dpactor_writelock *al;
 
-        this->gui::handleKbEvent( skey, isDown );
+        if( !this->gui::handleKbEvent( skey, isDown ) )
+            return 0;
 
         if( skey->compare( "Escape" ) == 0 && isDown )
             this->showEscapeMenu();
 
         if( isDown && ( skey->compare( "Up" ) == 0 || skey->compare( "Left" ) == 0 || skey->compare( "Right" ) == 0 || skey->compare( "Down" ) == 0 || skey->compare( "Page Up" ) == 0 || skey->compare( "Page Down" ) == 0 ) )
         {
-            gl = (gfx_writelock *)o.tryWriteLock( this->g, 10, "root_gui::handleKbEvent" );
+            gl = (gfx_writelock *)o.tryWriteLock( this->g, 100, "root_gui::handleKbEvent" );
             if( !gl )
-                return;
+                return 0;
             gl->getCameraPosition( &pp );
             o.unlock();
 
-            al = (dpactor_writelock *)o.tryWriteLock( this->a, 10, "root_gui::handleKbEvent" );
+            al = (dpactor_writelock *)o.tryWriteLock( this->a, 100, "root_gui::handleKbEvent" );
             if( !al )
-                return;
+                return 0;
             al->getPosition( &pa );
             o.unlock();
 
@@ -130,19 +131,20 @@ namespace dragonpoop
                 x.x = 1.1;
             pa.move( &x, this->t, this->t + 1000, 0 );
 
-            gl = (gfx_writelock *)o.tryWriteLock( this->g, 10, "root_gui::handleKbEvent" );
+            gl = (gfx_writelock *)o.tryWriteLock( this->g, 100, "root_gui::handleKbEvent" );
             if( !gl )
-                return;
+                return 0;
             gl->setCameraPosition( &pp );
             o.unlock();
 
-            al = (dpactor_writelock *)o.tryWriteLock( this->a, 10, "root_gui::handleKbEvent" );
+            al = (dpactor_writelock *)o.tryWriteLock( this->a, 100, "root_gui::handleKbEvent" );
             if( !al )
-                return;
+                return 0;
             al->setPosition( &pa );
             o.unlock();
         }
 
+        return 1;
     }
 
     //override to do processing

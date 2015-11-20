@@ -121,6 +121,8 @@ namespace dragonpoop
         shared_obj_guard o;
         renderer_gui_writelock *l;
         uint64_t t;
+        bool b;
+        int i;
 
         t = thd->getTicks();
         if( this->z == 0 )
@@ -185,34 +187,52 @@ namespace dragonpoop
             }
         }
 
-        while( !this->mse.empty() )
+        b = !this->mse.empty();
+        i = 0;
+        while( b && i < 10 )
         {
+            i++;
             gui_mouse_event *e;
             e = this->mse.front();
             this->mse.pop();
+            b = 1;
 
             if( this->bOldLb != e->lb )
                this->setFocus();
             if( this->bOldLb != e->lb )
-                this->handleMouseClick( e->x, e->y, 0, e->lb );
-            if( this->bOldRb != e->rb )
-                this->handleMouseClick( e->x, e->y, 1, e->rb );
+                b = this->handleMouseClick( e->x, e->y, 0, e->lb );
+            if( b && this->bOldRb != e->rb )
+                b = this->handleMouseClick( e->x, e->y, 1, e->rb );
 
-            this->bOldLb = e->lb;
-            this->bOldRb = e->rb;
-
-            delete e;
+            if( b )
+            {
+                this->bOldLb = e->lb;
+                this->bOldRb = e->rb;
+                delete e;
+                b = !this->mse.empty();
+            }
+            else
+                this->mse.push( e );
         }
 
-        while( !this->kbe.empty() )
+        b = !this->kbe.empty();
+        i = 0;
+        while( b && i < 10 )
         {
+            i++;
             gui_kb_event *e;
             e = this->kbe.front();
             this->kbe.pop();
 
-            this->handleKbEvent( &e->sname, e->bDown );
+            b = this->handleKbEvent( &e->sname, e->bDown );
 
-            delete e;
+            if( b )
+            {
+                delete e;
+                b = !this->kbe.empty();
+            }
+            else
+                this->kbe.push( e );
         }
 
         this->doProcessing( thd, g );
@@ -708,7 +728,7 @@ namespace dragonpoop
     }
 
     //override to handle mouse button
-    void gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
+    bool gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
     {
         if( !isRight && isDown )
         {
@@ -727,10 +747,12 @@ namespace dragonpoop
             if( this->bIsSel || this->bIsEdit )
                 this->redraw();
         }
+
+        return 1;
     }
 
     //override to handle keyboard button
-    void gui::handleKbEvent( std::string *skey, bool isDown )
+    bool gui::handleKbEvent( std::string *skey, bool isDown )
     {
 
         if( isDown )
@@ -743,35 +765,35 @@ namespace dragonpoop
                 {
                     this->insert( skey->c_str() );
                     this->redraw();
-                    return;
+                    return 1;
                 }
 
                 if( skey->compare( "Enter" ) == 0 || skey->compare( "Return" ) == 0 )
                 {
                     this->insert( "\n" );
                     this->redraw();
-                    return;
+                    return 1;
                 }
 
                 if( skey->compare( "Tab" ) == 0 )
                 {
                     this->insert( "\t" );
                     this->redraw();
-                    return;
+                    return 1;
                 }
 
                 if( skey->compare( "Backspace" ) == 0 )
                 {
                     this->backspace();
                     this->redraw();
-                    return;
+                    return 1;
                 }
 
                 if( skey->compare( "Delete" ) == 0 )
                 {
                     this->delete_();
                     this->redraw();
-                    return;
+                    return 1;
                 }
             }
 
@@ -780,7 +802,7 @@ namespace dragonpoop
                 this->left();
                 if( this->bIsEdit || this->bShiftDown || this->bIsSel )
                     this->redraw();
-                return;
+                return 1;
             }
 
             if( skey->compare( "Right" ) == 0 )
@@ -788,7 +810,7 @@ namespace dragonpoop
                 this->right();
                 if( this->bIsEdit || this->bShiftDown || this->bIsSel )
                     this->redraw();
-                return;
+                return 1;
             }
 
             if( skey->compare( "Shift" ) == 0 )
@@ -807,6 +829,8 @@ namespace dragonpoop
             }
 
         }
+
+        return 1;
     }
 
     //set text
