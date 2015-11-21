@@ -2,6 +2,7 @@
 #include "x11_window.h"
 #include "../window/window.h"
 #include <string>
+#include <string.h>
 
 namespace dragonpoop
 {
@@ -9,71 +10,81 @@ namespace dragonpoop
     //ctor
     x11_window::x11_window( float w, float h, const char *ctitle ) : window( w, h, ctitle )
     {
-        Colormap cmap;
+        x11_window_Colormap cmap;
+
+        this->bIsOpen = 0;
+        this->dpy = 0;
+        this->win = 0;
+        this->screen = 0;
+        this->dlX11 = 0;
+        this->dlGL = 0;
+
+        if( !this->loadFunctions() )
+            return;
 
         //open display
-        XInitThreads();
-        this->bIsOpen = 0;
-        this->dpy = XOpenDisplay( 0 );
-        this->win = 0;
-        this->screen = DefaultScreen( this->dpy );
+        this->x11.XInitThreads();
+        this->dpy = this->x11.XOpenDisplay( 0 );
+        this->screen = this->x11.XDefaultScreen( this->dpy );
 
         //set visual format
         static int attrListSgl[] =
         {
-            GLX_RGBA,
-            GLX_RED_SIZE, 4,
-            GLX_GREEN_SIZE, 4,
-            GLX_BLUE_SIZE, 4,
-            GLX_DEPTH_SIZE, 16,
-            None
+            x11_window_GLX_RGBA,
+            x11_window_GLX_RED_SIZE, 4,
+            x11_window_GLX_GREEN_SIZE, 4,
+            x11_window_GLX_BLUE_SIZE, 4,
+            x11_window_GLX_DEPTH_SIZE, 16,
+            x11_window_None
         };
         static int attrListDbl[] =
         {
-            GLX_RGBA, GLX_DOUBLEBUFFER,
-            GLX_RED_SIZE, 4,
-            GLX_GREEN_SIZE, 4,
-            GLX_BLUE_SIZE, 4,
-            GLX_DEPTH_SIZE, 16,
-            None
+            x11_window_GLX_RGBA, x11_window_GLX_DOUBLEBUFFER,
+            x11_window_GLX_RED_SIZE, 4,
+            x11_window_GLX_GREEN_SIZE, 4,
+            x11_window_GLX_BLUE_SIZE, 4,
+            x11_window_GLX_DEPTH_SIZE, 16,
+            x11_window_None
         };
-        vi = glXChooseVisual( this->dpy, this->screen, attrListDbl );
+        vi = this->x11.glXChooseVisual( this->dpy, this->screen, attrListDbl );
         if( !vi )
-            vi = glXChooseVisual( this->dpy, this->screen, attrListSgl );
+            vi = this->x11.glXChooseVisual( this->dpy, this->screen, attrListSgl );
         if( !vi )
         {
-            XCloseDisplay( this->dpy );
+            this->x11.XCloseDisplay( this->dpy );
             this->dpy = 0;
             return;
         }
 
         //colormap
-        cmap = XCreateColormap( this->dpy, RootWindow( this->dpy, vi->screen ), vi->visual, AllocNone );
+        cmap = this->x11.XCreateColormap( this->dpy, this->x11.XRootWindow( this->dpy, vi->screen ), vi->visual, x11_window_AllocNone );
         this->attr.colormap = cmap;
         this->attr.border_pixel = 0;
 
         //create window
-        this->attr.event_mask = PropertyChangeMask | KeyPressMask | KeyReleaseMask | ButtonPressMask | ButtonReleaseMask | StructureNotifyMask | PointerMotionMask;
-        this->win = XCreateWindow( this->dpy, RootWindow( this->dpy, vi->screen ), 0, 0, w, h, 0, vi->depth, InputOutput, vi->visual, CWBorderPixel | CWColormap | CWEventMask, &this->attr );
+        this->attr.event_mask = x11_window_PropertyChangeMask | x11_window_KeyPressMask | x11_window_KeyReleaseMask | x11_window_ButtonPressMask | x11_window_ButtonReleaseMask | x11_window_StructureNotifyMask | x11_window_PointerMotionMask;
+        this->win = this->x11.XCreateWindow( this->dpy, this->x11.XRootWindow( this->dpy, vi->screen ), 0, 0, w, h, 0, vi->depth, x11_window_InputOutput, vi->visual, x11_window_CWBorderPixel | x11_window_CWColormap | x11_window_CWEventMask, &this->attr );
         if( !this->win )
         {
-            XCloseDisplay( this->dpy );
+            this->x11.XCloseDisplay( this->dpy );
             this->dpy = 0;
             return;
         }
 
         //setup close button event
-        this->wm_delete_window = XInternAtom( this->dpy, "WM_DELETE_WINDOW", True );
-        XSetWMProtocols( this->dpy, this->win, &this->wm_delete_window, 1 );
+        this->wm_delete_window = this->x11.XInternAtom( this->dpy, (char *)"WM_DELETE_WINDOW", True );
+        this->x11.XSetWMProtocols( this->dpy, this->win, &this->wm_delete_window, 1 );
 
         //selection property
-        this->selprop = XInternAtom( this->dpy, "SELECTION_PROPERTY", True );
-        this->a_targets = XInternAtom( this->dpy, "TARGETS", 1 );
-        this->a_clipboard = XInternAtom( this->dpy, "CLIPBOARD", 1 );
+        this->selprop = this->x11.XInternAtom( this->dpy, (char *)"SELECTION_PROPERTY", True );
+        this->a_targets = this->x11.XInternAtom( this->dpy, (char *)"TARGETS", 1 );
+        this->a_clipboard = this->x11.XInternAtom( this->dpy, (char *)"CLIPBOARD", 1 );
+        this->a_string = this->x11.XInternAtom( this->dpy, (char *)"STRING", 1 );
+        this->a_primary = this->x11.XInternAtom( this->dpy, (char *)"PRIMARY", 1 );
 
         //set title
-        XSetStandardProperties( this->dpy, this->win, ctitle, ctitle, None, NULL, 0, NULL );
-        XMapRaised( this->dpy, this->win );
+        this->x11.XSetStandardProperties( this->dpy, this->win, (char *)ctitle, (char *)ctitle, x11_window_None, NULL, 0, NULL );
+        this->x11.XMapRaised( this->dpy, this->win );
 
         this->bIsOpen = 1;
     }
@@ -83,21 +94,66 @@ namespace dragonpoop
     {
         if( this->dpy )
         {
-            XDestroyWindow( this->dpy, this->win );
-            XCloseDisplay( this->dpy );
+            this->x11.XDestroyWindow( this->dpy, this->win );
+            this->x11.XCloseDisplay( this->dpy );
         }
+        if( this->dlGL )
+            dlclose( this->dlGL );
+        if( this->dlX11 )
+            dlclose( this->dlX11 );
     }
+
+    //load x11
+    bool x11_window::loadFunctions( void )
+    {
+        bool r;
+
+        memset( &this->x11, 0, sizeof( this->x11 ) );
+
+        this->dlX11 = dlopen( "libX11.so", RTLD_LAZY | RTLD_LOCAL );
+        if( !this->dlX11 )
+            return 0;
+        this->dlGL = dlopen( "libGL.so", RTLD_LAZY | RTLD_LOCAL );
+        if( !this->dlGL )
+            return 0;
+
+        r = 1;
+        r &= ( this->x11.XInitThreads = (x11_window_functions_XInitThreads)dlsym( this->dlX11, "XInitThreads" ) ) != 0;
+        r &= ( this->x11.XOpenDisplay = (x11_window_functions_XOpenDisplay)dlsym( this->dlX11, "XOpenDisplay" ) ) != 0;
+        r &= ( this->x11.XDefaultScreen = (x11_window_functions_XDefaultScreen)dlsym( this->dlX11, "XDefaultScreen" ) ) != 0;
+        r &= ( this->x11.glXChooseVisual = (x11_window_functions_glXChooseVisual)dlsym( this->dlGL, "glXChooseVisual" ) ) != 0;
+        r &= ( this->x11.XCloseDisplay = (x11_window_functions_XCloseDisplay)dlsym( this->dlX11, "XCloseDisplay" ) ) != 0;
+        r &= ( this->x11.XCreateColormap = (x11_window_functions_XCreateColormap)dlsym( this->dlX11, "XCreateColormap" ) ) != 0;
+        r &= ( this->x11.XRootWindow = (x11_window_functions_XRootWindow)dlsym( this->dlX11, "XRootWindow" ) ) != 0;
+        r &= ( this->x11.XCreateWindow = (x11_window_functions_XCreateWindow)dlsym( this->dlX11, "XCreateWindow" ) ) != 0;
+        r &= ( this->x11.XInternAtom = (x11_window_functions_XInternAtom)dlsym( this->dlX11, "XInternAtom" ) ) != 0;
+        r &= ( this->x11.XSetWMProtocols = (x11_window_functions_XSetWMProtocols)dlsym( this->dlX11, "XSetWMProtocols" ) ) != 0;
+        r &= ( this->x11.XSetStandardProperties = (x11_window_functions_XSetStandardProperties)dlsym( this->dlX11, "XSetStandardProperties" ) ) != 0;
+        r &= ( this->x11.XMapRaised = (x11_window_functions_XMapRaised)dlsym( this->dlX11, "XMapRaised" ) ) != 0;
+        r &= ( this->x11.XDestroyWindow = (x11_window_functions_XDestroyWindow)dlsym( this->dlX11, "XDestroyWindow" ) ) != 0;
+        r &= ( this->x11.XPending = (x11_window_functions_XPending)dlsym( this->dlX11, "XPending" ) ) != 0;
+        r &= ( this->x11.XNextEvent = (x11_window_functions_XNextEvent)dlsym( this->dlX11, "XNextEvent" ) ) != 0;
+        r &= ( this->x11.XLookupKeysym = (x11_window_functions_XLookupKeysym)dlsym( this->dlX11, "XLookupKeysym" ) ) != 0;
+        r &= ( this->x11.XChangeProperty = (x11_window_functions_XChangeProperty)dlsym( this->dlX11, "XChangeProperty" ) ) != 0;
+        r &= ( this->x11.XSendEvent = (x11_window_functions_XSendEvent)dlsym( this->dlX11, "XSendEvent" ) ) != 0;
+        r &= ( this->x11.XSetSelectionOwner = (x11_window_functions_XSetSelectionOwner)dlsym( this->dlX11, "XSetSelectionOwner" ) ) != 0;
+        r &= ( this->x11.XConvertSelection = (x11_window_functions_XConvertSelection)dlsym( this->dlX11, "XConvertSelection" ) ) != 0;
+        r &= ( this->x11.XGetWindowProperty = (x11_window_functions_XGetWindowProperty)dlsym( this->dlX11, "XGetWindowProperty" ) ) != 0;
+        r &= ( this->x11.XFree = (x11_window_functions_XFree)dlsym( this->dlX11, "XFree" ) ) != 0;
+
+        return r;
+    }
+
 
     //run x11_window
     void x11_window::run( void )
     {
-        XEvent event;
+        x11_window_XEvent event;
         window_mouse_input m;
 
-        while( XPending( this->dpy ) >= 1 )
+        while( this->x11.XPending( this->dpy ) >= 1 )
         {
-
-            XNextEvent( this->dpy, &event );
+            this->x11.XNextEvent( this->dpy, &event );
             switch( event.type )
             {
                 case ConfigureNotify:
@@ -119,8 +175,8 @@ namespace dragonpoop
                     this->addMouseInput( &m );
                     break;
                 case ButtonPress:
-                    this->lb |= event.xbutton.button == Button1;
-                    this->rb |= event.xbutton.button == Button2;
+                    this->lb |= event.xbutton.button == x11_window_Button1;
+                    this->rb |= event.xbutton.button == x11_window_Button2;
                     m.x = event.xbutton.x;
                     m.y = event.xbutton.y;
                     m.lb = this->lb;
@@ -128,8 +184,8 @@ namespace dragonpoop
                     this->addMouseInput( &m );
                     break;
                 case ButtonRelease:
-                    this->lb &= event.xbutton.button != Button1;
-                    this->rb &= event.xbutton.button != Button2;
+                    this->lb &= event.xbutton.button != x11_window_Button1;
+                    this->rb &= event.xbutton.button != x11_window_Button2;
                     m.x = event.xbutton.x;
                     m.y = event.xbutton.y;
                     m.lb = this->lb;
@@ -137,10 +193,10 @@ namespace dragonpoop
                     this->addMouseInput( &m );
                     break;
                 case KeyPress:
-                    this->processKb( XLookupKeysym( &event.xkey, 0 ), 1 );
+                    this->processKb( this->x11.XLookupKeysym( &event.xkey, 0 ), 1 );
                     break;
                 case KeyRelease:
-                    this->processKb( XLookupKeysym( &event.xkey, 0 ), 0 );
+                    this->processKb( this->x11.XLookupKeysym( &event.xkey, 0 ), 0 );
                     break;
                 case ClientMessage:
                     if( (Atom)event.xclient.data.l[0] == this->wm_delete_window )
@@ -148,60 +204,60 @@ namespace dragonpoop
                     break;
                 case SelectionRequest:
                 {
-                    XEvent rpy;
-                    XSelectionEvent *r = &rpy.xselection;
+                    x11_window_XEvent rpy;
+                    x11_window_XSelectionEvent *r = &rpy.xselection;
 
-                    r->type = SelectionNotify;
+                    r->type = x11_window_SelectionNotify;
                     r->time = event.xselectionrequest.time;
                     r->target = event.xselectionrequest.target;
                     r->selection = event.xselectionrequest.selection;
-                    r->property = None;
+                    r->property = x11_window_None;
                     r->requestor = event.xselectionrequest.requestor;
                     r->display = event.xselectionrequest.display;
                     r->serial = event.xselectionrequest.serial;
                     r->send_event = event.xselectionrequest.send_event;
 
-                    if( r->target == XA_STRING )
+                    if( r->target == this->a_string )
                     {
                         std::string s;
                         if( /*this->getSelectedText( &s, this->bdocut ) && */s.length() )
                         {
                             r->property = this->selprop;
-                            XChangeProperty( this->dpy, this->win, this->selprop, XA_STRING, 8, PropModeReplace, (unsigned char *)s.c_str(), (int)s.length() );
+                            this->x11.XChangeProperty( this->dpy, this->win, this->selprop, this->a_string, 8, x11_window_PropModeReplace, (unsigned char *)s.c_str(), (int)s.length() );
                         }
                     }
 
                     if( this->a_targets && r->target == this->a_targets )
                     {
-                        Atom supported[]={ XA_STRING };
+                        x11_window_Atom supported[]={ this->a_string };
                         r->property = this->selprop;
-                        XChangeProperty( this->dpy, this->win, this->selprop, this->a_targets, 8, PropModeReplace, (unsigned char *)&supported, sizeof( supported ) );
+                        this->x11.XChangeProperty( this->dpy, this->win, this->selprop, this->a_targets, 8, x11_window_PropModeReplace, (unsigned char *)&supported, sizeof( supported ) );
                     }
 
-                    XSendEvent( this->dpy, this->win, 0, PropertyChangeMask, &rpy );
+                    this->x11.XSendEvent( this->dpy, this->win, 0, x11_window_PropertyChangeMask, &rpy );
                     break;
                 }
                 case SelectionNotify:
-                    Atom act_type;
+                    x11_window_Atom act_type;
                     int act_fmt;
                     unsigned long itms_returned, itms_remain;
                     char *buf;
 
-                    if( event.xselection.target != XA_STRING || !event.xselection.property )
+                    if( event.xselection.target != this->a_string || !event.xselection.property )
                         break;
 
                     //event.xselection.property
-                    if( XGetWindowProperty( event.xselection.display, event.xselection.requestor, event.xselection.property, 0, 4096, 1, XA_STRING, &act_type, &act_fmt, &itms_returned, &itms_remain, (unsigned char **)&buf ) != Success )
+                    if( this->x11.XGetWindowProperty( event.xselection.display, event.xselection.requestor, event.xselection.property, 0, 4096, 1, this->a_string, &act_type, &act_fmt, &itms_returned, &itms_remain, (unsigned char **)&buf ) != 0 )
                         break;
 
-                    if( act_fmt == 8 && act_type == XA_STRING && itms_returned )
+                    if( act_fmt == 8 && act_type == this->a_string && itms_returned )
                     {
                         std::string s;
                         s.assign( buf, itms_returned );
                         //this->setSelectedText( &s );
                     }
 
-                    XFree( buf );
+                    this->x11.XFree( buf );
                     break;
                 case SelectionClear:
 
@@ -267,19 +323,19 @@ namespace dragonpoop
 
         if( this->bctrl && k == 99 )//ctrl c
         {
-            XSetSelectionOwner( this->dpy, XA_PRIMARY, this->win, CurrentTime );
+            this->x11.XSetSelectionOwner( this->dpy, this->a_primary, this->win, x11_window_CurrentTime );
             this->bdocut = 0;
             return;
         }
         if( this->bctrl && k == XK_X )
         {
-            XSetSelectionOwner( this->dpy, XA_PRIMARY, this->win, CurrentTime );
+            this->x11.XSetSelectionOwner( this->dpy, this->a_primary, this->win, x11_window_CurrentTime );
             this->bdocut = 1;
             return;
         }
         if( this->bctrl && k == 118 ) //ctrl+v
         {
-            XConvertSelection( this->dpy, XA_PRIMARY, XA_STRING, None, this->win, CurrentTime );
+            this->x11.XConvertSelection( this->dpy, this->a_primary, this->a_string, None, this->win, x11_window_CurrentTime );
             return;
         }
 

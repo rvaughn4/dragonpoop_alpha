@@ -172,7 +172,7 @@ namespace dragonpoop
         {
             if( this->r )
             {
-                l = (renderer_gui_writelock *)o.tryWriteLock( this->r, 500, "gui::run" );
+                l = (renderer_gui_writelock *)o.tryWriteLock( this->r, 20, "gui::run" );
                 if( l )
                 {
                     if( this->bPosChanged )
@@ -181,15 +181,14 @@ namespace dragonpoop
                         l->syncBg();
                     if( this->bFgChanged )
                         l->syncFg();
+                    this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
                 }
-
-                this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
             }
         }
 
         b = !this->mse.empty();
         i = 0;
-        while( b && i < 10 )
+        while( b && i < 50 )
         {
             i++;
             gui_mouse_event *e;
@@ -217,7 +216,7 @@ namespace dragonpoop
 
         b = !this->kbe.empty();
         i = 0;
-        while( b && i < 10 )
+        while( b && i < 50 )
         {
             i++;
             gui_kb_event *e;

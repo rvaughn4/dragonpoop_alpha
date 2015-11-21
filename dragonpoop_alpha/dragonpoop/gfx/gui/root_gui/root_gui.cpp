@@ -39,7 +39,7 @@ namespace dragonpoop
         this->perf_open = 0;
         this->esc_menu = 0;
         this->esc_menu_is_show = 0;
-        this->esc_menu_do_show = 1;
+        this->esc_menu_do_show = 0;
 
         g->getActors( &al, &o );
         this->a = new dpactor( g->getCore() );
@@ -168,13 +168,13 @@ namespace dragonpoop
                 this->esc_menu = 0;
                 this->esc_menu_is_show = 0;
 
-                gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
+                gl = (gfx_writelock *)o.tryWriteLock( this->g, 10, "root_gui::doProcessing" );
                 if( gl )
                 {
                     this->esc_menu = new menu_gui( gl, this->genId(), this->getId(), 0, 0, 300, 40, 40, "Escape Menu" );
                     this->addGui( this->esc_menu );
 
-                    mw = (menu_gui_writelock *)o.tryWriteLock( this->esc_menu, 1000, "root_gui::doProcessing" );
+                    mw = (menu_gui_writelock *)o.tryWriteLock( this->esc_menu, 30, "root_gui::doProcessing" );
                     if( mw )
                         this->populateEscapeMenu( mw );
                     this->esc_menu_is_show = 1;
@@ -195,7 +195,7 @@ namespace dragonpoop
             if( t - this->last_esc_menu_process > 200 )
             {
                 this->last_esc_menu_process = t;
-                mr = (menu_gui_readlock *)o.tryReadLock( this->esc_menu, 100, "root_gui::doProcessing" );
+                mr = (menu_gui_readlock *)o.tryReadLock( this->esc_menu, 30, "root_gui::doProcessing" );
                 if( mr )
                     this->processEscapeMenu( mr );
             }
