@@ -413,7 +413,10 @@ namespace dragonpoop
                 t->usage = 1;
             delete tl;
 
-            std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay - td ) );
+            td = lowest_delay - td;
+            if( td < 3 )
+                td = 3;
+            std::this_thread::sleep_for( std::chrono::milliseconds( td ) );
         }
 
     }

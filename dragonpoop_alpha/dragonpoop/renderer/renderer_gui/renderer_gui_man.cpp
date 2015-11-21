@@ -403,6 +403,7 @@ namespace dragonpoop
         ocpl.unlock();
 
         ctxl->makeActive( thd );
+        ctxl->run();
         if( this->clist )
             delete this->clist;
         this->clist = ctxl->makeCmdList();

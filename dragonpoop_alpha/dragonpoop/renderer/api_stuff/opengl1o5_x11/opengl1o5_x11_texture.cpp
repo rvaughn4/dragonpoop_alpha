@@ -9,8 +9,9 @@ namespace dragonpoop
 {
 
     //ctor
-    opengl1o5_x11_texture::opengl1o5_x11_texture( render_api_context_writelock *c, dpmutex_master *mm, dpbitmap *bm ) : render_api_texture( c, mm, bm )
+    opengl1o5_x11_texture::opengl1o5_x11_texture( render_api_context_writelock *c, dpmutex_master *mm, dpbitmap *bm, opengl1o5_x11_functions *gl ) : render_api_texture( c, mm, bm )
     {
+        this->gl = gl;
         this->makeTex( bm );
     }
 
@@ -50,23 +51,23 @@ namespace dragonpoop
         if( !buffer || !sz || !w || !h || ( bits != 24 && bits != 32 ) )
             return;
 
-        glGenTextures( 1, &this->glTex );
+        this->gl->glGenTextures( 1, &this->glTex );
         if( !this->glTex )
             return;
 
-        glBindTexture( GL_TEXTURE_2D, this->glTex );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        this->gl->glBindTexture( GL_TEXTURE_2D, this->glTex );
+        this->gl->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+        this->gl->glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
         if( bits == 24 )
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer );
+            this->gl->glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer );
         if( bits == 32 )
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
+            this->gl->glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
     }
 
     //delete texture
     void opengl1o5_x11_texture::deleteTex( void )
     {
-        glDeleteTextures( 1, &this->glTex );
+        this->gl->glDeleteTextures( 1, &this->glTex );
     }
 
     //return tex

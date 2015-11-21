@@ -17,13 +17,14 @@ namespace dragonpoop
 {
 
     //ctor
-    opengl1o5_x11_context::opengl1o5_x11_context( render_api_writelock *r, dpmutex_master *mm, GLXContext ctx, Window win, Display *dpy, bool bUseDl ) : render_api_context( r, mm )
+    opengl1o5_x11_context::opengl1o5_x11_context( render_api_writelock *r, dpmutex_master *mm, GLXContext ctx, Window win, Display *dpy, bool bUseDl, opengl1o5_x11_functions *gl ) : render_api_context( r, mm )
     {
         this->bUseDl = bUseDl;
         this->ctx = ctx;
         this->win = win;
         this->dpy = dpy;
         this->tid = 0;
+        this->gl = gl;
     }
 
     //dtor
@@ -108,7 +109,7 @@ namespace dragonpoop
     //gen texture
     render_api_texture *opengl1o5_x11_context::genTexture( dpmutex_master *mm, render_api_context_writelock *cl, dpbitmap *bm )
     {
-        return new opengl1o5_x11_texture( cl, mm, bm );
+        return new opengl1o5_x11_texture( cl, mm, bm, this->gl );
     }
 
     //gen vertex buffer

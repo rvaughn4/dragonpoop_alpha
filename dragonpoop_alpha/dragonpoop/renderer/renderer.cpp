@@ -422,6 +422,7 @@ namespace dragonpoop
             return;
 
         ctxl->makeActive( thd );
+        ctxl->run();
         ctxl->setViewport( this->dimensions.w, this->dimensions.h );
         ctxl->clearColor( 0.0f, 0.0f, 0.0f );
         ctxl->clearDepth( 1.0f );
@@ -833,7 +834,7 @@ namespace dragonpoop
             return;
 
         gl->addRenderer( new x11_opengl_1o5_renderer_factory( 1, 0 ) );
-        //gl->addRenderer( new x11_opengl_1o5_renderer_factory( 2, 1 ) );
+        gl->addRenderer( new x11_opengl_1o5_renderer_factory( 2, 1 ) );
     }
 
     //gets selected text from gui (copy or cut)
