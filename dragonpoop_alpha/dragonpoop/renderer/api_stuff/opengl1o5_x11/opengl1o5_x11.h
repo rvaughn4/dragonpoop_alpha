@@ -21,6 +21,12 @@ namespace dragonpoop
     typedef int opengl1o5_x11_GLenum;
     typedef int opengl1o5_x11_GLsizei;
     typedef void opengl1o5_x11_GLvoid;
+    typedef unsigned char opengl1o5_x11_GLubyte;
+
+    typedef void *(* opengl1o5_x11_functions_glXGetProcAddress )( const opengl1o5_x11_GLubyte *procName );
+    typedef void (* opengl1o5_x11_functions_glXSwapBuffers )( Display *dpy, GLXDrawable drawable );
+    typedef bool (* opengl1o5_x11_functions_glXMakeCurrent )( Display *dpy, GLXDrawable drawable, GLXContext ctx );
+
 
     typedef void (* opengl1o5_x11_functions_glEnableClientState )( opengl1o5_x11_GLint state );
     typedef void (* opengl1o5_x11_functions_glTexCoordPointer )( opengl1o5_x11_GLint size, opengl1o5_x11_GLenum type, opengl1o5_x11_GLsizei stride, const opengl1o5_x11_GLvoid *ptr );
@@ -33,10 +39,16 @@ namespace dragonpoop
     typedef void (* opengl1o5_x11_functions_glTexImage2D )( opengl1o5_x11_GLenum target, opengl1o5_x11_GLint level, opengl1o5_x11_GLint internal_format, opengl1o5_x11_GLsizei w, opengl1o5_x11_GLsizei h, opengl1o5_x11_GLint border, opengl1o5_x11_GLenum format, opengl1o5_x11_GLenum type, opengl1o5_x11_GLvoid *pixels );
     typedef void (* opengl1o5_x11_functions_glTexParameteri )( opengl1o5_x11_GLenum target, opengl1o5_x11_GLenum pname, opengl1o5_x11_GLint param );
 
+
 //    typedef void (* opengl1o5_x11_functions_
 
     struct opengl1o5_x11_functions
     {
+        opengl1o5_x11_functions_glXGetProcAddress glXGetProcAddress;
+        opengl1o5_x11_functions_glXSwapBuffers glXSwapBuffers;
+        opengl1o5_x11_functions_glXMakeCurrent glXMakeCurrent;
+
+
         opengl1o5_x11_functions_glEnableClientState glEnableClientState;
         opengl1o5_x11_functions_glTexCoordPointer glTexCoordPointer;
         opengl1o5_x11_functions_glNormalPointer glNormalPointer;
@@ -50,10 +62,13 @@ namespace dragonpoop
 
 /*
 
-
+Bool glXMakeCurrent(	Display * dpy,
+ 	GLXDrawable drawable,
+ 	GLXContext ctx);
 
        */ /*
-
+glXSwapBuffers
+glXMakeCurrent
         glClearColor( r, g, b, 1.0f );
         glClear( GL_COLOR_BUFFER_BIT );
         glClearDepth( f );

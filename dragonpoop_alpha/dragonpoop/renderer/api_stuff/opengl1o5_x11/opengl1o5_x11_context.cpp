@@ -69,7 +69,7 @@ namespace dragonpoop
     //present backbuffer
     void opengl1o5_x11_context::flipBackBuffer( void )
     {
-        glXSwapBuffers( this->dpy, this->win );
+        this->gl->glXSwapBuffers( this->dpy, this->win );
     }
 
     //make context active in thread
@@ -78,7 +78,7 @@ namespace dragonpoop
         if( thd->getId() == this->tid )
             return;
             this->tid = thd->getId();
-        glXMakeCurrent( this->dpy, this->win, this->ctx );
+        this->gl->glXMakeCurrent( this->dpy, this->win, this->ctx );
     }
 
     //set viewport

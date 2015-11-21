@@ -83,25 +83,36 @@ namespace dragonpoop
     //load functions
     bool opengl1o5_x11::loadFunctions( void )
     {
+        bool r;
 
         memset( &this->gl, 0, sizeof( this->gl ) );
         this->dlGL = dlopen( "libGL.so", RTLD_LAZY | RTLD_LOCAL );
         if( !this->dlGL )
             return 0;
 
-        this->gl.glEnableClientState = (opengl1o5_x11_functions_glEnableClientState)glXGetProcAddress( (const unsigned char *)"glEnableClientState" );
-        this->gl.glGenTextures = (opengl1o5_x11_functions_glGenTextures)glXGetProcAddress( (const unsigned char *)"glGenTextures" );
-        this->gl.glDeleteTextures = (opengl1o5_x11_functions_glDeleteTextures)glXGetProcAddress( (const unsigned char *)"glDeleteTextures" );
-        this->gl.glBindTexture = (opengl1o5_x11_functions_glBindTexture)glXGetProcAddress( (const unsigned char *)"glBindTexture" );
-        this->gl.glDrawElements = (opengl1o5_x11_functions_glDrawElements)glXGetProcAddress( (const unsigned char *)"glDrawElements" );
-        this->gl.glTexCoordPointer = (opengl1o5_x11_functions_glTexCoordPointer)glXGetProcAddress( (const unsigned char *)"glTexCoordPointer" );
-        this->gl.glNormalPointer = (opengl1o5_x11_functions_glNormalPointer)glXGetProcAddress( (const unsigned char *)"glNormalPointer" );
-        this->gl.glVertexPointer = (opengl1o5_x11_functions_glVertexPointer)glXGetProcAddress( (const unsigned char *)"glVertexPointer" );
-        this->gl.glTexImage2D = (opengl1o5_x11_functions_glTexImage2D)glXGetProcAddress( (const unsigned char *)"glTexImage2D" );
-        this->gl.glTexParameteri = (opengl1o5_x11_functions_glTexParameteri)glXGetProcAddress( (const unsigned char *)"glTexParameteri" );
+        this->gl.glXGetProcAddress = (opengl1o5_x11_functions_glXGetProcAddress)dlsym( this->dlGL, "glXGetProcAddress" );
+        if( !this->gl.glXGetProcAddress )
+            this->gl.glXGetProcAddress = (opengl1o5_x11_functions_glXGetProcAddress)dlsym( this->dlGL, "glXGetProcAddressARB" );
+        if( !this->gl.glXGetProcAddress )
+            return 0;
+
+        r = 1;
+        r &= ( this->gl.glXSwapBuffers = (opengl1o5_x11_functions_glXSwapBuffers)dlsym( this->dlGL, "glXSwapBuffers" ) ) != 0;
+        r &= ( this->gl.glXMakeCurrent = (opengl1o5_x11_functions_glXMakeCurrent)dlsym( this->dlGL, "glXMakeCurrent" ) ) != 0;
+
+        r &= ( this->gl.glEnableClientState = (opengl1o5_x11_functions_glEnableClientState)this->gl.glXGetProcAddress( (const unsigned char *)"glEnableClientState" ) ) != 0;
+        r &= ( this->gl.glGenTextures = (opengl1o5_x11_functions_glGenTextures)this->gl.glXGetProcAddress( (const unsigned char *)"glGenTextures" ) ) != 0;
+        r &= ( this->gl.glDeleteTextures = (opengl1o5_x11_functions_glDeleteTextures)this->gl.glXGetProcAddress( (const unsigned char *)"glDeleteTextures" ) ) != 0;
+        r &= ( this->gl.glBindTexture = (opengl1o5_x11_functions_glBindTexture)this->gl.glXGetProcAddress( (const unsigned char *)"glBindTexture" ) ) != 0;
+        r &= ( this->gl.glDrawElements = (opengl1o5_x11_functions_glDrawElements)this->gl.glXGetProcAddress( (const unsigned char *)"glDrawElements" ) ) != 0;
+        r &= ( this->gl.glTexCoordPointer = (opengl1o5_x11_functions_glTexCoordPointer)this->gl.glXGetProcAddress( (const unsigned char *)"glTexCoordPointer" ) ) != 0;
+        r &= ( this->gl.glNormalPointer = (opengl1o5_x11_functions_glNormalPointer)this->gl.glXGetProcAddress( (const unsigned char *)"glNormalPointer" ) ) != 0;
+        r &= ( this->gl.glVertexPointer = (opengl1o5_x11_functions_glVertexPointer)this->gl.glXGetProcAddress( (const unsigned char *)"glVertexPointer" ) ) != 0;
+        r &= ( this->gl.glTexImage2D = (opengl1o5_x11_functions_glTexImage2D)this->gl.glXGetProcAddress( (const unsigned char *)"glTexImage2D" ) ) != 0;
+        r &= ( this->gl.glTexParameteri = (opengl1o5_x11_functions_glTexParameteri)this->gl.glXGetProcAddress( (const unsigned char *)"glTexParameteri" ) ) != 0;
 
 
-        return 1;
+        return r;
     }
 
     //run api
