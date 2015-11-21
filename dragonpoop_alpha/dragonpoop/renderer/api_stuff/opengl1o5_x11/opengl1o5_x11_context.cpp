@@ -55,15 +55,15 @@ namespace dragonpoop
     //clear screen
     void opengl1o5_x11_context::clearColor( float r, float g, float b )
     {
-        glClearColor( r, g, b, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
+        this->gl->glClearColor( r, g, b, 1.0f );
+        this->gl->glClear( GL_COLOR_BUFFER_BIT );
     }
 
     //clear depth
     void opengl1o5_x11_context::clearDepth( float f )
     {
-        glClearDepth( f );
-        glClear( GL_DEPTH_BUFFER_BIT );
+        this->gl->glClearDepth( f );
+        this->gl->glClear( GL_DEPTH_BUFFER_BIT );
     }
 
     //present backbuffer
@@ -84,7 +84,7 @@ namespace dragonpoop
     //set viewport
     void opengl1o5_x11_context::setViewport( float w, float h )
     {
-        glViewport( 0, 0, w, h );
+        this->gl->glViewport( 0, 0, w, h );
     }
 
     //gen shader
@@ -95,13 +95,13 @@ namespace dragonpoop
         s.assign( cname );
 
         if( s.compare( "gui" ) == 0 )
-            return new opengl1o5_x11_shader_gui( cl, mm );
+            return new opengl1o5_x11_shader_gui( cl, mm, this->gl );
         if( s.compare( "model" ) == 0 )
-            return new opengl1o5_x11_shader_model( cl, mm );
+            return new opengl1o5_x11_shader_model( cl, mm, this->gl );
         if( s.compare( "land" ) == 0 )
-            return new opengl1o5_x11_shader_land( cl, mm );
+            return new opengl1o5_x11_shader_land( cl, mm, this->gl );
         if( s.compare( "sky" ) == 0 )
-            return new opengl1o5_x11_shader_sky( cl, mm );
+            return new opengl1o5_x11_shader_sky( cl, mm, this->gl );
 
         return 0;
     }
@@ -115,7 +115,7 @@ namespace dragonpoop
     //gen vertex buffer
     render_api_vertexbuffer *opengl1o5_x11_context::genVertexBuffer( dpmutex_master *mm, render_api_context_writelock *cl, dpvertex_buffer *vb )
     {
-        return new opengl1o5_x11_vertexbuffer( cl, mm, vb );
+        return new opengl1o5_x11_vertexbuffer( cl, mm, vb, this->bUseDl, this->gl );
     }
 
     //gen index buffer

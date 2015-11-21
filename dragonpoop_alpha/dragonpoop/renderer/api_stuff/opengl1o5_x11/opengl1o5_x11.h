@@ -10,6 +10,7 @@
 #include <GL/glx.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <string>
 
 #define opengl1o5_x11_max_contexts 10
 
@@ -22,12 +23,17 @@ namespace dragonpoop
     typedef int opengl1o5_x11_GLsizei;
     typedef void opengl1o5_x11_GLvoid;
     typedef unsigned char opengl1o5_x11_GLubyte;
+    typedef float opengl1o5_x11_GLfloat;
+    typedef double opengl1o5_x11_GLdouble;
+    typedef unsigned int opengl1o5_x11_GLbitfield;
 
     typedef void *(* opengl1o5_x11_functions_glXGetProcAddress )( const opengl1o5_x11_GLubyte *procName );
     typedef void (* opengl1o5_x11_functions_glXSwapBuffers )( Display *dpy, GLXDrawable drawable );
     typedef bool (* opengl1o5_x11_functions_glXMakeCurrent )( Display *dpy, GLXDrawable drawable, GLXContext ctx );
+    typedef GLXContext (* opengl1o5_x11_functions_glXCreateContext )( Display *dpy, XVisualInfo *vis, GLXContext shareList, bool direct );
+    typedef void (* opengl1o5_x11_functions_glXDestroyContext )( Display *dpy, GLXContext ctx );
 
-
+    typedef const opengl1o5_x11_GLubyte * (* opengl1o5_x11_functions_glGetString )( opengl1o5_x11_GLenum name );
     typedef void (* opengl1o5_x11_functions_glEnableClientState )( opengl1o5_x11_GLint state );
     typedef void (* opengl1o5_x11_functions_glTexCoordPointer )( opengl1o5_x11_GLint size, opengl1o5_x11_GLenum type, opengl1o5_x11_GLsizei stride, const opengl1o5_x11_GLvoid *ptr );
     typedef void (* opengl1o5_x11_functions_glNormalPointer )( opengl1o5_x11_GLenum type, opengl1o5_x11_GLsizei stride, const opengl1o5_x11_GLvoid *ptr );
@@ -38,17 +44,42 @@ namespace dragonpoop
     typedef void (* opengl1o5_x11_functions_glBindTexture )( opengl1o5_x11_GLenum target, opengl1o5_x11_GLuint texture );
     typedef void (* opengl1o5_x11_functions_glTexImage2D )( opengl1o5_x11_GLenum target, opengl1o5_x11_GLint level, opengl1o5_x11_GLint internal_format, opengl1o5_x11_GLsizei w, opengl1o5_x11_GLsizei h, opengl1o5_x11_GLint border, opengl1o5_x11_GLenum format, opengl1o5_x11_GLenum type, opengl1o5_x11_GLvoid *pixels );
     typedef void (* opengl1o5_x11_functions_glTexParameteri )( opengl1o5_x11_GLenum target, opengl1o5_x11_GLenum pname, opengl1o5_x11_GLint param );
-
-
-//    typedef void (* opengl1o5_x11_functions_
+    typedef void (* opengl1o5_x11_functions_glClearColor )( opengl1o5_x11_GLfloat r, opengl1o5_x11_GLfloat g, opengl1o5_x11_GLfloat b, opengl1o5_x11_GLfloat a );
+    typedef void (* opengl1o5_x11_functions_glClearDepth )( opengl1o5_x11_GLdouble depth );
+    typedef void (* opengl1o5_x11_functions_glClear )( opengl1o5_x11_GLbitfield mask );
+    typedef void (* opengl1o5_x11_functions_glViewport )( opengl1o5_x11_GLint x, opengl1o5_x11_GLint y, opengl1o5_x11_GLsizei w, opengl1o5_x11_GLsizei h );
+    typedef void (* opengl1o5_x11_functions_glDisable )( opengl1o5_x11_GLenum cap );
+    typedef void (* opengl1o5_x11_functions_glEnable )( opengl1o5_x11_GLenum cap );
+    typedef void (* opengl1o5_x11_functions_glPushMatrix )( void );
+    typedef void (* opengl1o5_x11_functions_glPopMatrix )( void );
+    typedef void (* opengl1o5_x11_functions_glMultMatrixf )( const opengl1o5_x11_GLfloat *fv );
+    typedef void (* opengl1o5_x11_functions_glColor4f )( opengl1o5_x11_GLfloat r, opengl1o5_x11_GLfloat g, opengl1o5_x11_GLfloat b, opengl1o5_x11_GLfloat a );
+    typedef void (* opengl1o5_x11_functions_glLightfv )( opengl1o5_x11_GLenum light, opengl1o5_x11_GLenum pname, const opengl1o5_x11_GLfloat *params );
+    typedef void (* opengl1o5_x11_functions_glDepthFunc )( opengl1o5_x11_GLenum func );
+    typedef void (* opengl1o5_x11_functions_glBlendFunc )( opengl1o5_x11_GLenum sfactor, opengl1o5_x11_GLenum dfactor );
+    typedef void (* opengl1o5_x11_functions_glGenBuffers )( opengl1o5_x11_GLsizei n, opengl1o5_x11_GLuint *buffers );
+    typedef void (* opengl1o5_x11_functions_glBindBuffer )( opengl1o5_x11_GLenum target, opengl1o5_x11_GLuint buffer );
+    typedef void (* opengl1o5_x11_functions_glBufferData )( opengl1o5_x11_GLenum target, opengl1o5_x11_GLsizei size, const opengl1o5_x11_GLvoid *data, opengl1o5_x11_GLenum usage );
+    typedef void (* opengl1o5_x11_functions_glDeleteBuffers )( opengl1o5_x11_GLsizei n, opengl1o5_x11_GLuint *buffers );
+    typedef void (* opengl1o5_x11_functions_glFlush )( void );
+    typedef opengl1o5_x11_GLenum (* opengl1o5_x11_functions_glGetError )( void );
 
     struct opengl1o5_x11_functions
     {
+        struct
+        {
+            unsigned int major, minor;
+        } version;
+
         opengl1o5_x11_functions_glXGetProcAddress glXGetProcAddress;
         opengl1o5_x11_functions_glXSwapBuffers glXSwapBuffers;
         opengl1o5_x11_functions_glXMakeCurrent glXMakeCurrent;
+        opengl1o5_x11_functions_glXCreateContext glXCreateContext;
+        opengl1o5_x11_functions_glXDestroyContext glXDestroyContext;
 
-
+        opengl1o5_x11_functions_glGetString glGetString;
+        opengl1o5_x11_functions_glGetError glGetError;
+        opengl1o5_x11_functions_glFlush glFlush;
         opengl1o5_x11_functions_glEnableClientState glEnableClientState;
         opengl1o5_x11_functions_glTexCoordPointer glTexCoordPointer;
         opengl1o5_x11_functions_glNormalPointer glNormalPointer;
@@ -59,22 +90,25 @@ namespace dragonpoop
         opengl1o5_x11_functions_glBindTexture glBindTexture;
         opengl1o5_x11_functions_glTexImage2D glTexImage2D;
         opengl1o5_x11_functions_glTexParameteri glTexParameteri;
+        opengl1o5_x11_functions_glClearColor glClearColor;
+        opengl1o5_x11_functions_glClearDepth glClearDepth;
+        opengl1o5_x11_functions_glClear glClear;
+        opengl1o5_x11_functions_glViewport glViewport;
+        opengl1o5_x11_functions_glDisable glDisable;
+        opengl1o5_x11_functions_glEnable glEnable;
+        opengl1o5_x11_functions_glPushMatrix glPushMatrix;
+        opengl1o5_x11_functions_glPopMatrix glPopMatrix;
+        opengl1o5_x11_functions_glMultMatrixf glMultMatrixf;
+        opengl1o5_x11_functions_glColor4f glColor4f;
+        opengl1o5_x11_functions_glLightfv glLightfv;
+        opengl1o5_x11_functions_glDepthFunc glDepthFunc;
+        opengl1o5_x11_functions_glBlendFunc glBlendFunc;
+        opengl1o5_x11_functions_glGenBuffers glGenBuffers;
+        opengl1o5_x11_functions_glBindBuffer glBindBuffer;
+        opengl1o5_x11_functions_glBufferData glBufferData;
+        opengl1o5_x11_functions_glDeleteBuffers glDeleteBuffers;
+        bool bUseVB;
 
-/*
-
-Bool glXMakeCurrent(	Display * dpy,
- 	GLXDrawable drawable,
- 	GLXContext ctx);
-
-       */ /*
-glXSwapBuffers
-glXMakeCurrent
-        glClearColor( r, g, b, 1.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
-        glClearDepth( f );
-        glXSwapBuffers( this->dpy, this->win );
-        glViewport( 0, 0, w, h );
-*/
     };
 
     class opengl1o5_x11 : public render_api
@@ -82,14 +116,13 @@ glXMakeCurrent
 
     private:
 
+        std::string sver, sext;
         x11_window *w;
         Display *dpy;
         int screen;
         Window win;
         GLXContext ctx, shared_ctx[ opengl1o5_x11_max_contexts ];
-        int x, y, ctx_used;
-        unsigned int width, height;
-        unsigned int depth;
+        int ctx_used;
         bool bIsOpen, bUseDl;
         void *dlGL;
 

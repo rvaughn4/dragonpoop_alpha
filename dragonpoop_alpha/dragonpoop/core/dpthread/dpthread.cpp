@@ -414,8 +414,8 @@ namespace dragonpoop
             delete tl;
 
             td = lowest_delay - td;
-            if( td < 3 )
-                td = 3;
+            if( td < 1 )
+                td = 1;
             std::this_thread::sleep_for( std::chrono::milliseconds( td ) );
         }
 
