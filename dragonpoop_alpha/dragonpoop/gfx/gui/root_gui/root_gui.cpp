@@ -11,6 +11,8 @@
 #include "../../../core/core.h"
 #include "../perf_stats_gui/perf_stats_gui.h"
 #include "../../dpposition/dpposition.h"
+#include "../../dpposition/dpposition_share_ref.h"
+#include "../../dpposition/dpposition_share_writelock.h"
 
 #include "../../dpactor/dpactor.h"
 #include "../../dpactor/dpactor_writelock.h"
@@ -26,6 +28,7 @@ namespace dragonpoop
         shared_obj_guard o;
 
         this->g = (gfx_ref *)g->getRef();
+        this->rcampos = g->getCameraPosition();
 
         this->enableBg( 0 );
         this->enableFg( 0 );
@@ -62,6 +65,7 @@ namespace dragonpoop
         if( this->perf_stats )
             delete this->perf_stats;
         delete this->g;
+        delete this->rcampos;
         o.unlock();
     }
 
@@ -69,8 +73,8 @@ namespace dragonpoop
     bool root_gui::handleKbEvent( std::string *skey, bool isDown )
     {
         shared_obj_guard o;
-        gfx_writelock *gl;
-        dpposition pp, pa;
+        dpposition_share_writelock *gl;
+        dpposition pa;
         dpposition_inner pi;
         dpxyz_f x;
         dpactor_writelock *al;
@@ -83,12 +87,6 @@ namespace dragonpoop
 
         if( isDown && ( skey->compare( "Up" ) == 0 || skey->compare( "Left" ) == 0 || skey->compare( "Right" ) == 0 || skey->compare( "Down" ) == 0 || skey->compare( "Page Up" ) == 0 || skey->compare( "Page Down" ) == 0 ) )
         {
-            gl = (gfx_writelock *)o.tryWriteLock( this->g, 100, "root_gui::handleKbEvent" );
-            if( !gl )
-                return 0;
-            gl->getCameraPosition( &pp );
-            o.unlock();
-
             al = (dpactor_writelock *)o.tryWriteLock( this->a, 100, "root_gui::handleKbEvent" );
             if( !al )
                 return 0;
@@ -112,7 +110,7 @@ namespace dragonpoop
                 x.x = -1.1;
             if( skey->compare( "Right" ) == 0 )
                 x.x = 1.1;
-            pp.move( &x, this->t, this->t + 1000, 0 );
+            this->campos.move( &x, this->t, this->t + 1000, 0 );
 
             x.x = 0;
             x.y = 0;
@@ -131,10 +129,10 @@ namespace dragonpoop
                 x.x = 1.1;
             pa.move( &x, this->t, this->t + 1000, 0 );
 
-            gl = (gfx_writelock *)o.tryWriteLock( this->g, 100, "root_gui::handleKbEvent" );
+            gl = (dpposition_share_writelock *)o.tryWriteLock( this->rcampos, 100, "root_gui::handleKbEvent" );
             if( !gl )
                 return 0;
-            gl->setCameraPosition( &pp );
+            gl->setPosition( &this->campos );
             o.unlock();
 
             al = (dpactor_writelock *)o.tryWriteLock( this->a, 100, "root_gui::handleKbEvent" );

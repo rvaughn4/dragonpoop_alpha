@@ -57,6 +57,8 @@
 #include "renderer_commandlist_passer.h"
 #include "renderer_commandlist_passer_ref.h"
 #include "renderer_commandlist_passer_writelock.h"
+#include "../gfx/dpposition/dpposition_share_readlock.h"
+#include "../gfx/dpposition/dpposition_share_ref.h"
 
 #include <thread>
 #include <random>
@@ -83,7 +85,7 @@ namespace dragonpoop
         tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
 
-        g->getCameraPosition( &this->cam_pos );
+        this->rcam_pos = g->getCameraPosition();
         this->cam_rot.x = 0;
         this->cam_rot.y = 0;
         this->cam_rot.z = 0;
@@ -361,16 +363,16 @@ namespace dragonpoop
             this->new_sky_cl = 0;
         }
 
-        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->model_ready, 1, 10 ) )
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->model_ready, 1, 5 ) )
             return;
-        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->gui_ready, 1, 10 ) )
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->gui_ready, 1, 5 ) )
             return;
-        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->land_ready, 1, 10 ) )
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->land_ready, 1, 5 ) )
             return;
-        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->sky_ready, 1, 10 ) )
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->sky_ready, 1, 5 ) )
             return;
 
-        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 3, "renderer::render" );
+        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
         if( cpl )
         {
             if( this->clpasser->model_ready )
@@ -401,7 +403,7 @@ namespace dragonpoop
         this->dim_update_tick++;
         if( this->dim_update_tick > 10 )
         {
-            al = (render_api_writelock *)octx.tryWriteLock( this->api, 3, "renderer::render" );
+            al = (render_api_writelock *)octx.tryWriteLock( this->api, 30, "renderer::render" );
             if( al )
             {
                 this->dimensions.w = al->getWidth();
@@ -412,7 +414,7 @@ namespace dragonpoop
             this->dim_update_tick = 0;
         }
 
-        ctxl = (render_api_context_writelock *)octx.tryWriteLock( this->main_ctx, 3, "renderer::render" );
+        ctxl = (render_api_context_writelock *)octx.tryWriteLock( this->main_ctx, 30, "renderer::render" );
         if( !ctxl )
             return;
 
@@ -424,7 +426,7 @@ namespace dragonpoop
 
         if( this->sky_cl )
         {
-            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky_cl, 3, "renderer::render" );
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky_cl, 30, "renderer::render" );
             if( !cll )
                 return;
 
@@ -443,7 +445,7 @@ namespace dragonpoop
         ctxl->clearDepth( 1.0f );
         if( this->model_cl )
         {
-            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 3, "renderer::render" );
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
             if( !cll )
                 return;
 
@@ -464,7 +466,7 @@ namespace dragonpoop
 
         if( this->land_cl )
         {
-            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->land_cl, 3, "renderer::render" );
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->land_cl, 30, "renderer::render" );
             if( !cll )
                 return;
 
@@ -487,7 +489,7 @@ namespace dragonpoop
 
         if( this->gui_cl )
         {
-            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 3, "renderer::render" );
+            cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->gui_cl, 30, "renderer::render" );
             if( !cll )
                 return;
             if( !cll->execute( ctxl, &this->m_gui ) )
@@ -500,7 +502,7 @@ namespace dragonpoop
         this->fthiss += 1.0f;
         t = thd->getTicks();
         td = t - this->t_last_fps;
-        if( td > 2000 )
+        if( td > 200 )
         {
             f0 = (float)td / 1000.0f;
             this->fps = this->fthiss / f0;
@@ -558,7 +560,7 @@ namespace dragonpoop
         renderer_gui_man_writelock *gl;
         uint64_t t;
 
-        al = (render_api_writelock *)o.tryWriteLock( this->api, 3, "renderer::runApi" );
+        al = (render_api_writelock *)o.tryWriteLock( this->api, 30, "renderer::runApi" );
         if( !al )
             return 1;
 
@@ -569,7 +571,7 @@ namespace dragonpoop
         this->dimensions.h = al->getHeight();
 
         t = thd->getTicks();
-        if( t - this->t_last_input < 200 )
+        if( t - this->t_last_input < 100 )
             return 1;
 
         if( !al->hasKBInput() && !al->hasMouseInput() )
@@ -806,16 +808,18 @@ namespace dragonpoop
     void renderer::_syncCam( void )
     {
         shared_obj_guard o;
-        gfx_readlock *gl;
+        dpposition_share_readlock *gl;
 
-        if( !this->bCamSync )
+        if( !this->rcam_pos || this->t_cam_pos == this->rcam_pos->getTime() )
             return;
-        gl = (gfx_readlock *)o.tryReadLock( this->g, 3, "renderer::_syncCam" );
+
+        gl = (dpposition_share_readlock *)o.tryReadLock( this->rcam_pos, 3, "renderer::_syncCam" );
         if( !gl )
             return;
 
         this->bCamSync = 0;
-        gl->getCameraPosition( &this->cam_pos );
+        this->cam_pos.copy( gl->getPosition() );
+        this->t_cam_pos = gl->getTime();
     }
 
     //populate renderer list

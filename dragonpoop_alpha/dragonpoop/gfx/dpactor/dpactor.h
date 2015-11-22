@@ -7,7 +7,7 @@
 
 namespace dragonpoop
 {
-    
+
     class dpthread_lock;
     class core;
     class dpactor_ref;
@@ -20,12 +20,13 @@ namespace dragonpoop
     class dpactor_animate_state;
     class model_loader_ref;
     class model_man_ref;
-    
+    class dpposition_share_ref;
+
     class dpactor : public shared_obj
     {
-        
+
     private:
-        
+
         core *c;
         gfx_ref *g;
         model_man_ref *m;
@@ -37,12 +38,13 @@ namespace dragonpoop
                 model_instance_ref *mi;
             } low, med, high;
         } models;
-        dpposition pos;
+        dpposition pos, cam_pos;
+        dpposition_share_ref *cam_pos_g;
         float dis;
-        uint64_t t_dis, t_model_state, t_anim_state;
+        uint64_t t_dis, t_model_state, t_anim_state, t_cam;
         dpactor_model_state *model_state;
         dpactor_animate_state *anim_state;
-        
+
         //get model man ref
         void _getModelMan( void );
         //get gfx ref
@@ -63,7 +65,7 @@ namespace dragonpoop
         bool convertName( std::string *sin, std::string *sout );
 
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -104,23 +106,23 @@ namespace dragonpoop
         void playAnimation( const char *cname, float spd, bool doRepeat );
         //returns true if animation is playing
         bool isPlaying( const char *cname );
-        
+
     public:
-        
+
         //ctor
         dpactor( core *c );
         //dtor
         virtual ~dpactor( void );
         //return core
         core *getCore( void );
-        
+
         friend class dpactor_readlock;
         friend class dpactor_writelock;
         friend class dpactor_model_state;
         friend class dpactor_animate_state;
-        
+
     };
-    
+
 };
 
 #endif

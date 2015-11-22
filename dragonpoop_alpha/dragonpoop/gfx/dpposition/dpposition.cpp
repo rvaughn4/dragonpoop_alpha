@@ -1,6 +1,7 @@
 
 #include "dpposition.h"
 #include "../dpvertex/dpxyz_f.h"
+#include "../dpmatrix/dpquaternion.h"
 #include <string>
 #include <string.h>
 #include <math.h>
@@ -13,6 +14,7 @@ namespace dragonpoop
     {
         memset( &this->i, 0, sizeof( this->i ) );
         this->old_rot.x = this->old_rot.y = this->old_rot.z = 0;
+        this->last_rot = this->old_rot;
     }
 
     //ctor
@@ -102,17 +104,23 @@ namespace dragonpoop
     }
 
     //get rotational direction
-    void dpposition::getDirection( dpxyz_f *pout )
+    void dpposition::getDirection( dpxyz_f *pout, uint64_t t_now )
     {
         dpxyz_f v;
+        float tt, td;
+        dpquaternion qa, qb, qc;
 
         v.x = this->i.end.x - this->i.start.x;
         v.y = this->i.end.y - this->i.start.y;
         v.z = this->i.end.z - this->i.start.z;
 
         *pout = this->old_rot;
-        if( this->i.end.t == this->i.start.t )
+        pout->x = 0;
+        if( this->i.end.t < t_now )
+        {
+            this->last_rot = this->old_rot;
             return;
+        }
 
         if( abs( v.x ) + abs( v.z ) > 0.1f )
             pout->y = atan2( -v.x, -v.z );
@@ -126,6 +134,30 @@ namespace dragonpoop
             pout->x = 0;
 
         this->old_rot = *pout;
+
+        tt = (float)( (uint64_t)( t_now - this->i.start.t ) );
+        td = (float)( (uint64_t)( this->i.end.t - this->i.start.t ) );
+        if( td > 500.0f )
+            td = 500.0f;
+        if( tt > td )
+            tt = 1.0f;
+        else
+        {
+            if( td <= 0.0f )
+                tt = 1.0f;
+            else
+                tt = tt / td;
+        }
+
+        if( tt > 0.95f )
+        {
+            this->last_rot = this->old_rot;
+            return;
+        }
+        qa.setAngle( &this->last_rot );
+        qb.setAngle( pout );
+        qc.slerp( &qa, &qb, tt );
+        qc.getAngle( pout );
     }
 
     //move position incrementally

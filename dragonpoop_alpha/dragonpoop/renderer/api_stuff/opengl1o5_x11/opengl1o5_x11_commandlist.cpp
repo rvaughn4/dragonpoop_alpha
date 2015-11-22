@@ -36,7 +36,6 @@ namespace dragonpoop
     void opengl1o5_x11_commandlist::endCompile( render_api_context_writelock *ctx )
     {
         this->gl->glEndList();
-        this->gl->glFlush();
     }
 
     //called during compile for each draw call

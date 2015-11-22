@@ -7,7 +7,7 @@
 
 namespace dragonpoop
 {
-    
+
     //ctor
     dpactor_animate_state_fly::dpactor_animate_state_fly( dpactor *a ) : dpactor_animate_state( a )
     {
@@ -15,20 +15,20 @@ namespace dragonpoop
         this->stopAnimations();
         this->playAnimation( "fly", 1, 1 );
     }
-    
+
     //dtor
     dpactor_animate_state_fly::~dpactor_animate_state_fly( void )
     {
-        
+
     }
-    
+
     //run state
     void dpactor_animate_state_fly::run( dpthread_lock *thd, dpactor *a, dpactor_animate_state **next_state )
     {
         uint64_t t;
         dpposition p;
         dpposition_inner pi;
-        
+
         t = thd->getTicks();
         if( !this->t_start )
             this->t_start = t;
@@ -37,22 +37,22 @@ namespace dragonpoop
             *next_state = new dpactor_animate_state_fly( a );
             return;
         }
-        
+
         this->getPosition( &p );
         p.getData( &pi );
-        
+
         if( !p.isMoving( t ) )
         {
             *next_state = new dpactor_animate_state_fly_idle( a );
             return;
         }
-        if( pi.end.y == 0 )
+        if( abs(pi.end.y) <= 0.1f )
         {
             *next_state = new dpactor_animate_state_walk( a );
             return;
         }
-        
+
         *next_state = 0;
     }
-    
+
 };

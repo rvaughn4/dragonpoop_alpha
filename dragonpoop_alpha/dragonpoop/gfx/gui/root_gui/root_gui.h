@@ -3,6 +3,7 @@
 #define dragonpoop_root_gui_h
 
 #include "../gui.h"
+#include "../../dpposition/dpposition.h"
 
 namespace dragonpoop
 {
@@ -13,6 +14,7 @@ namespace dragonpoop
     class gfx_ref;
     class perf_stats_gui;
     class dpactor;
+    class dpposition_share_ref;
 
     class root_gui : public gui
     {
@@ -25,6 +27,8 @@ namespace dragonpoop
         bool esc_menu_is_show, esc_menu_do_show, perf_open;
         uint64_t last_esc_menu_process, t;
         dpactor *a;
+        dpposition campos;
+        dpposition_share_ref *rcampos;
 
     protected:
 

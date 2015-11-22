@@ -20,7 +20,8 @@ namespace dragonpoop
     class gui_ref;
     class gui_factory;
     class renderer_ref;
-    class dpposition;
+    class dpposition_share_ref;
+    class dpheight_cache_ref;
     class dpactor;
     class dpactor_ref;
     class model_man_writelock;
@@ -68,9 +69,9 @@ namespace dragonpoop
         //return renderer
         renderer_ref *getRenderer( void );
         //get camera position
-        void getCameraPosition( dpposition *p );
-        //set camera position
-        void setCameraPosition( dpposition *p );
+        dpposition_share_ref *getCameraPosition( void );
+        //get height cache
+        dpheight_cache_ref *getHeights( void );
         //get models
         bool getModels( model_man_ref **r );
         //get models
@@ -108,7 +109,7 @@ namespace dragonpoop
 
         friend class gfx;
     };
-    
+
 };
 
 #endif

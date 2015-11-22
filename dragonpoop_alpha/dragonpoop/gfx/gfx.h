@@ -4,7 +4,6 @@
 
 #include "../core/shared_obj/shared_obj.h"
 #include "../core/bytetree/dpid_bytetree.h"
-#include "dpposition/dpposition.h"
 
 namespace dragonpoop
 {
@@ -54,6 +53,10 @@ namespace dragonpoop
     class dpsky_man_ref;
     class dpsky_man_readlock;
     class dpsky_man_writelock;
+    class dpposition_share;
+    class dpposition_share_ref;
+    class dpheight_cache;
+    class dpheight_cache_ref;
 
     class gfx : public shared_obj
     {
@@ -67,7 +70,7 @@ namespace dragonpoop
         model_man *model_mgr;
         gui_man *gui_mgr;
         dpsky_man *sky_man;
-        
+
         core *c;
         std::list<renderer_factory *> renderer_factories;
         renderer *r;
@@ -75,19 +78,20 @@ namespace dragonpoop
         unsigned int ms_each_frame, model_cnt, gui_cnt;
         float fps;
         uint64_t last_r_poll;
-        dpposition cam_pos;
+        dpposition_share *cam_pos;
         bool bIsRun;
-        
+        dpheight_cache *heights;
+
         gui_factory_ref *root_factory;
         gui *root_g;
-        
+
         //start all tasks
         void _startTask( core *c, dptaskpool_writelock *tp );
         //kill all tasks
         void _killTask( void );
         //delete all tasks
         void _deleteTask( void );
-        
+
     protected:
 
         //generate read lock
@@ -109,9 +113,9 @@ namespace dragonpoop
         //return model count
         unsigned int getModelCount( void );
         //get camera position
-        void getCameraPosition( dpposition *p );
-        //set camera position
-        void setCameraPosition( dpposition *p );
+        dpposition_share_ref *getCameraPosition( void );
+        //get height cache
+        dpheight_cache_ref *getHeights( void );
         //get models
         bool getModels( model_man_ref **r );
         //get models
@@ -146,7 +150,7 @@ namespace dragonpoop
         void addRenderer( renderer_factory *f );
         //change renderer
         bool changeRenderer( const char *cname );
-        
+
     public:
 
         //ctor
@@ -162,7 +166,7 @@ namespace dragonpoop
         friend class gfx_writelock;
         friend class gfx_task;
     };
-    
+
 };
 
 #endif

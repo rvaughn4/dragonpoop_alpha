@@ -28,43 +28,49 @@ namespace dragonpoop
     {
         return this->t->getCore();
     }
-        
+
     //return fps
     float gfx_readlock::getFps( void )
     {
         return this->t->getFps();
     }
-    
+
     //return ms each frame
     unsigned int gfx_readlock::getMsEachFrame( void )
     {
         return this->t->getMsEachFrame();
     }
-    
+
     //return renderer
     renderer_ref *gfx_readlock::getRenderer( void )
     {
         return this->t->getRenderer();
     }
-    
+
     //get camera position
-    void gfx_readlock::getCameraPosition( dpposition *p )
+    dpposition_share_ref *gfx_readlock::getCameraPosition( void )
     {
-        this->t->getCameraPosition( p );
+        return this->t->getCameraPosition();
     }
-  
+
+    //get height cache
+    dpheight_cache_ref *gfx_readlock::getHeights( void )
+    {
+        return this->t->getHeights();
+    }
+
     //get models
     bool gfx_readlock::getModels( model_man_ref **r )
     {
         return this->t->getModels( r );
     }
-    
+
     //get models
     bool gfx_readlock::getModels( model_man_readlock **r, shared_obj_guard *o )
     {
         return this->t->getModels( r, o );
     }
-    
+
     //get models
     bool gfx_readlock::getModels( model_man_writelock **r, shared_obj_guard *o )
     {
@@ -76,49 +82,49 @@ namespace dragonpoop
     {
         return this->t->getGuis( r );
     }
-    
+
     //get guis
     bool gfx_readlock::getGuis( gui_man_readlock **r, shared_obj_guard *o )
     {
         return this->t->getGuis( r, o );
     }
-    
+
     //get guis
     bool gfx_readlock::getGuis( gui_man_writelock **r, shared_obj_guard *o )
     {
         return this->t->getGuis( r, o );
     }
-    
+
     //get land
     bool gfx_readlock::getLand( dpland_man_ref **r )
     {
         return this->t->getLand( r );
     }
-    
+
     //get land
     bool gfx_readlock::getLand( dpland_man_readlock **r, shared_obj_guard *o )
     {
         return this->t->getLand( r, o );
     }
-    
+
     //get land
     bool gfx_readlock::getLand( dpland_man_writelock **r, shared_obj_guard *o )
     {
         return this->t->getLand( r, o );
     }
-    
+
     //get sky
     bool gfx_readlock::getSky( dpsky_man_ref **r )
     {
         return this->t->getSky( r );
     }
-    
+
     //get sky
     bool gfx_readlock::getSky( dpsky_man_readlock **r, shared_obj_guard *o )
     {
         return this->t->getSky( r, o );
     }
-    
+
     //get sky
     bool gfx_readlock::getSky( dpsky_man_writelock **r, shared_obj_guard *o )
     {

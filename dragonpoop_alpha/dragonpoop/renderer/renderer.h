@@ -45,6 +45,7 @@ namespace dragonpoop
     class renderer_commandlist_passer;
     class renderer_land_man;
     class renderer_sky_man;
+    class dpposition_share_ref;
 
     class renderer : public shared_obj
     {
@@ -68,11 +69,12 @@ namespace dragonpoop
         render_api_commandlist_ref *new_gui_cl, *new_model_cl, *new_land_cl, *new_sky_cl;
         render_api_commandlist_ref *gui_cl, *model_cl, *land_cl, *sky_cl;
 
-        uint64_t t_last_fps, ms_each_frame, t_last_input;
+        uint64_t t_last_fps, ms_each_frame, t_last_input, t_cam_pos;
         float fps, fthiss;
         bool bActive, bActiveOld, bCamSync;
         dpmatrix m_world, m_gui, m_gui_undo;
         dpposition cam_pos;
+        dpposition_share_ref *rcam_pos;
         renderer_state *cs;
 
         struct

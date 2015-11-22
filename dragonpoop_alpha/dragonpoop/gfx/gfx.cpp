@@ -49,6 +49,12 @@
 #include "dpsky/dpsky_man_ref.h"
 #include "dpsky/dpsky_man_readlock.h"
 #include "dpsky/dpsky_man_writelock.h"
+#include "dpposition/dpposition_share.h"
+#include "dpposition/dpposition_share_ref.h"
+#include "dpposition/dpposition_share_writelock.h"
+#include "dpheight_cache/dpheight_cache.h"
+#include "dpheight_cache/dpheight_cache_writelock.h"
+#include "dpheight_cache/dpheight_cache_ref.h"
 
 namespace dragonpoop
 {
@@ -61,6 +67,8 @@ namespace dragonpoop
         this->gui_cnt = 0;
         this->model_cnt = 0;
 
+        this->cam_pos = new dpposition_share( c->getMutexMaster() );
+        this->heights = new dpheight_cache( c->getMutexMaster() );
         this->c = c;
         this->r = 0;
         this->_startTask( c, tp );
@@ -95,6 +103,8 @@ namespace dragonpoop
         delete this->land_mgr;
         delete this->model_mgr;
         delete this->sky_man;
+        delete this->heights;
+        delete this->cam_pos;
 
         if( this->root_g )
             delete this->root_g;
@@ -230,25 +240,27 @@ namespace dragonpoop
     }
 
     //get camera position
-    void gfx::getCameraPosition( dpposition *p )
-    {
-        p->copy( &this->cam_pos );
-    }
-
-    //set camera position
-    void gfx::setCameraPosition( dpposition *p )
+    dpposition_share_ref *gfx::getCameraPosition( void )
     {
         shared_obj_guard o;
-        renderer_writelock *l;
+        dpposition_share_writelock *l;
 
-        this->cam_pos.copy( p );
-
-        if( !this->r )
-            return;
-        l = (renderer_writelock *)o.tryWriteLock( this->r, 10, "gfx::setCameraPosition" );
+        l = (dpposition_share_writelock *)o.tryWriteLock( this->cam_pos, 1000, "gfx::getCameraPosition" );
         if( !l )
-            return;
-        l->syncCamera();
+            return 0;
+        return (dpposition_share_ref *)l->getRef();
+    }
+
+    //get height cache
+    dpheight_cache_ref *gfx::getHeights( void )
+    {
+        shared_obj_guard o;
+        dpheight_cache_writelock *l;
+
+        l = (dpheight_cache_writelock *)o.tryWriteLock( this->heights, 1000, "gfx::getHeights" );
+        if( !l )
+            return 0;
+        return (dpheight_cache_ref *)l->getRef();
     }
 
     //get models

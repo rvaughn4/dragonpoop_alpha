@@ -21,6 +21,8 @@
 #include "dpactor_animate_state_idle.h"
 #include "../model/model_man_writelock.h"
 #include "../model/model_man_ref.h"
+#include "../dpposition/dpposition_share_ref.h"
+#include "../dpposition/dpposition_share_readlock.h"
 
 #include <math.h>
 #include <string.h>
@@ -34,6 +36,7 @@ namespace dragonpoop
         this->m = 0;
         this->g = 0;
         this->c = c;
+        this->cam_pos_g = 0;
         memset( &this->models, 0, sizeof( this->models ) );
         this->model_state = new dpactor_model_state_run_low( this );
         this->anim_state = new dpactor_animate_state_idle( this );
@@ -69,6 +72,8 @@ namespace dragonpoop
             delete this->m;
         if( this->g )
             delete this->g;
+        if( this->cam_pos_g )
+            delete this->cam_pos_g;
         o.unlock();
     }
 
@@ -87,7 +92,10 @@ namespace dragonpoop
             return;
         gl = (gfx_readlock *)o.readLock( g, "dpactor::dpactor" );
         if( gl )
+        {
+            this->cam_pos_g = gl->getCameraPosition();
             gl->getModels( &this->m );
+        }
         delete g;
         o.unlock();
     }
@@ -216,19 +224,23 @@ namespace dragonpoop
     //returns distance from camera
     float dpactor::_getCameraDistance( uint64_t t )
     {
-        dpposition p;
         shared_obj_guard o;
-        gfx_readlock *l;
+        dpposition_share_readlock *l;
         dpxyz_f x;
         float d;
 
-        if( !this->g )
-            return 0;
-        l = (gfx_readlock *)o.tryReadLock( this->g, 1000, "dpactor::_getCameraDistance" );
-        if( !l )
-            return 0;
-        l->getCameraPosition( &p );
-        p.getDifference( &this->pos, t, &x );
+        if( this->cam_pos_g && this->t_cam != this->cam_pos_g->getTime() )
+        {
+            l = (dpposition_share_readlock *)o.tryReadLock( this->cam_pos_g, 30, "dpactor::_getCameraDistance" );
+            if( l )
+            {
+                this->cam_pos.copy( l->getPosition() );
+                this->t_cam = l->getTime();
+                o.unlock();
+            }
+        }
+
+        this->cam_pos.getDifference( &this->pos, t, &x );
 
         d = x.x * x.x + x.y * x.y + x.z * x.z;
         if( d > 0 )

@@ -213,7 +213,6 @@ namespace dragonpoop
         renderer_commandlist_passer_writelock *cpl;
         shared_obj_guard ocpl;
         render_api_shader_ref *sdr;
-        float f;
         dpmatrix m1, m2;
         float abs_sky_time, abs_smooth_sky_time, daylight;
 

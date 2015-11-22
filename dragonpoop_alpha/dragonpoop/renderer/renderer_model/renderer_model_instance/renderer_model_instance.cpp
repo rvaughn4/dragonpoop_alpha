@@ -658,7 +658,6 @@ namespace dragonpoop
     {
         dpxyz_f pp, sz, ctr, rot;
         float fsz, rsz;
-        //dpquaternion qa, qb, qc;
 
         campos->getDifference( &this->pos, thd->getTicks(), &pp );
         m->getCenter( &ctr );
@@ -670,13 +669,8 @@ namespace dragonpoop
             fsz = 1;
         rsz = 1.0f / fsz;
 
-        this->pos.getDirection( &rot );
-     /*   qa.setAngle( &this->smooth_rot );
-        qb.setAngle( &rot );
-        qc.slerp( &qa, &qb, 0.01f );
-        qc.getAngle( &rot );
-        this->smooth_rot = rot;
-*/
+        this->pos.getDirection( &rot, thd->getTicks() );
+
         out_model_matrix->copy( in_world_matrix );
 
         if( !this->isGui() )

@@ -15,6 +15,8 @@
 #include "../gfx_writelock.h"
 #include "dpland.h"
 #include "../../core/dpthread/dpthread_lock.h"
+#include "../dpposition/dpposition_share_readlock.h"
+#include "../dpposition/dpposition_share_ref.h"
 
 #include <math.h>
 
@@ -36,6 +38,7 @@ namespace dragonpoop
 
         gl = (gfx_writelock *)o.writeLock( g, "dpland_man::dpland_man" );
         this->g = (gfx_ref *)gl->getRef();
+        this->cam_pos = gl->getCameraPosition();
         o.unlock();
 
         this->_startTask( tp, 200 );
@@ -57,6 +60,7 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "dpland_man::~dpland_man" );
         this->_deleteTask();
         delete this->g;
+        delete this->cam_pos;
         o.unlock();
     }
 
@@ -132,9 +136,8 @@ namespace dragonpoop
         int64_t ix, iz, ex, ez, x, z, step, half_world;
         float f;
         int new_tile_ctr, old_tile_ctr;
-        gfx_readlock *gl;
+        dpposition_share_readlock *gl;
         shared_obj_guard o;
-        dpposition pp;
         dpposition_inner pi;
 
         l = &this->tiles;
@@ -144,18 +147,27 @@ namespace dragonpoop
             d.push_back( p );
         }
 
-        gl = (gfx_readlock *)o.tryReadLock( this->g, 100, "dpland_man::runTiles" );
-        if( !gl )
-            return;
-        gl->getCameraPosition( &pp );
-        o.unlock();
+        if( this->cam_pos && this->pos.t != this->cam_pos->getTime() )
+        {
 
-        pp.getData( &pi );
-        x = pi.start.x / (int64_t)this->land_sz;
-        z = pi.start.z / (int64_t)this->land_sz;
-        x *= (int64_t)this->land_sz;
-        z *= (int64_t)this->land_sz;
+            gl = (dpposition_share_readlock *)o.tryReadLock( this->cam_pos, 100, "dpland_man::runTiles" );
+            if( gl )
+            {
+                gl->getPosition()->getData( &pi );
+                x = pi.start.x / (int64_t)this->land_sz;
+                z = pi.start.z / (int64_t)this->land_sz;
+                x *= (int64_t)this->land_sz;
+                z *= (int64_t)this->land_sz;
+                this->pos.x = x;
+                this->pos.z = z;
+                this->pos.t = gl->getTime();
+                o.unlock();
+            }
 
+        }
+
+        x = this->pos.x;
+        z = this->pos.z;
         step = (int64_t)this->land_sz;
         f = this->world_sz * 0.5f - this->land_sz * 0.5f;
         half_world = (int64_t)f;

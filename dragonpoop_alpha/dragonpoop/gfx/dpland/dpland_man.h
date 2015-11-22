@@ -10,10 +10,10 @@
 #include "../dpbitmap/dpbitmap.h"
 
 #include <stdint.h>
- 
+
 namespace dragonpoop
 {
-    
+
     class dpthread_lock;
     class core;
     class dpland_man_ref;
@@ -25,18 +25,21 @@ namespace dragonpoop
     class dptaskpool_writelock;
     class gfx;
     class dpland;
+    class dpposition_share_ref;
 
     class dpland_man : public shared_obj
     {
-        
+
     private:
-        
+
         core *c;
         gfx_ref *g;
         struct
         {
             int64_t x, z;
+            uint64_t t;
         } pos;
+        dpposition_share_ref *cam_pos;
         dptask *tsk;
         dpland_man_task *gtsk;
         std::list<dpland *> tiles;
@@ -54,9 +57,9 @@ namespace dragonpoop
         dpland *getTile( int64_t x, int64_t z );
         //makes a tile at coords
         void makeTile( dpthread_lock *thd, int64_t x, int64_t z );
-        
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -67,21 +70,21 @@ namespace dragonpoop
         void run( dpthread_lock *thd, dpland_man_writelock *g );
         //get tiles
         void getTiles( std::list<dpland *> *l );
-        
+
     public:
-        
+
         //ctor
         dpland_man( core *c, gfx *g, dptaskpool_writelock *tp );
         //dtor
         virtual ~dpland_man( void );
         //return core
         core *getCore( void );
-        
+
         friend class dpland_man_readlock;
         friend class dpland_man_writelock;
-        
+
     };
-    
+
 };
 
 #endif
