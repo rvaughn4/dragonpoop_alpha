@@ -18,6 +18,11 @@ namespace dragonpoop
         this->screen = 0;
         this->dlX11 = 0;
         this->dlGL = 0;
+        this->lb = this->rb = 0;
+        this->bcaps = 0;
+        this->bctrl = 0;
+        this->bdocut = 0;
+        this->bshift = 0;
 
         if( !this->loadFunctions() )
             return;

@@ -35,10 +35,9 @@
 			<Add directory="/usr/include/freetype2" />
 		</Compiler>
 		<Linker>
-			<Add library="GL" />
-			<Add library="X11" />
 			<Add library="freetype" />
 			<Add library="pthread" />
+			<Add library="dl" />
 			<Add directory="/opt/X11/lib" />
 		</Linker>
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/bytetree/bytetree.cpp" />
