@@ -288,7 +288,7 @@ namespace dragonpoop
     }
 
     //return x11 window
-    Window x11_window::getWindow( void )
+    x11_window_Window x11_window::getWindow( void )
     {
         return this->win;
     }
@@ -300,13 +300,13 @@ namespace dragonpoop
     }
 
     //return display
-    Display *x11_window::getDisplay( void )
+    x11_window_Display *x11_window::getDisplay( void )
     {
         return this->dpy;
     }
 
     //return vi
-    XVisualInfo *x11_window::getVi( void )
+    x11_window_XVisualInfo *x11_window::getVi( void )
     {
         return this->vi;
     }

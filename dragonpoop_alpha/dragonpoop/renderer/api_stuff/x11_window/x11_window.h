@@ -54,7 +54,7 @@ namespace dragonpoop
     #define x11_window_SelectionNotify		31
     #define x11_window_PropModeReplace         0
     #define x11_window_PropertyChangeMask		(1L<<22)
-    #define x11_window_CurrentTime          0L	/* special Time */
+    #define x11_window_CurrentTime          0L
 
 
     typedef void (* x11_window_functions_XInitThreads )( void );

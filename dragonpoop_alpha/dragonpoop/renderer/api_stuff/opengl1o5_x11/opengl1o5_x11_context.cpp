@@ -48,7 +48,7 @@ namespace dragonpoop
     render_api_commandlist *opengl1o5_x11_context::genCmdList( render_api_context_writelock *cl, dpmutex_master *mm )
     {
         if( this->bUseDl )
-            return new opengl1o5_x11_commandlist( mm );
+            return new opengl1o5_x11_commandlist( mm, this->gl );
         return new opengl1o5_x11_commandlist_generic( mm );
     }
 

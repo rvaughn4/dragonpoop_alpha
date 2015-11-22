@@ -203,7 +203,7 @@ namespace dragonpoop
     {
         dpmutex_writelock *wl;
 
-        wl = this->l->tryWriteLock( "dpthread::lock", 30 );
+        wl = this->l->tryWriteLock( "dpthread::lock", 60 );
         if( !wl )
             return 0;
 
@@ -304,7 +304,7 @@ namespace dragonpoop
             tl = t->lock();
             if( !tl )
             {
-                std::this_thread::sleep_for( std::chrono::milliseconds( lowest_delay ) );
+                std::this_thread::sleep_for( std::chrono::milliseconds( 3 ) );
                 continue;
             }
 
@@ -349,7 +349,7 @@ namespace dragonpoop
                 r = t->tasks.static_notran[ i ];
                 if( r )
                 {
-                    rl = (dptask_writelock *)o.tryWriteLock( r, 10, "dpthread_threadproc" );
+                    rl = (dptask_writelock *)o.tryWriteLock( r, 30, "dpthread_threadproc" );
                     if( rl )
                     {
                         td = t->ticks - rl->getLastTime();
@@ -376,7 +376,7 @@ namespace dragonpoop
                 r = t->tasks.dynamic_notran[ i ];
                 if( r )
                 {
-                    rl = (dptask_writelock *)o.tryWriteLock( r, 10, "dpthread_threadproc" );
+                    rl = (dptask_writelock *)o.tryWriteLock( r, 30, "dpthread_threadproc" );
                     if( rl )
                     {
                         td = t->ticks - rl->getLastTime();
@@ -414,8 +414,6 @@ namespace dragonpoop
             delete tl;
 
             td = lowest_delay - td;
-            if( td < 1 )
-                td = 1;
             std::this_thread::sleep_for( std::chrono::milliseconds( td ) );
         }
 

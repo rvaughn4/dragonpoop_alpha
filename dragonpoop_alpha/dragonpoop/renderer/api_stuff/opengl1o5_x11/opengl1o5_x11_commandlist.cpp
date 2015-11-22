@@ -9,32 +9,34 @@ namespace dragonpoop
 {
 
     //ctor
-    opengl1o5_x11_commandlist::opengl1o5_x11_commandlist( dpmutex_master *mm ) : render_api_commandlist( mm )
+    opengl1o5_x11_commandlist::opengl1o5_x11_commandlist( dpmutex_master *mm, opengl1o5_x11_functions *gl ) : render_api_commandlist( mm )
     {
         this->dlist = 0;
+        this->gl = gl;
     }
 
     //dtor
     opengl1o5_x11_commandlist::~opengl1o5_x11_commandlist( void )
     {
         if( this->dlist )
-            glDeleteLists( this->dlist, 1 );
+            this->gl->glDeleteLists( this->dlist, 1 );
     }
 
     //called at begin of compile
     bool opengl1o5_x11_commandlist::beginCompile( render_api_context_writelock *ctx )
     {
-        this->dlist = glGenLists( 1 );
+        this->dlist = this->gl->glGenLists( 1 );
         if( !this->dlist )
             return 0;
-        glNewList( this->dlist, GL_COMPILE );
+        this->gl->glNewList( this->dlist, GL_COMPILE );
         return 1;
     }
 
     //called at end of compile
     void opengl1o5_x11_commandlist::endCompile( render_api_context_writelock *ctx )
     {
-        glEndList();
+        this->gl->glEndList();
+        this->gl->glFlush();
     }
 
     //called during compile for each draw call
@@ -54,12 +56,12 @@ namespace dragonpoop
     //execute command list
     bool opengl1o5_x11_commandlist::execute( render_api_context_writelock *r, dpmatrix *m_world )
     {
-        glMatrixMode( GL_PROJECTION );
-        glLoadIdentity();
-        glMatrixMode( GL_MODELVIEW );
-        glLoadMatrixf( m_world->getRaw4by4() );
+        this->gl->glPushMatrix();
+        this->gl->glMultMatrixf( m_world->getRaw4by4() );
 
-        glCallList( this->dlist );
+        this->gl->glCallList( this->dlist );
+
+        this->gl->glPopMatrix();
         return 1;
     }
 

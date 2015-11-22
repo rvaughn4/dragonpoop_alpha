@@ -81,7 +81,7 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
 
-        this->_startTask( tp, 3 );
+        this->_startTask( tp, 5 );
     }
 
     //dtor

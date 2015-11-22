@@ -79,7 +79,7 @@ namespace dragonpoop
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 3, 1, "renderer" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 5, 1, "renderer" );
         tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
 
@@ -361,7 +361,7 @@ namespace dragonpoop
             this->new_sky_cl = 0;
         }
 
-        if( this->clpasser->model_ready || this->clpasser->gui_ready )
+        if( this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready || this->clpasser->sky_ready )
         {
 
             cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 3, "renderer::render" );

@@ -160,6 +160,11 @@ namespace dragonpoop
         r &= ( this->gl.glBlendFunc = (opengl1o5_x11_functions_glBlendFunc)this->gl.glXGetProcAddress( (const unsigned char *)"glBlendFunc" ) ) != 0;
         r &= ( this->gl.glFlush = (opengl1o5_x11_functions_glFlush)this->gl.glXGetProcAddress( (const unsigned char *)"glFlush" ) ) != 0;
         r &= ( this->gl.glGetError = (opengl1o5_x11_functions_glGetError)this->gl.glXGetProcAddress( (const unsigned char *)"glGetError" ) ) != 0;
+        r &= ( this->gl.glDeleteLists = (opengl1o5_x11_functions_glDeleteLists)this->gl.glXGetProcAddress( (const unsigned char *)"glDeleteLists" ) ) != 0;
+        r &= ( this->gl.glGenLists = (opengl1o5_x11_functions_glGenLists)this->gl.glXGetProcAddress( (const unsigned char *)"glGenLists" ) ) != 0;
+        r &= ( this->gl.glNewList = (opengl1o5_x11_functions_glNewList)this->gl.glXGetProcAddress( (const unsigned char *)"glNewList" ) ) != 0;
+        r &= ( this->gl.glEndList = (opengl1o5_x11_functions_glEndList)this->gl.glXGetProcAddress( (const unsigned char *)"glEndList" ) ) != 0;
+        r &= ( this->gl.glCallList = (opengl1o5_x11_functions_glCallList)this->gl.glXGetProcAddress( (const unsigned char *)"glCallList" ) ) != 0;
 
         if( !r )
             return 0;
@@ -196,9 +201,9 @@ namespace dragonpoop
     }
 
     //return next fee context
-    GLXContext opengl1o5_x11::getNextCtx( void )
+    opengl1o5_x11_GLXContext opengl1o5_x11::getNextCtx( void )
     {
-        GLXContext r;
+        opengl1o5_x11_GLXContext r;
 
         while( this->ctx_used < opengl1o5_x11_max_contexts )
         {
@@ -214,7 +219,7 @@ namespace dragonpoop
     //generate context
     render_api_context *opengl1o5_x11::genContext( render_api_writelock *al, dpmutex_master *mm )
     {
-        GLXContext c;
+        opengl1o5_x11_GLXContext c;
 
         c = this->getNextCtx();
         if( !c )
