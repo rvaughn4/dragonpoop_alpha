@@ -74,7 +74,7 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
 
-        this->_startTask( tp, 100 );
+        this->_startTask( tp, 5 );
     }
 
     //dtor
@@ -217,7 +217,7 @@ namespace dragonpoop
         dpmatrix m1, m2;
         float abs_sky_time, abs_smooth_sky_time, daylight;
 
-        if( this->clpasser->t->sky_ready )
+        if( renderer_commandlist_passer::waitForFlag( &this->clpasser->t->sky_ready, 0, 3 ) )
             return;
 
         cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_sky_man::renderSky" );

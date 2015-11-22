@@ -82,7 +82,7 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
 
-        this->_startTask( tp, 20 );
+        this->_startTask( tp, 5 );
     }
 
     //dtor
@@ -390,13 +390,13 @@ namespace dragonpoop
         renderer_commandlist_passer_writelock *cpl;
         render_api_shader_ref *sdr;
 
-        if( this->clpasser->t->gui_ready )
+        if( renderer_commandlist_passer::waitForFlag( &this->clpasser->t->gui_ready, 0, 5 ) )
             return;
 
-        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 100, "renderer_gui_man::render" );
+        cpl = (renderer_commandlist_passer_writelock *)ocpl.tryWriteLock( this->clpasser, 30, "renderer_gui_man::render" );
         if( !cpl )
             return;
-        ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 100, "renderer_gui_man::render" );
+        ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 30, "renderer_gui_man::render" );
         if( !ctxl )
             return;
         cpl->setGui( g->t->clist );
@@ -410,7 +410,7 @@ namespace dragonpoop
         if( !this->clist )
             return;
 
-        cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->clist, 100, "renderer_gui_man::render" );
+        cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->clist, 30, "renderer_gui_man::render" );
         if( !cll )
             return;
 

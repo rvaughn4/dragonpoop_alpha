@@ -75,7 +75,7 @@ namespace dragonpoop
             this->r = (renderer_ref *)rl->getRef();
         o.unlock();
 
-        this->_startTask( tp, 30 );
+        this->_startTask( tp, 5 );
     }
 
     //dtor
@@ -294,7 +294,7 @@ namespace dragonpoop
         shared_obj_guard ocpl;
         render_api_shader_ref *sdr;
 
-        if( this->clpasser->t->land_ready )
+        if( renderer_commandlist_passer::waitForFlag( &this->clpasser->t->land_ready, 0, 5 ) )
             return;
 
         ctxl = (render_api_context_writelock *)octxt.tryWriteLock( this->ctx, 100, "renderer_land_man::render" );

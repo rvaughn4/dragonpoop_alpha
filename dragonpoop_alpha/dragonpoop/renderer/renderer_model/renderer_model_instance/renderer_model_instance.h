@@ -17,7 +17,7 @@
 
 namespace dragonpoop
 {
-    
+
     class renderer_model_instance_writelock;
     class renderer_model_instance_vertex;
     class renderer_model_instance_group;
@@ -37,12 +37,12 @@ namespace dragonpoop
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
     class renderer_model_material;
-    
+
     class renderer_model_instance : public shared_obj
     {
-        
+
     private:
-        
+
         dpid id;
         struct
         {
@@ -62,9 +62,9 @@ namespace dragonpoop
 
         //delete all components
         void deleteComponents( void );
-        
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -149,19 +149,19 @@ namespace dragonpoop
         float getAlpha( void );
 
     public:
-        
+
         //ctor
         renderer_model_instance( model_instance_writelock *ml );
         //dtor
         virtual ~renderer_model_instance( void );
         //get id
         dpid getId( void );
-        
+
         friend class renderer_model_instance_readlock;
         friend class renderer_model_instance_writelock;
 
     };
-    
+
 };
 
 #endif

@@ -104,7 +104,28 @@ namespace dragonpoop
     //get rotational direction
     void dpposition::getDirection( dpxyz_f *pout )
     {
+        dpxyz_f v;
 
+        v.x = this->i.end.x - this->i.start.x;
+        v.y = this->i.end.y - this->i.start.y;
+        v.z = this->i.end.z - this->i.start.z;
+
+        *pout = this->old_rot;
+        if( this->i.end.t == this->i.start.t )
+            return;
+
+        if( abs( v.x ) + abs( v.z ) > 0.1f )
+            pout->y = atan2( -v.x, -v.z );
+        if( abs( v.y ) > 0.1f )
+        {
+            if( abs( v.x ) < 0.1f )
+                pout->y = 0;
+            pout->x = atan2( v.y, -v.z );
+        }
+        else
+            pout->x = 0;
+
+        this->old_rot = *pout;
     }
 
     //move position incrementally

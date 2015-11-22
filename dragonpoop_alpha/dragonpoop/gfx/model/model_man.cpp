@@ -167,7 +167,6 @@ namespace dragonpoop
         shared_obj_guard o;
         gfx_readlock *gl;
         model_writelock *pl;
-        unsigned int ms_each_frame;
 
         gl = (gfx_readlock *)o.tryReadLock( this->g, 100, "model_man::runModels" );
         if( gl )
@@ -182,7 +181,7 @@ namespace dragonpoop
             pl = (model_writelock *)o.tryWriteLock( p, 100, "model_man::runModels" );
             if( !pl )
                 continue;
-            pl->run( thd, ms_each_frame );
+            pl->run( thd, this->ms_each_frame );
             if( !pl->getRefCount() && !pl->getInstanceCount() && !pl->isLinked() )
                 d.push_back( p );
             this->instance_cnt += pl->getInstanceCount();

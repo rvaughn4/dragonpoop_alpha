@@ -7,21 +7,21 @@
 
 namespace dragonpoop
 {
-    
+
     class render_api_commandlist_ref;
-    
+
     class renderer_commandlist_passer : public shared_obj
     {
-        
+
     private:
-        
+
         std::atomic<render_api_commandlist_ref *> rmodel, rgui, rland, rsky;
         dpposition pos;
         std::atomic<bool> model_ready, gui_ready, land_ready, sky_ready;
         float w, h;
-        
+
     protected:
-        
+
         //generate write lock
         virtual shared_obj_writelock *genWriteLock( shared_obj *p, dpmutex_writelock *l );
         //generate ref
@@ -46,15 +46,17 @@ namespace dragonpoop
         void setSky( render_api_commandlist_ref *r );
         //get sky commandlist
         render_api_commandlist_ref *getSky( void );
-        
+
     public:
-        
+
         //ctor
         renderer_commandlist_passer( dpmutex_master *mm );
         //dtor
         virtual ~renderer_commandlist_passer( void );
-        
-        
+        //wait on flag to clear
+        static bool waitForFlag( std::atomic<bool> *f, bool value_to_wait_for, unsigned int wait_ms );
+
+
         friend class renderer_commandlist_passer_writelock;
         friend class renderer_commandlist_passer_readlock;
         friend class renderer_commandlist_passer_ref;
@@ -65,7 +67,7 @@ namespace dragonpoop
         friend class renderer_sky_man;
 
     };
-    
+
 };
 
 #endif

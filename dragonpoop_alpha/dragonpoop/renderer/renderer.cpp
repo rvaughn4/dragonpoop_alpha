@@ -361,47 +361,42 @@ namespace dragonpoop
             this->new_sky_cl = 0;
         }
 
-        if( this->clpasser->model_ready || this->clpasser->gui_ready || this->clpasser->land_ready || this->clpasser->sky_ready )
-        {
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->model_ready, 1, 10 ) )
+            return;
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->gui_ready, 1, 10 ) )
+            return;
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->land_ready, 1, 10 ) )
+            return;
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->sky_ready, 1, 10 ) )
+            return;
 
-            cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 3, "renderer::render" );
-            if( cpl )
-            {
-                if( this->clpasser->model_ready )
-                {
-                    this->new_model_cl = cpl->getModel();
-                    this->clpasser->model_ready = 0;
-                }
-                if( this->clpasser->land_ready )
-                {
-                    this->new_land_cl = cpl->getLand();
-                    this->clpasser->land_ready = 0;
-                }
-                if( this->clpasser->sky_ready )
-                {
-                    this->new_sky_cl = cpl->getSky();
-                    this->clpasser->sky_ready = 0;
-                }
-                if( this->clpasser->gui_ready )
-                {
-                    this->new_gui_cl = cpl->getGui();
-                    this->clpasser->gui_ready = 0;
-                }
-                cpl->setPosition( &this->cam_pos );
-            }
-
-            o.unlock();
-        }
-        else
+        cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 3, "renderer::render" );
+        if( cpl )
         {
-            if( this->render_tries > 2 )
-                this->render_tries = 0;
-            else
+            if( this->clpasser->model_ready )
             {
-                this->render_tries++;
-                return;
+                this->new_model_cl = cpl->getModel();
+                this->clpasser->model_ready = 0;
             }
+            if( this->clpasser->land_ready )
+            {
+                this->new_land_cl = cpl->getLand();
+                this->clpasser->land_ready = 0;
+            }
+            if( this->clpasser->sky_ready )
+            {
+                this->new_sky_cl = cpl->getSky();
+                this->clpasser->sky_ready = 0;
+            }
+            if( this->clpasser->gui_ready )
+            {
+                this->new_gui_cl = cpl->getGui();
+                this->clpasser->gui_ready = 0;
+            }
+            cpl->setPosition( &this->cam_pos );
         }
+
+        o.unlock();
 
         this->dim_update_tick++;
         if( this->dim_update_tick > 10 )

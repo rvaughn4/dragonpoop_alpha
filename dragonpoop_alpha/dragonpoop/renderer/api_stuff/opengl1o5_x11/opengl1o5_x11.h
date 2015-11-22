@@ -6,10 +6,6 @@
 #include "../render_api/render_api.h"
 
 #include <dlfcn.h>
-
-#include <GL/glx.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
 #include <string>
 
 #define opengl1o5_x11_max_contexts 10
