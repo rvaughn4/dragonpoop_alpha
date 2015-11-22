@@ -17,6 +17,9 @@ namespace dragonpoop
 
         dpposition pos;
         std::shared_ptr<std::atomic<uint64_t>> t;
+        float *fv;
+        unsigned int w, h, tile_size;
+        int64_t x, z;
 
     protected:
 
@@ -32,6 +35,14 @@ namespace dragonpoop
         dpposition *getPosition( void );
         //get position time
         uint64_t getTime( void );
+        //resize and set center
+        void setDimensions( double w, double h, double x, double z, double tile_size );
+        //set height at coord
+        void setHeight( double x, double z, float h );
+        //get height at coord
+        float getHeight( double x, double z );
+        //clear
+        void clear( void );
 
     public:
 

@@ -11,11 +11,16 @@ namespace dragonpoop
     dpheight_cache::dpheight_cache( dpmutex_master *mm ) : shared_obj( mm )
     {
         *( this->t.get() ) = 0;
+        this->fv = 0;
+        this->w = 0;
+        this->h = 0;
+        this->tile_size = 0;
     }
 
     //dtor
     dpheight_cache::~dpheight_cache( void )
     {
+        this->clear();
     }
 
     //generate write lock
@@ -55,6 +60,52 @@ namespace dragonpoop
     uint64_t dpheight_cache::getTime( void )
     {
         return *( this->t.get() );
+    }
+
+    //resize and set center
+    void dpheight_cache::setDimensions( double w, double h, double x, double z, double tile_size )
+    {
+        unsigned int iw, ih, is;
+
+        iw = (unsigned int)w;
+        ih = (unsigned int)h;
+        is = (unsigned int)tile_size;
+        iw /= is;
+        ih /= is;
+        this->x = x;
+        this->z = z;
+
+        if( !this->fv || iw != this->w || ih != this->h )
+        {
+            this->clear();
+            this->fv = new float[ iw * ih ];
+            this->iw = iw;
+            this->ih = ih;
+            this->tile_size = is;
+        }
+    }
+
+    //set height at coord
+    void dpheight_cache::setHeight( double x, double z, float h )
+    {
+
+    }
+
+    //get height at coord
+    float dpheight_cache::getHeight( double x, double z )
+    {
+
+    }
+
+    //clear
+    void dpheight_cache::clear( void )
+    {
+        if( this->fv )
+            delete[] this->fv;
+        this->fv = 0;
+        this->w = 0;
+        this->h = 0;
+        this->tile_size = 0;
     }
 
 
