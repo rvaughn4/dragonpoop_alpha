@@ -37,6 +37,7 @@ namespace dragonpoop
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
     class renderer_model_material;
+    class dpheight_cache_readlock;
 
     class renderer_model_instance : public shared_obj
     {
@@ -112,7 +113,7 @@ namespace dragonpoop
         //genertae joint
         virtual renderer_model_instance_joint *genJoint( model_instance_writelock *ml, model_instance_joint *g, dpthread_lock *thd );
         //render model
-        void render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        void render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpheight_cache_readlock *heights, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //render group
         void renderGroup( dpthread_lock *thd, renderer_model_instance_readlock *mi, renderer_model_material *m, renderer_model_instance_group *g, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //returns joint cache
@@ -130,7 +131,7 @@ namespace dragonpoop
         //recompute animation joint matrixes
         void redoMatrixes( renderer_model_instance_writelock *m, uint64_t t );
         //get model view matrix
-        void getModelViewMatrix( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix );
+        void getModelViewMatrix( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpheight_cache_readlock *heights, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix );
         //get dimensions
         model_gui_pos *getGuiDimensions( void );
         //returns true if gui

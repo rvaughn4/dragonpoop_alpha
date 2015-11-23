@@ -39,6 +39,9 @@ namespace dragonpoop
     class dpposition;
     class renderer_commandlist_passer;
     class renderer_commandlist_passer_ref;
+    class dpheight_cache_ref;
+    class dpheight_cache;
+    class dpheight_cache_readlock;
 
     class renderer_model_man : public shared_obj
     {
@@ -61,6 +64,8 @@ namespace dragonpoop
         dpposition campos;
         std::atomic<bool> listReady;
         renderer_commandlist_passer_ref * clpasser;
+        dpheight_cache_ref *heights;
+        dpheight_cache *local_heights;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );
@@ -75,11 +80,11 @@ namespace dragonpoop
         //run models
         void runModels( dpthread_lock *thd, renderer_model_man_writelock *g );
         //render into command list
-        void render( dpthread_lock *thd, renderer_model_man_writelock *g );
+        void render( dpthread_lock *thd, renderer_model_man_writelock *g, dpheight_cache_readlock *heights );
         //compute matrix
         void computeMatrix( void );
         //render models
-        void renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        void renderModels( dpthread_lock *thd, dpposition *campos, dpheight_cache_readlock *heights, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
 
     protected:
 

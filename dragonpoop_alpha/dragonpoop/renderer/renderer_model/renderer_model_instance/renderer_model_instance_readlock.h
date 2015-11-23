@@ -24,23 +24,24 @@ namespace dragonpoop
     class dpposition;
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
-    
+    class dpheight_cache_readlock;
+
     class renderer_model_instance_readlock : public shared_obj_readlock
     {
-        
+
     private:
-        
+
         renderer_model_instance *t;
-        
+
     protected:
-        
+
         //ctor
         renderer_model_instance_readlock( renderer_model_instance *t, dpmutex_readlock *l );
         //dtor
         virtual ~renderer_model_instance_readlock( void );
-        
+
     public:
-        
+
         //get id
         dpid getId( void );
         //find component by type and id
@@ -64,7 +65,7 @@ namespace dragonpoop
         //animate
         void animate( void );
         //render model
-        void render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        void render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpheight_cache_readlock *heights, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //returns joint cache
         model_instance_joint_cache *getJointCache( void );
         //transform vertex using joints
@@ -82,7 +83,7 @@ namespace dragonpoop
 
         friend class renderer_model_instance;
     };
-    
+
 };
 
 #endif

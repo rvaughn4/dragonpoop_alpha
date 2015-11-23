@@ -12,6 +12,7 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-march=athlon64" />
 					<Add option="-g" />
 				</Compiler>
 			</Target>
@@ -29,8 +30,16 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-march=i586" />
+			<Add option="-Wnon-virtual-dtor" />
+			<Add option="-Winit-self" />
+			<Add option="-Wredundant-decls" />
+			<Add option="-Wcast-align" />
+			<Add option="-Wfloat-equal" />
+			<Add option="-Wunreachable-code" />
 			<Add option="-std=c++11" />
 			<Add option="-Wall" />
+			<Add option="-g" />
 			<Add directory="/opt/X11/include" />
 			<Add directory="/usr/include/freetype2" />
 		</Compiler>
@@ -201,6 +210,14 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpfont/dpfont.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpfont/dpfont.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpfont/dpfonts.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache_readlock.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache_readlock.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache_ref.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache_ref.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache_writelock.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache_writelock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpland/dpland.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpland/dpland.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpland/dpland_defines.h" />
@@ -222,6 +239,14 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpmatrix/dpquaternion.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share_readlock.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share_readlock.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share_ref.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share_ref.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share_writelock.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share_writelock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpposition/dppositions.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpsky/dpsky.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/dpsky/dpsky_man.cpp" />

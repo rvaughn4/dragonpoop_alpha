@@ -3,6 +3,7 @@
 #include "dpheight_cache_ref.h"
 #include "dpheight_cache_readlock.h"
 #include "dpheight_cache_writelock.h"
+#include "../../core/shared_obj/shared_obj_guard.h"
 
 namespace dragonpoop
 {
@@ -10,7 +11,8 @@ namespace dragonpoop
     //ctor
     dpheight_cache::dpheight_cache( dpmutex_master *mm ) : shared_obj( mm )
     {
-        *( this->t.get() ) = 0;
+        std::shared_ptr<std::atomic<uint64_t>> tt( new std::atomic<uint64_t>() );
+        this->t = tt;
         this->fv = 0;
         this->w = 0;
         this->h = 0;
@@ -62,6 +64,12 @@ namespace dragonpoop
         return *( this->t.get() );
     }
 
+    //set time
+    void dpheight_cache::setTime( uint64_t t )
+    {
+        *( this->t.get() ) = t;
+    }
+
     //resize and set center
     void dpheight_cache::setDimensions( double w, double h, double x, double z, double tile_size )
     {
@@ -79,8 +87,8 @@ namespace dragonpoop
         {
             this->clear();
             this->fv = new float[ iw * ih ];
-            this->iw = iw;
-            this->ih = ih;
+            this->w = iw;
+            this->h = ih;
             this->tile_size = is;
         }
     }
@@ -88,13 +96,55 @@ namespace dragonpoop
     //set height at coord
     void dpheight_cache::setHeight( double x, double z, float h )
     {
+        unsigned int ix, iz, ii;
 
+        if( !this->fv )
+            return;
+
+        x -= this->x;
+        z -= this->z;
+        x /= this->tile_size;
+        z /= this->tile_size;
+        x -= this->w / 2;
+        z -= this->h / 2;
+
+        if( x < 0 || z < 0 )
+            return;
+        ix = (unsigned int)x;
+        iz = (unsigned int)z;
+        if( ix >= this->w || iz >= this->h )
+            return;
+
+        ii = iz * this->w;
+        ii += ix;
+        this->fv[ ii ] = h;
     }
 
     //get height at coord
     float dpheight_cache::getHeight( double x, double z )
     {
+        unsigned int ix, iz, ii;
 
+        if( !this->fv )
+            return 0;
+
+        x -= this->x;
+        z -= this->z;
+        x /= this->tile_size;
+        z /= this->tile_size;
+        x -= this->w / 2;
+        z -= this->h / 2;
+
+        if( x < 0 || z < 0 )
+            return 0;
+        ix = (unsigned int)x;
+        iz = (unsigned int)z;
+        if( ix >= this->w || iz >= this->h )
+            return 0;
+
+        ii = iz * this->w;
+        ii += ix;
+        return this->fv[ ii ];
     }
 
     //clear
@@ -106,6 +156,49 @@ namespace dragonpoop
         this->w = 0;
         this->h = 0;
         this->tile_size = 0;
+    }
+
+    //sync
+    void dpheight_cache::sync( dpheight_cache_ref *r )
+    {
+        dpheight_cache_readlock *l;
+        shared_obj_guard o;
+        unsigned int iw, ih, is, ii, ie;
+
+        if( r->getTime() == this->getTime() )
+            return;
+
+        l = (dpheight_cache_readlock *)o.tryReadLock( r, 30, "dpheight_cache::sync" );
+        if( !l )
+            return;
+
+        this->pos.copy( l->getPosition() );
+        *( this->t.get() ) = l->getTime();
+
+        if( !l->t->fv )
+            return;
+
+        iw = l->t->w;
+        ih = l->t->h;
+        is = l->t->tile_size;
+        this->x = l->t->x;
+        this->z = l->t->z;
+
+        if( !this->fv || iw != this->w || ih != this->h )
+        {
+            this->clear();
+            this->fv = new float[ iw * ih ];
+            this->w = iw;
+            this->h = ih;
+            this->tile_size = is;
+        }
+
+        if( !this->fv )
+            return;
+
+        ie = this->w * this->h;
+        for( ii = 0; ii < ie; ii++ )
+            this->fv[ ii ] = l->t->fv[ ii ];
     }
 
 

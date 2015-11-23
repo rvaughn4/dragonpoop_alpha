@@ -9,12 +9,13 @@
 
 namespace dragonpoop
 {
-    
+    class dpheight_cache_writelock;
+
     class dpland
     {
-        
+
     private:
-        
+
         struct
         {
             int64_t x, z;
@@ -23,18 +24,18 @@ namespace dragonpoop
         dpvertex_buffer vb;
         dpindex_buffer ib;
         float land_sz, tile_sz, tex_size;
-        
+
         //build land
         void build( void );
         //get height and normals
         float getHeightAndNormal( float x, float z, dpxyz_f *n );
         //get height
         float getHeight( float x, float y );
-        
+
     protected:
-        
+
     public:
-        
+
         //ctor
         dpland( dpid id, int64_t x, int64_t z, float land_sz, float tile_sz, float tex_size );
         //dtor
@@ -49,9 +50,11 @@ namespace dragonpoop
         dpvertex_buffer *getVB( void );
         //returns index buffer
         dpindex_buffer *getIB( void );
-        
+        //set heights
+        void setHeights( dpheight_cache_writelock *h );
+
     };
-    
+
 };
 
 #endif

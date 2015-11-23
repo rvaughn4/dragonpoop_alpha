@@ -21,23 +21,24 @@ namespace dragonpoop
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
     class dpposition;
+    class dpheight_cache_readlock;
 
     class renderer_model_readlock : public shared_obj_readlock
     {
-        
+
     private:
-        
+
         renderer_model *t;
-        
+
     protected:
-        
+
         //ctor
         renderer_model_readlock( renderer_model *t, dpmutex_readlock *l );
         //dtor
         virtual ~renderer_model_readlock( void );
-        
+
     public:
-        
+
         //get id
         dpid getId( void );
         //find component by type and id
@@ -51,7 +52,7 @@ namespace dragonpoop
         //sync model instance with changes
         void sync( void );
         //render model
-        void render( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        void render( dpthread_lock *thd, dpposition *campos, dpheight_cache_readlock *heights, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //find material
         renderer_model_material *findMaterial( dpid id );
         //get materials
@@ -65,7 +66,7 @@ namespace dragonpoop
 
         friend class renderer_model;
     };
-    
+
 };
 
 #endif

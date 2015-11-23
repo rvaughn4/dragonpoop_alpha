@@ -29,6 +29,8 @@ namespace dragonpoop
         dpposition *getPosition( void );
         //get position time
         uint64_t getTime( void );
+        //get height at coord
+        float getHeight( double x, double z );
 
         friend class dpheight_cache;
     };

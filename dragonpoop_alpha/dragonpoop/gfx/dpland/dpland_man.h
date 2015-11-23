@@ -26,6 +26,7 @@ namespace dragonpoop
     class gfx;
     class dpland;
     class dpposition_share_ref;
+    class dpheight_cache_ref;
 
     class dpland_man : public shared_obj
     {
@@ -44,6 +45,7 @@ namespace dragonpoop
         dpland_man_task *gtsk;
         std::list<dpland *> tiles;
         float land_sz, tile_sz, tex_sz, world_sz;
+        dpheight_cache_ref *heights;
 
         //start task
         void _startTask( dptaskpool_writelock *tp, unsigned int ms_delay );

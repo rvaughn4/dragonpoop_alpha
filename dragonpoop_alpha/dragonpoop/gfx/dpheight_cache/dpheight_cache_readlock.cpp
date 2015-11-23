@@ -29,4 +29,10 @@ namespace dragonpoop
         return this->t->getTime();
     }
 
+    //get height at coord
+    float dpheight_cache_readlock::getHeight( double x, double z )
+    {
+        return this->t->getHeight( x, z );
+    }
+
 };

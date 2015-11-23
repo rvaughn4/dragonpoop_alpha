@@ -17,6 +17,8 @@
 #include "../../core/dpthread/dpthread_lock.h"
 #include "../dpposition/dpposition_share_readlock.h"
 #include "../dpposition/dpposition_share_ref.h"
+#include "../dpheight_cache/dpheight_cache_ref.h"
+#include "../dpheight_cache/dpheight_cache_writelock.h"
 
 #include <math.h>
 
@@ -39,6 +41,7 @@ namespace dragonpoop
         gl = (gfx_writelock *)o.writeLock( g, "dpland_man::dpland_man" );
         this->g = (gfx_ref *)gl->getRef();
         this->cam_pos = gl->getCameraPosition();
+        this->heights = gl->getHeights();
         o.unlock();
 
         this->_startTask( tp, 200 );
@@ -61,6 +64,7 @@ namespace dragonpoop
         this->_deleteTask();
         delete this->g;
         delete this->cam_pos;
+        delete this->heights;
         o.unlock();
     }
 
@@ -137,8 +141,10 @@ namespace dragonpoop
         float f;
         int new_tile_ctr, old_tile_ctr;
         dpposition_share_readlock *gl;
-        shared_obj_guard o;
+        shared_obj_guard o, o1;
         dpposition_inner pi;
+        bool wasUpdated;
+        dpheight_cache_writelock *hl;
 
         l = &this->tiles;
         for( i = l->begin(); i != l->end(); ++i )
@@ -166,6 +172,7 @@ namespace dragonpoop
 
         }
 
+        wasUpdated = 0;
         x = this->pos.x;
         z = this->pos.z;
         step = (int64_t)this->land_sz;
@@ -185,6 +192,7 @@ namespace dragonpoop
                     if( new_tile_ctr < 5 )
                     {
                         this->makeTile( thd, ix, iz );
+                        wasUpdated = 1;
                         new_tile_ctr++;
                     }
                 }
@@ -206,6 +214,23 @@ namespace dragonpoop
             }
         }
 
+        if( !wasUpdated || !this->heights )
+            return;
+
+        hl = (dpheight_cache_writelock *)o.tryWriteLock( this->heights, 100, "dpland_man::runTiles" );
+        if( !hl )
+            return;
+
+        hl->setDimensions( this->world_sz / this->tile_sz, this->world_sz / this->tile_sz, this->pos.x, this->pos.z, this->tile_sz );
+
+        l = &this->tiles;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            p->setHeights( hl );
+        }
+
+        hl->setTime( thd->getTicks() );
     }
 
     //returns true if tile exists

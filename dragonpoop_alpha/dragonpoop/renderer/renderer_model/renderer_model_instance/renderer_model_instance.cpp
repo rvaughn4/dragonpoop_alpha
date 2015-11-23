@@ -16,7 +16,7 @@
 #include "../renderer_model_material/renderer_model_material.h"
 #include "../renderer_model_readlock.h"
 #include "../../../core/dpthread/dpthread_lock.h"
-
+#include "../../../gfx/dpheight_cache/dpheight_cache_readlock.h"
 #include "../../api_stuff/render_api/render_api_commandlist_writelock.h"
 #include "../../api_stuff/render_api/render_api_context_writelock.h"
 #include "../../api_stuff/render_api/render_api_vertexbuffer_ref.h"
@@ -435,7 +435,7 @@ namespace dragonpoop
     }
 
     //render model
-    void renderer_model_instance::render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
+    void renderer_model_instance::render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, renderer_model_instance_readlock *mi, dpheight_cache_readlock *heights, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
         std::list<renderer_model_instance_group *> l;
         std::list<renderer_model_instance_group *>::iterator i;
@@ -444,7 +444,7 @@ namespace dragonpoop
         dpmatrix mlocal;
 
         this->redoMatrixes( mi, thd->getTicks() );
-        this->getModelViewMatrix( thd, campos, m, m_world, &mlocal );
+        this->getModelViewMatrix( thd, campos, m, heights, m_world, &mlocal );
         this->getGroups( &l );
 
         clist->setMatrix( &mlocal );
@@ -654,12 +654,16 @@ namespace dragonpoop
     }
 
     //get model view matrix
-    void renderer_model_instance::getModelViewMatrix( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
+    void renderer_model_instance::getModelViewMatrix( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpheight_cache_readlock *heights, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
         dpxyz_f pp, sz, ctr, rot;
-        float fsz, rsz;
+        float fsz, rsz, h;
+        dpposition dd;
 
+        dd.getDifference( &this->pos, thd->getTicks(), &pp );
+        h = heights->getHeight( pp.x, pp.z );
         campos->getDifference( &this->pos, thd->getTicks(), &pp );
+
         m->getCenter( &ctr );
         m->getSize( &sz );
         fsz = sz.x * sz.x + sz.y * sz.y + sz.z * sz.z;
@@ -673,18 +677,14 @@ namespace dragonpoop
 
         out_model_matrix->copy( in_world_matrix );
 
-        if( !this->isGui() )
-        {
-            out_model_matrix->translate( pp.x, pp.y, pp.z - 3 );
-            out_model_matrix->scale( rsz, rsz, rsz );
-            out_model_matrix->translate( -ctr.x, -ctr.y, -ctr.z );
+        out_model_matrix->translate( pp.x, pp.y + h, pp.z - 3 );
+        out_model_matrix->scale( rsz, rsz, rsz );
+        out_model_matrix->translate( -ctr.x, -ctr.y, -ctr.z );
 
-            out_model_matrix->rotateXrad( rot.x );
-            out_model_matrix->rotateZrad( rot.z );
-            out_model_matrix->rotateYrad( rot.y );
+        out_model_matrix->rotateXrad( rot.x );
+        out_model_matrix->rotateZrad( rot.z );
+        out_model_matrix->rotateYrad( rot.y );
 
-            return;
-        }
 
     }
 

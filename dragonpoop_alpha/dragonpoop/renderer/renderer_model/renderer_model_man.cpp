@@ -38,6 +38,10 @@
 #include "../renderer_commandlist_passer.h"
 #include "../renderer_commandlist_passer_ref.h"
 #include "../renderer_commandlist_passer_writelock.h"
+#include "../../gfx/dpheight_cache/dpheight_cache.h"
+#include "../../gfx/dpheight_cache/dpheight_cache_ref.h"
+#include "../../gfx/dpheight_cache/dpheight_cache_writelock.h"
+#include "../../gfx/dpheight_cache/dpheight_cache_readlock.h"
 
 #include <thread>
 
@@ -73,8 +77,10 @@ namespace dragonpoop
         if( gl )
         {
             gl->getModels( &this->g_models );
+            this->heights = gl->getHeights();
         }
         o.unlock();
+        this->local_heights = new dpheight_cache( c->getMutexMaster() );
 
         rl = (renderer_writelock *)o.writeLock( r, "renderer_model_man::renderer_model_man" );
         if( rl )
@@ -108,6 +114,8 @@ namespace dragonpoop
         delete this->g;
         delete this->g_models;
         delete this->tpr;
+        delete this->heights;
+        delete this->local_heights;
         r = this->clpasser;
         delete r;
         o.unlock();
@@ -334,14 +342,31 @@ namespace dragonpoop
     //run from manager thread
     void renderer_model_man::run( dpthread_lock *thd, renderer_model_man_writelock *g )
     {
-        this->render( thd, g );
+        dpheight_cache_writelock *l;
+        dpheight_cache_readlock *lr;
+        shared_obj_guard o;
+
+        l = (dpheight_cache_writelock *)o.tryWriteLock( this->local_heights, 100, "renderer_model_man::run" );
+        if( l )
+        {
+            l->sync( this->heights );
+            o.unlock();
+        }
+
+        lr = (dpheight_cache_readlock *)o.tryReadLock( this->local_heights, 100, "renderer_model_man::run" );
+        if( lr )
+        {
+            this->render( thd, g, lr );
+            o.unlock();
+        }
+
         this->sync( thd, g );
         this->runModels( thd, g );
         this->deleteOldModels( thd, g );
     }
 
     //render guis into commandlist
-    void renderer_model_man::render( dpthread_lock *thd, renderer_model_man_writelock *g )
+    void renderer_model_man::render( dpthread_lock *thd, renderer_model_man_writelock *g, dpheight_cache_readlock *heights )
     {
         shared_obj_guard o, octxt, ocl;
         render_api_context_writelock *ctxl;
@@ -374,7 +399,7 @@ namespace dragonpoop
             return;
 
         cll->setShader( sdr );
-        this->renderModels( thd, &this->campos, &this->m, ctxl, cll );
+        this->renderModels( thd, &this->campos, heights, &this->m, ctxl, cll );
 
         cll->setPosition( &this->campos );
         if( cll->compile( ctxl ) )
@@ -422,7 +447,7 @@ namespace dragonpoop
     }
 
     //render models
-    void renderer_model_man::renderModels( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
+    void renderer_model_man::renderModels( dpthread_lock *thd, dpposition *campos, dpheight_cache_readlock *heights, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
         std::list<renderer_model *> *l;
         std::list<renderer_model *>::iterator i;
@@ -437,7 +462,7 @@ namespace dragonpoop
             pl = (renderer_model_readlock *)o.tryReadLock( p, 100, "renderer_model_man::rendermodels" );
             if( !pl )
                continue;
-            pl->render( thd, campos, m_world, ctx, clist );
+            pl->render( thd, campos, heights, m_world, ctx, clist );
         }
     }
 

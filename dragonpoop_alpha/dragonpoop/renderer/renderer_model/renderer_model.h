@@ -14,7 +14,7 @@
 
 namespace dragonpoop
 {
-    
+
     class dptask;
     class dpthread_lock;
     class core;
@@ -33,12 +33,13 @@ namespace dragonpoop
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
     class dpposition;
+    class dpheight_cache_readlock;
 
     class renderer_model : public shared_obj
     {
-        
+
     private:
-        
+
         dpid id;
         struct
         {
@@ -52,7 +53,7 @@ namespace dragonpoop
         model_ref *m;
         uint64_t t_last_i_ran;
         dpxyz_f size, center;
-        
+
         //delete all components
         void deleteComponents( void );
         //delete instances
@@ -63,9 +64,9 @@ namespace dragonpoop
         void runInstances( dpthread_lock *thd );
         //sync materials
         void syncMaterials( model_writelock *g, render_api_context_writelock *cl );
-        
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -93,7 +94,7 @@ namespace dragonpoop
         //generate instance
         virtual renderer_model_instance *genInstance( model_instance_writelock *ml );
         //render model
-        void render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
+        void render( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpheight_cache_readlock *heights, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //add material
         renderer_model_material *makeMaterial( model_writelock *ml, model_material *m, render_api_context_writelock *cl );
         //find material
@@ -114,19 +115,19 @@ namespace dragonpoop
         void run( dpthread_lock *thd, render_api_context_writelock *ctx );
 
     public:
-        
+
         //ctor
         renderer_model( model_writelock *ml );
         //dtor
         virtual ~renderer_model( void );
         //get id
         dpid getId( void );
-        
+
         friend class renderer_model_readlock;
         friend class renderer_model_writelock;
 
     };
-    
+
 };
 
 #endif
