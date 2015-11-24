@@ -80,8 +80,8 @@ namespace dragonpoop
         is = (unsigned int)tile_size;
         iw /= is;
         ih /= is;
-        this->x = x;
-        this->z = z;
+        this->x = x - w / 2;
+        this->z = z - h / 2;
 
         if( !this->fv || iw != this->w || ih != this->h )
         {

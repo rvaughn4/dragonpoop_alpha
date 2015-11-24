@@ -172,13 +172,15 @@ namespace dragonpoop
         vp = this->vb.getBuffer();
         e = this->vb.getSize();
 
+
+
         if( !vp )
             return;
 
         for( i = 0; i < e; i++ )
         {
             v = &vp[ i ];
-            h->setHeight( v->pos.x, v->pos.z, v->pos.y );
+            h->setHeight( v->pos.x + this->pos.x, v->pos.z + this->pos.z, v->pos.y );
         }
     }
 
