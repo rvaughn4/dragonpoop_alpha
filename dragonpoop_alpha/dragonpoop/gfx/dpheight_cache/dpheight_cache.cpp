@@ -120,10 +120,24 @@ namespace dragonpoop
         this->fv[ ii ] = h;
     }
 
+    //get height at tile
+    float dpheight_cache::_getHeight( unsigned int ix, unsigned int iz )
+    {
+        unsigned int ii;
+
+        if( ix >= this->w || iz >= this->h )
+            return 0;
+
+        ii = iz * this->w;
+        ii += ix;
+        return this->fv[ ii ];
+    }
+
     //get height at coord
     float dpheight_cache::getHeight( double x, double z )
     {
-        unsigned int ix, iz, ii;
+        unsigned int ix, iz;
+        float rx, rz, rx1, rz1, h00, h01, h10, h11;
 
         if( !this->fv )
             return 0;
@@ -139,12 +153,18 @@ namespace dragonpoop
             return 0;
         ix = (unsigned int)x;
         iz = (unsigned int)z;
-        if( ix >= this->w || iz >= this->h )
-            return 0;
 
-        ii = iz * this->w;
-        ii += ix;
-        return this->fv[ ii ];
+        h00 = this->_getHeight( ix + 0, iz + 0 );
+        h01 = this->_getHeight( ix + 1, iz + 0 );
+        h10 = this->_getHeight( ix + 0, iz + 1 );
+        h11 = this->_getHeight( ix + 1, iz + 1 );
+
+        rx = (float)x - (float)ix;
+        rz = (float)z - (float)iz;
+        rx1 = 1.0f - rx;
+        rz1 = 1.0f - rz;
+
+        return h00 * rx1 * rz1 + h01 * rx * rz1 + h10 * rx1 * rz + h11 * rx * rz;
     }
 
     //clear

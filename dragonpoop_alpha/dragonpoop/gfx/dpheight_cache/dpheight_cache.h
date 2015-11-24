@@ -45,6 +45,8 @@ namespace dragonpoop
         void setHeight( double x, double z, float h );
         //get height at coord
         float getHeight( double x, double z );
+        //get height at tile
+        float _getHeight( unsigned int ix, unsigned int iz );
         //clear
         void clear( void );
         //sync
