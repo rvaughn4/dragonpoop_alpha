@@ -5,6 +5,8 @@
 #include "dpheight_cache_writelock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 
+#include <iostream>
+
 namespace dragonpoop
 {
 
@@ -105,8 +107,6 @@ namespace dragonpoop
         z -= this->z;
         x /= this->tile_size;
         z /= this->tile_size;
-        x -= this->w / 2;
-        z -= this->h / 2;
 
         if( x < 0 || z < 0 )
             return;
@@ -137,7 +137,7 @@ namespace dragonpoop
     float dpheight_cache::getHeight( double x, double z )
     {
         unsigned int ix, iz;
-        float rx, rz, rx1, rz1, h00, h01, h10, h11;
+        float rx, rz, rx1, rz1, h00, h01, h10, h11, r;
 
         if( !this->fv )
             return 0;
@@ -146,8 +146,6 @@ namespace dragonpoop
         z -= this->z;
         x /= this->tile_size;
         z /= this->tile_size;
-        x -= this->w / 2;
-        z -= this->h / 2;
 
         if( x < 0 || z < 0 )
             return 0;
@@ -164,7 +162,11 @@ namespace dragonpoop
         rx1 = 1.0f - rx;
         rz1 = 1.0f - rz;
 
-        return h00 * rx1 * rz1 + h01 * rx * rz1 + h10 * rx1 * rz + h11 * rx * rz;
+        r = h00 * rx1 * rz1 + h01 * rx * rz1 + h10 * rx1 * rz + h11 * rx * rz;
+
+        std::cout << "X " << (x * this->tile_size ) + this->x << " Z " <<  (z * this->tile_size ) + this->z << " Y " << r << "\r\n";
+
+        return r;
     }
 
     //clear

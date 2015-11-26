@@ -657,7 +657,7 @@ namespace dragonpoop
     void renderer_model_instance::getModelViewMatrix( dpthread_lock *thd, dpposition *campos, renderer_model_readlock *m, dpheight_cache_readlock *heights, dpmatrix *in_world_matrix, dpmatrix *out_model_matrix )
     {
         dpxyz_f pp, sz, ctr, rot;
-        float fsz, rsz, h;
+        float fsz, rsz, h, bh;
         dpposition dd;
 
         dd.getDifference( &this->pos, thd->getTicks(), &pp );

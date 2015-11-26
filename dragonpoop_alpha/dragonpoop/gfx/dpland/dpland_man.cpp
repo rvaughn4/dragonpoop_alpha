@@ -221,7 +221,7 @@ namespace dragonpoop
         if( !hl )
             return;
 
-        hl->setDimensions( this->world_sz / this->tile_sz, this->world_sz / this->tile_sz, this->pos.x, this->pos.z, this->tile_sz );
+        hl->setDimensions( this->world_sz, this->world_sz, this->pos.x, this->pos.z, this->tile_sz );
 
         l = &this->tiles;
         for( i = l->begin(); i != l->end(); ++i )
