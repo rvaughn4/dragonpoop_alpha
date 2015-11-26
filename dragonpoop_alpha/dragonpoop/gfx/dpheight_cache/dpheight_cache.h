@@ -12,6 +12,12 @@ namespace dragonpoop
 
     class dpheight_cache_ref;
 
+    struct dpheight_values
+    {
+        double x, z;
+        float y;
+    };
+
     class dpheight_cache : public shared_obj
     {
 
@@ -19,7 +25,7 @@ namespace dragonpoop
 
         dpposition pos;
         std::shared_ptr<std::atomic<uint64_t>> t;
-        float *fv;
+        dpheight_values *fv;
         unsigned int w, h, tile_size;
         int64_t x, z;
 
@@ -46,7 +52,7 @@ namespace dragonpoop
         //get height at coord
         float getHeight( double x, double z );
         //get height at tile
-        float _getHeight( unsigned int ix, unsigned int iz );
+        float _getHeight( unsigned int ix, unsigned int iz, double *ox, double *oz );
         //clear
         void clear( void );
         //sync

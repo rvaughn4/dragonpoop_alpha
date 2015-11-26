@@ -88,7 +88,7 @@ namespace dragonpoop
         if( !this->fv || iw != this->w || ih != this->h )
         {
             this->clear();
-            this->fv = new float[ iw * ih ];
+            this->fv = new dpheight_values[ iw * ih ];
             this->w = iw;
             this->h = ih;
             this->tile_size = is;
@@ -99,10 +99,13 @@ namespace dragonpoop
     void dpheight_cache::setHeight( double x, double z, float h )
     {
         unsigned int ix, iz, ii;
+        double ox, oz;
 
         if( !this->fv )
             return;
 
+        ox = x;
+        oz = z;
         x -= this->x;
         z -= this->z;
         x /= this->tile_size;
@@ -117,11 +120,13 @@ namespace dragonpoop
 
         ii = iz * this->w;
         ii += ix;
-        this->fv[ ii ] = h;
+        this->fv[ ii ].y = h;
+        this->fv[ ii ].x = ox;
+        this->fv[ ii ].z = oz;
     }
 
     //get height at tile
-    float dpheight_cache::_getHeight( unsigned int ix, unsigned int iz )
+    float dpheight_cache::_getHeight( unsigned int ix, unsigned int iz, double *ox, double *oz )
     {
         unsigned int ii;
 
@@ -130,7 +135,11 @@ namespace dragonpoop
 
         ii = iz * this->w;
         ii += ix;
-        return this->fv[ ii ];
+        if( ox )
+            *ox = this->fv[ ii ].x;
+        if( oz )
+            *oz = this->fv[ ii ].z;
+        return this->fv[ ii ].y;
     }
 
     //get height at coord
@@ -138,6 +147,7 @@ namespace dragonpoop
     {
         unsigned int ix, iz;
         float rx, rz, rx1, rz1, h00, h01, h10, h11, r;
+        double ox, oz;
 
         if( !this->fv )
             return 0;
@@ -152,10 +162,10 @@ namespace dragonpoop
         ix = (unsigned int)x;
         iz = (unsigned int)z;
 
-        h00 = this->_getHeight( ix + 0, iz + 0 );
-        h01 = this->_getHeight( ix + 1, iz + 0 );
-        h10 = this->_getHeight( ix + 0, iz + 1 );
-        h11 = this->_getHeight( ix + 1, iz + 1 );
+        h00 = this->_getHeight( ix + 0, iz + 0, &ox, &oz );
+        h01 = this->_getHeight( ix + 1, iz + 0, 0, 0 );
+        h10 = this->_getHeight( ix + 0, iz + 1, 0, 0 );
+        h11 = this->_getHeight( ix + 1, iz + 1, 0, 0 );
 
         rx = (float)x - (float)ix;
         rz = (float)z - (float)iz;
@@ -164,7 +174,7 @@ namespace dragonpoop
 
         r = h00 * rx1 * rz1 + h01 * rx * rz1 + h10 * rx1 * rz + h11 * rx * rz;
 
-        std::cout << "X " << (x * this->tile_size ) + this->x << " Z " <<  (z * this->tile_size ) + this->z << " Y " << r << "\r\n";
+        std::cout << "X " << (x * this->tile_size ) + this->x << " " << ox << " Z " <<  (z * this->tile_size ) + this->z << " " << oz << " Y " << r << "\r\n";
 
         return r;
     }
@@ -209,7 +219,7 @@ namespace dragonpoop
         if( !this->fv || iw != this->w || ih != this->h )
         {
             this->clear();
-            this->fv = new float[ iw * ih ];
+            this->fv = new dpheight_values[ iw * ih ];
             this->w = iw;
             this->h = ih;
             this->tile_size = is;

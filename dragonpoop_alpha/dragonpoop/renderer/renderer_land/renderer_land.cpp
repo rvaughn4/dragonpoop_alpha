@@ -19,37 +19,37 @@ namespace dragonpoop
         this->ib = ctx->makeIndexBuffer( l->getIB() );
         this->vb = ctx->makeVertexBuffer( l->getVB() );
     }
-    
+
     //dtor
     renderer_land::~renderer_land( void )
     {
         delete this->ib;
         delete this->vb;
     }
-    
+
     //get position
     void renderer_land::getPosition( dpposition *p )
     {
         p->copy( &this->pos );
     }
-    
+
     //returns id
     dpid renderer_land::getId( void )
     {
         return this->id;
     }
-    
+
     //render model
     void renderer_land::render( dpthread_lock *thd, dpposition *campos, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
         dpmatrix ml, m;
         dpxyz_f d;
-        
+
         campos->getDifference( &this->pos, thd->getTicks(), &d );
         ml.setTranslation( d.x, d.y, d.z );
         m.copy( m_world );
         m.multiply( &ml );
-        
+
         clist->setAlpha( 1 );
         clist->setMatrix( &m );
         //clist->setTexture( 0, 0 );
