@@ -677,9 +677,9 @@ namespace dragonpoop
 
         out_model_matrix->copy( in_world_matrix );
 
-        out_model_matrix->translate( pp.x, pp.y + h, pp.z - 3 );
+        out_model_matrix->translate( pp.x, pp.y + h, pp.z );
         out_model_matrix->scale( rsz, rsz, rsz );
-        out_model_matrix->translate( -ctr.x, -ctr.y, -ctr.z );
+        out_model_matrix->translate( -ctr.x, /*-ctr.y*/0, -ctr.z );
 
         out_model_matrix->rotateXrad( rot.x );
         out_model_matrix->rotateZrad( rot.z );

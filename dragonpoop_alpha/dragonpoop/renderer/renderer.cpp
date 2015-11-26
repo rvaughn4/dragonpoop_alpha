@@ -638,6 +638,8 @@ namespace dragonpoop
 
         this->m_world.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 100.0f, 45.0f );
 
+        this->m_world.translate( 0, 0, -5 );
+
         ss = sw * sw + sh * sh;
         ss = sqrtf( ss );
 

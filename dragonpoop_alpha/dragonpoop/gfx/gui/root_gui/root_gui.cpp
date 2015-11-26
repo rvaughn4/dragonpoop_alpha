@@ -110,35 +110,20 @@ namespace dragonpoop
                 x.x = -1.1;
             if( skey->compare( "Right" ) == 0 )
                 x.x = 1.1;
-            this->campos.move( &x, this->t, this->t + 1000, 0 );
-
-            x.x = 0;
-            x.y = 0;
-            x.z = 0;
-            if( skey->compare( "Page Up" ) == 0 )
-                x.y = 1.1;
-            if( skey->compare( "Page Down" ) == 0 )
-                x.y = -pi.end.y;
-            if( skey->compare( "Up" ) == 0 )
-                x.z = -1.1;
-            if( skey->compare( "Down" ) == 0 )
-                x.z = 1.1;
-            if( skey->compare( "Left" ) == 0 )
-                x.x = -1.1;
-            if( skey->compare( "Right" ) == 0 )
-                x.x = 1.1;
             pa.move( &x, this->t, this->t + 1000, 0 );
 
-            gl = (dpposition_share_writelock *)o.tryWriteLock( this->rcampos, 100, "root_gui::handleKbEvent" );
-            if( !gl )
-                return 0;
-            gl->setPosition( &this->campos );
-            o.unlock();
+            this->campos.copy( &pa );
 
             al = (dpactor_writelock *)o.tryWriteLock( this->a, 100, "root_gui::handleKbEvent" );
             if( !al )
                 return 0;
             al->setPosition( &pa );
+            o.unlock();
+
+            gl = (dpposition_share_writelock *)o.tryWriteLock( this->rcampos, 100, "root_gui::handleKbEvent" );
+            if( !gl )
+                return 0;
+            gl->setPosition( &this->campos );
             o.unlock();
         }
 
