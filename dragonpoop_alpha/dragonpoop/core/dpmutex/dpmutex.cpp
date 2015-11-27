@@ -4,7 +4,7 @@
 #include "../dpspinlock/dpsponlock.h"
 #include <iostream>
 
-#define dpmutex_do_debug_stuff
+//#define dpmutex_do_debug_stuff
 
 namespace dragonpoop
 {

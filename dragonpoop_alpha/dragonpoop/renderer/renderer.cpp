@@ -59,6 +59,10 @@
 #include "renderer_commandlist_passer_writelock.h"
 #include "../gfx/dpposition/dpposition_share_readlock.h"
 #include "../gfx/dpposition/dpposition_share_ref.h"
+#include "../gfx/dpheight_cache/dpheight_cache.h"
+#include "../gfx/dpheight_cache/dpheight_cache_ref.h"
+#include "../gfx/dpheight_cache/dpheight_cache_readlock.h"
+#include "../gfx/dpheight_cache/dpheight_cache_writelock.h"
 
 #include <thread>
 #include <random>
@@ -75,6 +79,8 @@ namespace dragonpoop
         this->c = c;
         this->tp = (dptaskpool_ref *)tp->getRef();
         this->g = (gfx_ref *)g->getRef();
+        this->rheights = g->getHeights();
+        this->heights = new dpheight_cache( c->getMutexMaster() );
         this->bDoRun = 1;
         this->bIsRun = 0;
         this->bActive = 1;
@@ -142,6 +148,8 @@ namespace dragonpoop
         delete this->g;
         delete this->clpasser;
         delete this->tp;
+        delete this->heights;
+        delete this->rheights;
         o.unlock();
     }
 
@@ -408,7 +416,7 @@ namespace dragonpoop
             {
                 this->dimensions.w = al->getWidth();
                 this->dimensions.h = al->getHeight();
-                this->calcMatrix();
+                this->calcMatrix( thd );
                 octx.unlock();
             }
             this->dim_update_tick = 0;
@@ -618,9 +626,14 @@ namespace dragonpoop
     }
 
     //calculate matrixes
-    void renderer::calcMatrix( void )
+    void renderer::calcMatrix( dpthread_lock *thd )
     {
-        float sw, sh, rw, rh, r, dw, dh, ss, w, h;
+        float sw, sh, rw, rh, r, dw, dh, ss, w, h, ch;
+        dpposition pp;
+        dpxyz_f px, rx;
+        shared_obj_guard o;
+        dpheight_cache_readlock *hl;
+        dpmatrix m;
 
         sw = 1920.0f;
         sh = 1080.0f;
@@ -636,9 +649,23 @@ namespace dragonpoop
         dw = r - rw;
         dh = r - rh;
 
-        this->m_world.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 100.0f, 45.0f );
+        hl = (dpheight_cache_readlock *)o.tryReadLock( this->heights, 10, "renderer::calcMatrix" );
+        if( hl )
+        {
+            this->cam_pos.getDifference( &pp, thd->getTicks(), &px );
 
-        this->m_world.translate( 0, 0, -5 );
+            rx = px;
+            m.setRotationXrad( this->cam_rot.x );
+            m.rotateYrad( this->cam_rot.y );
+            m.rotateZrad( this->cam_rot.z );
+            m.transform( &rx );
+            ch = hl->getHeight( rx.x, rx.z );
+
+            this->m_world.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 100.0f, 45.0f );
+            this->m_sky.copy( &this->m_world );
+
+            this->m_world.translate( 0, -ch, -5 );
+        }
 
         ss = sw * sw + sh * sh;
         ss = sqrtf( ss );
@@ -811,17 +838,23 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         dpposition_share_readlock *gl;
+        dpheight_cache_writelock *hl;
 
-        if( !this->rcam_pos || this->t_cam_pos == this->rcam_pos->getTime() )
-            return;
+        if( this->rcam_pos && this->t_cam_pos != this->rcam_pos->getTime() )
+        {
+            gl = (dpposition_share_readlock *)o.tryReadLock( this->rcam_pos, 3, "renderer::_syncCam" );
+            if( !gl )
+                return;
 
-        gl = (dpposition_share_readlock *)o.tryReadLock( this->rcam_pos, 3, "renderer::_syncCam" );
-        if( !gl )
-            return;
+            this->bCamSync = 0;
+            this->cam_pos.copy( gl->getPosition() );
+            this->t_cam_pos = gl->getTime();
 
-        this->bCamSync = 0;
-        this->cam_pos.copy( gl->getPosition() );
-        this->t_cam_pos = gl->getTime();
+        }
+
+        hl = (dpheight_cache_writelock *)o.tryWriteLock( this->rheights, 10, "renderer::_syncCam" );
+        if( hl )
+            hl->sync( this->rheights );
     }
 
     //populate renderer list

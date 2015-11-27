@@ -5,8 +5,6 @@
 #include "dpheight_cache_writelock.h"
 #include "../../core/shared_obj/shared_obj_guard.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
 
@@ -173,8 +171,6 @@ namespace dragonpoop
         rz1 = 1.0f - rz;
 
         r = h00 * rx1 * rz1 + h01 * rx * rz1 + h10 * rx1 * rz + h11 * rx * rz;
-
-        std::cout << "X " << (x * this->tile_size ) + this->x << " " << ox << " Z " <<  (z * this->tile_size ) + this->z << " " << oz << " Y " << r << "\r\n";
 
         return r;
     }

@@ -46,6 +46,8 @@ namespace dragonpoop
     class renderer_land_man;
     class renderer_sky_man;
     class dpposition_share_ref;
+    class dpheight_cache;
+    class dpheight_cache_ref;
 
     class renderer : public shared_obj
     {
@@ -72,9 +74,11 @@ namespace dragonpoop
         uint64_t t_last_fps, ms_each_frame, t_last_input, t_cam_pos;
         float fps, fthiss;
         bool bActive, bActiveOld, bCamSync;
-        dpmatrix m_world, m_gui, m_gui_undo;
+        dpmatrix m_world, m_gui, m_gui_undo, m_sky;
         dpposition cam_pos;
         dpposition_share_ref *rcam_pos;
+        dpheight_cache *heights;
+        dpheight_cache_ref *rheights;
         renderer_state *cs;
 
         struct
@@ -148,7 +152,7 @@ namespace dragonpoop
         //return screen/window height
         virtual unsigned int getHeight( void );
         //calculate matrixes
-        void calcMatrix( void );
+        void calcMatrix( dpthread_lock *thd );
 
         //generate renderer model
         virtual renderer_model_man *genModelMan( dptaskpool_writelock *tp );

@@ -159,7 +159,7 @@
 1447319774 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpid/dpid.cpp
 	"dpid.h"
 
-1448217792 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpmutex/dpmutex.cpp
+1448662893 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpmutex/dpmutex.cpp
 	"dpmutex.h"
 	"dpmutex_master.h"
 	"../dpspinlock/dpsponlock.h"
@@ -523,7 +523,7 @@
 	"renderer_task.h"
 	"openglx_1o5_renderer/openglx_1o5_renderers.h"
 
-1448212026 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.h
+1448661424 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.h
 	"../core/shared_obj/shared_obj.h"
 	"../gfx/dpmatrix/dpmatrix.h"
 	"../gfx/dpposition/dpposition.h"
@@ -1546,7 +1546,7 @@
 	"openglx_1o5_renderer_writelock.h"
 	"openglx_1o5_renderer.h"
 
-1448557150 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
+1448664736 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
 	"renderer.h"
 	"../core/core.h"
 	"../core/dptask/dptasks.h"
@@ -1607,6 +1607,10 @@
 	"renderer_commandlist_passer_writelock.h"
 	"../gfx/dpposition/dpposition_share_readlock.h"
 	"../gfx/dpposition/dpposition_share_ref.h"
+	"../gfx/dpheight_cache/dpheight_cache.h"
+	"../gfx/dpheight_cache/dpheight_cache_ref.h"
+	"../gfx/dpheight_cache/dpheight_cache_readlock.h"
+	"../gfx/dpheight_cache/dpheight_cache_writelock.h"
 	<thread>
 	<random>
 
@@ -1636,7 +1640,7 @@
 	"../../../../core/dpthread/dpthread_lock.h"
 	"../renderer_model_instance_readlock.h"
 
-1448556670 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model_instance/renderer_model_instance.cpp
+1448659462 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_model/renderer_model_instance/renderer_model_instance.cpp
 	"renderer_model_instance.h"
 	"renderer_model_instance_ref.h"
 	"renderer_model_instance_readlock.h"
@@ -6272,13 +6276,12 @@
 	"dptaskpool.h"
 	<atomic>
 
-1448532398 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache.cpp
+1448664658 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache.cpp
 	"dpheight_cache.h"
 	"dpheight_cache_ref.h"
 	"dpheight_cache_readlock.h"
 	"dpheight_cache_writelock.h"
 	"../../core/shared_obj/shared_obj_guard.h"
-	<iostream>
 
 1448532265 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpheight_cache/dpheight_cache.h
 	"../../core/shared_obj/shared_obj.h"

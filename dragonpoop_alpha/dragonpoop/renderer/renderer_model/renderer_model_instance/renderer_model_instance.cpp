@@ -685,7 +685,6 @@ namespace dragonpoop
         out_model_matrix->rotateZrad( rot.z );
         out_model_matrix->rotateYrad( rot.y );
 
-
     }
 
     //get dimensions
