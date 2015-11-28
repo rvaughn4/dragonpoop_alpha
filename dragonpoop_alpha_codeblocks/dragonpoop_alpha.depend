@@ -1139,7 +1139,7 @@
 1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_verts.h
 	"../model_loader_state.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_materials.cpp
+1448710088 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_materials.cpp
 	"model_loader_ms3d_state_make_materials.h"
 	"model_loader_ms3d_state_make_groups.h"
 	"../../../../core/dpbuffer/dpbuffer.h"
@@ -1719,8 +1719,9 @@
 	"renderer_writelock.h"
 	"renderer.h"
 
-1447665137 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/main.cpp
+1448710260 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/main.cpp
 	"dragonpoop/dragonpoop.h"
+	<iostream>
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/dragonpoop.h
 	"os_define.h"
@@ -1778,7 +1779,7 @@
 	"dpactor/dpactors.h"
 	"dpland/dplands.h"
 
-1447495786 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/models.h
+1448708325 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/models.h
 	"model.h"
 	"model_ref.h"
 	"model_readlock.h"
@@ -1798,6 +1799,7 @@
 	"model_vertex_joint/model_vertex_joints.h"
 	"model_instance/model_instances.h"
 	"model_loader/model_loaders.h"
+	"model_saver/model_savers.h"
 	"model_man.h"
 	"model_man_ref.h"
 	"model_man_readlock.h"
@@ -3885,7 +3887,7 @@
 	<thread>
 	<atomic>
 
-1448210446 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpactor/dpactor.cpp
+1448709916 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpactor/dpactor.cpp
 	"dpactor.h"
 	"dpactor_ref.h"
 	"dpactor_readlock.h"
@@ -6346,4 +6348,14 @@
 
 1448207951 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/dpposition/dpposition_share_writelock.h
 	"../../core/shared_obj/shared_obj_writelock.h"
+
+1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_saver/model_savers.h
+	"model_saver.h"
+	"model_saver_ref.h"
+	"model_saver_readlock.h"
+	"model_saver_writelock.h"
+	"model_saver_state.h"
+	"model_saver_state_fail.h"
+	"model_saver_state_sucess.h"
+	"model_saver_state_begin.h"
 

@@ -254,7 +254,7 @@ namespace dragonpoop
     //load low model
     bool dpactor::loadLow( model_loader_ref **ldr )
     {
-        return this->_load( &this->models.low.m, &this->models.low.mi, ldr, "test_low", "", "3drt_felhound_low.dpmodel" );
+        return this->_load( &this->models.low.m, &this->models.low.mi, ldr, "test_low", "", "3drt_dragon_low.dpmodel" );
     }
 
     //make low model instance
@@ -272,7 +272,7 @@ namespace dragonpoop
     //load med model
     bool dpactor::loadMed( model_loader_ref **ldr )
     {
-        return this->_load( &this->models.med.m, &this->models.med.mi, ldr, "test_med", "", "3drt_felhound_medium.dpmodel" );
+        return this->_load( &this->models.med.m, &this->models.med.mi, ldr, "test_med", "", "3drt_dragon_medium.dpmodel" );
     }
 
     //make med model instance
@@ -290,7 +290,7 @@ namespace dragonpoop
     //load high model
     bool dpactor::loadHigh( model_loader_ref **ldr )
     {
-        return this->_load( &this->models.high.m, &this->models.high.mi, ldr, "test_high", "", "3drt_felhound_medium.dpmodel" );
+        return this->_load( &this->models.high.m, &this->models.high.mi, ldr, "test_high", "", "3drt_dragon_low.dpmodel" );
     }
 
     //make high model instance
@@ -426,17 +426,17 @@ namespace dragonpoop
     bool dpactor::convertName( std::string *sin, std::string *sout )
     {
         if( sin->compare( "idle" ) == 0 )
-            sout->assign( "idle_01" );
+            sout->assign( "Idle" );
         if( sin->compare( "walk" ) == 0 )
-            sout->assign( "walk" );
+            sout->assign( "walk-1" );
         if( sin->compare( "fly_start" ) == 0 )
-            sout->assign( "stand_up" );
+            sout->assign( "fly start" );
         if( sin->compare( "fly_stop" ) == 0 )
-            sout->assign( "walk" );
+            sout->assign( "fly end" );
         if( sin->compare( "fly_idle" ) == 0 )
-            sout->assign( "idle_01" );
+            sout->assign( "flying idle" );
         if( sin->compare( "fly" ) == 0 )
-            sout->assign( "walk" );
+            sout->assign( "fly_forward" );
         return 1;
     }
 

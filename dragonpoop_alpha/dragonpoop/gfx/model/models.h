@@ -23,6 +23,7 @@
 #include "model_instance/model_instances.h"
 
 #include "model_loader/model_loaders.h"
+#include "model_saver/model_savers.h"
 #include "model_man.h"
 #include "model_man_ref.h"
 #include "model_man_readlock.h"
