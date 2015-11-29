@@ -72,9 +72,9 @@ namespace dragonpoop
         render_api_commandlist_ref *gui_cl, *model_cl, *land_cl, *sky_cl;
 
         uint64_t t_last_fps, ms_each_frame, t_last_input, t_cam_pos;
-        float fps, fthiss;
+        float fps, fthiss, cam_height;
         bool bActive, bActiveOld, bCamSync;
-        dpmatrix m_world, m_gui, m_gui_undo, m_sky;
+        dpmatrix m_world, m_gui, m_gui_undo, m_sky, m_cam, m_sky_cam;
         dpposition cam_pos;
         dpposition_share_ref *rcam_pos;
         dpheight_cache *heights;
@@ -92,7 +92,7 @@ namespace dragonpoop
         struct
         {
             float x, y, z;
-        } cam_rot;
+        } cam_rot, cam_rot_smooth;
         unsigned int render_tries, dim_update_tick;
 
 

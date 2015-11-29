@@ -95,6 +95,8 @@ namespace dragonpoop
         this->cam_rot.x = 0;
         this->cam_rot.y = 0;
         this->cam_rot.z = 0;
+        this->cam_rot_smooth = this->cam_rot;
+        this->cam_height = 0;
 
         this->bCamSync = 0;
         this->rgui_mgr = 0;
@@ -437,15 +439,15 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-
+/*
             m2.setIdentity();
             m2.rotateX( this->cam_rot.x );
             m2.rotateY( this->cam_rot.y );
             m2.rotateZ( this->cam_rot.z );
             m1.copy( &this->m_world );
             m1.multiply( &m2 );
-
-            if( !cll->execute( ctxl, &m1 ) )
+*/
+            if( !cll->execute( ctxl, &this->m_sky ) )
                 return;
             ocl.unlock();
         }
@@ -456,7 +458,7 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-
+/*
             cll->getPosition( &clpos );
             m2.setIdentity();
             m2.rotateX( this->cam_rot.x );
@@ -466,8 +468,8 @@ namespace dragonpoop
             m2.translate( diff.x, diff.y, diff.z );
             m1.copy( &this->m_world );
             m1.multiply( &m2 );
-
-            if( !cll->execute( ctxl, &m1 ) )
+*/
+            if( !cll->execute( ctxl, &this->m_world ) )
                 return;
             ocl.unlock();
         }
@@ -477,7 +479,7 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->land_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-
+/*
             cll->getPosition( &clpos );
             m2.setIdentity();
             m2.rotateX( this->cam_rot.x );
@@ -487,8 +489,8 @@ namespace dragonpoop
             m2.translate( diff.x, diff.y, diff.z );
             m1.copy( &this->m_world );
             m1.multiply( &m2 );
-
-            if( !cll->execute( ctxl, &m1 ) )
+*/
+            if( !cll->execute( ctxl, &this->m_world ) )
                 return;
             ocl.unlock();
         }
@@ -633,6 +635,7 @@ namespace dragonpoop
         dpxyz_f px, rx;
         shared_obj_guard o;
         dpheight_cache_readlock *hl;
+        dpheight_cache_writelock *hwl;
         dpmatrix m;
 
         sw = 1920.0f;
@@ -649,22 +652,39 @@ namespace dragonpoop
         dw = r - rw;
         dh = r - rh;
 
+        hwl = (dpheight_cache_writelock *)o.tryWriteLock( this->heights, 10, "renderer::calcMatrix" );
+        if( hwl )
+            hwl->sync( this->rheights );
+        o.unlock();
+
         hl = (dpheight_cache_readlock *)o.tryReadLock( this->heights, 10, "renderer::calcMatrix" );
         if( hl )
         {
-            this->cam_pos.getDifference( &pp, thd->getTicks(), &px );
 
+            this->m_cam.setTranslation( 0, -this->cam_height, -5.0f );
+            this->m_sky_cam.setIdentity();
+
+            this->cam_rot_smooth.x += ( this->cam_rot.x - this->cam_rot_smooth.x ) * 0.5f;
+            this->cam_rot_smooth.y += ( this->cam_rot.y - this->cam_rot_smooth.y ) * 0.5f;
+            this->cam_rot_smooth.z += ( this->cam_rot.z - this->cam_rot_smooth.z ) * 0.5f;
+
+            this->m_sky_cam.rotateX( this->cam_rot_smooth.x );
+            this->m_sky_cam.rotateY( this->cam_rot_smooth.y );
+            this->m_sky_cam.rotateZ( this->cam_rot_smooth.z );
+            this->m_cam.multiply( &this->m_sky_cam );
+
+            this->cam_pos.getDifference( &pp, thd->getTicks(), &px );
             rx = px;
-            m.setRotationXrad( this->cam_rot.x );
-            m.rotateYrad( this->cam_rot.y );
-            m.rotateZrad( this->cam_rot.z );
-            m.transform( &rx );
-            ch = hl->getHeight( rx.x, rx.z );
+            this->m_cam.transform( &rx );
+            ch = hl->getHeight( rx.x, rx.z ) + 1.0f;
+            this->cam_height += ( ch - this->cam_height ) * 0.3f;
 
             this->m_world.setPerspective( -r - dw, -r - dh, 1.0f, r + dw, r + dh, 100.0f, 45.0f );
             this->m_sky.copy( &this->m_world );
 
-            this->m_world.translate( 0, -ch, -5 );
+            this->m_world.multiply( &this->m_cam );
+            this->m_sky.multiply( &this->m_sky_cam );
+
         }
 
         ss = sw * sw + sh * sh;
@@ -838,7 +858,6 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         dpposition_share_readlock *gl;
-        dpheight_cache_writelock *hl;
 
         if( this->rcam_pos && this->t_cam_pos != this->rcam_pos->getTime() )
         {
@@ -852,9 +871,6 @@ namespace dragonpoop
 
         }
 
-        hl = (dpheight_cache_writelock *)o.tryWriteLock( this->rheights, 10, "renderer::_syncCam" );
-        if( hl )
-            hl->sync( this->rheights );
     }
 
     //populate renderer list
