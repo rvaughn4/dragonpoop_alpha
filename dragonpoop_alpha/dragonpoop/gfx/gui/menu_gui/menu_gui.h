@@ -8,26 +8,27 @@
 
 namespace dragonpoop
 {
-    
+
     struct menu_gui_btn
     {
         std::string s;
         button_gui *b;
     };
-    
+
     class menu_gui : public gui
     {
-        
+
     private:
-        
+
         float last_y, sz, top_y;
         uint64_t t_last_poll;
-        button_gui *btitle;
+        button_gui *btitle, *bclose;
         std::vector<menu_gui_btn> btns;
         gfx_ref *g;
-        
+        bool bclosed;
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -46,18 +47,20 @@ namespace dragonpoop
         void redoButtons( void );
         //returns true if button was clicked
         bool wasClicked( const char *btn_name );
-        
+        //returns true if closed
+        bool wasClosed( void );
+
     public:
-        
+
         //ctor
         menu_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, float bh, const char *txt );
         //dtor
         virtual ~menu_gui( void );
-        
+
         friend class menu_gui_readlock;
         friend class menu_gui_writelock;
     };
-    
+
 };
 
 #endif

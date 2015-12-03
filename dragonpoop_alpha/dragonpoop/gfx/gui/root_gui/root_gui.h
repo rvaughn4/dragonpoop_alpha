@@ -24,7 +24,8 @@ namespace dragonpoop
         gfx_ref *g;
         menu_gui *esc_menu;
         perf_stats_gui *perf_stats;
-        bool esc_menu_is_show, esc_menu_do_show, perf_open;
+        menu_gui *modelgui;
+        bool esc_menu_is_show, esc_menu_do_show, perf_open, model_open;
         uint64_t last_esc_menu_process, t;
         dpactor *a;
         dpposition campos;

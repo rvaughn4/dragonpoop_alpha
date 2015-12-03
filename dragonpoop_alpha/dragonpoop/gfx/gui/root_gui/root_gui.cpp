@@ -10,6 +10,7 @@
 #include "../../../core/dpthread/dpthread_lock.h"
 #include "../../../core/core.h"
 #include "../perf_stats_gui/perf_stats_gui.h"
+#include "../model_man_gui/model_man_gui.h"
 #include "../../dpposition/dpposition.h"
 #include "../../dpposition/dpposition_share_ref.h"
 #include "../../dpposition/dpposition_share_writelock.h"
@@ -44,6 +45,9 @@ namespace dragonpoop
         this->esc_menu_is_show = 0;
         this->esc_menu_do_show = 0;
 
+        this->modelgui = 0;
+        this->model_open = 0;
+
         g->getActors( &al, &o );
         this->a = new dpactor( g->getCore() );
         al->addActor( this->a );
@@ -64,6 +68,8 @@ namespace dragonpoop
             delete this->esc_menu;
         if( this->perf_stats )
             delete this->perf_stats;
+        if( this->modelgui )
+            delete this->modelgui;
         delete this->g;
         delete this->rcampos;
         o.unlock();
@@ -203,6 +209,27 @@ namespace dragonpoop
             delete this->perf_stats;
             this->perf_stats = 0;
         }
+        if( this->model_open && !this->modelgui )
+        {
+            gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
+            if( gl )
+            {
+                this->modelgui = new model_man_gui( gl, this->genId(), this->getId() );
+                this->addGui( this->modelgui );
+            }
+            this->model_open = 0;
+        }
+        if( this->modelgui )
+        {
+            mr = (menu_gui_readlock *)o.tryReadLock( this->modelgui, 30, "root_gui::doProcessing" );
+            if( mr && mr->wasClosed() )
+            {
+                o.unlock();
+                delete this->modelgui;
+                this->modelgui = 0;
+            }
+
+        }
 
     }
 
@@ -211,8 +238,8 @@ namespace dragonpoop
     {
         m->addButton( "Performance Stats" );
         m->addButton( "Graphics Options" );
+        m->addButton( "DEV: Models" );
         m->addButton( "Quit Game" );
-        m->addButton( "Close This Menu" );
     }
 
     //process escape menu clicks
@@ -224,13 +251,19 @@ namespace dragonpoop
             this->showPerfStats();
             return;
         }
+        if( m->wasClicked( "DEV: Models" ) )
+        {
+            this->hideEscapeMenu();
+            this->model_open = 1;
+            return;
+        }
         if( m->wasClicked( "Quit Game" ) )
         {
             this->hideEscapeMenu();
             this->getCore()->kill();
             return;
         }
-        if( m->wasClicked( "Close This Menu" ) )
+        if( m->wasClosed() )
         {
             this->hideEscapeMenu();
             return;

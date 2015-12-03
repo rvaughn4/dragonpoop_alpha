@@ -327,6 +327,8 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/menu_gui/menu_gui_writelock.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/menu_gui/menu_gui_writelock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/menu_gui/menu_guis.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui_factory.cpp" />
