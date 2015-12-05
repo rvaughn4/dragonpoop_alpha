@@ -9,6 +9,7 @@ namespace dragonpoop
 {
 
     class menu_gui;
+    class window_gui;
     class menu_gui_writelock;
     class menu_gui_readlock;
     class gfx_ref;
@@ -24,7 +25,7 @@ namespace dragonpoop
         gfx_ref *g;
         menu_gui *esc_menu;
         perf_stats_gui *perf_stats;
-        menu_gui *modelgui;
+        window_gui *modelgui;
         bool esc_menu_is_show, esc_menu_do_show, perf_open, model_open;
         uint64_t last_esc_menu_process, t;
         dpactor *a;

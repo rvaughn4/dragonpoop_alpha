@@ -2,12 +2,12 @@
 #ifndef dragonpoop_model_man_gui_h
 #define dragonpoop_model_man_gui_h
 
-#include "../menu_gui/menu_gui.h"
+#include "../window_gui/window_gui.h"
 
 namespace dragonpoop
 {
 
-    class model_man_gui : public menu_gui
+    class model_man_gui : public window_gui
     {
 
     private:

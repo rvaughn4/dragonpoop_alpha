@@ -219,16 +219,10 @@ namespace dragonpoop
             }
             this->model_open = 0;
         }
-        if( this->modelgui )
+        if( this->modelgui && this->modelgui->wasClosed() )
         {
-            mr = (menu_gui_readlock *)o.tryReadLock( this->modelgui, 30, "root_gui::doProcessing" );
-            if( mr && mr->wasClosed() )
-            {
-                o.unlock();
-                delete this->modelgui;
-                this->modelgui = 0;
-            }
-
+            delete this->modelgui;
+            this->modelgui = 0;
         }
 
     }

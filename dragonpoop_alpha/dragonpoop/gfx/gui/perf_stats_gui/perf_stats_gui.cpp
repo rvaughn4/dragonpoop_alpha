@@ -24,27 +24,10 @@ namespace dragonpoop
 {
 
     //ctor
-    perf_stats_gui::perf_stats_gui( gfx_writelock *g, dpid id, dpid pid ) : gui( g, id )
+    perf_stats_gui::perf_stats_gui( gfx_writelock *g, dpid id, dpid pid ) : window_gui( g, id, pid, 0, 1080-600, 400, 600, "Performance Stats" )
     {
         this->g = (gfx_ref *)g->getRef();
         this->rcampos = g->getCameraPosition();
-
-        this->setParentId( pid );
-        this->setPosition( 0, 1080 - 600 );
-        this->setWidthHeight( 400, 600 );
-        this->setEditMode( 0 );
-        this->enableBg( 1 );
-        this->enableFg( 1 );
-        this->setFontSize( 20 );
-        this->setMargin( 20 );
-        this->setFade( 1 );
-        this->setHoverMode( 1 );
-        this->bDoClose = 0;
-
-        this->bclose = new button_gui( g, this->genId(), id, 400 - 42, 2, 40, 40, "X", 1 );
-        this->bhide = new button_gui( g, this->genId(), id, 400 - 84, 2, 40, 40, "-", 1 );
-        this->addGui( this->bclose );
-        this->addGui( this->bhide );
     }
 
     //dtor
@@ -57,17 +40,9 @@ namespace dragonpoop
         this->unlink();
 
         o.tryWriteLock( this, 5000, "root_gui::~root_gui" );
-        delete this->bclose;
-        delete this->bhide;
         delete this->g;
         delete this->rcampos;
         o.unlock();
-    }
-
-    //override to paint background texture
-    void perf_stats_gui::repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h )
-    {
-        bm->loadFile( "white_gui_box.bmp" );
     }
 
     //override to do processing
@@ -79,6 +54,7 @@ namespace dragonpoop
         shared_obj_guard og, o, ogui, omod;
         gfx_readlock *gl;
         renderer_ref *rr;
+
         renderer_readlock *rl;
         dpposition_inner ppi;
         int i;
@@ -86,8 +62,7 @@ namespace dragonpoop
         model_man_readlock *modl;
         dpposition_share_readlock *pl;
 
-        if( this->bclose->wasClicked() )
-            this->bDoClose = 1;
+        this->window_gui::doProcessing( thd, g );
 
         t = thd->getTicks();
         if( t - this->t_last_update < 1500 )
@@ -149,12 +124,6 @@ namespace dragonpoop
 
         this->setText( ss.str().c_str() );
         this->redraw();
-    }
-
-    //returns true if closed
-    bool perf_stats_gui::wasClosed( void )
-    {
-        return this->bDoClose;
     }
 
 };
