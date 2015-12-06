@@ -68,7 +68,7 @@ namespace dragonpoop
         gfx_ref *g;
         gui_man_ref *mgr;
         renderer_gui_ref *r;
-        unsigned int z, fnt_size, margin_size;
+        unsigned int z, fnt_size, margin_size, top_margin;
         dprgba fnt_clr;
         std::string stxt;
         std::vector<gui_txt_loc> txt_loc;
@@ -212,6 +212,10 @@ namespace dragonpoop
         bool isFade( void );
         //sets fade mode
         void setFade( bool b );
+        //set top amrgin
+        void setTopMargin( unsigned int m );
+        //get top margin
+        unsigned int getTopMargin( void );
 
     public:
 

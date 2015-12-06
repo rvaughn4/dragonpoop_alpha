@@ -34,6 +34,7 @@ namespace dragonpoop
         this->enableFg( 1 );
         this->setFontSize( 20 );
         this->setMargin( 20 );
+        this->setTopMargin( 70 );
         this->setFade( 1 );
         this->setHoverMode( 1 );
         this->bDoClose = 0;

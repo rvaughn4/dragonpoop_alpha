@@ -439,14 +439,6 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->sky_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-/*
-            m2.setIdentity();
-            m2.rotateX( this->cam_rot.x );
-            m2.rotateY( this->cam_rot.y );
-            m2.rotateZ( this->cam_rot.z );
-            m1.copy( &this->m_world );
-            m1.multiply( &m2 );
-*/
             if( !cll->execute( ctxl, &this->m_sky ) )
                 return;
             ocl.unlock();
@@ -458,17 +450,6 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->model_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-/*
-            cll->getPosition( &clpos );
-            m2.setIdentity();
-            m2.rotateX( this->cam_rot.x );
-            m2.rotateY( this->cam_rot.y );
-            m2.rotateZ( this->cam_rot.z );
-            this->cam_pos.getDifference( &clpos, thd->getTicks(), &diff );
-            m2.translate( diff.x, diff.y, diff.z );
-            m1.copy( &this->m_world );
-            m1.multiply( &m2 );
-*/
             if( !cll->execute( ctxl, &this->m_world ) )
                 return;
             ocl.unlock();
@@ -479,23 +460,10 @@ namespace dragonpoop
             cll = (render_api_commandlist_writelock *)ocl.tryWriteLock( this->land_cl, 30, "renderer::render" );
             if( !cll )
                 return;
-/*
-            cll->getPosition( &clpos );
-            m2.setIdentity();
-            m2.rotateX( this->cam_rot.x );
-            m2.rotateY( this->cam_rot.y );
-            m2.rotateZ( this->cam_rot.z );
-            this->cam_pos.getDifference( &clpos, thd->getTicks(), &diff );
-            m2.translate( diff.x, diff.y, diff.z );
-            m1.copy( &this->m_world );
-            m1.multiply( &m2 );
-*/
             if( !cll->execute( ctxl, &this->m_world ) )
                 return;
             ocl.unlock();
         }
-
-       // ctxl->clearDepth( 1.0f );
 
         if( this->gui_cl )
         {
@@ -581,8 +549,17 @@ namespace dragonpoop
         this->dimensions.h = al->getHeight();
 
         t = thd->getTicks();
-        if( t - this->t_last_input < 100 )
+        if( t - this->t_last_input < 20 )
             return 1;
+
+        if( this->mouse.x < -0.9f )
+            this->cam_rot.y -= 0.2f;
+        if( this->mouse.x > 0.9f )
+            this->cam_rot.y += 0.2f;
+        if( this->mouse.y < -0.9f )
+            this->cam_rot.x += 0.2f;
+        if( this->mouse.y > 0.9f )
+            this->cam_rot.x -= 0.2f;
 
         if( !al->hasKBInput() && !al->hasMouseInput() )
             return 1;
@@ -591,15 +568,6 @@ namespace dragonpoop
         if( !gl )
             return 1;
         this->t_last_input = t;
-
-        if( this->mouse.x < -0.9f )
-            this->cam_rot.y -= 2.0f;
-        if( this->mouse.x > 0.9f )
-            this->cam_rot.y += 2.0f;
-        if( this->mouse.y < -0.9f )
-            this->cam_rot.x += 2.0f;
-        if( this->mouse.y > 0.9f )
-            this->cam_rot.x -= 2.0f;
 
         if( al->hasMouseInput() )
         {

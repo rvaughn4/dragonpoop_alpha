@@ -54,6 +54,7 @@ namespace dragonpoop
         this->bIsHover = 0;
         this->bIsEdit = 0;
         this->margin_size = 0;
+        this->top_margin = 0;
         this->bIsFade = 1;
     }
 
@@ -423,9 +424,10 @@ namespace dragonpoop
         this->resetTxtLoc();
 
         w -= this->margin_size + this->margin_size;
-        h -= this->margin_size + this->margin_size;
+        h -= this->top_margin + this->margin_size;
 
-        x = y = this->margin_size;
+        x = this->margin_size;
+        y = this->top_margin;
         cw = lch = 0;
         ln = 0;
         cur_drawn = this->cur_flash || ( this->z != 0 ) || !this->bIsEdit;
@@ -1200,6 +1202,18 @@ namespace dragonpoop
     void gui::setFade( bool b )
     {
         this->bIsFade = b;
+    }
+
+    //set top amrgin
+    void gui::setTopMargin( unsigned int m )
+    {
+        this->top_margin = m;
+    }
+
+    //get top margin
+    unsigned int gui::getTopMargin( void )
+    {
+        return this->top_margin;
     }
 
 };

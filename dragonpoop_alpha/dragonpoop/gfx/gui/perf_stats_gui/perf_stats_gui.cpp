@@ -79,10 +79,10 @@ namespace dragonpoop
         rr = gl->getRenderer();
         og.unlock();
 
-        ss << "\e020\fsans Performance Statistics\e016\r\n";
+        ss << "\fsans \e016";
 
         //gfx stats
-        ss << "\r\nGraphics \r\n";
+        ss << "Graphics \r\n";
         ss << "\t" << modl->getModelCount() << " models open\r\n";
         ss << "\t" << modl->getInstanceCount() << " model instances\r\n";
         ss << "\t" << guil->getGuiCount() << " guis open\r\n";

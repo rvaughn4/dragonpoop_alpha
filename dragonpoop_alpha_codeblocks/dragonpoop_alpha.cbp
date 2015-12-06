@@ -339,6 +339,8 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/root_gui/root_gui_factory.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/root_gui/root_gui_factory.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/root_gui/root_guis.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/window_gui/window_gui.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/window_gui/window_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/model/model.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/model/model.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/model/model_animation/model_animation.cpp" />
