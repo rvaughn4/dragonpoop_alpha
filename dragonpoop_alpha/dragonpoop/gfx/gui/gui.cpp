@@ -46,6 +46,7 @@ namespace dragonpoop
         this->fnt_clr.a = 255;
         this->pos.border_w = 10;
         this->pos.border_tex_w = 0.2f;
+        this->pos.bDrag = 0;
         this->cursor = 0;
         this->bIsSel = 0;
         this->sz_div = 0;
@@ -200,9 +201,11 @@ namespace dragonpoop
             if( this->bOldLb != e->lb )
                this->setFocus();
             if( this->bOldLb != e->lb )
-                b = this->handleMouseClick( e->x, e->y, 0, e->lb );
+                b = this->handleMouseClick( e->x, e->y, e->sx, e->sy, 0, e->lb );
             if( b && this->bOldRb != e->rb )
-                b = this->handleMouseClick( e->x, e->y, 1, e->rb );
+                b = this->handleMouseClick( e->x, e->y, e->sx, e->sy, 1, e->rb );
+            if( b )
+                b = this->handleMouseMove( e->x, e->y, e->sx, e->sy );
 
             if( b )
             {
@@ -703,7 +706,7 @@ namespace dragonpoop
     }
 
     //process mouse input
-    void gui::processMouse( float x, float y, bool lb, bool rb )
+    void gui::processMouse( float x, float y, float sx, float sy, bool lb, bool rb )
     {
         gui_mouse_event *e;
 
@@ -712,6 +715,8 @@ namespace dragonpoop
         e->rb = rb;
         e->x = x;
         e->y = y;
+        e->sx = sx;
+        e->sy = sy;
 
         this->mse.push( e );
     }
@@ -729,7 +734,7 @@ namespace dragonpoop
     }
 
     //override to handle mouse button
-    bool gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
+    bool gui::handleMouseClick( float x, float y, float sx, float sy, bool isRight, bool isDown )
     {
         if( !isRight && isDown )
         {
@@ -747,8 +752,15 @@ namespace dragonpoop
             this->cur_flash = 1;
             if( this->bIsSel || this->bIsEdit )
                 this->redraw();
+
         }
 
+        return 1;
+    }
+
+    //override to handle mouse button
+    bool gui::handleMouseMove( float x, float y, float sx, float sy )
+    {
         return 1;
     }
 
@@ -1214,6 +1226,12 @@ namespace dragonpoop
     unsigned int gui::getTopMargin( void )
     {
         return this->top_margin;
+    }
+
+    //set draggable mode
+    void gui::setDraggable( bool b )
+    {
+        this->pos.bDrag = b;
     }
 
 };

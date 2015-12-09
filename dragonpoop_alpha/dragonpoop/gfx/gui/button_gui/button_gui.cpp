@@ -61,9 +61,9 @@ namespace dragonpoop
     }
 
     //override to handle mouse button
-    bool button_gui::handleMouseClick( float x, float y, bool isRight, bool isDown )
+    bool button_gui::handleMouseClick( float x, float y, float sx, float sy, bool isRight, bool isDown )
     {
-        if( !this->gui::handleMouseClick( x, y, isRight, isDown ) )
+        if( !this->gui::handleMouseClick( x, y, sx, sy, isRight, isDown ) )
             return 0;
         this->bWasClicked = this->bWasClicked | isDown;
         return 1;

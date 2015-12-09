@@ -37,6 +37,7 @@ namespace dragonpoop
         this->setTopMargin( 70 );
         this->setFade( 1 );
         this->setHoverMode( 1 );
+        this->setDraggable( 1 );
         this->bDoClose = 0;
 
         this->bclose = new button_gui( g, this->genId(), id, w - 52, 2, 50, 50, "X", 1 );

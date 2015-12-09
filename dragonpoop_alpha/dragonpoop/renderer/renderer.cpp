@@ -341,7 +341,6 @@ namespace dragonpoop
         render_api_commandlist_writelock *cll;
         renderer_commandlist_passer_writelock *cpl;
         dpmatrix m1, m2;
-        dpxyz_f diff;
         dpposition clpos;
 
         if( this->new_gui_cl )

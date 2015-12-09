@@ -17,23 +17,23 @@ namespace dragonpoop
     class gfx_writelock;
     class renderer_gui;
     class gfx_writelock;
-    
+
     class gui_writelock : public shared_obj_writelock
     {
-        
+
     private:
-        
+
         gui *t;
-        
+
     protected:
-        
+
         //ctor
         gui_writelock( gui *t, dpmutex_writelock *l );
         //dtor
         virtual ~gui_writelock( void );
-        
+
     public:
-        
+
         //run gui
         void run( dpthread_lock *thd );
         //return core
@@ -77,7 +77,7 @@ namespace dragonpoop
         //returns true if has focus
         bool hasFocus( void );
         //process mouse input
-        void processMouse( float x, float y, bool lb, bool rb );
+        void processMouse( float x, float y, float sx, float sy, bool lb, bool rb );
         //process kb input
         void processKb( std::string *skey, bool bDown );
         //returns true if has renderer
@@ -105,7 +105,7 @@ namespace dragonpoop
 
         friend class gui;
     };
-    
+
 };
 
 #endif

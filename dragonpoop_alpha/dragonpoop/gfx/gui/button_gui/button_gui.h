@@ -19,7 +19,7 @@ namespace dragonpoop
         //override to paint background texture
         virtual void repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h );
         //override to handle mouse button
-        virtual bool handleMouseClick( float x, float y, bool isRight, bool isDown );
+        virtual bool handleMouseClick( float x, float y, float sx, float sy, bool isRight, bool isDown );
 
     public:
 

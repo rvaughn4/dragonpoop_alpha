@@ -10,7 +10,7 @@
 
 namespace dragonpoop
 {
-    
+
     class renderer_gui_writelock;
     class renderer_gui_readlock;
     class renderer_writelock;
@@ -25,15 +25,15 @@ namespace dragonpoop
     class render_api_indexbuffer_ref;
     class render_api_vertexbuffer_ref;
     class render_api_commandlist_writelock;
-    
+
     class renderer_gui : public shared_obj
     {
-        
+
     private:
-        
+
         core *c;
         dpid id, pid, hover_id;
-        bool bHasFg, bHasBg, bIsAlive, bIsHover, bIsEdit, bIsFade;
+        bool bHasFg, bHasBg, bIsAlive, bIsHover, bIsEdit, bIsFade, bIsDrag;
         gui_dims pos;
         std::atomic<gui_ref *> g;
         std::atomic<bool> bSyncPos, bSyncBg, bSyncFg, bSyncBgRen, bSyncFgRen, bSyncPosRen;
@@ -45,9 +45,13 @@ namespace dragonpoop
         render_api_texture_ref *render_tex_bg, *render_tex_fg;
         render_api_indexbuffer_ref *render_ib_fg, *render_ib_bg;
         render_api_vertexbuffer_ref *render_vb_fg, *render_vb_bg;
-        
+        struct
+        {
+            float x, y, ox, oy;
+        } drag_pos;
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -108,7 +112,7 @@ namespace dragonpoop
         void updateVb( gui_dims *p, render_api_context_writelock *ctx );
 
     public:
-        
+
         //ctor
         renderer_gui( gui_writelock *g );
         //dtor
@@ -124,9 +128,9 @@ namespace dragonpoop
 
         friend class renderer_gui_readlock;
         friend class renderer_gui_writelock;
-        
+
     };
-    
+
 };
 
 #endif

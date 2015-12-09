@@ -32,6 +32,7 @@ namespace dragonpoop
     {
         float x, y, w, h;
         float border_w, border_tex_w;
+        bool bDrag;
     };
 
     struct gui_txt_loc
@@ -48,7 +49,7 @@ namespace dragonpoop
 
     struct gui_mouse_event
     {
-        float x, y;
+        float x, y, sx, sy;
         bool lb, rb;
     };
 
@@ -145,11 +146,13 @@ namespace dragonpoop
         //returns true if has focus
         bool hasFocus( void );
         //process mouse input
-        void processMouse( float x, float y, bool lb, bool rb );
+        void processMouse( float x, float y, float sx, float sy, bool lb, bool rb );
         //process kb input
         void processKb( std::string *skey, bool bDown );
         //override to handle mouse button
-        virtual bool handleMouseClick( float x, float y, bool isRight, bool isDown );
+        virtual bool handleMouseClick( float x, float y, float sx, float sy, bool isRight, bool isDown );
+        //override to handle mouse movement
+        virtual bool handleMouseMove( float x, float y, float sx, float sy );
         //override to handle keyboard button
         virtual bool handleKbEvent( std::string *skey, bool isDown );
         //set text
@@ -216,6 +219,8 @@ namespace dragonpoop
         void setTopMargin( unsigned int m );
         //get top margin
         unsigned int getTopMargin( void );
+        //set draggable mode
+        void setDraggable( bool b );
 
     public:
 
