@@ -3,14 +3,23 @@
 #define dragonpoop_model_man_gui_h
 
 #include "../window_gui/window_gui.h"
+#include "../menu_gui/menu_gui.h"
 
 namespace dragonpoop
 {
+
+    class model_man_ref;
 
     class model_man_gui : public window_gui
     {
 
     private:
+
+        menu_gui *models_menu;
+        model_man_ref *m;
+
+        //repopulate menu
+        void repop( void );
 
     protected:
 

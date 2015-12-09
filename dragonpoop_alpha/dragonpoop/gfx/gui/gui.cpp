@@ -44,7 +44,7 @@ namespace dragonpoop
         this->fnt_size = 0;
         this->fnt_clr.r = this->fnt_clr.g = this->fnt_clr.b = 0;
         this->fnt_clr.a = 255;
-        this->pos.border_w = 10;
+        this->pos.border_w = 30;
         this->pos.border_tex_w = 0.2f;
         this->pos.bDrag = 0;
         this->cursor = 0;

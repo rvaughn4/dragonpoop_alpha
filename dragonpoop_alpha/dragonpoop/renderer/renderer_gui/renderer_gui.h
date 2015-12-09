@@ -77,7 +77,7 @@ namespace dragonpoop
         //redo matrix
         void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix );
         //process mouse input
-        bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb );
+        bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id );
         //process kb input
         bool processKb( std::string *sname, bool bIsDown );
         //returns opacity

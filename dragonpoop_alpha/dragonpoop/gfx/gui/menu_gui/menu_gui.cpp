@@ -80,7 +80,7 @@ namespace dragonpoop
     //override to paint background texture
     void menu_gui::repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h )
     {
-        bm->loadFile( "white_gui_box.bmp" );
+        bm->loadFile( "white_gui_button.bmp" );
     }
 
     //add button

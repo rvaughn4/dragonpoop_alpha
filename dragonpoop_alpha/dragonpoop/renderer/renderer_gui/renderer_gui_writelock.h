@@ -19,23 +19,23 @@ namespace dragonpoop
     class renderer_gui_man_readlock;
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
-    
+
     class renderer_gui_writelock : public shared_obj_writelock
     {
-        
+
     private:
-        
+
         renderer_gui *t;
-        
+
     protected:
-        
+
         //ctor
         renderer_gui_writelock( renderer_gui *t, dpmutex_writelock *l );
         //dtor
         virtual ~renderer_gui_writelock( void );
-        
+
     public:
-        
+
         //return core
         core *getCore( void );
         //returns id
@@ -59,7 +59,7 @@ namespace dragonpoop
         //called to force fg update
         void syncFg( void );
         //process mouse input
-        bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb );
+        bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id );
         //process kb input
         bool processKb( std::string *sname, bool bIsDown );
         //returns true if alive
@@ -85,7 +85,7 @@ namespace dragonpoop
 
         friend class renderer_gui;
     };
-    
+
 };
 
 #endif

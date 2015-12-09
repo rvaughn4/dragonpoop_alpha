@@ -235,19 +235,24 @@ namespace dragonpoop
 
         if( this->bIsHover )
         {
-            if( this->clickfade > 0.005f )
-                this->clickfade *= 0.2f;
-            else
-                this->clickfade = 0;
-            if( this->clickfade > 0.01f )
-                this->hv += ( 0.0f - this->hv ) * 0.7f;
+            if( this->bIsDrag )
+                this->hv += ( GUI_HOVER_MAX - this->hv ) * 0.3f;
             else
             {
-                hid = r->getHoverId();
-                if( this->compareId( hid ) && this->clickfade <= 0.01f )
-                    this->hv += ( GUI_HOVER_MAX - this->hv ) * 0.3f;
+                if( this->clickfade > 0.005f )
+                    this->clickfade *= 0.2f;
                 else
-                    this->hv += ( 0.0f - this->hv ) * 0.3f;
+                    this->clickfade = 0;
+                if( this->clickfade > 0.01f && !this->pos.bDrag )
+                    this->hv += ( 0.0f - this->hv ) * 0.7f;
+                else
+                {
+                    hid = r->getHoverId();
+                    if( this->compareId( hid ) )
+                        this->hv += ( GUI_HOVER_MAX - this->hv ) * 0.3f;
+                    else
+                        this->hv += ( 0.0f - this->hv ) * 0.3f;
+                }
             }
         }
         if( p_matrix )
@@ -304,7 +309,7 @@ namespace dragonpoop
     }
 
     //process mouse input
-    bool renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb )
+    bool renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id )
     {
         dpxyz_f p;
         gui_writelock *g;
@@ -313,15 +318,16 @@ namespace dragonpoop
         std::list<renderer_gui *>::iterator i;
         renderer_gui *pr;
         renderer_gui_writelock *pl;
+        bool bIsFocus;
 
         p.x = x;
         p.y = y;
         p.z = (float)this->z / -8.0f;
         this->undo_mat.transform( &p );
 
-        if( lb )
+        bIsFocus = dpid_compare( &this->id, &focus_id );
+        if( lb  && bIsFocus )
         {
-
             if( !this->bIsDrag )
             {
                 this->drag_pos.x = x;
@@ -334,7 +340,8 @@ namespace dragonpoop
                 this->drag_pos.oy = y - this->drag_pos.y;
             }
         }
-        else
+
+        if( !lb || !bIsFocus )
         {
             if( this->bIsDrag )
             {
@@ -359,7 +366,7 @@ namespace dragonpoop
             pl = (renderer_gui_writelock *)o.tryWriteLock( pr, 100, "renderer_gui::processMouse" );
             if( !pl )
                 continue;
-            if( pl->processMouse( r, x, y, lb, rb ) )
+            if( pl->processMouse( r, x, y, lb, rb, focus_id ) )
             {
                 this->hover_id = pl->getHoverId();
                 return 1;

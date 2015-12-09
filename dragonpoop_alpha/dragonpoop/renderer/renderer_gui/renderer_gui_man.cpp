@@ -555,7 +555,7 @@ namespace dragonpoop
                 pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiMouseInput" );
                 if( !pl )
                     continue;
-                if( pl->processMouse( r, t.x, t.y, lb, rb ) )
+                if( pl->processMouse( r, t.x, t.y, lb, rb, this->focus_gui ) )
                 {
                     this->hover_gui = pl->getHoverId();
                     return 1;
