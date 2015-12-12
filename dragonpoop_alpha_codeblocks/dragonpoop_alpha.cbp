@@ -115,6 +115,14 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptask/dptasks.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger_readlock.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger_readlock.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger_ref.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger_ref.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger_writelock.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger_writelock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_readlock.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_readlock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_ref.cpp" />
@@ -339,6 +347,8 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/root_gui/root_gui_factory.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/root_gui/root_gui_factory.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/root_gui/root_guis.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/task_man_gui/task_man_gui.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/task_man_gui/task_man_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/window_gui/window_gui.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/window_gui/window_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/model/model.cpp" />
