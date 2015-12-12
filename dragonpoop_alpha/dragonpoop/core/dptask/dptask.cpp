@@ -101,4 +101,10 @@ namespace dragonpoop
         this->lasttime = t;
     }
 
+    //get name
+    void dptask::getName( std::string *s )
+    {
+        s->assign( this->sname );
+    }
+
 };

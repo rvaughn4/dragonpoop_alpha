@@ -419,4 +419,32 @@ namespace dragonpoop
 
     }
 
+    //get dynamic task list
+    unsigned int dpthread::getDynamicTaskRanList( std::atomic<dptask_ref *> **l )
+    {
+        *l = this->tasks.dynamic_ran;
+        return dpthread_max_tasks;
+    }
+
+    //get static task list
+    unsigned int dpthread::getStaticTaskRanList( std::atomic<dptask_ref *> **l )
+    {
+        *l = this->tasks.static_ran;
+        return dpthread_max_tasks;
+    }
+
+    //get dynamic task list
+    unsigned int dpthread::getDynamicTaskNotRanList( std::atomic<dptask_ref *> **l )
+    {
+        *l = this->tasks.dynamic_notran;
+        return dpthread_max_tasks;
+    }
+
+    //get static task list
+    unsigned int dpthread::getStaticTaskNotRanList( std::atomic<dptask_ref *> **l )
+    {
+        *l = this->tasks.static_notran;
+        return dpthread_max_tasks;
+    }
+
 };

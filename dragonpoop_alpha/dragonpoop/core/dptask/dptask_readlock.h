@@ -3,6 +3,7 @@
 #define dragonpoop_dptask_readlock_h
 
 #include "../shared_obj/shared_obj_readlock.h"
+#include <string>
 
 namespace dragonpoop
 {
@@ -32,10 +33,12 @@ namespace dragonpoop
         bool isSingleThread( void );
         //returns last ran time
         uint64_t getLastTime( void );
+        //get name
+        void getName( std::string *s );
 
         friend class dptask;
     };
-    
+
 };
 
 #endif

@@ -150,6 +150,8 @@ namespace dragonpoop
         void addRenderer( renderer_factory *f );
         //change renderer
         bool changeRenderer( const char *cname );
+        //returns taskpool
+        dptaskpool_ref *getTasks( void );
 
     public:
 

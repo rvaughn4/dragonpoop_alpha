@@ -41,4 +41,10 @@ namespace dragonpoop
         return this->getLastTime();
     }
 
+    //get name
+    void dptask_readlock::getName( std::string *s )
+    {
+        this->t->getName( s );
+    }
+
 };

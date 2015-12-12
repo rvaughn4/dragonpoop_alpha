@@ -444,4 +444,17 @@ namespace dragonpoop
         return this->r != 0;
     }
 
+    //returns taskpool
+    dptaskpool_ref *gfx::getTasks( void )
+    {
+        shared_obj_guard o;
+        dptaskpool_writelock *l;
+
+        l = (dptaskpool_writelock *)o.tryWriteLock( this->tpr, 1000, "gfx::getTasks" );
+        if( !l )
+            return 0;
+
+        return (dptaskpool_ref *)l->getRef();
+    }
+
 };

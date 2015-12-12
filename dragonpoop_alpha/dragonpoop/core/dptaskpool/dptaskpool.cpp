@@ -7,6 +7,7 @@
 #include "../dpthread/dpthreads.h"
 #include "../shared_obj/shared_obj_guard.h"
 #include "dptaskpool_task.h"
+#include "dptaskpool_logger_writelock.h"
 
 #include <thread>
 #include <vector>
@@ -31,6 +32,8 @@ namespace dragonpoop
             thread_cnt = std::thread::hardware_concurrency();
         if( thread_cnt < 3 )
             thread_cnt = 3;
+
+        this->lggr = new dptaskpool_logger( mm );
 
         this->setThreadCount( thread_cnt );
 
@@ -71,6 +74,7 @@ namespace dragonpoop
         }
 
         o.tryWriteLock( this, 5000, "dptaskpool::~dptaskpool" );
+        delete this->lggr;
         o.unlock();
     }
 
@@ -273,7 +277,6 @@ namespace dragonpoop
         bool b;
         std::vector<dptask_ref *> skipped;
 
-
         r = this->popTask();
         while( r )
         {
@@ -361,6 +364,7 @@ namespace dragonpoop
         delete r;
         delete tl;
 
+        this->updateLogger( th );
     }
 
     //find thread with fewest tasks
@@ -478,6 +482,92 @@ namespace dragonpoop
         }
 
         return r;
+    }
+
+    //update logger
+    void dptaskpool::updateLogger( dpthread_lock *thdl )
+    {
+        dpthread_lock *thd;
+        dpthread_interface *t;
+        unsigned int i;
+        dptaskpool_logger_writelock *l;
+        shared_obj_guard o;
+
+        l = (dptaskpool_logger_writelock *)o.tryWriteLock( this->lggr, 100, "dptaskpool::updateLogger" );
+        if( !l )
+            return;
+
+        l->clear();
+
+        for( i = 0; i < dptaskpool_max_threads; i++ )
+        {
+            t = this->threads[ i ];
+            if( !t )
+                continue;
+            thd = t->lock();
+            if( !thd )
+                continue;
+            this->updateLogger( thd, l );
+            delete thd;
+        }
+
+        l->setTime( thdl->getTicks() );
+    }
+
+    //update logger per thread
+    void dptaskpool::updateLogger( dpthread_lock *thd, dptaskpool_logger_writelock *lggr )
+    {
+        std::atomic<dptask_ref *> *l;
+        unsigned int i, e;
+        dptask_ref *p;
+
+        e = thd->getDynamicTaskRanList( &l );
+        for( i = 0; i < e; i++ )
+        {
+            p = l[ i ];
+            if( !p )
+                continue;
+            lggr->addTask( thd->getId(), p );
+        }
+
+        e = thd->getStaticTaskRanList( &l );
+        for( i = 0; i < e; i++ )
+        {
+            p = l[ i ];
+            if( !p )
+                continue;
+            lggr->addTask( thd->getId(), p );
+        }
+
+        e = thd->getDynamicTaskNotRanList( &l );
+        for( i = 0; i < e; i++ )
+        {
+            p = l[ i ];
+            if( !p )
+                continue;
+            lggr->addTask( thd->getId(), p );
+        }
+
+        e = thd->getStaticTaskNotRanList( &l );
+        for( i = 0; i < e; i++ )
+        {
+            p = l[ i ];
+            if( !p )
+                continue;
+            lggr->addTask( thd->getId(), p );
+        }
+    }
+
+    //get logger
+    dptaskpool_logger_ref *dptaskpool::getLogger( void )
+    {
+        dptaskpool_logger_writelock *l;
+        shared_obj_guard o;
+
+        l = (dptaskpool_logger_writelock *)o.tryWriteLock( this->lggr, 100, "dptaskpool::getLogger" );
+        if( !l )
+            return 0;
+        return (dptaskpool_logger_ref *)l->getRef();
     }
 
 };

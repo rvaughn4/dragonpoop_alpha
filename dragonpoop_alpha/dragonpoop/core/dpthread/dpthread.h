@@ -67,6 +67,14 @@ namespace dragonpoop
         virtual dptask_ref *getTask( void );
         //returns task count
         virtual unsigned int countTasks( void );
+        //get dynamic task list
+        virtual unsigned int getDynamicTaskRanList( std::atomic<dptask_ref *> **l );
+        //get static task list
+        virtual unsigned int getStaticTaskRanList( std::atomic<dptask_ref *> **l );
+        //get dynamic task list
+        virtual unsigned int getDynamicTaskNotRanList( std::atomic<dptask_ref *> **l );
+        //get static task list
+        virtual unsigned int getStaticTaskNotRanList( std::atomic<dptask_ref *> **l );
 
     public:
 

@@ -32,6 +32,7 @@ namespace dragonpoop
     class dpsky_man_ref;
     class dpsky_man_readlock;
     class dpsky_man_writelock;
+    class dptaskpool_ref;
 
     class gfx_readlock : public shared_obj_readlock
     {
@@ -93,6 +94,8 @@ namespace dragonpoop
         bool getSky( dpsky_man_readlock **r, shared_obj_guard *o );
         //get sky
         bool getSky( dpsky_man_writelock **r, shared_obj_guard *o );
+        //returns taskpool
+        dptaskpool_ref *getTasks( void );
 
         friend class gfx;
     };

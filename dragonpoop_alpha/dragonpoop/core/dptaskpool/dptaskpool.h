@@ -5,6 +5,7 @@
 #include "../shared_obj/shared_obj.h"
 #include "../../core/dpid/dpid.h"
 #include <atomic>
+#include "dptaskpool_logger.h"
 
 namespace dragonpoop
 {
@@ -19,6 +20,8 @@ namespace dragonpoop
     class dptask_writelock;
     class dpthread_lock;
     class dptaskpool_task;
+    class dptaskpool_logger_writelock;
+    class dptaskpool_logger_ref;
 
     #define dptaskpool_max_threads 16
     #define dptaskpool_max_tasks 100
@@ -37,7 +40,7 @@ namespace dragonpoop
         //task
         dptask *tsk;
         dptaskpool_task *tptsk;
-
+        dptaskpool_logger *lggr;
 
         //find thread with fewest tasks
         dpthread_interface *getThread_fewestTasks( void );
@@ -47,6 +50,11 @@ namespace dragonpoop
         dpthread_interface *getThread_highUsage( void );
         //find thread with lowest usage
         dpthread_interface *getThread_lowUsage( void );
+
+        //update logger
+        void updateLogger( dpthread_lock *thdl );
+        //update logger per thread
+        void updateLogger( dpthread_lock *thd, dptaskpool_logger_writelock *lggr );
 
     protected:
 
@@ -78,6 +86,8 @@ namespace dragonpoop
         dpthread_lock *lockThread( void );
         //run taskpool
         void run( dptask_writelock *tl, dpthread_lock *th );
+        //get logger
+        dptaskpool_logger_ref *getLogger( void );
 
     public:
 

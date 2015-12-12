@@ -131,4 +131,10 @@ namespace dragonpoop
         return this->t->getSky( r, o );
     }
 
+    //returns taskpool
+    dptaskpool_ref *gfx_readlock::getTasks( void )
+    {
+        return this->t->getTasks();
+    }
+
 };

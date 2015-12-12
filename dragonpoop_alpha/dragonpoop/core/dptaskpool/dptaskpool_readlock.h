@@ -10,6 +10,7 @@ namespace dragonpoop
 
     class dptaskpool;
     class dpthread_lock;
+    class dptaskpool_logger_ref;
 
     class dptaskpool_readlock : public shared_obj_readlock
     {
@@ -33,10 +34,12 @@ namespace dragonpoop
         dpid genId( void );
         //lock a thread from pool
         dpthread_lock *lockThread( void );
+        //get logger
+        dptaskpool_logger_ref *getLogger( void );
 
         friend class dptaskpool;
     };
-    
+
 };
 
 #endif

@@ -48,6 +48,8 @@ namespace dragonpoop
         uint64_t getLastTime( void );
         //set last ran time
         void setLastTime( uint64_t t );
+        //get name
+        void getName( std::string *s );
 
     public:
 
@@ -59,7 +61,7 @@ namespace dragonpoop
         friend class dptask_readlock;
         friend class dptask_writelock;
     };
-    
+
 };
 
 #endif

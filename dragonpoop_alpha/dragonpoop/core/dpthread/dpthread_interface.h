@@ -4,6 +4,7 @@
 
 #include <stdint.h>
 #include "../dpid/dpid.h"
+#include <atomic>
 
 namespace dragonpoop
 {
@@ -35,6 +36,14 @@ namespace dragonpoop
         virtual dptask_ref *getTask( void ) = 0;
         //returns task count
         virtual unsigned int countTasks( void ) = 0;
+        //get dynamic task list
+        virtual unsigned int getDynamicTaskRanList( std::atomic<dptask_ref *> **l ) = 0;
+        //get static task list
+        virtual unsigned int getStaticTaskRanList( std::atomic<dptask_ref *> **l ) = 0;
+        //get dynamic task list
+        virtual unsigned int getDynamicTaskNotRanList( std::atomic<dptask_ref *> **l ) = 0;
+        //get static task list
+        virtual unsigned int getStaticTaskNotRanList( std::atomic<dptask_ref *> **l ) = 0;
 
     public:
 

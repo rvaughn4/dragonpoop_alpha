@@ -3,12 +3,14 @@
 #define dragonpoop_dpthread_lock_h
 
 #include "dpthread_interface.h"
+#include <atomic>
 
 namespace dragonpoop
 {
 
     class dpthread;
     class dpmutex_writelock;
+    class dptask_ref;
 
     class dpthread_lock : public dpthread_interface
     {
@@ -51,6 +53,14 @@ namespace dragonpoop
         virtual dptask_ref *getTask( void );
         //returns task count
         virtual unsigned int countTasks( void );
+        //get dynamic task list
+        virtual unsigned int getDynamicTaskRanList( std::atomic<dptask_ref *> **l );
+        //get static task list
+        virtual unsigned int getStaticTaskRanList( std::atomic<dptask_ref *> **l );
+        //get dynamic task list
+        virtual unsigned int getDynamicTaskNotRanList( std::atomic<dptask_ref *> **l );
+        //get static task list
+        virtual unsigned int getStaticTaskNotRanList( std::atomic<dptask_ref *> **l );
 
         friend class dpthread;
         friend class dpthread_singletask;
