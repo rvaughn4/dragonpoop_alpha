@@ -35,6 +35,10 @@ namespace dragonpoop
         uint64_t getLastTime( void );
         //get name
         void getName( std::string *s );
+        //returns percent usage
+        unsigned int getUsage( void );
+        //returns true if task can share thread with static task
+        bool canShare( void );
 
         friend class dptask;
     };

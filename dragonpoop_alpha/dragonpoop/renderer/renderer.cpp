@@ -87,7 +87,7 @@ namespace dragonpoop
         this->bActiveOld = 0;
         this->ms_each_frame = 30;
         this->gtsk = new renderer_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 5, 1, "renderer" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 5, 1, 0, "renderer" );
         tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
 

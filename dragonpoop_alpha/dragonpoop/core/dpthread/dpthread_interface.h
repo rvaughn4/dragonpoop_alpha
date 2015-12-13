@@ -30,12 +30,16 @@ namespace dragonpoop
         virtual void addTask( dptask *t ) = 0;
         //returns true if has static tasks
         virtual bool hasStaticTask( void ) = 0;
+        //returns true if has static tasks that cannot share
+        virtual bool cannotShare( void ) = 0;
         //returns usage
         virtual float getUsage( void ) = 0;
         //removes a dynamic task
         virtual dptask_ref *getTask( void ) = 0;
         //returns task count
         virtual unsigned int countTasks( void ) = 0;
+        //returns static task count
+        virtual unsigned int countStaticTasks( void ) = 0;
         //get dynamic task list
         virtual unsigned int getDynamicTaskRanList( std::atomic<dptask_ref *> **l ) = 0;
         //get static task list

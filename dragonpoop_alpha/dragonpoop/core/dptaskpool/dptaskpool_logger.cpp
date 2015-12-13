@@ -77,6 +77,7 @@ namespace dragonpoop
             cnt = sizeof( this->values );
 
         memcpy( &this->values, t, cnt );
+        this->setTime( l->getTime() );
     }
 
     //add task
@@ -121,6 +122,8 @@ namespace dragonpoop
         memset( v, 0, sizeof(dptaskpool_logger_value) );
         v->tid = tid;
         s.copy( v->name, sizeof( v->name ) );
+        v->percent_usage = t->getUsage();
+        v->isStatic = t->isSingleThread();
 
         this->lastTask++;
     }

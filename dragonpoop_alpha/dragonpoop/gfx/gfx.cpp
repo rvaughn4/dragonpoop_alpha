@@ -122,7 +122,7 @@ namespace dragonpoop
     void gfx::_startTask( core *c, dptaskpool_writelock *tp )
     {
         this->gtsk = new gfx_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 100, 0, "gfx" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 100, 0, 0, "gfx" );
         tp->addTask( this->tsk );
     }
 

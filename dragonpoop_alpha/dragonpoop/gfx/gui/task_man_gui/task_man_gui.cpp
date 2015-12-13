@@ -15,7 +15,7 @@ namespace dragonpoop
 {
 
     //ctor
-    task_man_gui::task_man_gui( gfx_writelock *g, dpid id, dpid pid ) : window_gui( g, id, pid, 100, 100, 1000, 1000, "Tasks" )
+    task_man_gui::task_man_gui( gfx_writelock *g, dpid id, dpid pid ) : window_gui( g, id, pid, 100, 100, 500, 700, "Tasks" )
     {
         dptaskpool_ref *tpr;
         dptaskpool_readlock *tpl;
@@ -29,7 +29,6 @@ namespace dragonpoop
             this->rlggr = 0;
         o.unlock();
         delete tpr;
-
 
         this->setDraggable( 1 );
         this->lggr = new dptaskpool_logger( g->getCore()->getMutexMaster() );
@@ -58,12 +57,12 @@ namespace dragonpoop
         std::string s, sl;
         dptaskpool_logger_value *vl;
         dptaskpool_logger_value *v;
-        unsigned int i, e;
+        unsigned int i, e, lid, lper, r, lc;
 
         this->window_gui::doProcessing( thd, g );
 
         t = thd->getTicks();
-        if( t - this->lastSync < 1000 )
+        if( t - this->lastSync < 500 )
             return;
         this->lastSync = t;
 
@@ -72,6 +71,12 @@ namespace dragonpoop
             return;
         l->sync( this->rlggr );
 
+        lid = 0;
+        lper = 0;
+        lc = 0;
+
+        sl.assign( "Queued\r\n" );
+
         e = l->getTaskList( &vl );
         for( i = 0; i < e; i++ )
         {
@@ -79,7 +84,62 @@ namespace dragonpoop
 
             v = &vl[ i ];
 
-            ss << v->tid << " " << v->name << "\r\n";
+            if( v->tid != lid )
+            {
+                if( lper > 100 )
+                    lper = 100;
+                r = lper;
+                if( r < 50 )
+                    ss << "\a000255000";
+                else
+                {
+                    if( r < 90 )
+                        ss << "\a255255000";
+                    else
+                        ss << "\a255000000";
+                }
+                ss << "\t\t" << lc << "\t\t\t" << lper << "%\r\n\a000000000";
+                ss << "Thread " << v->tid << "\r\n";
+                lid = v->tid;
+                lper = 0;
+                lc = 0;
+            }
+
+            if( v->isStatic )
+                ss << "\a000000255";
+            ss << "\t" << v->name << "\t\t\t";
+            r = v->percent_usage;
+            if( r < 50 )
+                ss << "\a000255000";
+            else
+            {
+                if( r < 90 )
+                    ss << "\a255255000";
+                else
+                    ss << "\a255000000";
+            }
+            ss << v->percent_usage << "%\r\n\a000000000";
+            lper += v->percent_usage;
+            lc++;
+
+            if( i + 1 >= e )
+            {
+                if( lper > 100 )
+                    lper = 100;
+                r = lper;
+                if( r < 50 )
+                    ss << "\a000255000";
+                else
+                {
+                    if( r < 90 )
+                        ss << "\a255255000";
+                    else
+                        ss << "\a255000000";
+                }
+                ss << "\t\t" << lc << "\t\t\t" << lper << "%\r\n\a000000000";
+                ss << l->getTime() << "";
+            }
+
             sl.append( ss.str() );
         }
 

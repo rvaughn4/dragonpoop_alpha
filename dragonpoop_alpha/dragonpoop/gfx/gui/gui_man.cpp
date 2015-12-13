@@ -97,7 +97,7 @@ namespace dragonpoop
     void gui_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
         this->gtsk = new gui_man_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, "gui_man" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, 0, "gui_man" );
         tp->addTask( this->tsk );
     }
 

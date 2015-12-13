@@ -47,12 +47,16 @@ namespace dragonpoop
         virtual dpid genId( void );
         //returns true if has static tasks
         virtual bool hasStaticTask( void );
+        //returns true if has static tasks that cannot share
+        virtual bool cannotShare( void );
         //returns usage
         virtual float getUsage( void );
         //removes a dynamic task
         virtual dptask_ref *getTask( void );
         //returns task count
         virtual unsigned int countTasks( void );
+        //returns static task count
+        virtual unsigned int countStaticTasks( void );
         //get dynamic task list
         virtual unsigned int getDynamicTaskRanList( std::atomic<dptask_ref *> **l );
         //get static task list

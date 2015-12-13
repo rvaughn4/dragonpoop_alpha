@@ -12,6 +12,8 @@
 #include <thread>
 #include <vector>
 
+#include <iostream>
+
 namespace dragonpoop
 {
 
@@ -30,15 +32,15 @@ namespace dragonpoop
 
         if( !thread_cnt )
             thread_cnt = std::thread::hardware_concurrency();
-        if( thread_cnt < 3 )
-            thread_cnt = 3;
+        if( thread_cnt < 6 )
+            thread_cnt = 6;
 
         this->lggr = new dptaskpool_logger( mm );
 
         this->setThreadCount( thread_cnt );
 
         this->tptsk = new dptaskpool_task( this );
-        this->tsk = new dptask( this->mm, this->tptsk, 1000, 1, "task pool manager" );
+        this->tsk = new dptask( this->mm, this->tptsk, 200, 1, 1, "task pool manager" );
 
         tl = this->lockThread();
         if( !tl )
@@ -272,58 +274,26 @@ namespace dragonpoop
         dpthread_interface *t;
         dpthread_lock *tl;
         dptask_ref *r;
-        dptask_readlock *rl;
         shared_obj_guard o;
-        bool b;
         std::vector<dptask_ref *> skipped;
 
         r = this->popTask();
         while( r )
         {
-            rl = (dptask_readlock *)o.tryReadLock( r, 10, "dptaskpool::run" );
-            if( !rl )
+            t = this->getThread_fewestTasks( 1 );
+            if( !t )
                 skipped.push_back( r );
             else
             {
-                b = rl->isSingleThread();
-                o.unlock();
-
-                if( b )
+                tl = t->lock();
+                if( !tl )
+                    skipped.push_back( r );
+                else
                 {
-                    t = this->getThread_noStatic();
-                    if( !t )
-                        b = 0;
-                    else
-                    {
-                        tl = t->lock();
-                        if( !tl )
-                            b = 0;
-                        else
-                        {
-                            tl->addTask( r );
-                            delete tl;
-                        }
-                    }
-
-                }
-
-                if( !b )
-                {
-                    t = this->getThread_fewestTasks();
-                    if( !t )
-                        skipped.push_back( r );
-                    else
-                    {
-                        tl = t->lock();
-                        if( !tl )
-                            skipped.push_back( r );
-                        else
-                        {
-                            tl->addTask( r );
-                            delete r;
-                            delete tl;
-                        }
-                    }
+                    std::cout << "t" << tl->getId() << "\r\n";
+                    tl->addTask( r );
+                    delete r;
+                    delete tl;
                 }
             }
             r = this->popTask();
@@ -368,7 +338,7 @@ namespace dragonpoop
     }
 
     //find thread with fewest tasks
-    dpthread_interface *dptaskpool::getThread_fewestTasks( void )
+    dpthread_interface *dptaskpool::getThread_fewestTasks( bool bAllowStatic )
     {
         unsigned int i, mtc, tc;
         dpthread_interface *r, *t;
@@ -384,7 +354,9 @@ namespace dragonpoop
             tl = t->lock();
             if( !tl )
                 continue;
-            tc = tl->countTasks();
+            if( !bAllowStatic && tl->cannotShare() )
+                continue;
+            tc = tl->countStaticTasks();
             if( tc < mtc )
             {
                 mtc = tc;
@@ -392,6 +364,9 @@ namespace dragonpoop
             }
             delete tl;
         }
+
+        if( !r && !bAllowStatic )
+            r = this->getThread_fewestTasks( 1 );
 
         return r;
     }
@@ -492,12 +467,21 @@ namespace dragonpoop
         unsigned int i;
         dptaskpool_logger_writelock *l;
         shared_obj_guard o;
+        dptask_ref *p;
 
         l = (dptaskpool_logger_writelock *)o.tryWriteLock( this->lggr, 100, "dptaskpool::updateLogger" );
         if( !l )
             return;
 
         l->clear();
+
+        for( i = 0; i < dptaskpool_max_tasks; i++ )
+        {
+            p = this->tasks[ i ];
+            if( !p )
+                continue;
+            l->addTask( 0, p );
+        }
 
         for( i = 0; i < dptaskpool_max_threads; i++ )
         {

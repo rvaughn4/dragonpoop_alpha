@@ -17,8 +17,9 @@ namespace dragonpoop
 
     private:
 
-        std::atomic<bool> bIsRun, bIsSingle;
-        std::atomic<uint64_t> delayms, lasttime;
+        std::atomic<bool> bIsRun, bIsSingle, bShare;
+        std::atomic<uint64_t> delayms, lasttime, last_tally_time, last_ran_time, ms_ran, ms_delay;
+        unsigned int percent_usage;
         dptask_owner *o;
         std::string sname;
 
@@ -50,11 +51,15 @@ namespace dragonpoop
         void setLastTime( uint64_t t );
         //get name
         void getName( std::string *s );
+        //returns percent usage
+        unsigned int getUsage( void );
+        //returns true if task can share thread with static task
+        bool canShare( void );
 
     public:
 
         //ctor
-        dptask( dpmutex_master *mm, dptask_owner *o, uint64_t ms_delay, bool isSingleThread, const char *cname );
+        dptask( dpmutex_master *mm, dptask_owner *o, uint64_t ms_delay, bool isSingleThread, bool bShare, const char *cname );
         //dtor
         virtual ~dptask( void );
 

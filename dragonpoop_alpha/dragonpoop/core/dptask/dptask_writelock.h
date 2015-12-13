@@ -46,10 +46,12 @@ namespace dragonpoop
         uint64_t getLastTime( void );
         //set last ran time
         void setLastTime( uint64_t t );
+        //returns true if task can share thread with static task
+        bool canShare( void );
 
         friend class dptask;
     };
-    
+
 };
 
 #endif

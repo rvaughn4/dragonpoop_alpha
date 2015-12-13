@@ -47,4 +47,16 @@ namespace dragonpoop
         this->t->getName( s );
     }
 
+    //returns percent usage
+    unsigned int dptask_readlock::getUsage( void )
+    {
+        return this->t->getUsage();
+    }
+
+    //returns true if task can share thread with static task
+    bool dptask_readlock::canShare( void )
+    {
+        return this->t->canShare();
+    }
+
 };

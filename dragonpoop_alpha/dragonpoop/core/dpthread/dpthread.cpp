@@ -22,6 +22,7 @@ namespace dragonpoop
         this->trun = 1;
         this->l = this->lm->genMutex();
         this->usage = 0;
+        this->bHasNoshare = 0;
 
         for( i = 0; i < dpthread_max_tasks; i++ )
         {
@@ -46,7 +47,14 @@ namespace dragonpoop
     //add static task
     bool dpthread::addStatic( dptask_ref *t )
     {
+        dptask_readlock *l;
+        shared_obj_guard o;
         int i;
+
+        l = (dptask_readlock *)o.tryReadLock( t, 100, "dpthread::addStatic" );
+        if( l )
+            this->bHasNoshare = (bool)this->bHasNoshare | !l->canShare();
+        o.unlock();
 
         for( i = 0; i < dpthread_max_tasks; i++ )
         {
@@ -126,6 +134,23 @@ namespace dragonpoop
         return c;
     }
 
+    //returns task count
+    unsigned int dpthread::countStaticTasks( void )
+    {
+        unsigned int i, c;
+
+        c = 0;
+        for( i = 0; i < dpthread_max_tasks; i++ )
+        {
+            if( this->tasks.static_notran[ i ] != 0 )
+                c++;
+            if( this->tasks.static_ran[ i ] != 0 )
+                c++;
+        }
+
+        return c;
+    }
+
     //add new task (creates a ref)
     void dpthread::addTask( dptask_ref *t )
     {
@@ -184,6 +209,12 @@ namespace dragonpoop
         }
 
         return 0;
+    }
+
+    //returns true if has static tasks that cannot share
+    bool dpthread::cannotShare( void )
+    {
+        return this->bHasNoshare;
     }
 
     //get tick count in ms

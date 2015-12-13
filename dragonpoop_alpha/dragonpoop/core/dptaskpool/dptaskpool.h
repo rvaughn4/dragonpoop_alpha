@@ -43,7 +43,7 @@ namespace dragonpoop
         dptaskpool_logger *lggr;
 
         //find thread with fewest tasks
-        dpthread_interface *getThread_fewestTasks( void );
+        dpthread_interface *getThread_fewestTasks( bool bAllowStatic );
         //find thread with no static tasks
         dpthread_interface *getThread_noStatic( void );
         //find thread with highest usage

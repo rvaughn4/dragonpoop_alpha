@@ -72,6 +72,12 @@ namespace dragonpoop
         return this->t->hasStaticTask();
     }
 
+    //returns true if has static tasks that cannot share
+    bool dpthread_lock::cannotShare( void )
+    {
+        return this->t->cannotShare();
+    }
+
     //returns usage
     float dpthread_lock::getUsage( void )
     {
@@ -88,6 +94,12 @@ namespace dragonpoop
     unsigned int dpthread_lock::countTasks( void )
     {
         return this->t->countTasks();
+    }
+
+    //returns static task count
+    unsigned int dpthread_lock::countStaticTasks( void )
+    {
+        return this->t->countStaticTasks();
     }
 
     //get dynamic task list

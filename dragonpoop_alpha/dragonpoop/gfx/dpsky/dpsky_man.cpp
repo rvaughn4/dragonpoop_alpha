@@ -85,7 +85,7 @@ namespace dragonpoop
     void dpsky_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
         this->gtsk = new dpsky_man_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, "dpsky_man" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, 0, "dpsky_man" );
         tp->addTask( this->tsk );
     }
 

@@ -149,7 +149,7 @@ namespace dragonpoop
     void renderer_model_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
         this->gtsk = new renderer_model_man_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, "renderer_model_man" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 1, 1, "renderer_model_man" );
         tp->addTask( this->tsk );
     }
 

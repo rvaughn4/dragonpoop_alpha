@@ -21,6 +21,7 @@ namespace dragonpoop
     {
         unsigned int tid;
         bool isStatic;
+        unsigned int percent_usage;
         char name[ dptaskpool_logger_value_name_max ];
     };
 

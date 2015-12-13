@@ -100,7 +100,7 @@ namespace dragonpoop
     void model_man::_startTask( dptaskpool_writelock *tp, unsigned int ms_delay )
     {
         this->gtsk = new model_man_task( this );
-        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, "model_man" );
+        this->tsk = new dptask( c->getMutexMaster(), this->gtsk, ms_delay, 0, 0, "model_man" );
         tp->addTask( this->tsk );
     }
 

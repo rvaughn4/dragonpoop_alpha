@@ -40,9 +40,9 @@ namespace dragonpoop
         this->setDraggable( 1 );
         this->bDoClose = 0;
 
-        this->bclose = new button_gui( g, this->genId(), id, w - 52, 2, 50, 50, "X", 1 );
-        this->bhide = new button_gui( g, this->genId(), id, w - 104, 2, 50, 50, "-", 1 );
-        this->btitle = new button_gui( g, this->genId(), id, 0, 10, w - 104, 40, ctitle, 0 );
+        this->bclose = new button_gui( g, this->genId(), id, w - 52, 12, 40, 40, "X", 1 );
+        this->bhide = new button_gui( g, this->genId(), id, w - 94, 12, 40, 40, "-", 1 );
+        this->btitle = new button_gui( g, this->genId(), id, 0, 10, w - 94, 40, ctitle, 0 );
         this->addGui( this->bclose );
         this->addGui( this->bhide );
         this->addGui( this->btitle );

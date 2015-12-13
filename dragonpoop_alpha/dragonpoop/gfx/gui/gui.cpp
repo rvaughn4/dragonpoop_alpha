@@ -386,7 +386,7 @@ namespace dragonpoop
     //override to customize font rendering
     void gui::drawText( dpbitmap *bm )
     {
-        unsigned int i, e, d, fnt_size, sdw_off, ln, tt;
+        unsigned int i, e, d, fnt_size, sdw_off, ln, tab_pos;
         unsigned char c, *cb;
         int w, h, x, y, cw, ch, lch;
         dprgba clr, clr_dark, clr_light;
@@ -429,7 +429,7 @@ namespace dragonpoop
         w -= this->margin_size + this->margin_size;
         h -= this->top_margin + this->margin_size;
 
-        x = this->margin_size;
+        tab_pos = x = this->margin_size;
         y = this->top_margin;
         cw = lch = 0;
         ln = 0;
@@ -529,7 +529,7 @@ namespace dragonpoop
             // \r
             if( c == 13 )
             {
-                x = this->margin_size;
+                tab_pos = x = this->margin_size;
                 continue;
             }
             // \n
@@ -545,17 +545,16 @@ namespace dragonpoop
             // \t
             if( c == 9 )
             {
-                tt = 0;
-                while( (int)tt <= x )
-                    tt += 4 * fnt_size;
-                x = tt;
+                tab_pos += 4 * fnt_size;
+                if( x <= (int)tab_pos )
+                    x = tab_pos;
                 continue;
             }
 
             f.draw( c, 0, 0, 0, &cw, &ch, 0 );
             if( cw + x > w )
             {
-                x = this->margin_size;
+                tab_pos = x = this->margin_size;
                 if( lch < (int)fnt_size )
                     lch = fnt_size;
                 y += lch;

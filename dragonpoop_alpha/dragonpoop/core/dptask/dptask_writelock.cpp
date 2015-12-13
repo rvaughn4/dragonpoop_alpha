@@ -71,4 +71,10 @@ namespace dragonpoop
         this->t->setLastTime( t );
     }
 
+    //returns true if task can share thread with static task
+    bool dptask_writelock::canShare( void )
+    {
+        return this->t->canShare();
+    }
+
 };
