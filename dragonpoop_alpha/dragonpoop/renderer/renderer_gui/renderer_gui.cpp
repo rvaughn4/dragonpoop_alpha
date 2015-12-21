@@ -50,6 +50,8 @@ namespace dragonpoop
         this->render_ib_bg = this->render_ib_fg = 0;
         this->render_tex_bg = this->render_tex_fg = 0;
         this->render_vb_bg = this->render_vb_fg = 0;
+        this->focus_id = dpid_null();
+        this->hover_id = this->focus_id;
         memset( &this->drag_pos, 0, sizeof( this->drag_pos ) );
     }
 
@@ -325,7 +327,19 @@ namespace dragonpoop
         p.z = (float)this->z / -8.0f;
         this->undo_mat.transform( &p );
 
-        bIsFocus = dpid_compare( &this->id, &focus_id );
+        bIsFocus = dpid_compare( &this->id, &this->focus_id );
+        this->hover_id = dpid_null();
+        if( lb )
+            this->focus_id = dpid_null();
+        if( p.x < 0 || p.y < 0 )
+            return 0;
+        if( p.x >= this->pos.w || p.y >= this->pos.h )
+            return 0;
+
+        this->hover_id = this->id;
+        if( lb )
+            this->focus_id = this->id;
+
         if( lb  && bIsFocus )
         {
             if( !this->bIsDrag )
@@ -369,15 +383,11 @@ namespace dragonpoop
             if( pl->processMouse( r, x, y, lb, rb, focus_id ) )
             {
                 this->hover_id = pl->getHoverId();
+                if( lb )
+                    this->focus_id = pl->getFocusId();
                 return 1;
             }
         }
-
-        this->hover_id = this->id;
-        if( p.x < 0 || p.y < 0 )
-            return 0;
-        if( p.x >= this->pos.w || p.y >= this->pos.h )
-            return 0;
 
         g = (gui_writelock *)o.tryWriteLock( this->g, 100, "renderer_gui::processMouse" );
         if( !g )
@@ -390,10 +400,13 @@ namespace dragonpoop
     }
 
     //process kb input
-    bool renderer_gui::processKb( std::string *sname, bool bIsDown )
+    bool renderer_gui::processKb( renderer_gui_man_writelock *r, std::string *sname, bool bIsDown )
     {
         gui_writelock *g;
         shared_obj_guard o;
+
+        if( !dpid_compare( &this->focus_id, &this->id ) )
+            return 0;
 
         g = (gui_writelock *)o.tryWriteLock( this->g, 1000, "renderer_gui::processKb" );
         if( !g )
@@ -435,28 +448,8 @@ namespace dragonpoop
     //gets gui id of focused child
     bool renderer_gui::getFocusChild( renderer_gui_man_writelock *r, dpid *fid )
     {
-        std::list<renderer_gui *> l;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-        renderer_gui_readlock *pl;
-        shared_obj_guard o;
-
-        r->getChildrenGuis( &l, this->id );
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            if( p->getZ() != 0 )
-                continue;
-            pl = (renderer_gui_readlock *)o.tryReadLock( p, 3, "renderer_gui::getFocusChild" );
-            if( !pl )
-                continue;
-            if( pl->getFocusChild( r, fid ) )
-                return 1;
-            *fid = pl->getId();
-            return 1;
-        }
-
-        return 0;
+        *fid = this->focus_id;
+        return !dpid_isZero( fid );
     }
 
     //return bg vb
@@ -501,6 +494,12 @@ namespace dragonpoop
     dpid renderer_gui::getHoverId( void )
     {
         return this->hover_id;
+    }
+
+    //get focus gui id
+    dpid renderer_gui::getFocusId( void )
+    {
+        return this->focus_id;
     }
 
     //run gui from background task

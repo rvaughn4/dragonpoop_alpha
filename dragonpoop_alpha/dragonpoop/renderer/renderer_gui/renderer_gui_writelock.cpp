@@ -90,9 +90,9 @@ namespace dragonpoop
     }
 
     //process kb input
-    bool renderer_gui_writelock::processKb( std::string *sname, bool bIsDown )
+    bool renderer_gui_writelock::processKb( renderer_gui_man_writelock *r, std::string *sname, bool bIsDown )
     {
-        return this->t->processKb( sname, bIsDown );
+        return this->t->processKb( r, sname, bIsDown );
     }
 
     //returns true if alive
@@ -123,6 +123,12 @@ namespace dragonpoop
     dpid renderer_gui_writelock::getHoverId( void )
     {
         return this->t->getHoverId();
+    }
+
+    //get focus gui id
+    dpid renderer_gui_writelock::getFocusId( void )
+    {
+        return this->t->getFocusId();
     }
 
     //redo matrix

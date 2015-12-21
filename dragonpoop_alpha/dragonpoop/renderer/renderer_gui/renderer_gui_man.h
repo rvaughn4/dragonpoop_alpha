@@ -96,7 +96,7 @@ namespace dragonpoop
         //get hovering gui id
         dpid getHoverId( void );
         //process gui keyboard input
-        void processGuiKbInput( std::string *skey_name, bool isDown );
+        void processGuiKbInput( renderer_gui_man_writelock *r, std::string *skey_name, bool isDown );
         //gets selected text from gui (copy or cut)
         bool getSelectedText( std::string *s, bool bDoCut );
         //sets selected text in gui (paste)

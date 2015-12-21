@@ -68,6 +68,8 @@ namespace dragonpoop
         this->clist = 0;
         this->c = c;
         this->tpr = (dptaskpool_ref *)tp->getRef();
+        this->focus_gui = dpid_null();
+        this->hover_gui = this->focus_gui;
 
         this->g = c->getGfx();
         gl = (gfx_writelock *)o.writeLock( this->g, "renderer_gui_man::renderer_gui_man" );
@@ -330,6 +332,7 @@ namespace dragonpoop
         shared_obj_guard o, oc;
         dpid pid;
         render_api_context_writelock *ctxl;
+        bool bn;
 
         ctxl = (render_api_context_writelock *)oc.tryWriteLock( this->ctx, 100, "renderer_gui_man::runFromTask" );
         if( !ctxl )
@@ -338,8 +341,23 @@ namespace dragonpoop
         ctxl->makeActive( thd );
         this->computeMatrix();
 
+        bn = dpid_isZero( &this->focus_gui );
+        if( !bn )
+        {
+            l = &this->guis;
+            bn = 0;
+            for( i = l->begin(); !bn && i != l->end(); ++i )
+            {
+                p = *i;
+                pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::runFromTask" );
+                if( !pl )
+                    continue;
+                if( pl->compareId( this->focus_gui ) )
+                    bn = 1;
+            }
+        }
+
         l = &this->guis;
-        this->focus_gui = dpid_null();
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -347,7 +365,7 @@ namespace dragonpoop
             if( !pl )
                 continue;
             pl->run( thd, ctxl );
-            if( pl->isAlive() && ( pl->hasFocus() || dpid_isZero( &this->focus_gui ) ) )
+            if( bn && pl->isAlive() && ( pl->hasFocus() || dpid_isZero( &this->focus_gui ) ) )
             {
                 if( !pl->getFocusChild( g, &this->focus_gui ) )
                     this->focus_gui = pl->getId();
@@ -544,6 +562,7 @@ namespace dragonpoop
         max_z++;
 
         this->hover_gui = dpid_null();
+        this->focus_gui = dpid_null();
         for( z = 0; z < max_z; z++ )
         {
             l = &lz;
@@ -558,6 +577,7 @@ namespace dragonpoop
                 if( pl->processMouse( r, t.x, t.y, lb, rb, this->focus_gui ) )
                 {
                     this->hover_gui = pl->getHoverId();
+                    this->focus_gui = pl->getFocusId();
                     return 1;
                 }
                 d.push_back( p );
@@ -582,7 +602,7 @@ namespace dragonpoop
     }
 
     //process gui keyboard input
-    void renderer_gui_man::processGuiKbInput( std::string *skey_name, bool isDown )
+    void renderer_gui_man::processGuiKbInput( renderer_gui_man_writelock *r, std::string *skey_name, bool isDown )
     {
         std::list<renderer_gui *> *l;
         std::list<renderer_gui *>::iterator i;
@@ -597,10 +617,7 @@ namespace dragonpoop
             pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiKbInput" );
             if( !pl )
                 return;
-            if( !pl->compareId( this->focus_gui ) )
-                continue;
-            pl->processKb( skey_name, isDown );
-            return;
+            pl->processKb( r, skey_name, isDown );
         }
     }
 

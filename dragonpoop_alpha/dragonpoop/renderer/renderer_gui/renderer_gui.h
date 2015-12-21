@@ -32,7 +32,7 @@ namespace dragonpoop
     private:
 
         core *c;
-        dpid id, pid, hover_id;
+        dpid id, pid, hover_id, focus_id;
         bool bHasFg, bHasBg, bIsAlive, bIsHover, bIsEdit, bIsFade, bIsDrag;
         gui_dims pos;
         std::atomic<gui_ref *> g;
@@ -79,7 +79,7 @@ namespace dragonpoop
         //process mouse input
         bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id );
         //process kb input
-        bool processKb( std::string *sname, bool bIsDown );
+        bool processKb( renderer_gui_man_writelock *r, std::string *sname, bool bIsDown );
         //returns opacity
         float getOpacity( void );
         //returns true if alive
@@ -100,6 +100,8 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //get hovering gui id
         dpid getHoverId( void );
+        //get focus gui id
+        dpid getFocusId( void );
         //run gui from background task
         void run( dpthread_lock *thd, render_api_context_writelock *ctx );
         //render model

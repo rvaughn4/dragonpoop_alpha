@@ -61,7 +61,7 @@ namespace dragonpoop
         //process mouse input
         bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id );
         //process kb input
-        bool processKb( std::string *sname, bool bIsDown );
+        bool processKb(  renderer_gui_man_writelock *r, std::string *sname, bool bIsDown );
         //returns true if alive
         bool isAlive( void );
         //kills gui
@@ -72,6 +72,8 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //get hovering gui id
         dpid getHoverId( void );
+        //get focus gui id
+        dpid getFocusId( void );
         //redo matrix
         void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix );
         //run gui from background task
