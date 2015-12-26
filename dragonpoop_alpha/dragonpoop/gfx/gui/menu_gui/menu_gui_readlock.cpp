@@ -29,4 +29,10 @@ namespace dragonpoop
         return this->t->wasClosed();
     }
 
+    //returns true if clicked, retreives button name
+    bool menu_gui_readlock::getClicked( std::string *sname )
+    {
+        return this->t->getClicked( sname );
+    }
+
 };

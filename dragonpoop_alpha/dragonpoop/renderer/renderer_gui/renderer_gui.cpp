@@ -328,13 +328,15 @@ namespace dragonpoop
         this->undo_mat.transform( &p );
 
         bIsFocus = dpid_compare( &this->id, &this->focus_id );
+
+        if( p.x < 0 || p.y < 0 )
+            bIsFocus = 0;
+        if( p.x >= this->pos.w || p.y >= this->pos.h )
+            bIsFocus = 0;
+
         this->hover_id = dpid_null();
         if( lb )
             this->focus_id = dpid_null();
-        if( p.x < 0 || p.y < 0 )
-            return 0;
-        if( p.x >= this->pos.w || p.y >= this->pos.h )
-            return 0;
 
         this->hover_id = this->id;
         if( lb )
@@ -388,6 +390,11 @@ namespace dragonpoop
                 return 1;
             }
         }
+
+        if( p.x < 0 || p.y < 0 )
+            return 0;
+        if( p.x >= this->pos.w || p.y >= this->pos.h )
+            return 0;
 
         g = (gui_writelock *)o.tryWriteLock( this->g, 100, "renderer_gui::processMouse" );
         if( !g )

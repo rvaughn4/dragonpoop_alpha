@@ -3,6 +3,7 @@
 #define dragonpoop_menu_gui_readlock_h
 
 #include "../gui_readlock.h"
+#include <string>
 
 namespace dragonpoop
 {
@@ -28,6 +29,8 @@ namespace dragonpoop
         bool wasClicked( const char *btn_name );
         //returns true if closed
         bool wasClosed( void );
+        //returns true if clicked, retreives button name
+        bool getClicked( std::string *sname );
 
         friend class menu_gui;
     };

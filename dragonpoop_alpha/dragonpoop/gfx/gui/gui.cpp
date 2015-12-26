@@ -188,6 +188,10 @@ namespace dragonpoop
             }
         }
 
+        if( t - this->t_last_processing < 100 )
+            return;
+        this->t_last_processing = t;
+
         b = !this->mse.empty();
         i = 0;
         while( b && i < 50 )

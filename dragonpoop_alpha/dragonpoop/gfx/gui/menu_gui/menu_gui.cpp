@@ -215,6 +215,30 @@ namespace dragonpoop
         return r;
     }
 
+    //returns true if clicked, retreives button name
+    bool menu_gui::getClicked( std::string *sname )
+    {
+        unsigned int i, e;
+        menu_gui_btn *p;
+
+        if( this->bclosed )
+            return 1;
+
+        e = (unsigned int)this->btns.size();
+        for( i = 0; i < e; i++ )
+        {
+            p = &this->btns[ i ];
+            if( !p->b->wasClicked() )
+                continue;
+            if( !sname )
+                return 1;
+            sname->assign( p->s );
+            return 1;
+        }
+
+        return 0;
+    }
+
     //returns true if closed
     bool menu_gui::wasClosed( void )
     {

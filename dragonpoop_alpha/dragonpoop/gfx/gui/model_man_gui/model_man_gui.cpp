@@ -4,19 +4,27 @@
 #include "../../model/model_man_ref.h"
 #include "../../model/model_man_readlock.h"
 #include "../../model/model_readlock.h"
+#include "../../model/model_ref.h"
 #include "../../model/model.h"
 #include "../menu_gui/menu_gui_writelock.h"
+#include "../menu_gui/menu_gui_readlock.h"
 #include "../../gfx_writelock.h"
+#include "../../gfx_ref.h"
+#include "../../../core/core.h"
+#include "model_man_model_gui/model_man_model_gui.h"
+
+#include <iostream>
 
 namespace dragonpoop
 {
 
     //ctor
-    model_man_gui::model_man_gui( gfx_writelock *g, dpid id, dpid pid ) : window_gui( g, id, pid, 100, 100, 1000, 1000, "Models" )
+    model_man_gui::model_man_gui( gfx_writelock *g, dpid id, dpid pid ) : window_gui( g, id, pid, 100, 100, 600, 800, "Models" )
     {
         g->getModels( &this->m );
 
-        this->models_menu = new menu_gui( g, this->genId(), id, 10, 100, 800, 700, 50, 0 );
+        this->current_model = 0;
+        this->models_menu = new menu_gui( g, this->genId(), id, 10, 80, 580, 600, 50, 0 );
         this->addGui( this->models_menu );
 
         this->repop();
@@ -34,12 +42,64 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "model_man_gui::~model_man_gui" );
         delete this->models_menu;
         delete this->m;
+        delete this->current_model;
     }
 
     //override to do processing
     void model_man_gui::doProcessing( dpthread_lock *thd, gui_writelock *g )
     {
+        shared_obj_guard o, og;
+        menu_gui_readlock *gl;
+        std::string s;
+        model_ref *m;
+        model_man_readlock *ml;
+        gfx_ref *gf;
+        gfx_writelock *gfl;
+
         this->window_gui::doProcessing( thd, g );
+
+        if( this->current_model && this->current_model->wasClosed() )
+        {
+            delete this->current_model;
+            this->current_model = 0;
+        }
+
+        gl = (menu_gui_readlock *)o.tryReadLock( this->models_menu, 100, "model_man_gui::doProcessing" );
+        if( !gl )
+            return;
+
+        if( !gl->getClicked( &s ) )
+            return;
+
+        ml = (model_man_readlock *)o.tryReadLock( this->m, 1000, "model_man_gui::doProcessing" );
+        if( !ml )
+            return;
+        m = ml->findModel( s.c_str() );
+        if( !m )
+            return;
+        gf = this->getCore()->getGfx();
+        if( !gf )
+        {
+            delete m;
+            return;
+        }
+        gfl = (gfx_writelock *)og.tryWriteLock( gf, 1000, "model_man_gui::doProcessing" );
+        if( !gfl )
+        {
+            delete m;
+            delete gf;
+            return;
+        }
+
+        if( this->current_model )
+            delete this->current_model;
+        this->current_model = new model_man_model_gui( gfl, this->genId(), this->getId(), m );
+        g->addGui( this->current_model );
+
+        og.unlock();
+        o.unlock();
+        delete m;
+        delete gf;
     }
 
     //repopulate menu
@@ -62,6 +122,7 @@ namespace dragonpoop
         if( !gl )
             return;
         gl->removeButtons();
+        gl->addButton( "Load Model" );
 
         ml->getModels( &l );
 

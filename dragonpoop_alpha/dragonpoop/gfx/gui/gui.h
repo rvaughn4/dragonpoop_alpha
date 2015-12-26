@@ -74,7 +74,7 @@ namespace dragonpoop
         std::string stxt;
         std::vector<gui_txt_loc> txt_loc;
         unsigned int last_txt_line, line_front, cursor, sel_cursor, sz_div, redraw_timer;
-        uint64_t t_last_redraw;
+        uint64_t t_last_redraw, t_last_processing;
         std::queue<gui_kb_event *> kbe;
         std::queue<gui_mouse_event *> mse;
 

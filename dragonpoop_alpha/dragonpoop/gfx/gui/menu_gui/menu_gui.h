@@ -49,6 +49,8 @@ namespace dragonpoop
         bool wasClicked( const char *btn_name );
         //returns true if closed
         bool wasClosed( void );
+        //returns true if clicked, retreives button name
+        bool getClicked( std::string *sname );
 
     public:
 

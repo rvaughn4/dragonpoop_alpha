@@ -9,6 +9,7 @@ namespace dragonpoop
 {
 
     class model_man_ref;
+    class model_man_model_gui;
 
     class model_man_gui : public window_gui
     {
@@ -17,6 +18,7 @@ namespace dragonpoop
 
         menu_gui *models_menu;
         model_man_ref *m;
+        model_man_model_gui *current_model;
 
         //repopulate menu
         void repop( void );
