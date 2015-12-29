@@ -23,6 +23,8 @@ namespace dragonpoop
         virtual void repaintBg( gui_writelock *g, dpbitmap *bm, float w, float h );
         //override to do processing
         virtual void doProcessing( dpthread_lock *thd, gui_writelock *g );
+        //close this window
+        void close( void );
 
     public:
 

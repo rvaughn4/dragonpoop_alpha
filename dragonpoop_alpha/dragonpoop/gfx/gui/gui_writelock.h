@@ -102,6 +102,12 @@ namespace dragonpoop
         bool isFade( void );
         //sets fade mode
         void setFade( bool b );
+        //set text
+        void setText( const char *c );
+        //set text
+        void setText( std::string *s );
+        //get text
+        void getText( std::string *s );
 
         friend class gui;
     };

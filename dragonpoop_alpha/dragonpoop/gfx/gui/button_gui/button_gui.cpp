@@ -2,8 +2,6 @@
 #include "button_gui.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
 

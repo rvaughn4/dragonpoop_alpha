@@ -14,27 +14,26 @@
 #include "../../model_animation/model_animation.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <sstream>
-#include <iostream>
 #include <fstream>
 
 #include <math.h>
 
 namespace dragonpoop
 {
-    
+
     //ctor
     model_loader_ms3d_state_make_frames::model_loader_ms3d_state_make_frames( dpbuffer *b, model_ref *m )
     {
         this->b = b;
         this->m = m;
     }
-    
+
     //dtor
     model_loader_ms3d_state_make_frames::~model_loader_ms3d_state_make_frames( void )
     {
-        
+
     }
-    
+
     //run state, returns next state
     model_loader_state *model_loader_ms3d_state_make_frames::run( dpthread_lock *thd, model_loader_writelock *ml )
     {
@@ -46,10 +45,10 @@ namespace dragonpoop
         this->makeAnimationFrames( thd, ml, ldr->anim_id, 0, 0 );
         this->makeFrameJoints( thd, ml );
         this->readAnimations( thd, ml );
-        
+
         return new model_loader_ms3d_state_make_triangles( this->b, this->m );
     }
-    
+
     //find unqiue frame times
     void model_loader_ms3d_state_make_frames::findUnique( model_loader_writelock *ml )
     {
@@ -57,7 +56,7 @@ namespace dragonpoop
         std::vector<ms3d_model_joint_m> *l;
         ms3d_model_joint_m *p;
         unsigned int i, e;
-        
+
         ldr = (model_loader_ms3d *)ml->getLoader();
         l = ldr->joints;
         e = (unsigned int)l->size();
@@ -68,7 +67,7 @@ namespace dragonpoop
             this->findUnique( ml, &p->translate_frames );
         }
     }
-    
+
     //find unique frame times in a joint
     void model_loader_ms3d_state_make_frames::findUnique( model_loader_writelock *ml, std::vector<ms3d_model_joint_keyframe> *l )
     {
@@ -77,10 +76,10 @@ namespace dragonpoop
         unsigned int i, e, ii, ee;
         bool f;
         float fft, fd, ftd;
-        
+
         ldr = (model_loader_ms3d *)ml->getLoader();
         fd = ldr->anim.fps / 10.0f;
-        
+
         e = (unsigned int)l->size();
         for( i = 0; i < e; i++ )
         {
@@ -99,7 +98,7 @@ namespace dragonpoop
                 this->frame_times.push_back( fft );
         }
     }
-  
+
     //make frames
     void model_loader_ms3d_state_make_frames::makeFrames( dpthread_lock *thd, model_loader_writelock *ml )
     {
@@ -111,35 +110,35 @@ namespace dragonpoop
         shared_obj_guard o;
         std::string s;
         std::vector<ms3d_model_frame> *fl;
-        
+
         ldr = (model_loader_ms3d *)ml->getLoader();
         e = (unsigned int)this->frame_times.size();
-        
+
         fl = ldr->frames;
         if( fl )
             delete fl;
         fl = new std::vector<ms3d_model_frame>();
         ldr->frames = fl;
-        
+
         m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeFrames" );
         if( !m )
             return;
-        
+
         for( i = 0; i < e; i++ )
         {
             std::stringstream ss;
             f.t = this->frame_times[ i ];
             ss << "MS3D Frame #" << f.t << "";
             s = ss.str();
-            
+
             frm = m->makeFrame( thd->genId() );
             frm->setName( &s );
             f.id = frm->getId();
-            
+
             fl->push_back( f );
         }
     }
-    
+
     //make animation frames
     void model_loader_ms3d_state_make_frames::makeAnimationFrames( dpthread_lock *thd, model_loader_writelock *ml, dpid anim_id, unsigned int start_frame, unsigned int end_frame )
     {
@@ -149,14 +148,14 @@ namespace dragonpoop
         model_writelock *m;
         shared_obj_guard o;
         std::vector<ms3d_model_frame> *fl;
-        
+
         m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeAnimationFrames" );
         if( !m )
             return;
         ldr = (model_loader_ms3d *)ml->getLoader();
         fl = ldr->frames;
         e = (unsigned int)fl->size();
-        
+
         for( i = 0; i < e; i++ )
         {
             f = &( *ldr->frames )[ i ];
@@ -165,7 +164,7 @@ namespace dragonpoop
             m->makeAnimationFrame( thd->genId(), anim_id, f->id, f->t - start_frame );
         }
     }
-    
+
     //make frame joints
     void model_loader_ms3d_state_make_frames::makeFrameJoints( dpthread_lock *thd, model_loader_writelock *ml )
     {
@@ -179,7 +178,7 @@ namespace dragonpoop
         ms3d_model_joint_m *j;
         model_frame_joint *fjnt;
         dpxyz_f x_t, x_r;
-        
+
         m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeFrameJoints" );
         if( !m )
             return;
@@ -188,35 +187,35 @@ namespace dragonpoop
         jl = ldr->joints;
         e_f = (unsigned int)fl->size();
         e_j = (unsigned int)jl->size();
-        
+
         for( i_f = 0; i_f < e_f; i_f++ )
         {
             f = &( *fl )[ i_f ];
-                        
+
             for( i_j = 0; i_j < e_j; i_j++ )
             {
                 j = &( *jl )[ i_j ];
 
                 this->getKeyframeQuat( f->t / ldr->anim.fps, &j->rotate_frames, &x_r );
                 this->getKeyframe( f->t / ldr->anim.fps, &j->translate_frames, &x_t );
-                
+
                 fjnt = m->makeFrameJoint( thd->genId(), f->id, j->id );
                 fjnt->setTranslation( &x_t );
                 fjnt->setRotation( &x_r );
             }
         }
-        
+
     }
-    
+
     //find xyz keyframe before and after time and interpolate
     void model_loader_ms3d_state_make_frames::getKeyframe( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x )
     {
         ms3d_model_joint_keyframe kb, ke;
         float td, tt, rb, re;
-        
+
         this->getKeyframeBefore( t, l, &kb );
         this->getKeyframeAfter( t, l, &ke );
-        
+
         td = ke.time - kb.time;
         tt = t - kb.time;
         if( td <= 0 )
@@ -226,43 +225,43 @@ namespace dragonpoop
         if( re > 1 )
             re = 1;
         rb = 1.0f - re;
-        
+
         x->x = rb * kb.x + re * ke.x;
         x->y = rb * kb.y + re * ke.y;
         x->z = rb * kb.z + re * ke.z;
     }
-    
+
     //find xyz keyframe before and after time and interpolate
     void model_loader_ms3d_state_make_frames::getKeyframeQuat( float t, std::vector<ms3d_model_joint_keyframe> *l, dpxyz_f *x )
     {
         ms3d_model_joint_keyframe kb, ke;
         dpquaternion qb, qe, q;
-        
+
         this->getKeyframeBefore( t, l, &kb );
         this->getKeyframeAfter( t, l, &ke );
-        
+
         qb.setAngle( kb.x, kb.y, kb.z );
         qe.setAngle( ke.x, ke.y, ke.z );
-        
+
         q.slerp( &qb, &qe, t );
         q.getAngle( x );
     }
-    
+
     //find xyz keyframe before time
     void model_loader_ms3d_state_make_frames::getKeyframeBefore( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x )
     {
         unsigned int i, e;
         bool f;
         ms3d_model_joint_keyframe *p;
-        
+
         x->time = 0;
         f = 0;
-        
+
         e = (unsigned int)l->size();
         for( i = 0; i < e; i++ )
         {
             p = &( *l )[ i ];
-            
+
             if( p->time > t )
                 continue;
             if( p->time >= x->time )
@@ -271,7 +270,7 @@ namespace dragonpoop
                 f = 1;
             }
         }
-    
+
         if( !f )
         {
             x->time = t;
@@ -280,22 +279,22 @@ namespace dragonpoop
             x->z = 0;
         }
     }
-    
+
     //find xyz keyframe after time
     void model_loader_ms3d_state_make_frames::getKeyframeAfter( float t, std::vector<ms3d_model_joint_keyframe> *l, ms3d_model_joint_keyframe *x )
     {
         unsigned int i, e;
         bool f;
         ms3d_model_joint_keyframe *p;
-        
+
         x->time = 0;
         f = 0;
-        
+
         e = (unsigned int)l->size();
         for( i = 0; i < e; i++ )
         {
             p = &( *l )[ i ];
-            
+
             if( p->time < t )
                 continue;
             if( p->time <= x->time )
@@ -304,11 +303,11 @@ namespace dragonpoop
                 f = 1;
             }
         }
-        
+
         if( !f )
             this->getKeyframeBefore( t, l, x );
     }
-    
+
     //read text file and create animations
     void model_loader_ms3d_state_make_frames::readAnimations( dpthread_lock *thd, model_loader_writelock *ml )
     {
@@ -319,19 +318,19 @@ namespace dragonpoop
         std::string ss, ds;
         unsigned int s, e;
         model_animation *a;
-        
+
         m = (model_writelock *)o.tryWriteLock( this->m, 1000, "model_loader_ms3d_state_make_frames::makeAnimationFrames" );
         if( !m )
             return;
         ldr = (model_loader_ms3d *)ml->getLoader();
-        
+
         ss.append( ldr->fname );
         ss.append( ".animations.list.txt" );
-        
+
         f.open( ss.c_str(), f.in | f.binary );
         if( !f.is_open() )
             return;
-        
+
         while( !f.eof() )
         {
             f >> s;
@@ -339,13 +338,13 @@ namespace dragonpoop
             f >> e;
             std::getline( f, ss );
             ss = trim_copy( ss );
-            
+
             a = m->findAnimation( ss.c_str() );
             if( !a )
                 continue;
             this->makeAnimationFrames( thd, ml, a->getId(), s, e );
         }
-        
+
     }
-    
+
 };

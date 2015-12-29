@@ -2,9 +2,11 @@
 #include "dpmutex.h"
 #include "dpmutex_master.h"
 #include "../dpspinlock/dpsponlock.h"
-#include <iostream>
 
 //#define dpmutex_do_debug_stuff
+#ifdef dpmutex_do_debug_stuff
+    #include <iostream>
+#endif
 
 namespace dragonpoop
 {

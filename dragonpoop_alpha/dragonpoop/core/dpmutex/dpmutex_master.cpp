@@ -9,7 +9,6 @@
 #include <ratio>
 #include <chrono>
 #include <thread>
-#include <iostream>
 
 namespace dragonpoop
 {
@@ -55,9 +54,7 @@ namespace dragonpoop
 
         this->slk->lock();
 
-        if( m->countReadThreads( i ) > 0 || m->countWriteThreads( i ) > 0 )
-            std::cerr << "PROBLEM!!!! mutex still locked!\r\n\r\n";
-        else
+        if( m->countReadThreads( i ) == 0 && m->countWriteThreads( i ) == 0 )
             delete m;
 
         this->slk->unlock();

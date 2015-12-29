@@ -8,11 +8,8 @@
 #include "../shared_obj/shared_obj_guard.h"
 #include "dptaskpool_task.h"
 #include "dptaskpool_logger_writelock.h"
-
 #include <thread>
 #include <vector>
-
-#include <iostream>
 
 namespace dragonpoop
 {
@@ -290,7 +287,6 @@ namespace dragonpoop
                     skipped.push_back( r );
                 else
                 {
-                    std::cout << "t" << tl->getId() << "\r\n";
                     tl->addTask( r );
                     delete r;
                     delete tl;

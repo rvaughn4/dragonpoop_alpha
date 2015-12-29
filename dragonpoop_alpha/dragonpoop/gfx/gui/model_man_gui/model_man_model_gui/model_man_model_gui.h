@@ -9,6 +9,7 @@ namespace dragonpoop
 
     class model_ref;
     class edit_gui;
+    class button_gui;
 
     class model_man_model_gui : public window_gui
     {
@@ -17,6 +18,8 @@ namespace dragonpoop
 
         model_ref *m;
         edit_gui *name_edit;
+
+        button_gui *save_button, *animations_button, *materials_button, *groups_button;
 
     protected:
 

@@ -8,12 +8,15 @@
 namespace dragonpoop
 {
 
+    class edit_text_gui;
+
     class edit_gui : public gui
     {
 
     private:
 
         bool bWasClicked;
+        edit_text_gui *txt_gui;
 
     protected:
 

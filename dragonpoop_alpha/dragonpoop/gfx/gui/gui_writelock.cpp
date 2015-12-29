@@ -221,4 +221,22 @@ namespace dragonpoop
         this->t->setFade( b );
     }
 
+    //set text
+    void gui_writelock::setText( const char *c )
+    {
+        this->t->setText( c );
+    }
+
+    //set text
+    void gui_writelock::setText( std::string *s )
+    {
+        this->t->setText( s );
+    }
+
+    //get text
+    void gui_writelock::getText( std::string *s )
+    {
+        this->t->getText( s );
+    }
+
 };

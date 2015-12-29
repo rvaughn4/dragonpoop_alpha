@@ -12,8 +12,6 @@
 #include "../../../../core/dpthread/dpthread_lock.h"
 #include <math.h>
 
-#include <iostream>
-
 namespace dragonpoop
 {
 

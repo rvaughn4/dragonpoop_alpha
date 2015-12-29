@@ -84,4 +84,10 @@ namespace dragonpoop
         return this->bDoClose;
     }
 
+    //close this window
+    void window_gui::close( void )
+    {
+        this->bDoClose = 1;
+    }
+
 };

@@ -3,8 +3,9 @@
 #include "edit_gui_readlock.h"
 #include "edit_gui_writelock.h"
 #include "../../../core/shared_obj/shared_obj_guard.h"
-
-#include <iostream>
+#include "edit_text_gui.h"
+#include "edit_text_gui_readlock.h"
+#include "edit_text_gui_writelock.h"
 
 namespace dragonpoop
 {
@@ -20,9 +21,12 @@ namespace dragonpoop
         this->setPosition( x, y );
         this->setWidthHeight( w, h );
         this->setText( &s );
-        this->setHoverMode( 1 );
+        this->setHoverMode( 0 );
         this->setEditMode( 0 );
         this->setFade( 0 );
+
+        this->txt_gui = new edit_text_gui( g, this->genId(), id, labelWidth, 0, w - labelWidth, h, txtValue );
+        this->addGui( this->txt_gui );
 
         x = h * 8 / 10;
         y = (float)s.length();
@@ -45,6 +49,7 @@ namespace dragonpoop
         o.tryWriteLock( this, 5000, "edit_gui::~edit_gui" );
         o.unlock();
         this->unlink();
+        delete this->txt_gui;
     }
 
     //generate read lock
@@ -68,19 +73,40 @@ namespace dragonpoop
     //returns true if clicked
     bool edit_gui::wasClicked( void )
     {
-        return 0;
+        shared_obj_guard o;
+        edit_text_gui_readlock *l;
+
+        l = (edit_text_gui_readlock *)o.tryReadLock( this->txt_gui, 100, "edit_gui::wasClicked" );
+        if( !l )
+            return 0;
+
+        return l->wasClicked();
     }
 
     //set value
     void edit_gui::setValue( std::string *s )
     {
+        shared_obj_guard o;
+        edit_text_gui_writelock *l;
 
+        l = (edit_text_gui_writelock *)o.tryWriteLock( this->txt_gui, 1000, "edit_gui::setValue" );
+        if( !l )
+            return;
+
+        l->setText( s );
     }
 
     //get value
     void edit_gui::getValue( std::string *s )
     {
+        shared_obj_guard o;
+        edit_text_gui_readlock *l;
 
+        l = (edit_text_gui_readlock *)o.tryReadLock( this->txt_gui, 1000, "edit_gui::getValue" );
+        if( !l )
+            return;
+
+        l->getText( s );
     }
 
 };

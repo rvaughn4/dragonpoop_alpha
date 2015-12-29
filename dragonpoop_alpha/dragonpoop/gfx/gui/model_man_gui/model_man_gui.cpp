@@ -13,8 +13,6 @@
 #include "../../../core/core.h"
 #include "model_man_model_gui/model_man_model_gui.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
 
@@ -62,6 +60,7 @@ namespace dragonpoop
         {
             delete this->current_model;
             this->current_model = 0;
+            this->repop();
         }
 
         gl = (menu_gui_readlock *)o.tryReadLock( this->models_menu, 100, "model_man_gui::doProcessing" );

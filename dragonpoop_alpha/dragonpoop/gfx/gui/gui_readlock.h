@@ -4,6 +4,7 @@
 
 #include "../../core/shared_obj/shared_obj_readlock.h"
 #include "../../core/dpid/dpid.h"
+#include <string>
 
 namespace dragonpoop
 {
@@ -11,23 +12,23 @@ namespace dragonpoop
     class core;
     struct gui_dims;
     class dpbitmap;
-    
+
     class gui_readlock : public shared_obj_readlock
     {
-        
+
     private:
-        
+
         gui *t;
-        
+
     protected:
-        
+
         //ctor
         gui_readlock( gui *t, dpmutex_readlock *l );
         //dtor
         virtual ~gui_readlock( void );
-        
+
     public:
-        
+
         //return core
         core *getCore( void );
         //returns id
@@ -58,10 +59,12 @@ namespace dragonpoop
         bool isHoverable( void );
         //returns true if gui should swoosh in and out
         bool isFade( void );
+        //get text
+        void getText( std::string *s );
 
         friend class gui;
     };
-    
+
 };
 
 #endif

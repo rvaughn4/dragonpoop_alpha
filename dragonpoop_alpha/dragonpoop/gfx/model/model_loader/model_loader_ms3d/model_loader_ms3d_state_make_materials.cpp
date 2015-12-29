@@ -11,8 +11,6 @@
 #include "../../model_material/model_material.h"
 #include "../../../../core/dpthread/dpthread_lock.h"
 
-#include <iostream>
-
 namespace dragonpoop
 {
 
