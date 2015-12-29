@@ -5,6 +5,7 @@
 #include "../../../model/model_readlock.h"
 #include "../../../model/model_writelock.h"
 #include "../../../gfx_writelock.h"
+#include "../../edit_gui/edit_gui.h"
 
 #include <iostream>
 
@@ -23,6 +24,9 @@ namespace dragonpoop
         if( ml )
             this->m = (model_ref *)ml->getRef();
         o.unlock();
+
+        this->name_edit = new edit_gui( g, this->genId(), id, 10, 100, 580, 40, "Name", "something", 300, 1 );
+        this->addGui( this->name_edit );
     }
 
     //dtor
@@ -36,6 +40,7 @@ namespace dragonpoop
 
         o.tryWriteLock( this, 5000, "model_man_model_gui::~model_man_model_gui" );
         delete this->m;
+        delete this->name_edit;
     }
 
     //override to do processing

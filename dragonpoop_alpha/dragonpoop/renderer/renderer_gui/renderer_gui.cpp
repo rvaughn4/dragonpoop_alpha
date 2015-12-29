@@ -271,7 +271,7 @@ namespace dragonpoop
                 z = 1.0f - this->fade * this->fade;
             else
                 z = 0;
-            z += 0.05f * this->hv / GUI_HOVER_MAX;
+            z += 0.02f * this->hv / GUI_HOVER_MAX;
             if( z > 0.001f )
             {
                 this->mat.translate( -this->pos.w * 0.5f * z, -this->pos.h * 0.5f * z, 0 );

@@ -8,6 +8,7 @@ namespace dragonpoop
 {
 
     class model_ref;
+    class edit_gui;
 
     class model_man_model_gui : public window_gui
     {
@@ -15,6 +16,7 @@ namespace dragonpoop
     private:
 
         model_ref *m;
+        edit_gui *name_edit;
 
     protected:
 

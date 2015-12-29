@@ -6473,15 +6473,51 @@
 	"../window_gui/window_gui.h"
 	"../menu_gui/menu_gui.h"
 
-1451128428 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.cpp
+1451390053 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.cpp
 	"model_man_model_gui.h"
 	"../../../../core/shared_obj/shared_obj_guard.h"
 	"../../../model/model_ref.h"
 	"../../../model/model_readlock.h"
 	"../../../model/model_writelock.h"
 	"../../../gfx_writelock.h"
+	"../../edit_gui/edit_gui.h"
 	<iostream>
 
-1451127764 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.h
+1451389789 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.h
 	"../../window_gui/window_gui.h"
+
+1451389721 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui.cpp
+	"edit_gui.h"
+	"edit_gui_readlock.h"
+	"edit_gui_writelock.h"
+	"../../../core/shared_obj/shared_obj_guard.h"
+	<iostream>
+
+1451389610 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui.h
+	"../gui.h"
+	<string>
+
+1451389587 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui_readlock.cpp
+	"edit_gui_readlock.h"
+	"edit_gui.h"
+
+1451146165 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_label_gui.cpp
+
+1451146156 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui.cpp
+
+1451146191 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui_readlock.cpp
+
+1451146198 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui_writelock.cpp
+
+1451388118 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui_writelock.cpp
+	"edit_gui_writelock.h"
+	"edit_gui.h"
+
+1451389747 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui_writelock.h
+	"../gui_writelock.h"
+	<string>
+
+1451389740 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui_readlock.h
+	"../gui_readlock.h"
+	<string>
 
