@@ -37,7 +37,7 @@ namespace dragonpoop
     class model_animation_frame;
     class model_frame_joint;
     class dpbuffer;
-    
+
 #pragma pack( 1 )
     struct model_header_hdr
     {
@@ -65,7 +65,17 @@ namespace dragonpoop
         uint32_t cnt_triangles;
     };
 #pragma pack()
-    
+
+#pragma pack( 1 )
+    struct model_header_v3
+    {
+        model_header_v2 h;
+        dpxyz_f center;
+        dpxyz_f rotation;
+    };
+#pragma pack()
+
+
     class model : public shared_obj
     {
 
@@ -84,7 +94,7 @@ namespace dragonpoop
         std::list<model_instance *> instances;
         renderer_model_ref *r;
         uint64_t ran_time, last_ran_time, last_comp_time;
-        dpxyz_f size, center;
+        dpxyz_f size, center, rotation;
         uint32_t cnt_verts, cnt_triangles, cnt_frames, cnt_joints, cnt_animations;
         uint32_t sz_verts, sz_triangles, sz_frames, sz_joints, sz_animations;
         bool bSync;
@@ -104,7 +114,7 @@ namespace dragonpoop
         void computeFrameWeights( model_writelock *ml );
         //run components
         void runComponents( void );
-        
+
     protected:
 
         //generate read lock
@@ -265,6 +275,10 @@ namespace dragonpoop
         void getSize( dpxyz_f *x );
         //get model dimensions
         void getCenter( dpxyz_f *x );
+        //get model dimensions
+        void getRotation( dpxyz_f *x );
+        //set model dimensions
+        void setRotation( dpxyz_f *x );
         //eliminate excess frames to bring animations down in resolution
         void reduceFrames( model_writelock *ml, unsigned int ms_res );
         //return instance count
@@ -275,7 +289,7 @@ namespace dragonpoop
         void decRefCount( void );
         //get ref count
         int getRefCount( void );
-        
+
     public:
 
         //ctor
@@ -289,7 +303,7 @@ namespace dragonpoop
         friend class model_writelock;
         friend class gfx;
     };
-    
+
 };
 
 #endif

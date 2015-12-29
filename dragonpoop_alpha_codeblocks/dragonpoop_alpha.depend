@@ -577,7 +577,7 @@
 1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/openglx_1o5_renderer/openglx_1o5_renderer_writelock.h
 	"../renderer_writelock.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model.h
+1451395006 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model.h
 	"../../core/shared_obj/shared_obj.h"
 	"../../core/dpid/dpid.h"
 	<string>
@@ -932,7 +932,7 @@
 1439721298 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_group/model_instance_group.cpp
 	"model_instance_group.h"
 
-1447319979 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_joint/model_instance_joint.cpp
+1451394179 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_instance/model_instance_joint/model_instance_joint.cpp
 	"model_instance_joint.h"
 	"../model_instance_writelock.h"
 	"../../model_writelock.h"
@@ -944,7 +944,6 @@
 	"../../../dpmatrix/dpmatrixes.h"
 	"../model_instance_animation/model_instance_animation.h"
 	"../../model_frame_joint/model_frame_joint.h"
-	<iostream>
 	<sstream>
 	<string.h>
 
@@ -1089,7 +1088,7 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_animation.h
 	"../model_loader_state.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_frames.cpp
+1451394186 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_frames.cpp
 	"model_loader_ms3d_state_make_frames.h"
 	"model_loader_ms3d_state_make_triangles.h"
 	"../../../../core/dpbuffer/dpbuffer.h"
@@ -1105,7 +1104,6 @@
 	"../../model_animation/model_animation.h"
 	"../../../../core/dpthread/dpthread_lock.h"
 	<sstream>
-	<iostream>
 	<fstream>
 	<math.h>
 
@@ -1145,7 +1143,7 @@
 1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_verts.h
 	"../model_loader_state.h"
 
-1448710088 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_materials.cpp
+1451394193 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_materials.cpp
 	"model_loader_ms3d_state_make_materials.h"
 	"model_loader_ms3d_state_make_groups.h"
 	"../../../../core/dpbuffer/dpbuffer.h"
@@ -1157,7 +1155,6 @@
 	"model_loader_ms3d_state_cleanup.h"
 	"../../model_material/model_material.h"
 	"../../../../core/dpthread/dpthread_lock.h"
-	<iostream>
 
 1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_materials.h
 	"../model_loader_state.h"
@@ -1197,7 +1194,7 @@
 1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_triangles.h
 	"../model_loader_state.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_vertex_joints.cpp
+1451394198 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_vertex_joints.cpp
 	"model_loader_ms3d_state_make_vertex_joints.h"
 	"model_loader_ms3d_state_make_animation.h"
 	"../../../../core/dpbuffer/dpbuffer.h"
@@ -1210,7 +1207,6 @@
 	"../../model_vertex_joint/model_vertex_joint.h"
 	"../../../../core/dpthread/dpthread_lock.h"
 	<math.h>
-	<iostream>
 
 1439721298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/model/model_loader/model_loader_ms3d/model_loader_ms3d_state_make_vertex_joints.h
 	"../model_loader_state.h"
@@ -1725,9 +1721,8 @@
 	"renderer_writelock.h"
 	"renderer.h"
 
-1449137205 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/main.cpp
+1451394204 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/main.cpp
 	"dragonpoop/dragonpoop.h"
-	<iostream>
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/dragonpoop.h
 	"os_define.h"
@@ -6367,7 +6362,7 @@
 	"model_saver_state_sucess.h"
 	"model_saver_state_begin.h"
 
-1451393433 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.cpp
+1451394172 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.cpp
 	"model_man_gui.h"
 	"../../../core/shared_obj/shared_obj_guard.h"
 	"../../model/model_man_ref.h"
@@ -6381,7 +6376,6 @@
 	"../../gfx_ref.h"
 	"../../../core/core.h"
 	"model_man_model_gui/model_man_model_gui.h"
-	<iostream>
 
 1451127440 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.h
 	"../window_gui/window_gui.h"
