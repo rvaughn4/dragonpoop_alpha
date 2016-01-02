@@ -307,8 +307,6 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui_readlock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui_writelock.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui_writelock.h" />
-		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_label_gui.cpp" />
-		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_label_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui_readlock.cpp" />
@@ -353,6 +351,8 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_save_gui/model_man_save_gui.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_save_gui/model_man_save_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui_factory.cpp" />
