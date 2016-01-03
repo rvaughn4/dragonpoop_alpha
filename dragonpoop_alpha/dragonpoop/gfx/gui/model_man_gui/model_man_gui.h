@@ -10,6 +10,7 @@ namespace dragonpoop
 
     class model_man_ref;
     class model_man_model_gui;
+    class model_man_load_gui;
 
     class model_man_gui : public window_gui
     {
@@ -19,9 +20,14 @@ namespace dragonpoop
         menu_gui *models_menu;
         model_man_ref *m;
         model_man_model_gui *current_model;
+        model_man_load_gui *loader_gui;
 
         //repopulate menu
         void repop( void );
+        //open loader
+        void openLoader( void );
+        //close loader
+        void closeLoader( void );
 
     protected:
 

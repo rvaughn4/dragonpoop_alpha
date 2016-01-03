@@ -349,6 +349,8 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/menu_gui/menu_guis.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_load_gui/model_man_load_gui.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_load_gui/model_man_load_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_save_gui/model_man_save_gui.cpp" />

@@ -12,6 +12,7 @@
 #include "../../gfx_ref.h"
 #include "../../../core/core.h"
 #include "model_man_model_gui/model_man_model_gui.h"
+#include "model_man_load_gui/model_man_load_gui.h"
 
 namespace dragonpoop
 {
@@ -21,6 +22,7 @@ namespace dragonpoop
     {
         g->getModels( &this->m );
 
+        this->loader_gui = 0;
         this->current_model = 0;
         this->models_menu = new menu_gui( g, this->genId(), id, 10, 80, 580, 600, 50, 0 );
         this->addGui( this->models_menu );
@@ -41,6 +43,7 @@ namespace dragonpoop
         delete this->models_menu;
         delete this->m;
         delete this->current_model;
+        delete this->loader_gui;
     }
 
     //override to do processing
@@ -63,12 +66,21 @@ namespace dragonpoop
             this->repop();
         }
 
+        if( this->loader_gui && this->loader_gui->wasClosed() )
+            this->closeLoader();
+
         gl = (menu_gui_readlock *)o.tryReadLock( this->models_menu, 100, "model_man_gui::doProcessing" );
         if( !gl )
             return;
 
         if( !gl->getClicked( &s ) )
             return;
+
+        if( s.compare( "Load Model" ) == 0 )
+        {
+            this->openLoader();
+            return;
+        }
 
         ml = (model_man_readlock *)o.tryReadLock( this->m, 1000, "model_man_gui::doProcessing" );
         if( !ml )
@@ -137,5 +149,35 @@ namespace dragonpoop
         }
     }
 
+    //open loader
+    void model_man_gui::openLoader( void )
+    {
+        shared_obj_guard o;
+        gfx_ref *gr;
+        gfx_writelock *gl;
+
+        this->closeLoader();
+
+        gr = this->getCore()->getGfx();
+        if( !gr )
+            return;
+        gl = (gfx_writelock *)o.tryWriteLock( gr, 1000, "model_man_gui::openLoader" );
+
+        if( gl )
+        {
+            this->loader_gui = new model_man_load_gui( gl, this->genId(), this->getId(), this->m );
+            this->addGui( this->loader_gui );
+        }
+
+        delete gr;
+    }
+
+    //close loader
+    void model_man_gui::closeLoader( void )
+    {
+        if( this->loader_gui )
+            delete this->loader_gui;
+        this->loader_gui = 0;
+    }
 
 };
