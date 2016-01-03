@@ -92,7 +92,7 @@ namespace dragonpoop
 
         if( this->current_model )
             delete this->current_model;
-        this->current_model = new model_man_model_gui( gfl, this->genId(), this->getId(), m );
+        this->current_model = new model_man_model_gui( gfl, this->genId(), this->getId(), m, this->m );
         g->addGui( this->current_model );
 
         og.unlock();

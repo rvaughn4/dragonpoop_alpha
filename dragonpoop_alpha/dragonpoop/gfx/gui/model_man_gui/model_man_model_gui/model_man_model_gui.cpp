@@ -4,23 +4,35 @@
 #include "../../../model/model_ref.h"
 #include "../../../model/model_readlock.h"
 #include "../../../model/model_writelock.h"
+#include "../../../model/model_man_ref.h"
+#include "../../../model/model_man_writelock.h"
 #include "../../../gfx_writelock.h"
 #include "../../edit_gui/edit_gui.h"
 #include "../../edit_gui/edit_gui_readlock.h"
 #include "../../button_gui/button_gui.h"
+#include "../model_man_save_gui/model_man_save_gui.h"
+#include "../../../gfx_ref.h"
+#include "../../../../core/core.h"
 
 namespace dragonpoop
 {
 
     //ctor
-    model_man_model_gui::model_man_model_gui( gfx_writelock *g, dpid id, dpid pid, model_ref *m ) : window_gui( g, id, pid, 600, 0, 1000, 800, "Model" )
+    model_man_model_gui::model_man_model_gui( gfx_writelock *g, dpid id, dpid pid, model_ref *m, model_man_ref *mm ) : window_gui( g, id, pid, 600, 0, 1000, 600, "Model" )
     {
         shared_obj_guard o;
         model_writelock *ml;
+        model_man_writelock *mml;
         std::string s;
-        float h = 800;
+        float h = 600;
 
         this->setDraggable( 1 );
+
+        this->mm = 0;
+        mml = (model_man_writelock *)o.tryWriteLock( mm, 1000, "model_man_model_gui::model_man_model_gui" );
+        if( mml )
+            this->mm = (model_man_ref *)mml->getRef();
+
         this->m = 0;
         ml = (model_writelock *)o.tryWriteLock( m, 1000, "model_man_model_gui::model_man_model_gui" );
         if( ml )
@@ -42,6 +54,11 @@ namespace dragonpoop
 
         this->groups_button = new button_gui( g, this->genId(), id, 640, h - 60, 200, 50, "Groups", 1 );
         this->addGui( this->groups_button );
+
+        this->export_button = new button_gui( g, this->genId(), id, 850, h - 60, 200, 50, "Export", 1 );
+        this->addGui( this->export_button );
+
+        this->save_gui = 0;
     }
 
     //dtor
@@ -55,13 +72,17 @@ namespace dragonpoop
 
         o.tryWriteLock( this, 5000, "model_man_model_gui::~model_man_model_gui" );
         delete this->m;
+        delete this->mm;
         delete this->name_edit;
-
 
         delete this->save_button;
         delete this->animations_button;
         delete this->materials_button;
         delete this->groups_button;
+        delete this->export_button;
+
+        if( this->save_gui )
+            delete this->save_gui;
     }
 
     //override to do processing
@@ -91,8 +112,46 @@ namespace dragonpoop
                 this->close();
             }
         }
+
+        if( this->save_gui && this->save_gui->wasClosed() )
+            this->closeSave();
+
+        if( this->export_button && this->export_button->wasClicked() )
+            this->openSave();
+
     }
 
+    //close the save window
+    void model_man_model_gui::closeSave( void )
+    {
+        if( this->save_gui )
+            delete this->save_gui;
+        this->save_gui = 0;
+    }
+
+    //open the save window
+    void model_man_model_gui::openSave( void )
+    {
+        gfx_writelock *gl;
+        gfx_ref *gr;
+        shared_obj_guard o;
+
+        this->closeSave();
+
+        gr = this->getCore()->getGfx();
+        if( !gr )
+            return;
+
+        gl = (gfx_writelock *)o.tryWriteLock( gr, 1000, "model_man_model_gui::doProcessing" );
+        if( gl )
+        {
+            this->save_gui = new model_man_save_gui( gl, this->genId(), this->getId(), this->m, this->mm );
+            this->addGui( this->save_gui );
+        }
+        o.unlock();
+
+        delete gr;
+    }
 
 
 };

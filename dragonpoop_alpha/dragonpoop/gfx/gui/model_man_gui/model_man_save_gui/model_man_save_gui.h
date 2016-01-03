@@ -10,6 +10,8 @@ namespace dragonpoop
     class model_ref;
     class edit_gui;
     class button_gui;
+    class model_man_ref;
+    class model_saver_ref;
 
     class model_man_save_gui : public window_gui
     {
@@ -17,9 +19,14 @@ namespace dragonpoop
     private:
 
         model_ref *m;
+        model_man_ref *mm;
         edit_gui *file_edit;
+        model_saver_ref *saver_ref;
 
-        button_gui *save_button, *cencel_button;
+        button_gui *save_button, *cancel_button;
+
+        //save
+        void save( void );
 
     protected:
 
@@ -29,7 +36,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        model_man_save_gui( gfx_writelock *g, dpid id, dpid pid, model_ref *m );
+        model_man_save_gui( gfx_writelock *g, dpid id, dpid pid, model_ref *m, model_man_ref *mm );
         //dtor
         virtual ~model_man_save_gui( void );
 
