@@ -609,15 +609,34 @@ namespace dragonpoop
         renderer_gui *p;
         renderer_gui_writelock *pl;
         shared_obj_guard o;
+        unsigned int max_z, z;
+        dpid nid;
 
         l = &this->guis;
+        max_z = 0;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiKbInput" );
-            if( !pl )
-                return;
-            pl->processKb( r, skey_name, isDown );
+            if( p->getZ() >= max_z )
+                max_z = p->getZ() + 1;
+        }
+
+        dpid_zero( &nid );
+        for( z = 0; z < max_z; z++ )
+        {
+            for( i = l->begin(); i != l->end(); ++i )
+            {
+                p = *i;
+                if( p->getZ() != z )
+                    continue;
+                pl = (renderer_gui_writelock *)o.tryWriteLock( p, 500, "renderer::processGuiKbInput" );
+                if( !pl )
+                    continue;
+                if( !pl->compareParentId( nid ) )
+                    continue;
+                if( pl->processKb( r, skey_name, isDown ) )
+                    return;
+            }
         }
     }
 

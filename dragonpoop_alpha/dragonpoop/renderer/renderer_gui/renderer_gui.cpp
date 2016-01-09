@@ -272,6 +272,7 @@ namespace dragonpoop
             else
                 z = 0;
             z += 0.02f * this->hv / GUI_HOVER_MAX;
+
             if( z > 0.001f )
             {
                 this->mat.translate( -this->pos.w * 0.5f * z, -this->pos.h * 0.5f * z, 0 );
@@ -321,12 +322,16 @@ namespace dragonpoop
         renderer_gui *pr;
         renderer_gui_writelock *pl;
         bool bIsFocus;
+        unsigned int z, max_z;
 
         p.x = x;
         p.y = y;
         p.z = (float)this->z / -8.0f;
         this->undo_mat.transform( &p );
 
+        this->bIsHover = 0;
+
+/*
         bIsFocus = dpid_compare( &this->id, &this->focus_id );
 
         if( p.x < 0 || p.y < 0 )
@@ -374,20 +379,42 @@ namespace dragonpoop
             this->drag_pos.oy = 0;
             this->bIsDrag = 0;
         }
-
+*/
         r->getChildrenGuis( &l, this->id );
+
+        max_z = 0;
         for( i = l.begin(); i != l.end(); ++i )
         {
             pr = *i;
-            pl = (renderer_gui_writelock *)o.tryWriteLock( pr, 100, "renderer_gui::processMouse" );
-            if( !pl )
-                continue;
-            if( pl->processMouse( r, x, y, lb, rb, focus_id ) )
+            z = pr->getZ();
+            if( z >= max_z )
+                max_z = z + 1;
+        }
+
+        for( z = 0; z < max_z; z++ )
+        {
+            for( i = l.begin(); i != l.end(); ++i )
             {
-                this->hover_id = pl->getHoverId();
-                if( lb )
-                    this->focus_id = pl->getFocusId();
-                return 1;
+                pr = *i;
+                pl = (renderer_gui_writelock *)o.tryWriteLock( pr, 100, "renderer_gui::processMouse" );
+                if( !pl )
+                    continue;
+                if( pl->processMouse( r, x, y, lb, rb, focus_id ) )
+                {
+                    this->hover_id = pl->getHoverId();
+                    if( lb )
+                        this->focus_id = pl->getFocusId();
+                    g = (gui_writelock *)o.tryWriteLock( this->g, 100, "renderer_gui::processMouse" );
+                    if( !g )
+                        return 1;
+                    if( lb && this->z )
+                    {
+                        this->z = 0;
+                        g->setFocus();
+                    }
+                    this->bIsHover = 1;
+                    return 1;
+                }
             }
         }
 
@@ -395,11 +422,17 @@ namespace dragonpoop
             return 0;
         if( p.x >= this->pos.w || p.y >= this->pos.h )
             return 0;
+        this->bIsHover = 1;
 
         g = (gui_writelock *)o.tryWriteLock( this->g, 100, "renderer_gui::processMouse" );
         if( !g )
             return 1;
         g->processMouse( p.x, p.y, x, y, lb, rb );
+        if( lb && this->z )
+        {
+            this->z = 0;
+            g->setFocus();
+        }
         if( lb )
             this->clickfade = 100;
 
@@ -411,8 +444,40 @@ namespace dragonpoop
     {
         gui_writelock *g;
         shared_obj_guard o;
+        std::list<renderer_gui *> *l, lz;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        unsigned int max_z, z;
 
-        if( !dpid_compare( &this->focus_id, &this->id ) )
+        r->getChildrenGuis( &lz, this->id );
+
+        l = &lz;
+        max_z = 0;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( p->getZ() >= max_z )
+                max_z = p->getZ() + 1;
+        }
+
+        l = &lz;
+        for( z = 0; z < max_z; z++ )
+        {
+            for( i = l->begin(); i != l->end(); ++i )
+            {
+                p = *i;
+                if( p->getZ() != z )
+                    continue;
+                pl = (renderer_gui_writelock *)o.tryWriteLock( p, 500, "renderer::processGuiKbInput" );
+                if( !pl )
+                    continue;
+                if( pl->processKb( r, sname, bIsDown ) )
+                    return 1;
+            }
+        }
+
+        if( this->z > 0 )
             return 0;
 
         g = (gui_writelock *)o.tryWriteLock( this->g, 1000, "renderer_gui::processKb" );

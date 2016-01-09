@@ -69,7 +69,8 @@ namespace dragonpoop
         gfx_ref *g;
         gui_man_ref *mgr;
         renderer_gui_ref *r;
-        unsigned int z, fnt_size, margin_size, top_margin;
+        std::atomic<unsigned int> z;
+        unsigned int fnt_size, margin_size, top_margin;
         dprgba fnt_clr;
         std::string stxt;
         std::vector<gui_txt_loc> txt_loc;

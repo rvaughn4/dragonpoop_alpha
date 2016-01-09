@@ -684,6 +684,8 @@ namespace dragonpoop
         if( !ml )
             return;
 
+        ml->getGuis( &l );
+
         for( i = l.begin(); i != l.end(); ++i )
         {
             p = *i;
@@ -755,7 +757,6 @@ namespace dragonpoop
             this->cur_flash = 1;
             if( this->bIsSel || this->bIsEdit )
                 this->redraw();
-
         }
 
         return 1;
@@ -1152,6 +1153,12 @@ namespace dragonpoop
         o1.unlock();
 
         gl->addGui( g );
+        o.unlock();
+
+        gul = (gui_writelock *)o1.tryWriteLock( g, 2000, "gui::addGui" );
+        if( !gul )
+            return;
+        gul->setFocus();
     }
 
     //set editable
