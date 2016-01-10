@@ -40,7 +40,7 @@ namespace dragonpoop
         this->bSyncBgRen = this->bSyncFgRen = 0;
         this->bSyncPos = 1;
         this->bSyncPosRen = 0;
-        this->z = g->getZ();
+        this->z = 1;
         this->hv = 0;
         this->opacity = 1;
         this->fade = 0;
@@ -330,7 +330,7 @@ namespace dragonpoop
         this->undo_mat.transform( &p );
 
         this->bIsHover = 0;
-
+        this->z++;
 /*
         bIsFocus = dpid_compare( &this->id, &this->focus_id );
 
@@ -403,36 +403,29 @@ namespace dragonpoop
                 {
                     this->hover_id = pl->getHoverId();
                     if( lb )
-                        this->focus_id = pl->getFocusId();
-                    g = (gui_writelock *)o.tryWriteLock( this->g, 100, "renderer_gui::processMouse" );
-                    if( !g )
-                        return 1;
-                    if( lb && this->z )
-                    {
                         this->z = 0;
-                        g->setFocus();
-                    }
+                    if( lb )
+                        this->focus_id = pl->getFocusId();
+
                     this->bIsHover = 1;
                     return 1;
                 }
             }
         }
 
+        this->focus_id = this->id;
         if( p.x < 0 || p.y < 0 )
             return 0;
         if( p.x >= this->pos.w || p.y >= this->pos.h )
             return 0;
         this->bIsHover = 1;
+        if( lb )
+            this->z = 0;
 
         g = (gui_writelock *)o.tryWriteLock( this->g, 100, "renderer_gui::processMouse" );
         if( !g )
             return 1;
         g->processMouse( p.x, p.y, x, y, lb, rb );
-        if( lb && this->z )
-        {
-            this->z = 0;
-            g->setFocus();
-        }
         if( lb )
             this->clickfade = 100;
 
@@ -477,8 +470,8 @@ namespace dragonpoop
             }
         }
 
-        if( this->z > 0 )
-            return 0;
+       // if( this->z > 0 )
+         //   return 0;
 
         g = (gui_writelock *)o.tryWriteLock( this->g, 1000, "renderer_gui::processKb" );
         if( !g )
@@ -596,7 +589,6 @@ namespace dragonpoop
                     this->bIsHover = pl->isHoverable();
                     this->bIsEdit = pl->isEditable();
                     this->bIsFade = pl->isFade();
-                    this->z = pl->getZ();
                     this->updateVb( &this->pos, ctx );
                     this->bSyncPos = 0;
                 }

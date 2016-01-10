@@ -548,7 +548,7 @@ namespace dragonpoop
         this->dimensions.h = al->getHeight();
 
         t = thd->getTicks();
-        if( t - this->t_last_input < 20 )
+        if( t - this->t_last_input < 100 )
             return 1;
 
         if( this->mouse.x < -0.9f )

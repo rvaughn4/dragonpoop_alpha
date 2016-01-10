@@ -47,10 +47,6 @@ namespace dragonpoop
         dpbitmap *getBg( void );
         //returns pointer to fg texture
         dpbitmap *getFg( void );
-        //returns z order
-        unsigned int getZ( void );
-        //returns true if has focus
-        bool hasFocus( void );
         //add gui
         void addGui( gui *g );
         //returns true if editable

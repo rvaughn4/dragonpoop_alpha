@@ -69,7 +69,6 @@ namespace dragonpoop
         gfx_ref *g;
         gui_man_ref *mgr;
         renderer_gui_ref *r;
-        std::atomic<unsigned int> z;
         unsigned int fnt_size, margin_size, top_margin;
         dprgba fnt_clr;
         std::string stxt;
@@ -140,12 +139,6 @@ namespace dragonpoop
         dpbitmap *getBg( void );
         //returns pointer to fg texture
         dpbitmap *getFg( void );
-        //returns z order
-        unsigned int getZ( void );
-        //sets focus
-        void setFocus( void );
-        //returns true if has focus
-        bool hasFocus( void );
         //process mouse input
         void processMouse( float x, float y, float sx, float sy, bool lb, bool rb );
         //process kb input

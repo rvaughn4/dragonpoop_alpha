@@ -70,12 +70,6 @@ namespace dragonpoop
         dpbitmap *getBg( void );
         //returns pointer to fg texture
         dpbitmap *getFg( void );
-        //returns z order
-        unsigned int getZ( void );
-        //sets focus
-        void setFocus( void );
-        //returns true if has focus
-        bool hasFocus( void );
         //process mouse input
         void processMouse( float x, float y, float sx, float sy, bool lb, bool rb );
         //process kb input

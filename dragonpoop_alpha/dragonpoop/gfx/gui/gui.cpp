@@ -39,7 +39,6 @@ namespace dragonpoop
         this->bRepaintFg = 1;
         this->r = 0;
         this->bWasBgDrawn = this->bWasFgDrawn = 0;
-        this->z = 1;
         this->bOldLb = this->bOldRb = 0;
         this->fnt_size = 0;
         this->fnt_clr.r = this->fnt_clr.g = this->fnt_clr.b = 0;
@@ -127,17 +126,14 @@ namespace dragonpoop
         int i;
 
         t = thd->getTicks();
-        if( this->z == 0 )
+        if( this->bIsEdit || this->bWasSel )
         {
-            if( this->bIsEdit || this->bWasSel )
-            {
-                this->redraw_timer = 300;
-                this->bWasSel = 0;
-            }
-            else
-                this->redraw_timer = 0;
+            this->redraw_timer = 300;
+            this->bWasSel = 0;
         }
-        if( this->z != 0 && !cur_flash )
+        else
+            this->redraw_timer = 0;
+        if( !this->cur_flash )
             this->redraw_timer = 0;
 
         if( this->redraw_timer && t - this->t_last_redraw > this->redraw_timer )
@@ -202,8 +198,6 @@ namespace dragonpoop
             this->mse.pop();
             b = 1;
 
-            if( this->bOldLb != e->lb )
-               this->setFocus();
             if( this->bOldLb != e->lb )
                 b = this->handleMouseClick( e->x, e->y, e->sx, e->sy, 0, e->lb );
             if( b && this->bOldRb != e->rb )
@@ -437,7 +431,7 @@ namespace dragonpoop
         y = this->top_margin;
         cw = lch = 0;
         ln = 0;
-        cur_drawn = this->cur_flash || ( this->z != 0 ) || !this->bIsEdit;
+        cur_drawn = this->cur_flash || !this->bIsEdit;
         for( i = 0; i < e; i++ )
         {
             c = cb[ i ];
@@ -662,52 +656,6 @@ namespace dragonpoop
     dpbitmap *gui::getFg( void )
     {
         return &this->fgtex;
-    }
-
-    //returns z order
-    unsigned int gui::getZ( void )
-    {
-        return this->z;
-    }
-
-    //sets focus
-    void gui::setFocus( void )
-    {
-        shared_obj_guard o1, o;
-        gui_man_readlock *ml;
-        std::list<gui_ref *> l;
-        gui_writelock *pl;
-        gui_ref *p;
-        std::list<gui_ref *>::iterator i;
-
-        ml = (gui_man_readlock *)o1.tryReadLock( this->mgr, 1000, "gui::setFocus" );
-        if( !ml )
-            return;
-
-        ml->getGuis( &l );
-
-        for( i = l.begin(); i != l.end(); ++i )
-        {
-            p = *i;
-            pl = (gui_writelock *)o.tryWriteLock( p, 100, "gui::setFocus" );
-            if( !pl )
-                continue;
-            if( pl->t->z < 20 )
-            {
-                pl->t->z++;
-                pl->t->bPosChanged = 1;
-            }
-        }
-        o.unlock();
-
-        this->bPosChanged = 1;
-        this->z = 0;
-    }
-
-    //returns true if has focus
-    bool gui::hasFocus( void )
-    {
-        return this->z == 0;
     }
 
     //process mouse input
@@ -1154,11 +1102,6 @@ namespace dragonpoop
 
         gl->addGui( g );
         o.unlock();
-
-        gul = (gui_writelock *)o1.tryWriteLock( g, 2000, "gui::addGui" );
-        if( !gul )
-            return;
-        gul->setFocus();
     }
 
     //set editable

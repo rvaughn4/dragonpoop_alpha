@@ -3,7 +3,8 @@
 #include "dpmutex_master.h"
 #include "../dpspinlock/dpsponlock.h"
 
-//#define dpmutex_do_debug_stuff
+//
+#define dpmutex_do_debug_stuff
 #ifdef dpmutex_do_debug_stuff
     #include <iostream>
 #endif

@@ -125,24 +125,6 @@ namespace dragonpoop
         return this->t->getFg();
     }
 
-    //returns z order
-    unsigned int gui_writelock::getZ( void )
-    {
-        return this->t->getZ();
-    }
-
-    //sets focus
-    void gui_writelock::setFocus( void )
-    {
-        this->t->setFocus();
-    }
-
-    //returns true if has focus
-    bool gui_writelock::hasFocus( void )
-    {
-        return this->t->hasFocus();
-    }
-
     //process mouse input
     void gui_writelock::processMouse( float x, float y, float sx, float sy, bool lb, bool rb )
     {

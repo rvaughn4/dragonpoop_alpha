@@ -160,7 +160,7 @@
 1447319774 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpid/dpid.cpp
 	"dpid.h"
 
-1451394018 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpmutex/dpmutex.cpp
+1452439854 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dpmutex/dpmutex.cpp
 	"dpmutex.h"
 	"dpmutex_master.h"
 	"../dpspinlock/dpsponlock.h"
@@ -238,7 +238,7 @@
 	"dptask.h"
 	"../shared_obj/shared_obj_guard.h"
 
-1451394104 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.cpp
+1452439836 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool.cpp
 	"dptaskpool.h"
 	"dptaskpool_ref.h"
 	"dptaskpool_readlock.h"
@@ -1548,7 +1548,7 @@
 	"openglx_1o5_renderer_writelock.h"
 	"openglx_1o5_renderer.h"
 
-1450694887 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
+1452440932 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
 	"renderer.h"
 	"../core/core.h"
 	"../core/dptask/dptasks.h"
@@ -3701,7 +3701,7 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_ref.h
 	"../../core/shared_obj/shared_obj_ref.h"
 
-1452336162 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.h
+1452439141 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.h
 	"../../core/shared_obj/shared_obj.h"
 	"../../core/dpid/dpid.h"
 	"../dpbitmap/dpbitmap.h"
@@ -3711,7 +3711,7 @@
 	<vector>
 	<queue>
 
-1451392244 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_writelock.h
+1452439056 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_writelock.h
 	"../../core/shared_obj/shared_obj_writelock.h"
 	"../../core/dpid/dpid.h"
 	<string>
@@ -4255,7 +4255,7 @@
 1449654806 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/button_gui/button_gui.h
 	"../gui.h"
 
-1452337331 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.cpp
+1452439372 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.cpp
 	"gui.h"
 	"gui_ref.h"
 	"gui_readlock.h"
@@ -4278,7 +4278,7 @@
 	"gui_man_writelock.h"
 	"gui_man_readlock.h"
 
-1451392365 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_readlock.h
+1452438287 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_readlock.h
 	"../../core/shared_obj/shared_obj_readlock.h"
 	"../../core/dpid/dpid.h"
 	<string>
@@ -4379,7 +4379,7 @@
 	"gui_man_writelock.h"
 	"gui_man.h"
 
-1451392349 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_readlock.cpp
+1452438299 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_readlock.cpp
 	"gui_readlock.h"
 	"gui.h"
 
@@ -4387,7 +4387,7 @@
 	"gui_ref.h"
 	"gui.h"
 
-1451392310 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_writelock.cpp
+1452439072 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_writelock.cpp
 	"gui_writelock.h"
 	"gui.h"
 
@@ -5735,7 +5735,7 @@
 	"../core/core.h"
 	"renderer.h"
 
-1452338326 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp
+1452439511 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp
 	"renderer_gui.h"
 	"renderer_gui_readlock.h"
 	"renderer_gui_writelock.h"
@@ -5757,7 +5757,7 @@
 	"../../gfx/dpvertex/dpvertexindex_buffer.h"
 	<string.h>
 
-1452334475 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.cpp
+1452441331 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.cpp
 	"renderer_gui_man.h"
 	"renderer_gui_man_ref.h"
 	"renderer_gui_man_readlock.h"
@@ -5817,7 +5817,7 @@
 	"renderer_gui_man_ref.h"
 	"renderer_gui_man.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man_task.cpp
+1452440697 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man_task.cpp
 	"renderer_gui_man_task.h"
 	"renderer_gui_man.h"
 	"renderer_gui_man_writelock.h"

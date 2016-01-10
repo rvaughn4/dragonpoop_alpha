@@ -520,7 +520,7 @@ namespace dragonpoop
     //process mouse input
     bool renderer_gui_man::processGuiMouseInput( renderer_gui_man_writelock *r, float w, float h, float x, float y, bool lb, bool rb )
     {
-        std::list<renderer_gui *> *l, lz, d;
+        std::list<renderer_gui *> *l, lz;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
         renderer_gui_writelock *pl;
@@ -580,16 +580,7 @@ namespace dragonpoop
                     this->focus_gui = pl->getFocusId();
                     return 1;
                 }
-                d.push_back( p );
             }
-
-            l = &d;
-            for( i = l->begin(); i != l->end(); ++i )
-            {
-                p = *i;
-                lz.remove( p );
-            }
-            d.clear();
         }
 
         return 0;
