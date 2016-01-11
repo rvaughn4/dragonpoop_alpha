@@ -3,10 +3,12 @@
 #define dragonpoop_input_passer_writelock_h
 
 #include "../../../core/shared_obj/shared_obj_writelock.h"
+#include <string>
 
 namespace dragonpoop
 {
     class input_passer;
+    class input_passer_ref;
 
     class input_passer_writelock : public shared_obj_writelock
     {

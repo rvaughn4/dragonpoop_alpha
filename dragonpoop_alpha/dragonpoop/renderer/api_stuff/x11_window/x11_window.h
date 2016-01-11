@@ -106,6 +106,8 @@ namespace dragonpoop
         x11_window_functions_XFree XFree;
     };
 
+    class input_passer_writelock;
+
     class x11_window : public window
     {
 
@@ -133,7 +135,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        x11_window( float w, float h, const char *ctitle );
+        x11_window( float w, float h, const char *ctitle, input_passer_writelock *ipl );
         //dtor
         virtual ~x11_window( void );
         //run window

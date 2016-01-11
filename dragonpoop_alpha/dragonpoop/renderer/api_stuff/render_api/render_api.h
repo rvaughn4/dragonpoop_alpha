@@ -9,27 +9,27 @@
 
 namespace dragonpoop
 {
-    
+
     class render_api_context;
     class render_api_context_ref;
     class render_api_writelock;
     class render_api_context_writelock;
-    
+
     class render_api : public shared_obj
     {
-        
+
     private:
-        
+
         window *w;
         dpmutex_master *mm;
         std::list<render_api_context *> contexts;
         int crun;
-        
+
         //run contexts
         void runContexts( void );
-        
+
     protected:
-        
+
         //generate read lock
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //generate write lock
@@ -52,21 +52,9 @@ namespace dragonpoop
         render_api_context_ref *getContext( render_api_writelock *al );
         //delete contexts
         void deleteContexts( void );
-        //returns true if mouse input is waiting
-        bool hasMouseInput( void );
-        //fetches mouse input
-        bool getMouseInput( window_mouse_input *m );
-        //adds mouse input
-        void addMouseInput( window_mouse_input *m );
-        //returns true if kb input is waiting
-        bool hasKBInput( void );
-        //fetches kb input
-        bool getKBInput( window_kb_input *m );
-        //adds kb input
-        void addKBInput( window_kb_input *m );
 
     public:
-        
+
         //ctor
         render_api( window *w, dpmutex_master *mm );
         //dtor
@@ -76,7 +64,7 @@ namespace dragonpoop
         friend class render_api_readlock;
         friend class render_api_writelock;
     };
-    
+
 };
 
 #endif

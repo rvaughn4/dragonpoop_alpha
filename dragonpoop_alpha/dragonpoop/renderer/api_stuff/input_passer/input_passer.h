@@ -42,7 +42,12 @@ namespace dragonpoop
             {
                 input_passer_kb_input values[ input_passer_MAX_INPUT ];
                 unsigned int cnt, push_index, pop_index;
-            } mouse, keyb;
+            } keyb;
+            struct
+            {
+                input_passer_mouse_input values[ input_passer_MAX_INPUT ];
+                unsigned int cnt, push_index, pop_index;
+            } mouse;
         } input;
 
         //attempts to push keyboard input at current index, increments index

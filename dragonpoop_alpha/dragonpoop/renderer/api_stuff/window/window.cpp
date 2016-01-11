@@ -1,91 +1,75 @@
 
 #include "window.h"
+#include "../input_passer/input_passer_ref.h"
+#include "../input_passer/input_passer_writelock.h"
 
 namespace dragonpoop
 {
-    
+
     //ctor
-    window::window( float w, float h, const char *ctitle )
+    window::window( float w, float h, const char *ctitle, input_passer_writelock *ipl )
     {
-        
+        this->ip = 0;
+        if( ipl )
+            this->ip = (input_passer_ref *)ipl->getRef();
     }
-    
+
     //dtor
     window::~window( void )
     {
-        
+        delete this->ip;
     }
-    
+
     //run window
     void window::run( void )
     {
-        
+
     }
-    
+
     //returns true if window is open
     bool window::isOpen( void )
     {
         return 0;
     }
-    
+
     //returns window width
     float window::getWidth( void )
     {
         return 0;
     }
-    
+
     //returns window height
     float window::getHeight( void )
     {
         return 0;
     }
 
-    //returns true if mouse input is waiting
-    bool window::hasMouseInput( void )
-    {
-        return !this->mse.empty();
-    }
-    
-    //fetches mouse input
-    bool window::getMouseInput( window_mouse_input *m )
-    {
-        if( this->mse.empty() )
-            return 0;
-        
-        *m = this->mse.front();
-        this->mse.pop();
-        
-        return 1;
-    }
-    
     //adds mouse input
-    void window::addMouseInput( window_mouse_input *m )
+    void window::addMouseInput( uint64_t t, int x, int y, bool bLb, bool bRb, bool bDown )
     {
-        this->mse.push( *m );
+        shared_obj_guard o;
+        input_passer_writelock *l;
+
+        l = (input_passer_writelock *)o.tryWriteLock( this->ip, 100, "window::addMouseInput" );
+        if( !l )
+            return;
+
+        l->addMouseInput( x, y, bLb, bRb, bDown );
+        l->setTime( t );
     }
-    
-    //returns true if kb input is waiting
-    bool window::hasKBInput( void )
-    {
-        return !this->kbe.empty();
-    }
-    
-    //fetches kb input
-    bool window::getKBInput( window_kb_input *m )
-    {
-        if( this->kbe.empty() )
-            return 0;
-        
-        *m = this->kbe.front();
-        this->kbe.pop();
-        
-        return 1;
-    }
-    
+
     //adds kb input
-    void window::addKBInput( window_kb_input *m )
+    void window::addKBInput( uint64_t t, std::string *skey, bool bDown )
     {
-        this->kbe.push( *m );
+        shared_obj_guard o;
+        input_passer_writelock *l;
+
+        l = (input_passer_writelock *)o.tryWriteLock( this->ip, 100, "window::addMouseInput" );
+        if( !l )
+            return;
+
+        l->addKeyboardInput( skey, bDown );
+        l->setTime( t );
     }
-    
+
 };

@@ -8,7 +8,7 @@ namespace dragonpoop
 {
 
     //ctor
-    x11_window::x11_window( float w, float h, const char *ctitle ) : window( w, h, ctitle )
+    x11_window::x11_window( float w, float h, const char *ctitle, input_passer_writelock *ipl ) : window( w, h, ctitle, ipl )
     {
         x11_window_Colormap cmap;
 

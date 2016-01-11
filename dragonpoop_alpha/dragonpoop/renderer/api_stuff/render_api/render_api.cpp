@@ -10,19 +10,19 @@
 
 namespace dragonpoop
 {
-    
+
     //ctor
     render_api::render_api( window *w, dpmutex_master *mm ) : shared_obj( mm )
     {
         this->w = w;
         this->mm = mm;
     }
-    
+
     //dtor
     render_api::~render_api( void )
     {
         shared_obj_guard o;
-        
+
         o.tryWriteLock( this, 5000, "render_api_context::~render_api_context" );
         o.unlock();
         this->unlink();
@@ -30,50 +30,50 @@ namespace dragonpoop
         this->deleteContexts();
         delete this->w;
     }
-    
+
     //generate read lock
     shared_obj_readlock *render_api::genReadLock( shared_obj *p, dpmutex_readlock *l )
     {
         return new render_api_readlock( (render_api *)p, l );
     }
-    
+
     //generate write lock
     shared_obj_writelock *render_api::genWriteLock( shared_obj *p, dpmutex_writelock *l )
     {
         return new render_api_writelock( (render_api *)p, l );
     }
-    
+
     //generate ref
     shared_obj_ref *render_api::genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k )
     {
         return new render_api_ref( (render_api *)p, k );
     }
-    
+
     //run api
     void render_api::run( void )
     {
         this->w->run();
-        
+
         this->crun++;
         if( this->crun < 10 )
             return;
         this->crun = 0;
-        
+
         this->runContexts();
     }
-    
+
     //returns true if window is open
     bool render_api::isOpen( void )
     {
         return this->w->isOpen();
     }
-    
+
     //returns window width
     float render_api::getWidth( void )
     {
         return this->w->getWidth();
     }
-    
+
     //returns window height
     float render_api::getHeight( void )
     {
@@ -85,39 +85,39 @@ namespace dragonpoop
     {
         return this->w;
     }
-    
+
     //make context
     render_api_context_ref *render_api::getContext( render_api_writelock *al )
     {
         render_api_context *c;
         render_api_context_writelock *l;
         shared_obj_guard o;
-        
+
         c = this->genContext( al, this->mm );
         if( !c )
             return 0;
         this->contexts.push_back( c );
-        
+
         l = (render_api_context_writelock *)o.tryWriteLock( c, 1000, "render_api::getContext" );
         if( !l )
             return 0;
-        
+
         return (render_api_context_ref *)l->getRef();
     }
-    
+
     //generate context
     render_api_context *render_api::genContext( render_api_writelock *al, dpmutex_master *mm )
     {
         return new render_api_context( al, mm );
     }
-    
+
     //delete contexts
     void render_api::deleteContexts( void )
     {
         std::list<render_api_context *> *l, d;
         std::list<render_api_context *>::iterator i;
         render_api_context *p;
-        
+
         l = &this->contexts;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -125,7 +125,7 @@ namespace dragonpoop
             d.push_back( p );
         }
         l->clear();
-        
+
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -133,7 +133,7 @@ namespace dragonpoop
             delete p;
         }
     }
-    
+
     //run contexts
     void render_api::runContexts( void )
     {
@@ -142,7 +142,7 @@ namespace dragonpoop
         render_api_context *p;
         render_api_context_writelock *pl;
         shared_obj_guard o;
-        
+
         l = &this->contexts;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -154,7 +154,7 @@ namespace dragonpoop
                 continue;
             pl->run();
         }
-        
+
         l = &d;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -163,41 +163,5 @@ namespace dragonpoop
             delete p;
         }
     }
-    
-    //returns true if mouse input is waiting
-    bool render_api::hasMouseInput( void )
-    {
-        return this->w->hasMouseInput();
-    }
-    
-    //fetches mouse input
-    bool render_api::getMouseInput( window_mouse_input *m )
-    {
-        return this->w->getMouseInput( m );
-    }
-    
-    //adds mouse input
-    void render_api::addMouseInput( window_mouse_input *m )
-    {
-        this->w->addMouseInput( m );
-    }
-    
-    //returns true if kb input is waiting
-    bool render_api::hasKBInput( void )
-    {
-        return this->w->hasKBInput();
-    }
-    
-    //fetches kb input
-    bool render_api::getKBInput( window_kb_input *m )
-    {
-        return this->w->getKBInput( m );
-    }
-    
-    //adds kb input
-    void render_api::addKBInput( window_kb_input *m )
-    {
-        this->w->addKBInput( m );
-    }
-    
+
 };
