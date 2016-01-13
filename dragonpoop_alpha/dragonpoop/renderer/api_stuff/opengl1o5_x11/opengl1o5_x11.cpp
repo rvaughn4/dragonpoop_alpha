@@ -9,7 +9,7 @@ namespace dragonpoop
 {
 
     //ctor
-    opengl1o5_x11::opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm, bool bUseDl ) : render_api( new x11_window( w, h, ctitle ), mm )
+    opengl1o5_x11::opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm, bool bUseDl, input_passer_writelock *ip ) : render_api( new x11_window( w, h, ctitle, ip ), mm )
     {
         unsigned int i;
         const char *c;

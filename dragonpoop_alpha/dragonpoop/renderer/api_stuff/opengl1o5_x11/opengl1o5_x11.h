@@ -118,6 +118,8 @@ namespace dragonpoop
         opengl1o5_x11_functions_glCallList glCallList;
     };
 
+    class input_passer_writelock;
+
     class opengl1o5_x11 : public render_api
     {
 
@@ -149,7 +151,7 @@ namespace dragonpoop
 
 
         //ctor
-        opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm, bool bUseDl );
+        opengl1o5_x11( float w, float h, const char *ctitle, dpmutex_master *mm, bool bUseDl, input_passer_writelock *ip );
         //dtor
         virtual ~opengl1o5_x11( void );
         //run api

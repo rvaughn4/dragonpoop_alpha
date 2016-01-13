@@ -63,6 +63,8 @@
 #include "../gfx/dpheight_cache/dpheight_cache_ref.h"
 #include "../gfx/dpheight_cache/dpheight_cache_readlock.h"
 #include "../gfx/dpheight_cache/dpheight_cache_writelock.h"
+#include "api_stuff/input_passer/input_passer.h"
+#include "api_stuff/input_passer/input_passer_writelock.h"
 
 #include <thread>
 #include <random>
@@ -90,6 +92,7 @@ namespace dragonpoop
         this->tsk = new dptask( c->getMutexMaster(), this->gtsk, 5, 1, 0, "renderer" );
         tp->addTask( this->tsk );
         this->fps = this->fthiss = 0;
+        this->ip = new input_passer( c->getMutexMaster() );
 
         this->rcam_pos = g->getCameraPosition();
         this->cam_rot.x = 0;
@@ -152,6 +155,8 @@ namespace dragonpoop
         delete this->tp;
         delete this->heights;
         delete this->rheights;
+        delete this->ip;
+
         o.unlock();
     }
 
@@ -497,6 +502,7 @@ namespace dragonpoop
     {
         render_api_writelock *al;
         shared_obj_guard o;
+        input_passer_writelock *ipl;
 
         if( this->main_ctx )
             delete this->main_ctx;
@@ -504,11 +510,15 @@ namespace dragonpoop
         if( this->api )
             delete this->api;
 
-        this->api = this->genRenderApi( this->c->getMutexMaster() );
+        ipl = (input_passer_writelock *)o.tryWriteLock( this->ip, 5000, "renderer::initApi" );
+        if( !ipl )
+            return 0;
+
+        this->api = this->genRenderApi( this->c->getMutexMaster(), ipl );
         if( !this->api )
             return 0;
 
-        al = (render_api_writelock *)o.tryWriteLock( this->api, 5000, "renderer::runApi" );
+        al = (render_api_writelock *)o.tryWriteLock( this->api, 5000, "renderer::initApi" );
         if( !al )
             return 0;
 
@@ -532,8 +542,6 @@ namespace dragonpoop
     {
         render_api_writelock *al;
         shared_obj_guard o, o1;
-        window_mouse_input m;
-        window_kb_input k;
         renderer_gui_man_writelock *gl;
         uint64_t t;
 
@@ -559,25 +567,6 @@ namespace dragonpoop
             this->cam_rot.x += 0.2f;
         if( this->mouse.y > 0.9f )
             this->cam_rot.x -= 0.2f;
-
-        if( !al->hasKBInput() && !al->hasMouseInput() )
-            return 1;
-
-        gl = (renderer_gui_man_writelock *)o1.tryWriteLock( this->rgui_mgr, 3, "renderer::runApi" );
-        if( !gl )
-            return 1;
-        this->t_last_input = t;
-
-        if( al->hasMouseInput() )
-        {
-            while( al->getMouseInput( &m ) )
-                this->processMouseInput( gl, al, m.x, m.y, m.lb, m.rb );
-        }
-        if( al->hasKBInput() )
-        {
-            while( al->getKBInput( &k ) )
-                this->processKbInput( gl, &k.sname, k.bDown );
-        }
 
         return 1;
     }
@@ -881,7 +870,7 @@ namespace dragonpoop
     }
 
     //generate render api
-    render_api *renderer::genRenderApi( dpmutex_master *mm )
+    render_api *renderer::genRenderApi( dpmutex_master *mm, input_passer_writelock *ipl )
     {
         return 0;
     }

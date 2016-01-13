@@ -128,7 +128,7 @@ namespace dragonpoop
         //load x11
         bool loadFunctions( void );
         //process kb input
-        void processKb( x11_window_KeySym k, bool isDown );
+        void processKb( uint64_t t, x11_window_KeySym k, bool isDown );
 
     protected:
 

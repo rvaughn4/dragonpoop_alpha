@@ -2,6 +2,7 @@
 #include "window.h"
 #include "../input_passer/input_passer_ref.h"
 #include "../input_passer/input_passer_writelock.h"
+#include "../../../core/shared_obj/shared_obj_guard.h"
 
 namespace dragonpoop
 {

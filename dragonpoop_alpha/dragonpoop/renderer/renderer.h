@@ -48,6 +48,8 @@ namespace dragonpoop
     class dpposition_share_ref;
     class dpheight_cache;
     class dpheight_cache_ref;
+    class input_passer_writelock;
+    class input_passer;
 
     class renderer : public shared_obj
     {
@@ -66,6 +68,7 @@ namespace dragonpoop
         render_api *api;
         render_api_context_ref *main_ctx;
         renderer_commandlist_passer *clpasser;
+        input_passer *ip;
 
         std::atomic<bool> bDoRun, bIsRun;
         render_api_commandlist_ref *new_gui_cl, *new_model_cl, *new_land_cl, *new_sky_cl;
@@ -188,7 +191,7 @@ namespace dragonpoop
         //sets selected text in gui (paste)
         bool setSelectedText( std::string *s );
         //generate render api
-        virtual render_api *genRenderApi( dpmutex_master *mm );
+        virtual render_api *genRenderApi( dpmutex_master *mm, input_passer_writelock *ip );
 
     public:
 

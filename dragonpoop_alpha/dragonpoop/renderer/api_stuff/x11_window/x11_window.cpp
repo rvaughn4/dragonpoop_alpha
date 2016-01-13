@@ -3,6 +3,7 @@
 #include "../window/window.h"
 #include <string>
 #include <string.h>
+#include <chrono>
 
 namespace dragonpoop
 {
@@ -154,7 +155,13 @@ namespace dragonpoop
     void x11_window::run( void )
     {
         x11_window_XEvent event;
-        window_mouse_input m;
+        uint64_t t;
+        std::chrono::time_point<std::chrono::steady_clock> tp_now;
+        std::chrono::steady_clock::duration d_s;
+
+        tp_now = std::chrono::steady_clock::now();
+        d_s = tp_now.time_since_epoch();
+        t = d_s.count() * 1000 * std::chrono::steady_clock::period::num / std::chrono::steady_clock::period::den;
 
         while( this->x11.XPending( this->dpy ) >= 1 )
         {
@@ -173,35 +180,19 @@ namespace dragonpoop
                     }
                     break;
                 case MotionNotify:
-                    m.x = event.xbutton.x;
-                    m.y = event.xbutton.y;
-                    m.lb = this->lb;
-                    m.rb = this->rb;
-                    this->addMouseInput( &m );
+                    this->addMouseInput( t, event.xbutton.x, event.xbutton.y, 0, 0, 0 );
                     break;
                 case ButtonPress:
-                    this->lb |= event.xbutton.button == x11_window_Button1;
-                    this->rb |= event.xbutton.button == x11_window_Button2;
-                    m.x = event.xbutton.x;
-                    m.y = event.xbutton.y;
-                    m.lb = this->lb;
-                    m.rb = this->rb;
-                    this->addMouseInput( &m );
+                    this->addMouseInput( t, event.xbutton.x, event.xbutton.y, (event.xbutton.button == x11_window_Button1), (event.xbutton.button == x11_window_Button2), 1 );
                     break;
                 case ButtonRelease:
-                    this->lb &= event.xbutton.button != x11_window_Button1;
-                    this->rb &= event.xbutton.button != x11_window_Button2;
-                    m.x = event.xbutton.x;
-                    m.y = event.xbutton.y;
-                    m.lb = this->lb;
-                    m.rb = this->rb;
-                    this->addMouseInput( &m );
+                    this->addMouseInput( t, event.xbutton.x, event.xbutton.y, (event.xbutton.button == x11_window_Button1), (event.xbutton.button == x11_window_Button2), 0 );
                     break;
                 case KeyPress:
-                    this->processKb( this->x11.XLookupKeysym( &event.xkey, 0 ), 1 );
+                    this->processKb( t, this->x11.XLookupKeysym( &event.xkey, 0 ), 1 );
                     break;
                 case KeyRelease:
-                    this->processKb( this->x11.XLookupKeysym( &event.xkey, 0 ), 0 );
+                    this->processKb( t, this->x11.XLookupKeysym( &event.xkey, 0 ), 0 );
                     break;
                 case ClientMessage:
                     if( (Atom)event.xclient.data.l[0] == this->wm_delete_window )
@@ -317,11 +308,10 @@ namespace dragonpoop
     }
 
     //process keyboard input
-    void x11_window::processKb( KeySym k, bool isDown )
+    void x11_window::processKb( uint64_t t, KeySym k, bool isDown )
     {
         unsigned char c[ 2 ];
         std::string s;
-        window_kb_input m;
 
         //http://tronche.com/gui/x/icccm/sec-2.html#s-2.1
         //https://en.wikipedia.org/wiki/ASCII
@@ -567,9 +557,7 @@ namespace dragonpoop
 
         if( s.size() < 1 )
             return;
-        m.sname.assign( s );
-        m.bDown = isDown;
-        this->addKBInput( &m );
+        this->addKBInput( t, &s, isDown );
     }
 
 };

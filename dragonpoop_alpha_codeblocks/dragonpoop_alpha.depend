@@ -529,7 +529,7 @@
 	"renderer_task.h"
 	"openglx_1o5_renderer/openglx_1o5_renderers.h"
 
-1448794901 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.h
+1452686128 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.h
 	"../core/shared_obj/shared_obj.h"
 	"../gfx/dpmatrix/dpmatrix.h"
 	"../gfx/dpposition/dpposition.h"
@@ -1548,7 +1548,7 @@
 	"openglx_1o5_renderer_writelock.h"
 	"openglx_1o5_renderer.h"
 
-1452440932 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
+1452686269 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
 	"renderer.h"
 	"../core/core.h"
 	"../core/dptask/dptasks.h"
@@ -1613,6 +1613,8 @@
 	"../gfx/dpheight_cache/dpheight_cache_ref.h"
 	"../gfx/dpheight_cache/dpheight_cache_readlock.h"
 	"../gfx/dpheight_cache/dpheight_cache_writelock.h"
+	"api_stuff/input_passer/input_passer.h"
+	"api_stuff/input_passer/input_passer_writelock.h"
 	<thread>
 	<random>
 
@@ -5020,20 +5022,20 @@
 	"model_saver_writelock.h"
 	"model_saver.h"
 
-1448148874 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11.cpp
+1452685361 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11.cpp
 	"opengl1o5_x11.h"
 	"opengl1o5_x11_context.h"
 	"../../../core/shared_obj/shared_obj_guard.h"
 	<string.h>
 	<sstream>
 
-1448184179 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11.h
+1452685358 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11.h
 	"../x11_window/x11_window.h"
 	"../render_api/render_api.h"
 	<dlfcn.h>
 	<string>
 
-1452476074 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/x11_window/x11_window.h
+1452685941 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/x11_window/x11_window.h
 	"../window/window.h"
 	<X11/Xlib.h>
 	<X11/keysym.h>
@@ -5231,7 +5233,7 @@
 	"../../../gfx/dpvertex/dpvertex_buffer.h"
 	"../../../gfx/dpmatrix/dpmatrix.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_writelock.h
+1452685380 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_writelock.h
 	"../../../core/shared_obj/shared_obj_writelock.h"
 	"../window/window.h"
 
@@ -5329,7 +5331,7 @@
 	"opengl1o5_x11_vertexbuffer_readlock.h"
 	"opengl1o5_x11_vertexbuffer.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api.cpp
+1452476128 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api.cpp
 	"render_api.h"
 	"render_api_ref.h"
 	"render_api_readlock.h"
@@ -5339,7 +5341,7 @@
 	"render_api_context_ref.h"
 	"render_api_context_writelock.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_readlock.h
+1452685458 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_readlock.h
 	"../../../core/shared_obj/shared_obj_readlock.h"
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context_ref.h
@@ -5542,7 +5544,7 @@
 	"render_api_indexbuffer_writelock.h"
 	"render_api_indexbuffer.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_readlock.cpp
+1452685424 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_readlock.cpp
 	"render_api_readlock.h"
 	"render_api.h"
 
@@ -5616,18 +5618,22 @@
 	"render_api_vertexbuffer_writelock.h"
 	"render_api_vertexbuffer.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_writelock.cpp
+1452685482 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_writelock.cpp
 	"render_api_writelock.h"
 	"render_api.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/window/window.cpp
+1452685513 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/window/window.cpp
 	"window.h"
+	"../input_passer/input_passer_ref.h"
+	"../input_passer/input_passer_writelock.h"
+	"../../../core/shared_obj/shared_obj_guard.h"
 
-1448155225 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/x11_window/x11_window.cpp
+1452686009 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/x11_window/x11_window.cpp
 	"x11_window.h"
 	"../window/window.h"
 	<string>
 	<string.h>
+	<chrono>
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_readlock.h
 	"../../core/shared_obj/shared_obj_readlock.h"
@@ -6193,16 +6199,16 @@
 	"renderer_state_stop_model.h"
 	"renderer_state_stop_gui.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/x11_opengl_1o5_renderer/x11_opengl_1o5_renderer.cpp
+1452686310 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/x11_opengl_1o5_renderer/x11_opengl_1o5_renderer.cpp
 	"x11_opengl_1o5_renderer.h"
 	"../../core/shared_obj/shared_obj_guard.h"
 	"../api_stuff/opengl1o5_x11/opengl1o5_x11.h"
 	<string>
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/x11_opengl_1o5_renderer/x11_opengl_1o5_renderer.h
+1452686298 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/x11_opengl_1o5_renderer/x11_opengl_1o5_renderer.h
 	"../renderer.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/x11_opengl_1o5_renderer/x11_opengl_1o5_renderer_factory.cpp
+1452686339 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/x11_opengl_1o5_renderer/x11_opengl_1o5_renderer_factory.cpp
 	"x11_opengl_1o5_renderer_factory.h"
 	"x11_opengl_1o5_renderer.h"
 	"../api_stuff/opengl1o5_x11/opengl1o5_x11.h"

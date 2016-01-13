@@ -611,6 +611,14 @@
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/model/model_writelock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/gfx/model/models.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/os_define.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer_readlock.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer_readlock.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer_ref.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer_ref.h" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer_writelock.cpp" />
+		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer_writelock.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11.cpp" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11.h" />
 		<Unit filename="../dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_commandlist.cpp" />
