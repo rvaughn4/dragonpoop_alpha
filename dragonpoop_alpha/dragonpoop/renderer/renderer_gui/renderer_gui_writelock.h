@@ -84,6 +84,8 @@ namespace dragonpoop
         bool hasFocus( void );
         //gets gui id of focused child
         bool getFocusChild( renderer_gui_man_writelock *r, dpid *fid );
+        //returns z index
+        unsigned int getZ( void );
 
         friend class renderer_gui;
     };

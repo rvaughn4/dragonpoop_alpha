@@ -161,4 +161,10 @@ namespace dragonpoop
         return this->t->getFocusChild( r, fid );
     }
 
+    //returns z index
+    unsigned int renderer_gui_writelock::getZ( void )
+    {
+        return this->t->getZ();
+    }
+
 };

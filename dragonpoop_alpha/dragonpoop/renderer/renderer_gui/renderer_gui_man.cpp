@@ -39,6 +39,9 @@
 #include "../renderer_commandlist_passer.h"
 #include "../renderer_commandlist_passer_ref.h"
 #include "../renderer_commandlist_passer_writelock.h"
+#include "../api_stuff/input_passer/input_passer.h"
+#include "../api_stuff/input_passer/input_passer_ref.h"
+#include "../api_stuff/input_passer/input_passer_writelock.h"
 
 #include <math.h>
 #include <thread>
@@ -47,7 +50,7 @@ namespace dragonpoop
 {
 
     //ctor
-    renderer_gui_man::renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height ) : shared_obj( c->getMutexMaster() )
+    renderer_gui_man::renderer_gui_man( core *c, renderer *r, dptaskpool_writelock *tp, render_api_context_ref *ctx, renderer_commandlist_passer *clpasser, float log_screen_width, float log_screen_height, input_passer_writelock *ipl ) : shared_obj( c->getMutexMaster() )
     {
         shared_obj_guard o;
         gfx_writelock *gl;
@@ -70,6 +73,8 @@ namespace dragonpoop
         this->tpr = (dptaskpool_ref *)tp->getRef();
         this->focus_gui = dpid_null();
         this->hover_gui = this->focus_gui;
+        this->ip = new input_passer( c->getMutexMaster() );
+        this->ipr = (input_passer_ref *)ipl->getRef();
 
         this->g = c->getGfx();
         gl = (gfx_writelock *)o.writeLock( this->g, "renderer_gui_man::renderer_gui_man" );
@@ -111,6 +116,8 @@ namespace dragonpoop
         delete this->g_guis;
         delete this->tpr;
         delete this->clpasser;
+        delete this->ipr;
+        delete this->ip;
         o.unlock();
     }
 
@@ -181,10 +188,43 @@ namespace dragonpoop
     //run from manager thread
     void renderer_gui_man::run( dpthread_lock *thd, renderer_gui_man_writelock *g )
     {
+        shared_obj_guard o;
+        input_passer_writelock *ipl;
+        int x, y;
+        bool bLeft, bRight, bDown;
+        std::string skey;
+
         this->sync( thd, g );
         this->runGuis( thd, g );
         this->deleteOldGuis( thd, g );
         this->render( thd, g );
+
+        ipl = (input_passer_writelock *)o.tryWriteLock( this->ip, 30, "renderer_gui_man::run" );
+        if( !ipl )
+            return;
+        ipl->sync( this->ipr );
+
+        if( !ipl->hasInput() )
+            return;
+
+        if( ipl->getMouseInput( &x, &y, &bLeft, &bRight, &bDown ) )
+        {
+            if( bDown )
+            {
+                this->lb |= bLeft;
+                this->rb |= bRight;
+            }
+            else
+            {
+                this->lb &= !bLeft;
+                this->rb &= !bRight;
+            }
+            this->processGuiMouseInput( g, this->log_screen_width, this->log_screen_height, x, y, this->lb, this->rb );
+        }
+
+        if( ipl->getKeyboardInput( &skey, &bDown ) )
+            this->processGuiKbInput( g, &skey, bDown );
+
     }
 
     //sync guis

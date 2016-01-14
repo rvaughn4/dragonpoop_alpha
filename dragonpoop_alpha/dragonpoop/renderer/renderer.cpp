@@ -377,14 +377,10 @@ namespace dragonpoop
             this->new_sky_cl = 0;
         }
 
-        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->model_ready, 1, 5 ) )
-            return;
-        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->gui_ready, 1, 5 ) )
-            return;
-        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->land_ready, 1, 5 ) )
-            return;
-        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->sky_ready, 1, 5 ) )
-            return;
+        renderer_commandlist_passer::waitForFlag( &this->clpasser->model_ready, 1, 5 );
+        renderer_commandlist_passer::waitForFlag( &this->clpasser->gui_ready, 1, 5 );
+        renderer_commandlist_passer::waitForFlag( &this->clpasser->land_ready, 1, 5 );
+        renderer_commandlist_passer::waitForFlag( &this->clpasser->sky_ready, 1, 5 );
 
         cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
         if( cpl )
@@ -684,10 +680,14 @@ namespace dragonpoop
     //generate renderer gui
     renderer_gui_man *renderer::genGuiMan( dptaskpool_writelock *tp )
     {
-        shared_obj_guard o;
+        shared_obj_guard o, o1;
         render_api_writelock *l;
         render_api_context_ref *ctx;
+        input_passer_writelock *ipl;
 
+        ipl = (input_passer_writelock *)o1.tryWriteLock( this->ip, 5000, "renderer::genGuiMan" );
+        if( !ipl )
+            return 0;
         l = (render_api_writelock *)o.tryWriteLock( this->api, 5000, "renderer::genGuiMan" );
         if( !l )
             return 0;
@@ -695,7 +695,7 @@ namespace dragonpoop
         if( !ctx )
             return 0;
 
-        return new renderer_gui_man( this->c, this, tp, ctx, this->clpasser, 1920, 1080 );
+        return new renderer_gui_man( this->c, this, tp, ctx, this->clpasser, 1920, 1080, ipl );
     }
 
     //generate renderer land manager

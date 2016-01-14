@@ -31,6 +31,8 @@ namespace dragonpoop
         this->c = g->getCore();
         this->id = g->getId();
         this->pid = g->getParentId();
+        if( dpid_compare( &this->id, &this->pid ) )
+            dpid_zero( &this->pid );
         g->getDimensions( &this->pos );
         this->bHasBg = g->hasBg();
         this->bHasFg = g->hasFg();
@@ -396,9 +398,12 @@ namespace dragonpoop
             for( i = l.begin(); i != l.end(); ++i )
             {
                 pr = *i;
+                if( pr->getZ() != z )
+                    continue;
                 pl = (renderer_gui_writelock *)o.tryWriteLock( pr, 100, "renderer_gui::processMouse" );
                 if( !pl )
                     continue;
+                //if( pl->)
                 if( pl->processMouse( r, x, y, lb, rb, focus_id ) )
                 {
                     this->hover_id = pl->getHoverId();
