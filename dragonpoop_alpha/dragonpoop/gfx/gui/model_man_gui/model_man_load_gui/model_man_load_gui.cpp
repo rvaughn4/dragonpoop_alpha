@@ -17,7 +17,7 @@ namespace dragonpoop
 {
 
     //ctor
-    model_man_load_gui::model_man_load_gui( gfx_writelock *g, dpid id, dpid pid, model_man_ref *mm ) : window_gui( g, id, pid, 600, 0, 1000, 170, "Load Model" )
+    model_man_load_gui::model_man_load_gui( gfx_writelock *g, dpid id, model_man_ref *mm ) : window_gui( g, id, 600, 0, 1000, 170, "Load Model" )
     {
         shared_obj_guard o;
         model_man_writelock *mml;
@@ -31,16 +31,16 @@ namespace dragonpoop
 
         this->setDraggable( 1 );
 
-        this->name_edit = new edit_gui( g, this->genId(), id, 10, 55, 980, 50, "Name", "", 150, 1 );
+        this->name_edit = new edit_gui( g, this->genId(), 10, 55, 980, 50, "Name", "", 150, 1 );
         this->addGui( this->name_edit );
 
-        this->file_edit = new edit_gui( g, this->genId(), id, 10, 110, 980, 50, "Path", "", 150, 1 );
+        this->file_edit = new edit_gui( g, this->genId(), 10, 110, 980, 50, "Path", "", 150, 1 );
         this->addGui( this->file_edit );
 
-        this->load_button = new button_gui( g, this->genId(), id, 10, 165, 490, 50, "Load", 1 );
+        this->load_button = new button_gui( g, this->genId(), 10, 165, 490, 50, "Load", 1 );
         this->addGui( this->load_button );
 
-        this->cancel_button = new button_gui( g, this->genId(), id, 500, 165, 490, 50, "Cancel", 1 );
+        this->cancel_button = new button_gui( g, this->genId(), 500, 165, 490, 50, "Cancel", 1 );
         this->addGui( this->cancel_button );
     }
 

@@ -29,7 +29,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        window_gui( gfx_writelock *g, dpid id, dpid pid, int x, int y, int w, int h, const char *ctitle );
+        window_gui( gfx_writelock *g, dpid id, int x, int y, int w, int h, const char *ctitle );
         //dtor
         virtual ~window_gui( void );
         //returns true if closed

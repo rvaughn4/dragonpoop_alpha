@@ -55,7 +55,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        menu_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, float bh, const char *txt );
+        menu_gui( gfx_writelock *g, dpid id, float x, float y, float w, float h, float bh, const char *txt );
         //dtor
         virtual ~menu_gui( void );
 

@@ -18,7 +18,7 @@ namespace dragonpoop
 {
 
     //ctor
-    model_man_model_gui::model_man_model_gui( gfx_writelock *g, dpid id, dpid pid, model_ref *m, model_man_ref *mm ) : window_gui( g, id, pid, 600, 0, 1000, 600, "Model" )
+    model_man_model_gui::model_man_model_gui( gfx_writelock *g, dpid id, model_ref *m, model_man_ref *mm ) : window_gui( g, id, 600, 0, 1000, 600, "Model" )
     {
         shared_obj_guard o;
         model_writelock *ml;
@@ -40,22 +40,22 @@ namespace dragonpoop
 
         if( ml )
             ml->getName( &s );
-        this->name_edit = new edit_gui( g, this->genId(), id, 10, 100, 980, 50, "Name", s.c_str(), 250, 1 );
+        this->name_edit = new edit_gui( g, this->genId(), 10, 100, 980, 50, "Name", s.c_str(), 250, 1 );
         this->addGui( this->name_edit );
 
-        this->save_button = new button_gui( g, this->genId(), id, 10, h - 60, 200, 50, "Save", 1 );
+        this->save_button = new button_gui( g, this->genId(), 10, h - 60, 200, 50, "Save", 1 );
         this->addGui( this->save_button );
 
-        this->animations_button = new button_gui( g, this->genId(), id, 220, h - 60, 200, 50, "Animations", 1 );
+        this->animations_button = new button_gui( g, this->genId(), 220, h - 60, 200, 50, "Animations", 1 );
         this->addGui( this->animations_button );
 
-        this->materials_button = new button_gui( g, this->genId(), id, 430, h - 60, 200, 50, "Materials", 1 );
+        this->materials_button = new button_gui( g, this->genId(), 430, h - 60, 200, 50, "Materials", 1 );
         this->addGui( this->materials_button );
 
-        this->groups_button = new button_gui( g, this->genId(), id, 640, h - 60, 200, 50, "Groups", 1 );
+        this->groups_button = new button_gui( g, this->genId(), 640, h - 60, 200, 50, "Groups", 1 );
         this->addGui( this->groups_button );
 
-        this->export_button = new button_gui( g, this->genId(), id, 850, h - 60, 200, 50, "Export", 1 );
+        this->export_button = new button_gui( g, this->genId(), 850, h - 60, 200, 50, "Export", 1 );
         this->addGui( this->export_button );
 
         this->save_gui = 0;
@@ -145,7 +145,7 @@ namespace dragonpoop
         gl = (gfx_writelock *)o.tryWriteLock( gr, 1000, "model_man_model_gui::doProcessing" );
         if( gl )
         {
-            this->save_gui = new model_man_save_gui( gl, this->genId(), this->getId(), this->m, this->mm );
+            this->save_gui = new model_man_save_gui( gl, this->genId(), this->m, this->mm );
             this->addGui( this->save_gui );
         }
         o.unlock();

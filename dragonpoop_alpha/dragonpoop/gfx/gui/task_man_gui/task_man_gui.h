@@ -28,7 +28,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        task_man_gui( gfx_writelock *g, dpid id, dpid pid );
+        task_man_gui( gfx_writelock *g, dpid id );
         //dtor
         virtual ~task_man_gui( void );
 

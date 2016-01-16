@@ -49,6 +49,15 @@ namespace dragonpoop
         {
             float x, y, ox, oy;
         } drag_pos;
+        std::list<renderer_gui *> children;
+        uint64_t t_last_children_sync;
+
+        //delete children
+        void deleteChildren( void );
+        //run children
+        void runChildren( dpthread_lock *thd, render_api_context_writelock *ctx );
+        //sync children
+        void syncChildren( dpthread_lock *thd );
 
     protected:
 

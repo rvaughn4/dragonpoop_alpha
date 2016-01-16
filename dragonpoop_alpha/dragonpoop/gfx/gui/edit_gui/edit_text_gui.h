@@ -31,7 +31,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        edit_text_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, const char *txtValue );
+        edit_text_gui( gfx_writelock *g, dpid id, float x, float y, float w, float h, const char *txtValue );
         //dtor
         virtual ~edit_text_gui( void );
 

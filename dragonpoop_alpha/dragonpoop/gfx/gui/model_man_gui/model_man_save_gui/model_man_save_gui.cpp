@@ -17,7 +17,7 @@ namespace dragonpoop
 {
 
     //ctor
-    model_man_save_gui::model_man_save_gui( gfx_writelock *g, dpid id, dpid pid, model_ref *m, model_man_ref *mm ) : window_gui( g, id, pid, 0, 600, 1000, 120, "Save Model As" )
+    model_man_save_gui::model_man_save_gui( gfx_writelock *g, dpid id, model_ref *m, model_man_ref *mm ) : window_gui( g, id, 0, 600, 1000, 120, "Save Model As" )
     {
         shared_obj_guard o;
         model_writelock *ml;
@@ -39,13 +39,13 @@ namespace dragonpoop
         if( ml )
             ml->getName( &s );
         s.append( ".dpmodel" );
-        this->file_edit = new edit_gui( g, this->genId(), id, 10, 55, 980, 50, "Path", s.c_str(), 150, 1 );
+        this->file_edit = new edit_gui( g, this->genId(), 10, 55, 980, 50, "Path", s.c_str(), 150, 1 );
         this->addGui( this->file_edit );
 
-        this->save_button = new button_gui( g, this->genId(), id, 10, 110, 490, 50, "Save", 1 );
+        this->save_button = new button_gui( g, this->genId(), 10, 110, 490, 50, "Save", 1 );
         this->addGui( this->save_button );
 
-        this->cancel_button = new button_gui( g, this->genId(), id, 500, 110, 490, 50, "Cancel", 1 );
+        this->cancel_button = new button_gui( g, this->genId(), 500, 110, 490, 50, "Cancel", 1 );
         this->addGui( this->cancel_button );
     }
 

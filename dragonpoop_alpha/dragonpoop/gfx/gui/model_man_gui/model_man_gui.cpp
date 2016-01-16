@@ -18,13 +18,13 @@ namespace dragonpoop
 {
 
     //ctor
-    model_man_gui::model_man_gui( gfx_writelock *g, dpid id, dpid pid ) : window_gui( g, id, pid, 100, 100, 600, 800, "Models" )
+    model_man_gui::model_man_gui( gfx_writelock *g, dpid id ) : window_gui( g, id, 100, 100, 600, 800, "Models" )
     {
         g->getModels( &this->m );
 
         this->loader_gui = 0;
         this->current_model = 0;
-        this->models_menu = new menu_gui( g, this->genId(), id, 10, 80, 580, 600, 50, 0 );
+        this->models_menu = new menu_gui( g, this->genId(), 10, 80, 580, 600, 50, 0 );
         this->addGui( this->models_menu );
 
         this->repop();
@@ -104,7 +104,7 @@ namespace dragonpoop
 
         if( this->current_model )
             delete this->current_model;
-        this->current_model = new model_man_model_gui( gfl, this->genId(), this->getId(), m, this->m );
+        this->current_model = new model_man_model_gui( gfl, this->genId(), m, this->m );
         g->addGui( this->current_model );
 
         og.unlock();
@@ -165,7 +165,7 @@ namespace dragonpoop
 
         if( gl )
         {
-            this->loader_gui = new model_man_load_gui( gl, this->genId(), this->getId(), this->m );
+            this->loader_gui = new model_man_load_gui( gl, this->genId(), this->m );
             this->addGui( this->loader_gui );
         }
 

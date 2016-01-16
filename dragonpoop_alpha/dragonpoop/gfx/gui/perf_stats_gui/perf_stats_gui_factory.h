@@ -6,26 +6,26 @@
 
 namespace dragonpoop
 {
-    
+
     class perf_stats_gui_factory : public gui_factory
     {
-        
+
     private:
-        
+
     protected:
-        
+
         //generate gui
-        virtual gui *genGui( gfx_writelock *g, dpid id, dpid pid );
-        
+        virtual gui *genGui( gfx_writelock *g, dpid id );
+
     public:
-        
+
         //ctor
         perf_stats_gui_factory( core *c );
         //dtor
         virtual ~perf_stats_gui_factory( void );
-        
+
     };
-    
+
 };
 
 #endif

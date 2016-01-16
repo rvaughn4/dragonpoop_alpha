@@ -6,11 +6,10 @@ namespace dragonpoop
 {
 
     //ctor
-    button_gui::button_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, const char *txt, bool bHasBg ) : gui( g, id )
+    button_gui::button_gui( gfx_writelock *g, dpid id, float x, float y, float w, float h, const char *txt, bool bHasBg ) : gui( g, id )
     {
         std::string s( txt );
 
-        this->setParentId( pid );
         this->enableBg( bHasBg );
         this->enableFg( 1 );
         this->setPosition( x, y );

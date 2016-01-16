@@ -15,7 +15,7 @@ namespace dragonpoop
 {
 
     //ctor
-    task_man_gui::task_man_gui( gfx_writelock *g, dpid id, dpid pid ) : window_gui( g, id, pid, 100, 100, 500, 700, "Tasks" )
+    task_man_gui::task_man_gui( gfx_writelock *g, dpid id ) : window_gui( g, id, 100, 100, 500, 700, "Tasks" )
     {
         dptaskpool_ref *tpr;
         dptaskpool_readlock *tpl;

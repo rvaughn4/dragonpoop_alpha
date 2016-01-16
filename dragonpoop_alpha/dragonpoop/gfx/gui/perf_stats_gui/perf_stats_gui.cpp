@@ -24,7 +24,7 @@ namespace dragonpoop
 {
 
     //ctor
-    perf_stats_gui::perf_stats_gui( gfx_writelock *g, dpid id, dpid pid ) : window_gui( g, id, pid, 0, 1080-600, 400, 600, "Performance Stats" )
+    perf_stats_gui::perf_stats_gui( gfx_writelock *g, dpid id ) : window_gui( g, id, 0, 1080-600, 400, 600, "Performance Stats" )
     {
         this->g = (gfx_ref *)g->getRef();
         this->rcampos = g->getCameraPosition();

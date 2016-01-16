@@ -18,6 +18,7 @@
 #include "../api_stuff/render_api/render_api_context_writelock.h"
 #include "../api_stuff/render_api/render_api_commandlist_writelock.h"
 #include "../../gfx/dpvertex/dpvertexindex_buffer.h"
+#include "../../core/dpbtree/dpid_btree.h"
 
 #include <string.h>
 
@@ -30,9 +31,6 @@ namespace dragonpoop
         this->g = (gui_ref *)g->getRef();
         this->c = g->getCore();
         this->id = g->getId();
-        this->pid = g->getParentId();
-        if( dpid_compare( &this->id, &this->pid ) )
-            dpid_zero( &this->pid );
         g->getDimensions( &this->pos );
         this->bHasBg = g->hasBg();
         this->bHasFg = g->hasFg();
@@ -60,6 +58,17 @@ namespace dragonpoop
     //dtor
     renderer_gui::~renderer_gui( void )
     {
+        shared_obj_guard o;
+        shared_obj_writelock *r;
+
+        r = o.tryWriteLock( this, 1000, "renderer_gui::~renderer_gui" );
+        o.unlock();
+        this->unlink();
+
+        r = o.tryWriteLock( this, 1000, "renderer_gui::~renderer_gui" );
+        o.unlock();
+
+        this->deleteChildren();
         gui_ref *g;
         g = this->g;
         delete g;
@@ -579,6 +588,8 @@ namespace dragonpoop
         shared_obj_guard o;
         dpbitmap *bm;
 
+        this->runChildren( thd, ctx );
+
         if( this->bSyncBg || this->bSyncFg || this->bSyncPos )
         {
 
@@ -587,7 +598,6 @@ namespace dragonpoop
             {
                 if( this->bSyncPos )
                 {
-                    this->pid = pl->getParentId();
                     pl->getDimensions( &this->pos );
                     this->bHasBg = pl->hasBg();
                     this->bHasFg = pl->hasFg();
@@ -731,6 +741,134 @@ namespace dragonpoop
         if( this->render_ib_bg )
             delete this->render_ib_bg;
         this->render_ib_bg = ctx->makeIndexBuffer( vb.getIB() );
+    }
+
+    //delete children
+    void renderer_gui::deleteChildren( void )
+    {
+        std::list<renderer_gui *> *l, d;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
+    }
+
+    //run children
+    void renderer_gui::runChildren( dpthread_lock *thd, render_api_context_writelock *ctx )
+    {
+        std::list<renderer_gui *> *l, d;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_writelock *pl;
+        shared_obj_guard o;
+
+        this->syncChildren( thd );
+
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_writelock *)o.tryWriteLock( p, 10, "renderer_gui::runChildren" );
+            if( !pl )
+                continue;
+            pl->run( thd, ctx );
+            if( !p->isAlive() )
+                d.push_back( p );
+            o.unlock();
+        }
+
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->children.remove( p );
+            delete p;
+        }
+    }
+
+    //sync children
+    void renderer_gui::syncChildren( dpthread_lock *thd )
+    {
+        std::list<renderer_gui *> *l, d;
+        std::list<renderer_gui *>::iterator i;
+        renderer_gui *p;
+        renderer_gui_readlock *pl;
+        shared_obj_guard o, ogul;
+        dpid_btree pt;
+        std::list<gui_ref *> lg, ng;
+        std::list<gui_ref *>::iterator ig;
+        gui_ref *gr;
+        uint64_t t;
+        gui_readlock *gul, *grl;
+        gui_writelock *gwl;
+
+        t = thd->getTicks();
+        if( t - this->t_last_children_sync < 200 )
+            return;
+        this->t_last_children_sync = t;
+
+
+        gul = (gui_readlock *)ogul.tryReadLock( this->g, 100, "renderer_gui::syncChildren" );
+        if( !gul )
+            return;
+
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            pl = (renderer_gui_readlock *)o.tryReadLock( p, 100, "renderer_gui::syncChildren" );
+            if( !pl )
+                continue;
+            pt.addLeaf( pl->getId(), (void *)p );
+            o.unlock();
+        }
+
+        gul->getChildren( &lg );
+
+        for( ig = lg.begin(); ig != lg.end(); ++ig )
+        {
+            gr = *ig;
+            grl = (gui_readlock *)o.tryReadLock( gr, 100, "renderer_gui::syncChildren" );
+            if( !grl )
+                continue;
+            p = (renderer_gui *)pt.findLeaf( grl->getId() );
+            if( p )
+                pt.removeLeaf( p );
+            else
+                ng.push_back( gr );
+        }
+
+        for( ig = ng.begin(); ig != ng.end(); ++ig )
+        {
+            gr = *ig;
+            gwl = (gui_writelock *)o.tryWriteLock( gr, 100, "renderer_gui::syncChildren" );
+            if( !gwl )
+                continue;
+            //
+        }
+
+        pt.getLeaves( (std::list<void *> *)&d );
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->children.remove( p );
+            delete p;
+        }
+
     }
 
 };

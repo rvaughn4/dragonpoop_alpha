@@ -11,11 +11,10 @@ namespace dragonpoop
 {
 
     //ctor
-    edit_gui::edit_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, const char *txtLabel, const char *txtValue, float labelWidth, bool bHasBg ) : gui( g, id )
+    edit_gui::edit_gui( gfx_writelock *g, dpid id, float x, float y, float w, float h, const char *txtLabel, const char *txtValue, float labelWidth, bool bHasBg ) : gui( g, id )
     {
         std::string s( txtLabel );
 
-        this->setParentId( pid );
         this->enableBg( bHasBg );
         this->enableFg( 1 );
         this->setPosition( x, y );
@@ -25,7 +24,7 @@ namespace dragonpoop
         this->setEditMode( 0 );
         this->setFade( 0 );
 
-        this->txt_gui = new edit_text_gui( g, this->genId(), id, labelWidth, 0, w - labelWidth, h, txtValue );
+        this->txt_gui = new edit_text_gui( g, this->genId(), labelWidth, 0, w - labelWidth, h, txtValue );
         this->addGui( this->txt_gui );
 
         x = h * 8 / 10;

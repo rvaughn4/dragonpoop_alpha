@@ -8,11 +8,10 @@ namespace dragonpoop
 {
 
     //ctor
-    edit_text_gui::edit_text_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, const char *txtValue ) : gui( g, id )
+    edit_text_gui::edit_text_gui( gfx_writelock *g, dpid id, float x, float y, float w, float h, const char *txtValue ) : gui( g, id )
     {
         std::string s( txtValue );
 
-        this->setParentId( pid );
         this->enableBg( 1 );
         this->enableFg( 1 );
         this->setPosition( x, y );

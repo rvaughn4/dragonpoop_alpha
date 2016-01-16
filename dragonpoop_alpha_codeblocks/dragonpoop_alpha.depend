@@ -3703,7 +3703,7 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_ref.h
 	"../../core/shared_obj/shared_obj_ref.h"
 
-1452439141 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.h
+1452980811 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.h
 	"../../core/shared_obj/shared_obj.h"
 	"../../core/dpid/dpid.h"
 	"../dpbitmap/dpbitmap.h"
@@ -3713,10 +3713,11 @@
 	<vector>
 	<queue>
 
-1452439056 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_writelock.h
+1452983313 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_writelock.h
 	"../../core/shared_obj/shared_obj_writelock.h"
 	"../../core/dpid/dpid.h"
 	<string>
+	<list>
 
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_factory_ref.h
 	"../../core/shared_obj/shared_obj_ref.h"
@@ -4250,14 +4251,14 @@
 	"dpsky_man_writelock.h"
 	"dpsky_man.h"
 
-1451394136 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/button_gui/button_gui.cpp
+1452981310 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/button_gui/button_gui.cpp
 	"button_gui.h"
 	"../../../core/shared_obj/shared_obj_guard.h"
 
-1449654806 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/button_gui/button_gui.h
+1452981300 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/button_gui/button_gui.h
 	"../gui.h"
 
-1452439372 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.cpp
+1452981245 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.cpp
 	"gui.h"
 	"gui_ref.h"
 	"gui_readlock.h"
@@ -4280,12 +4281,13 @@
 	"gui_man_writelock.h"
 	"gui_man_readlock.h"
 
-1452438287 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_readlock.h
+1452983331 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_readlock.h
 	"../../core/shared_obj/shared_obj_readlock.h"
 	"../../core/dpid/dpid.h"
 	<string>
+	<list>
 
-1452765711 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.h
+1452983013 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.h
 	"../../gfx/gui/gui.h"
 	"../../gfx/dpmatrix/dpmatrix.h"
 	"../../gfx/dpvertex/dpvertexindex_buffer.h"
@@ -4381,7 +4383,7 @@
 	"gui_man_writelock.h"
 	"gui_man.h"
 
-1452438299 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_readlock.cpp
+1452983361 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_readlock.cpp
 	"gui_readlock.h"
 	"gui.h"
 
@@ -4389,11 +4391,11 @@
 	"gui_ref.h"
 	"gui.h"
 
-1452439072 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_writelock.cpp
+1452983294 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui_writelock.cpp
 	"gui_writelock.h"
 	"gui.h"
 
-1451124485 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/menu_gui/menu_gui.cpp
+1452981430 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/menu_gui/menu_gui.cpp
 	"menu_gui.h"
 	"menu_gui_readlock.h"
 	"menu_gui_writelock.h"
@@ -4403,7 +4405,7 @@
 	"../../gfx_writelock.h"
 	"../../../core/core.h"
 
-1451124315 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/menu_gui/menu_gui.h
+1452981358 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/menu_gui/menu_gui.h
 	"../gui.h"
 	"../button_gui/button_gui.h"
 	<vector>
@@ -4424,7 +4426,7 @@
 	"menu_gui_writelock.h"
 	"menu_gui.h"
 
-1449359442 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui.cpp
+1452981671 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui.cpp
 	"perf_stats_gui.h"
 	"../../../core/dpthread/dpthread_lock.h"
 	"../../../core/core.h"
@@ -4444,18 +4446,18 @@
 	"../../model/model_man_ref.h"
 	<sstream>
 
-1449328261 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui.h
+1452981659 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui.h
 	"../window_gui/window_gui.h"
 	"../../dpposition/dpposition.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui_factory.cpp
+1452981689 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui_factory.cpp
 	"perf_stats_gui_factory.h"
 	"perf_stats_gui.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui_factory.h
+1452981681 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/perf_stats_gui/perf_stats_gui_factory.h
 	"../gui_factory.h"
 
-1451793533 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/root_gui/root_gui.cpp
+1452981764 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/root_gui/root_gui.cpp
 	"root_gui.h"
 	"../menu_gui/menu_gui.h"
 	"../../../core/shared_obj/shared_obj_guard.h"
@@ -5762,7 +5764,7 @@
 	"../../gfx/dpvertex/dpvertexindex_buffer.h"
 	<string.h>
 
-1452765833 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.cpp
+1452766030 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.cpp
 	"renderer_gui_man.h"
 	"renderer_gui_man_ref.h"
 	"renderer_gui_man_readlock.h"
@@ -6370,7 +6372,7 @@
 	"model_saver_state_sucess.h"
 	"model_saver_state_begin.h"
 
-1451793060 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.cpp
+1452981623 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.cpp
 	"model_man_gui.h"
 	"../../../core/shared_obj/shared_obj_guard.h"
 	"../../model/model_man_ref.h"
@@ -6386,14 +6388,14 @@
 	"model_man_model_gui/model_man_model_gui.h"
 	"model_man_load_gui/model_man_load_gui.h"
 
-1451793171 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.h
+1452981387 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_gui.h
 	"../window_gui/window_gui.h"
 	"../menu_gui/menu_gui.h"
 
-1451393317 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/window_gui/window_gui.h
+1452981467 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/window_gui/window_gui.h
 	"../gui.h"
 
-1451393346 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/window_gui/window_gui.cpp
+1452981487 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/window_gui/window_gui.cpp
 	"window_gui.h"
 	"../../../core/dpthread/dpthread_lock.h"
 	"../../../core/core.h"
@@ -6454,7 +6456,7 @@
 1449957415 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/core/dptaskpool/dptaskpool_logger_writelock.h
 	"../../core/shared_obj/shared_obj_writelock.h"
 
-1450012808 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/task_man_gui/task_man_gui.cpp
+1452981754 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/task_man_gui/task_man_gui.cpp
 	"task_man_gui.h"
 	"../../../core/shared_obj/shared_obj_guard.h"
 	"../../gfx_writelock.h"
@@ -6467,11 +6469,11 @@
 	"../../../core/dpthread/dpthread_lock.h"
 	<sstream>
 
-1449960891 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/task_man_gui/task_man_gui.h
+1452981743 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/task_man_gui/task_man_gui.h
 	"../window_gui/window_gui.h"
 	"../menu_gui/menu_gui.h"
 
-1451785031 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.cpp
+1452981634 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.cpp
 	"model_man_model_gui.h"
 	"../../../../core/shared_obj/shared_obj_guard.h"
 	"../../../model/model_ref.h"
@@ -6487,10 +6489,10 @@
 	"../../../gfx_ref.h"
 	"../../../../core/core.h"
 
-1451783619 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.h
+1452981544 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_model_gui/model_man_model_gui.h
 	"../../window_gui/window_gui.h"
 
-1451392428 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui.cpp
+1452981416 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui.cpp
 	"edit_gui.h"
 	"edit_gui_readlock.h"
 	"edit_gui_writelock.h"
@@ -6499,7 +6501,7 @@
 	"edit_text_gui_readlock.h"
 	"edit_text_gui_writelock.h"
 
-1451391758 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui.h
+1452981321 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_gui.h
 	"../gui.h"
 	<string>
 
@@ -6509,7 +6511,7 @@
 
 1451146165 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_label_gui.cpp
 
-1451392021 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui.cpp
+1452981347 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui.cpp
 	"edit_text_gui.h"
 	"edit_text_gui_readlock.h"
 	"edit_text_gui_writelock.h"
@@ -6539,7 +6541,7 @@
 	"../gui_readlock.h"
 	<string>
 
-1451391040 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui.h
+1452981341 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/edit_gui/edit_text_gui.h
 	"../gui.h"
 	<string>
 
@@ -6547,7 +6549,7 @@
 	"../gui_writelock.h"
 	<string>
 
-1451785134 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_save_gui/model_man_save_gui.cpp
+1452981644 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_save_gui/model_man_save_gui.cpp
 	"model_man_save_gui.h"
 	"../../../../core/shared_obj/shared_obj_guard.h"
 	"../../../model/model_ref.h"
@@ -6562,10 +6564,10 @@
 	"../../edit_gui/edit_gui_readlock.h"
 	"../../button_gui/button_gui.h"
 
-1451784264 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_save_gui/model_man_save_gui.h
+1452981584 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_save_gui/model_man_save_gui.h
 	"../../window_gui/window_gui.h"
 
-1451791405 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_load_gui/model_man_load_gui.cpp
+1452981530 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_load_gui/model_man_load_gui.cpp
 	"model_man_load_gui.h"
 	"../../../../core/shared_obj/shared_obj_guard.h"
 	"../../../model/model_ref.h"
@@ -6580,7 +6582,7 @@
 	"../../edit_gui/edit_gui_readlock.h"
 	"../../button_gui/button_gui.h"
 
-1451790670 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_load_gui/model_man_load_gui.h
+1452981504 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/model_man_gui/model_man_load_gui/model_man_load_gui.h
 	"../../window_gui/window_gui.h"
 
 1452475601 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/input_passer/input_passer.cpp

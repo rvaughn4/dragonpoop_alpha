@@ -59,7 +59,7 @@ namespace dragonpoop
     private:
 
         core *c;
-        dpid id, pid;
+        dpid id;
         dpbitmap fgtex, bgtex;
         bool bHasFg, bHasBg, bRepaintFg, bRepaintBg, bWasBgDrawn, bWasFgDrawn;
         std::atomic<bool> bPosChanged, bBgChanged, bFgChanged, bRedraw;
@@ -77,6 +77,7 @@ namespace dragonpoop
         uint64_t t_last_redraw, t_last_processing;
         std::queue<gui_kb_event *> kbe;
         std::queue<gui_mouse_event *> mse;
+        std::list<gui_ref *> children;
 
         //reset text loc
         void resetTxtLoc( void );
@@ -84,6 +85,10 @@ namespace dragonpoop
         void addTxtLoc( float x, float y, float w, float h, unsigned int line_no, unsigned int char_no );
         //find cursor by mouse coords
         unsigned int findCursor( float x, float y );
+        //run children
+        void runChildren( dpthread_lock *thd, gui_writelock *g );
+        //delete children
+        void deleteChildren( void );
 
     protected:
 
@@ -127,10 +132,6 @@ namespace dragonpoop
         virtual void repaintFg( gui_writelock *g, dpbitmap *bm, float w, float h );
         //override to customize font rendering
         virtual void drawText( dpbitmap *bm );
-        //set parent id
-        void setParentId( dpid id );
-        //get parent id
-        dpid getParentId( void );
         //returns true if has renderer
         bool hasRenderer( void );
         //set renderer
@@ -215,6 +216,8 @@ namespace dragonpoop
         unsigned int getTopMargin( void );
         //set draggable mode
         void setDraggable( bool b );
+        //get children
+        void getChildren( std::list<gui_ref *> *l );
 
     public:
 

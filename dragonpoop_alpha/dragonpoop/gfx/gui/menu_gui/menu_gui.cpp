@@ -12,13 +12,12 @@ namespace dragonpoop
 {
 
     //ctor
-    menu_gui::menu_gui( gfx_writelock *g, dpid id, dpid pid, float x, float y, float w, float h, float bh, const char *txt ) : gui( g, id )
+    menu_gui::menu_gui( gfx_writelock *g, dpid id, float x, float y, float w, float h, float bh, const char *txt ) : gui( g, id )
     {
         this->g = (gfx_ref *)g->getRef();
 
         this->bclosed = 0;
 
-        this->setParentId( pid );
         this->setPosition( x, y );
         this->setWidthHeight( w, h );
         this->setHoverMode( 0 );
@@ -32,9 +31,9 @@ namespace dragonpoop
         {
             this->last_y = bh;
             this->top_y = bh;
-            this->btitle = new button_gui( g, this->genId(), this->getId(), 0, 0, w - this->sz, this->sz, txt, 0 );
+            this->btitle = new button_gui( g, this->genId(), 0, 0, w - this->sz, this->sz, txt, 0 );
             this->addGui( this->btitle );
-            this->bclose = new button_gui( g, this->genId(), this->getId(), w - this->sz, 0, this->sz, this->sz, "X", 1 );
+            this->bclose = new button_gui( g, this->genId(), w - this->sz, 0, this->sz, this->sz, "X", 1 );
             this->addGui( this->bclose );
         }
         else
@@ -109,7 +108,7 @@ namespace dragonpoop
 
         this->getDimensions( &gp );
         np.s.assign( btn_name );
-        np.b = new button_gui( g, this->genId(), this->getId(), 0, 0, gp.w, this->sz, btn_name, 1 );
+        np.b = new button_gui( g, this->genId(), 0, 0, gp.w, this->sz, btn_name, 1 );
         this->addGui( np.b );
         o.unlock();
         this->btns.push_back( np );

@@ -53,12 +53,6 @@ namespace dragonpoop
         return this->t->hasFg();
     }
 
-    //get parent id
-    dpid gui_readlock::getParentId( void )
-    {
-        return this->t->getParentId();
-    }
-
     //returns pointer to bg texture
     dpbitmap *gui_readlock::getBg( void )
     {
@@ -99,6 +93,12 @@ namespace dragonpoop
     void gui_readlock::getText( std::string *s )
     {
         this->t->getText( s );
+    }
+
+    //get children
+    void gui_readlock::getChildren( std::list<gui_ref *> *l )
+    {
+        this->t->getChildren( l );
     }
 
 };

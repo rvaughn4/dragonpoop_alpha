@@ -36,7 +36,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        model_man_save_gui( gfx_writelock *g, dpid id, dpid pid, model_ref *m, model_man_ref *mm );
+        model_man_save_gui( gfx_writelock *g, dpid id, model_ref *m, model_man_ref *mm );
         //dtor
         virtual ~model_man_save_gui( void );
 

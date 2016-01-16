@@ -5,6 +5,7 @@
 #include "../../core/shared_obj/shared_obj_readlock.h"
 #include "../../core/dpid/dpid.h"
 #include <string>
+#include <list>
 
 namespace dragonpoop
 {
@@ -12,6 +13,7 @@ namespace dragonpoop
     class core;
     struct gui_dims;
     class dpbitmap;
+    class gui_ref;
 
     class gui_readlock : public shared_obj_readlock
     {
@@ -41,8 +43,6 @@ namespace dragonpoop
         bool hasBg( void );
         //returns true if has forground texture
         bool hasFg( void );
-        //get parent id
-        dpid getParentId( void );
         //returns pointer to bg texture
         dpbitmap *getBg( void );
         //returns pointer to fg texture
@@ -57,6 +57,8 @@ namespace dragonpoop
         bool isFade( void );
         //get text
         void getText( std::string *s );
+        //get children
+        void getChildren( std::list<gui_ref *> *l );
 
         friend class gui;
     };

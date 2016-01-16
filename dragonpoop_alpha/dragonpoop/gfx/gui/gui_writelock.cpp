@@ -101,18 +101,6 @@ namespace dragonpoop
         return this->t->hasFg();
     }
 
-    //set parent id
-    void gui_writelock::setParentId( dpid id )
-    {
-        this->t->setParentId( id );
-    }
-
-    //get parent id
-    dpid gui_writelock::getParentId( void )
-    {
-        return this->t->getParentId();
-    }
-
     //returns pointer to bg texture
     dpbitmap *gui_writelock::getBg( void )
     {
@@ -219,6 +207,12 @@ namespace dragonpoop
     void gui_writelock::getText( std::string *s )
     {
         this->t->getText( s );
+    }
+
+    //get children
+    void gui_writelock::getChildren( std::list<gui_ref *> *l )
+    {
+        this->t->getChildren( l );
     }
 
 };

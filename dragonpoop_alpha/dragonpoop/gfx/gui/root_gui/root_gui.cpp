@@ -166,7 +166,7 @@ namespace dragonpoop
                 gl = (gfx_writelock *)o.tryWriteLock( this->g, 10, "root_gui::doProcessing" );
                 if( gl )
                 {
-                    this->esc_menu = new menu_gui( gl, this->genId(), this->getId(), 0, 0, 300, 40, 40, "Escape Menu" );
+                    this->esc_menu = new menu_gui( gl, this->genId(), 0, 0, 300, 40, 40, "Escape Menu" );
                     this->addGui( this->esc_menu );
 
                     mw = (menu_gui_writelock *)o.tryWriteLock( this->esc_menu, 30, "root_gui::doProcessing" );
@@ -205,7 +205,7 @@ namespace dragonpoop
             gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
             if( gl )
             {
-                this->perf_stats = new perf_stats_gui( gl, this->genId(), this->getId() );
+                this->perf_stats = new perf_stats_gui( gl, this->genId() );
                 this->addGui( this->perf_stats );
             }
             this->perf_open = 0;
@@ -221,7 +221,7 @@ namespace dragonpoop
             gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
             if( gl )
             {
-                this->modelgui = new model_man_gui( gl, this->genId(), this->getId() );
+                this->modelgui = new model_man_gui( gl, this->genId() );
                 this->addGui( this->modelgui );
             }
             this->model_open = 0;
@@ -238,7 +238,7 @@ namespace dragonpoop
             gl = (gfx_writelock *)o.tryWriteLock( this->g, 1000, "root_gui::doProcessing" );
             if( gl )
             {
-                this->taskgui = new task_man_gui( gl, this->genId(), this->getId() );
+                this->taskgui = new task_man_gui( gl, this->genId() );
                 this->addGui( this->taskgui );
             }
             this->task_open = 0;

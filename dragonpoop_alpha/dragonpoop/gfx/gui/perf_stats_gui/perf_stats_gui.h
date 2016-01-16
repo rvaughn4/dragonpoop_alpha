@@ -31,7 +31,7 @@ namespace dragonpoop
     public:
 
         //ctor
-        perf_stats_gui( gfx_writelock *g, dpid id, dpid pid );
+        perf_stats_gui( gfx_writelock *g, dpid id );
         //dtor
         virtual ~perf_stats_gui( void );
 

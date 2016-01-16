@@ -31,7 +31,6 @@ namespace dragonpoop
         this->g = (gfx_ref *)g->getRef();
         g->getGuis( &this->mgr );
         this->id = id;
-        this->pid = dpid_null();
         this->bHasBg = this->bHasFg = 0;
         this->bPosChanged = this->bBgChanged = this->bFgChanged = 0;
         this->bRedraw = 1;
@@ -72,6 +71,7 @@ namespace dragonpoop
         if( this->r )
             delete this->r;
         delete this->mgr;
+        this->deleteChildren();
 
         while( !this->mse.empty() )
         {
@@ -124,6 +124,8 @@ namespace dragonpoop
         uint64_t t;
         bool b;
         int i;
+
+        this->runChildren( thd, g );
 
         t = thd->getTicks();
         if( this->bIsEdit || this->bWasSel )
@@ -610,18 +612,6 @@ namespace dragonpoop
 
     }
 
-    //set parent id
-    void gui::setParentId( dpid id )
-    {
-        this->pid = id;
-    }
-
-    //get parent id
-    dpid gui::getParentId( void )
-    {
-        return this->pid;
-    }
-
     //returns true if has renderer
     bool gui::hasRenderer( void )
     {
@@ -1086,22 +1076,18 @@ namespace dragonpoop
     //add gui
     void gui::addGui( gui *g )
     {
-        gui_man_writelock *gl;
-        shared_obj_guard o, o1;
-        gui_writelock *gul;
+        shared_obj_guard o;
+        gui_writelock *gl;
+        gui_ref *r;
 
-        gl = (gui_man_writelock *)o.tryWriteLock( this->mgr, 2000, "gui::addGui" );
+        gl = (gui_writelock *)o.tryWriteLock( g, 2000, "gui::addGui" );
         if( !gl )
             return;
-        gul = (gui_writelock *)o1.tryWriteLock( g, 2000, "gui::addGui" );
-        if( !gul )
+
+        r = (gui_ref *)gl->getRef();
+        if( !r )
             return;
-
-        gul->setParentId( this->id );
-        o1.unlock();
-
-        gl->addGui( g );
-        o.unlock();
+        this->children.push_back( r );
     }
 
     //set editable
@@ -1185,6 +1171,78 @@ namespace dragonpoop
     void gui::setDraggable( bool b )
     {
         this->pos.bDrag = b;
+    }
+
+    //get children
+    void gui::getChildren( std::list<gui_ref *> *ll )
+    {
+        std::list<gui_ref *> *l;
+        std::list<gui_ref *>::iterator i;
+        gui_ref *p;
+
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            ll->push_back( p );
+        }
+    }
+
+    //run children
+    void gui::runChildren( dpthread_lock *thd, gui_writelock *g )
+    {
+        std::list<gui_ref *> *l, d;
+        std::list<gui_ref *>::iterator i;
+        gui_ref *p;
+        shared_obj_guard o;
+        gui_writelock *pl;
+
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            if( !p->isLinked() )
+            {
+                d.push_back( p );
+                continue;
+            }
+            pl = (gui_writelock *)o.tryWriteLock( p, 10, "gui::runChildren" );
+            if( !pl )
+                continue;
+            pl->run( thd );
+            o.unlock();
+        }
+
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            this->children.remove( p );
+            delete p;
+        }
+    }
+
+    //delete children
+    void gui::deleteChildren( void )
+    {
+        std::list<gui_ref *> *l, d;
+        std::list<gui_ref *>::iterator i;
+        gui_ref *p;
+
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            d.push_back( p );
+        }
+        l->clear();
+
+        l = &d;
+        for( i = l->begin(); i != l->end(); ++i )
+        {
+            p = *i;
+            delete p;
+        }
     }
 
 };
