@@ -538,7 +538,6 @@ namespace dragonpoop
     {
         render_api_writelock *al;
         shared_obj_guard o, o1;
-        renderer_gui_man_writelock *gl;
         uint64_t t;
 
         al = (render_api_writelock *)o.tryWriteLock( this->api, 30, "renderer::runApi" );
@@ -589,6 +588,7 @@ namespace dragonpoop
         dpheight_cache_readlock *hl;
         dpheight_cache_writelock *hwl;
         dpmatrix m;
+        input_passer_writelock *ipl;
 
         sw = 1920.0f;
         sh = 1080.0f;
@@ -658,6 +658,9 @@ namespace dragonpoop
         this->m_gui.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, ss );
         this->m_gui_undo.inverse( &this->m_gui );
 
+        ipl = (input_passer_writelock *)o.tryWriteLock( this->ip, 10, "renderer::calcMatrix" );
+        if( ipl )
+            ipl->setMatrix( &this->m_gui_undo );
     }
 
     //generate renderer model

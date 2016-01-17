@@ -17,23 +17,23 @@ namespace dragonpoop
     class renderer_gui_man_readlock;
     class renderer_gui_man_writelock;
     class dpmatrix;
-    
+
     class renderer_gui_readlock : public shared_obj_readlock
     {
-        
+
     private:
-        
+
         renderer_gui *t;
-        
+
     protected:
-        
+
         //ctor
         renderer_gui_readlock( renderer_gui *t, dpmutex_readlock *l );
         //dtor
         virtual ~renderer_gui_readlock( void );
-        
+
     public:
-        
+
         //return core
         core *getCore( void );
         //returns id
@@ -46,10 +46,6 @@ namespace dragonpoop
         bool hasBg( void );
         //returns true if has forground texture
         bool hasFg( void );
-        //get parent id
-        dpid getParentId( void );
-        //compares parent id
-        bool compareParentId( dpid id );
         //returns opacity
         float getOpacity( void );
         //return bg vb
@@ -65,7 +61,7 @@ namespace dragonpoop
 
         friend class renderer_gui;
     };
-    
+
 };
 
 #endif

@@ -53,18 +53,6 @@ namespace dragonpoop
         return this->t->hasFg();
     }
 
-    //get parent id
-    dpid renderer_gui_writelock::getParentId( void )
-    {
-        return this->t->getParentId();
-    }
-
-    //compares parent id
-    bool renderer_gui_writelock::compareParentId( dpid id )
-    {
-        return this->t->compareParentId( id );
-    }
-
     //called to force pos update
     void renderer_gui_writelock::syncPos( void )
     {

@@ -45,6 +45,7 @@
 
 #include <math.h>
 #include <thread>
+#include <iostream>
 
 namespace dragonpoop
 {
@@ -190,9 +191,12 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         input_passer_writelock *ipl;
-        int x, y;
+        int x, y, w, h;
         bool bLeft, bRight, bDown;
         std::string skey;
+
+        w = 1920;
+        h = 1080;
 
         this->sync( thd, g );
         this->runGuis( thd, g );
@@ -219,7 +223,7 @@ namespace dragonpoop
                 this->lb &= !bLeft;
                 this->rb &= !bRight;
             }
-            this->processGuiMouseInput( g, this->log_screen_width, this->log_screen_height, x, y, this->lb, this->rb );
+            this->processGuiMouseInput( g, w, h, x, y, this->lb, this->rb );
         }
 
         if( ipl->getKeyboardInput( &skey, &bDown ) )
@@ -370,9 +374,7 @@ namespace dragonpoop
         renderer_gui *p;
         renderer_gui_writelock *pl;
         shared_obj_guard o, oc;
-        dpid pid;
         render_api_context_writelock *ctxl;
-        bool bn;
 
         ctxl = (render_api_context_writelock *)oc.tryWriteLock( this->ctx, 100, "renderer_gui_man::runFromTask" );
         if( !ctxl )
@@ -380,22 +382,6 @@ namespace dragonpoop
 
         ctxl->makeActive( thd );
         this->computeMatrix();
-
-        bn = dpid_isZero( &this->focus_gui );
-        if( !bn )
-        {
-            l = &this->guis;
-            bn = 0;
-            for( i = l->begin(); !bn && i != l->end(); ++i )
-            {
-                p = *i;
-                pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::runFromTask" );
-                if( !pl )
-                    continue;
-                if( pl->compareId( this->focus_gui ) )
-                    bn = 1;
-            }
-        }
 
         l = &this->guis;
         for( i = l->begin(); i != l->end(); ++i )
@@ -405,14 +391,7 @@ namespace dragonpoop
             if( !pl )
                 continue;
             pl->run( thd, ctxl, g );
-            if( bn && pl->isAlive() && ( pl->hasFocus() || dpid_isZero( &this->focus_gui ) ) )
-            {
-                if( !pl->getFocusChild( g, &this->focus_gui ) )
-                    this->focus_gui = pl->getId();
-            }
-            pid = pl->getParentId();
-            if( dpid_isZero( &pid ) )
-                pl->redoMatrix( thd, g, 0 );
+            pl->redoMatrix( thd, g, 0 );
         }
     }
 
@@ -488,25 +467,15 @@ namespace dragonpoop
     //render guis
     void renderer_gui_man::renderGuis( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *cl )
     {
-        std::list<renderer_gui *> *l, lz, d;
+        std::list<renderer_gui *> *l, d;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
         renderer_gui_writelock *pl;
         shared_obj_guard o;
-        dpid nid;
         int max_z, z;
 
         l = &this->guis;
-        nid = dpid_null();
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( p->compareParentId( nid ) )
-                lz.push_back( p );
-        }
-
         max_z = 0;
-        l = &lz;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -518,7 +487,6 @@ namespace dragonpoop
 
         for( z = max_z; z >= 0; z-- )
         {
-            l = &lz;
             for( i = l->begin(); i != l->end(); ++i )
             {
                 p = *i;
@@ -528,28 +496,18 @@ namespace dragonpoop
                 if( !pl )
                     continue;
                 pl->render( thd, ml, m_world, ctx, cl );
-                d.push_back( p );
             }
-
-            l = &d;
-            for( i = l->begin(); i != l->end(); ++i )
-            {
-                p = *i;
-                lz.remove( p );
-            }
-            d.clear();
         }
     }
 
     //process mouse input
     bool renderer_gui_man::processGuiMouseInput( renderer_gui_man_writelock *r, float w, float h, float x, float y, bool lb, bool rb )
     {
-        std::list<renderer_gui *> *l, lz;
+        std::list<renderer_gui *> *l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
         renderer_gui_writelock *pl;
         shared_obj_guard o;
-        dpid nid;
         int max_z, z;
         dpxyz_f t;
 
@@ -566,16 +524,7 @@ namespace dragonpoop
         this->m_undo.transform( &t );
 
         l = &this->guis;
-        nid = dpid_null();
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( p->compareParentId( nid ) )
-                lz.push_back( p );
-        }
-
         max_z = 0;
-        l = &lz;
         for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
@@ -589,7 +538,6 @@ namespace dragonpoop
         this->focus_gui = dpid_null();
         for( z = 0; z < max_z; z++ )
         {
-            l = &lz;
             for( i = l->begin(); i != l->end(); ++i )
             {
                 p = *i;
@@ -625,7 +573,6 @@ namespace dragonpoop
         renderer_gui_writelock *pl;
         shared_obj_guard o;
         unsigned int max_z, z;
-        dpid nid;
 
         l = &this->guis;
         max_z = 0;
@@ -636,7 +583,6 @@ namespace dragonpoop
                 max_z = p->getZ() + 1;
         }
 
-        dpid_zero( &nid );
         for( z = 0; z < max_z; z++ )
         {
             for( i = l->begin(); i != l->end(); ++i )
@@ -646,8 +592,6 @@ namespace dragonpoop
                     continue;
                 pl = (renderer_gui_writelock *)o.tryWriteLock( p, 500, "renderer::processGuiKbInput" );
                 if( !pl )
-                    continue;
-                if( !pl->compareParentId( nid ) )
                     continue;
                 if( pl->processKb( r, skey_name, isDown ) )
                     return;

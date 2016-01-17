@@ -83,4 +83,16 @@ namespace dragonpoop
         this->t->clear();
     }
 
+    //set matrix
+    void input_passer_writelock::setMatrix( dpmatrix *m )
+    {
+        this->t->setMatrix( m );
+    }
+
+    //get matrix
+    void input_passer_writelock::getMatrix( dpmatrix *m )
+    {
+        this->t->getMatrix( m );
+    }
+
 };

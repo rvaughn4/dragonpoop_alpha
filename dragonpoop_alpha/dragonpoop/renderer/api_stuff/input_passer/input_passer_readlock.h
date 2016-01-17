@@ -7,6 +7,7 @@
 namespace dragonpoop
 {
     class input_passer;
+    class dpmatrix;
 
     class input_passer_readlock : public shared_obj_readlock
     {
@@ -32,6 +33,8 @@ namespace dragonpoop
         bool hasMouseInput( void );
         //returns true if has keyboard input
         bool hasKeyboardInput( void );
+        //get matrix
+        void getMatrix( dpmatrix *m );
 
         friend class input_passer;
     };

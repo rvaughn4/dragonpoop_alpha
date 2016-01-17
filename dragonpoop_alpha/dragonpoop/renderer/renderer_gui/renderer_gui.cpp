@@ -21,6 +21,7 @@
 #include "../../core/dpbtree/dpid_btree.h"
 
 #include <string.h>
+#include <iostream>
 
 namespace dragonpoop
 {
@@ -80,12 +81,6 @@ namespace dragonpoop
         return this->c;
     }
 
-    //compares parent id
-    bool renderer_gui::compareParentId( dpid id )
-    {
-        return dpid_compare( &id, &this->pid );
-    }
-
     //generate read lock
     shared_obj_readlock *renderer_gui::genReadLock( shared_obj *p, dpmutex_readlock *l )
     {
@@ -132,12 +127,6 @@ namespace dragonpoop
     bool renderer_gui::hasFg( void )
     {
         return this->bHasFg;
-    }
-
-    //get parent id
-    dpid renderer_gui::getParentId( void )
-    {
-        return this->pid;
     }
 
     //makes a box in vb
@@ -443,6 +432,8 @@ namespace dragonpoop
         if( lb )
             this->clickfade = 100;
 
+        std::cout << "processed mouse " << x << " " << y << " " << (int)lb << " " << (int)rb << " \r\n";
+
         return 1;
     }
 
@@ -489,6 +480,9 @@ namespace dragonpoop
             return 1;
 
         g->processKb( sname, bIsDown );
+
+        std::cout << "processed kb " << sname->c_str() << " " << (int)bIsDown << "\r\n";
+
         return 1;
     }
 

@@ -48,10 +48,6 @@ namespace dragonpoop
         bool hasBg( void );
         //returns true if has forground texture
         bool hasFg( void );
-        //get parent id
-        dpid getParentId( void );
-        //compares parent id
-        bool compareParentId( dpid id );
         //called to force pos update
         void syncPos( void );
         //called to force bg update

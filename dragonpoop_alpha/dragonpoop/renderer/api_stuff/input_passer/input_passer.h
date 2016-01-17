@@ -3,6 +3,7 @@
 #define dragonpoop_input_passer_h
 
 #include "../../../core/shared_obj/shared_obj.h"
+#include "../../../gfx/dpmatrix/dpmatrix.h"
 #include <atomic>
 #include <memory>
 #include <string>
@@ -35,6 +36,7 @@ namespace dragonpoop
     private:
 
         std::shared_ptr<std::atomic<uint64_t>> t;
+        dpmatrix m;
 
         struct
         {
@@ -97,6 +99,10 @@ namespace dragonpoop
         bool addMouseInput( int x, int y, bool bIsLeft, bool bIsRight, bool bIsDown );
         //clear all input
         void clear( void );
+        //set matrix
+        void setMatrix( dpmatrix *m );
+        //get matrix
+        void getMatrix( dpmatrix *m );
 
     public:
 

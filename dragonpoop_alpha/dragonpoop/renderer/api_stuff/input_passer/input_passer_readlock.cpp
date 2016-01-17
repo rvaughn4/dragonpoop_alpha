@@ -41,4 +41,10 @@ namespace dragonpoop
         return this->t->hasKeyboardInput();
     }
 
+    //get matrix
+    void input_passer_readlock::getMatrix( dpmatrix *m )
+    {
+        this->t->getMatrix( m );
+    }
+
 };

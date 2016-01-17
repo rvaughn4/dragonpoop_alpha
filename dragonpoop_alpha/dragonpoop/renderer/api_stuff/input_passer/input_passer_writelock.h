@@ -9,6 +9,7 @@ namespace dragonpoop
 {
     class input_passer;
     class input_passer_ref;
+    class dpmatrix;
 
     class input_passer_writelock : public shared_obj_writelock
     {
@@ -48,6 +49,10 @@ namespace dragonpoop
         bool addMouseInput( int x, int y, bool bIsLeft, bool bIsRight, bool bIsDown );
         //clear all input
         void clear( void );
+        //set matrix
+        void setMatrix( dpmatrix *m );
+        //get matrix
+        void getMatrix( dpmatrix *m );
 
         friend class input_passer;
     };

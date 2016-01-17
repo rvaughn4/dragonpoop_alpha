@@ -33,7 +33,7 @@ namespace dragonpoop
     private:
 
         core *c;
-        dpid id, pid, hover_id, focus_id;
+        dpid id, hover_id, focus_id;
         bool bHasFg, bHasBg, bIsAlive, bIsHover, bIsEdit, bIsFade, bIsDrag;
         gui_dims pos;
         std::atomic<gui_ref *> g;
@@ -76,8 +76,6 @@ namespace dragonpoop
         bool hasBg( void );
         //returns true if has forground texture
         bool hasFg( void );
-        //get parent id
-        dpid getParentId( void );
         //called to force pos update
         void syncPos( void );
         //called to force bg update
@@ -131,8 +129,6 @@ namespace dragonpoop
         virtual ~renderer_gui( void );
         //return core
         core *getCore( void );
-        //compares parent id
-        bool compareParentId( dpid id );
         //returns id
         dpid getId( void );
         //returns z order

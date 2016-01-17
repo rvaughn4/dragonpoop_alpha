@@ -121,7 +121,14 @@ namespace dragonpoop
     //add mouse input
     bool input_passer::addMouseInput( int x, int y, bool bIsLeft, bool bIsRight, bool bIsDown )
     {
-        return this->_pushMouse( x, y, bIsLeft, bIsRight, bIsDown );
+        dpxyz_f t;
+
+        t.z = 0;
+        t.x = x;
+        t.y = y;
+        this->m.transform( &t );
+
+        return this->_pushMouse( t.x, t.y, bIsLeft, bIsRight, bIsDown );
     }
 
     //attempts to push keyboard input at current index, increments index
@@ -266,6 +273,18 @@ namespace dragonpoop
         }
 
         return 0;
+    }
+
+    //set matrix
+    void input_passer::setMatrix( dpmatrix *m )
+    {
+        this->m.copy( m );
+    }
+
+    //get matrix
+    void input_passer::getMatrix( dpmatrix *m )
+    {
+        m->copy( &this->m );
     }
 
 };
