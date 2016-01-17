@@ -218,7 +218,7 @@ namespace dragonpoop
     //redo matrix
     void renderer_gui::redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix )
     {
-        std::list<renderer_gui *> l;
+        std::list<renderer_gui *> *l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
         renderer_gui_writelock *pl;
@@ -305,8 +305,8 @@ namespace dragonpoop
 
         this->undo_mat.inverse( &this->mat );
 
-        r->getChildrenGuis( &l, this->id );
-        for( i = l.begin(); i != l.end(); ++i )
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
             pl = (renderer_gui_writelock *)o.tryWriteLock( p, 3, "renderer_gui::redoMatrix" );
@@ -328,7 +328,7 @@ namespace dragonpoop
         dpxyz_f p;
         gui_writelock *g;
         shared_obj_guard o;
-        std::list<renderer_gui *> l;
+        std::list<renderer_gui *> *l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *pr;
         renderer_gui_writelock *pl;
@@ -391,10 +391,10 @@ namespace dragonpoop
             this->bIsDrag = 0;
         }
 */
-        r->getChildrenGuis( &l, this->id );
 
         max_z = 0;
-        for( i = l.begin(); i != l.end(); ++i )
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
         {
             pr = *i;
             z = pr->getZ();
@@ -404,7 +404,7 @@ namespace dragonpoop
 
         for( z = 0; z < max_z; z++ )
         {
-            for( i = l.begin(); i != l.end(); ++i )
+            for( i = l->begin(); i != l->end(); ++i )
             {
                 pr = *i;
                 if( pr->getZ() != z )
@@ -451,15 +451,13 @@ namespace dragonpoop
     {
         gui_writelock *g;
         shared_obj_guard o;
-        std::list<renderer_gui *> *l, lz;
+        std::list<renderer_gui *> *l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
         renderer_gui_writelock *pl;
         unsigned int max_z, z;
 
-        r->getChildrenGuis( &lz, this->id );
-
-        l = &lz;
+        l = &this->children;
         max_z = 0;
         for( i = l->begin(); i != l->end(); ++i )
         {
@@ -468,7 +466,6 @@ namespace dragonpoop
                 max_z = p->getZ() + 1;
         }
 
-        l = &lz;
         for( z = 0; z < max_z; z++ )
         {
             for( i = l->begin(); i != l->end(); ++i )
@@ -582,13 +579,13 @@ namespace dragonpoop
     }
 
     //run gui from background task
-    void renderer_gui::run( dpthread_lock *thd, render_api_context_writelock *ctx )
+    void renderer_gui::run( dpthread_lock *thd, render_api_context_writelock *ctx, renderer_gui_man_writelock *mgr )
     {
         gui_readlock *pl;
         shared_obj_guard o;
         dpbitmap *bm;
 
-        this->runChildren( thd, ctx );
+        this->runChildren( thd, ctx, mgr );
 
         if( this->bSyncBg || this->bSyncFg || this->bSyncPos )
         {
@@ -634,7 +631,7 @@ namespace dragonpoop
     //render model
     void renderer_gui::render( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist )
     {
-        std::list<renderer_gui *> l;
+        std::list<renderer_gui *> *l;
         std::list<renderer_gui *>::iterator i;
         renderer_gui *p;
         renderer_gui_writelock *pl;
@@ -665,8 +662,8 @@ namespace dragonpoop
             clist->draw();
         }
 
-        ml->getChildrenGuis( &l, this->id );
-        for( i = l.begin(); i != l.end(); ++i )
+        l = &this->children;
+        for( i = l->begin(); i != l->end(); ++i )
         {
             p = *i;
             pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer_gui::render" );
@@ -767,7 +764,7 @@ namespace dragonpoop
     }
 
     //run children
-    void renderer_gui::runChildren( dpthread_lock *thd, render_api_context_writelock *ctx )
+    void renderer_gui::runChildren( dpthread_lock *thd, render_api_context_writelock *ctx, renderer_gui_man_writelock *mgr )
     {
         std::list<renderer_gui *> *l, d;
         std::list<renderer_gui *>::iterator i;
@@ -775,7 +772,7 @@ namespace dragonpoop
         renderer_gui_writelock *pl;
         shared_obj_guard o;
 
-        this->syncChildren( thd );
+        this->syncChildren( thd, mgr );
 
         l = &this->children;
         for( i = l->begin(); i != l->end(); ++i )
@@ -784,7 +781,7 @@ namespace dragonpoop
             pl = (renderer_gui_writelock *)o.tryWriteLock( p, 10, "renderer_gui::runChildren" );
             if( !pl )
                 continue;
-            pl->run( thd, ctx );
+            pl->run( thd, ctx, mgr );
             if( !p->isAlive() )
                 d.push_back( p );
             o.unlock();
@@ -800,7 +797,7 @@ namespace dragonpoop
     }
 
     //sync children
-    void renderer_gui::syncChildren( dpthread_lock *thd )
+    void renderer_gui::syncChildren( dpthread_lock *thd, renderer_gui_man_writelock *mgr )
     {
         std::list<renderer_gui *> *l, d;
         std::list<renderer_gui *>::iterator i;
@@ -857,7 +854,10 @@ namespace dragonpoop
             gwl = (gui_writelock *)o.tryWriteLock( gr, 100, "renderer_gui::syncChildren" );
             if( !gwl )
                 continue;
-            //
+            p = mgr->genGui( gwl );
+            if( !p )
+                continue;
+            this->children.push_back( p );
         }
 
         pt.getLeaves( (std::list<void *> *)&d );
@@ -868,7 +868,6 @@ namespace dragonpoop
             this->children.remove( p );
             delete p;
         }
-
     }
 
 };

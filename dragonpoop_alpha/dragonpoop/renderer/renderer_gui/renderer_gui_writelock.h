@@ -77,7 +77,7 @@ namespace dragonpoop
         //redo matrix
         void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix );
         //run gui from background task
-        void run( dpthread_lock *thd, render_api_context_writelock *ctx );
+        void run( dpthread_lock *thd, render_api_context_writelock *ctx, renderer_gui_man_writelock *mgr );
         //render model
         void render( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //returns true if has focus

@@ -138,9 +138,9 @@ namespace dragonpoop
     }
 
     //run gui from background task
-    void renderer_gui_writelock::run( dpthread_lock *thd, render_api_context_writelock *ctx )
+    void renderer_gui_writelock::run( dpthread_lock *thd, render_api_context_writelock *ctx, renderer_gui_man_writelock *mgr )
     {
-        this->t->run( thd, ctx );
+        this->t->run( thd, ctx, mgr );
     }
 
     //render model

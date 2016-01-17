@@ -19,6 +19,7 @@ namespace dragonpoop
     class dpmatrix;
     class render_api_context_writelock;
     class render_api_commandlist_writelock;
+    class gui_writelock;
 
     class renderer_gui_man_writelock : public shared_obj_writelock
     {
@@ -40,8 +41,6 @@ namespace dragonpoop
         core *getCore( void );
         //delete guis
         void deleteGuis( void );
-        //return guis
-        void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //process mouse input
         bool processGuiMouseInput( float w, float h, float x, float y, bool lb, bool rb );
         //get hovering gui id
@@ -54,6 +53,8 @@ namespace dragonpoop
         bool setSelectedText( std::string *s );
         //run
         void run( dpthread_lock *thd );
+        //generate gui
+        renderer_gui *genGui( gui_writelock *g );
 
         friend class renderer_gui_man;
     };

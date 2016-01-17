@@ -29,12 +29,6 @@ namespace dragonpoop
         this->t->deleteGuis();
     }
 
-    //return guis
-    void renderer_gui_man_writelock::getChildrenGuis( std::list<renderer_gui *> *l, dpid pid )
-    {
-        this->t->getChildrenGuis( l, pid );
-    }
-
     //process mouse input
     bool renderer_gui_man_writelock::processGuiMouseInput( float w, float h, float x, float y, bool lb, bool rb )
     {
@@ -69,6 +63,12 @@ namespace dragonpoop
     void renderer_gui_man_writelock::run( dpthread_lock *thd )
     {
         this->t->run( thd, this );
+    }
+
+    //generate gui
+    renderer_gui *renderer_gui_man_writelock::genGui( gui_writelock *g )
+    {
+        return this->t->genGui( g );
     }
 
 };

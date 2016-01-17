@@ -404,7 +404,7 @@ namespace dragonpoop
             pl = (renderer_gui_writelock *)o.tryWriteLock( p, 100, "renderer_gui_man::runFromTask" );
             if( !pl )
                 continue;
-            pl->run( thd, ctxl );
+            pl->run( thd, ctxl, g );
             if( bn && pl->isAlive() && ( pl->hasFocus() || dpid_isZero( &this->focus_gui ) ) )
             {
                 if( !pl->getFocusChild( g, &this->focus_gui ) )
@@ -538,22 +538,6 @@ namespace dragonpoop
                 lz.remove( p );
             }
             d.clear();
-        }
-    }
-
-    //return guis
-    void renderer_gui_man::getChildrenGuis( std::list<renderer_gui *> *ll, dpid pid )
-    {
-        std::list<renderer_gui *> *l;
-        std::list<renderer_gui *>::iterator i;
-        renderer_gui *p;
-
-        l = &this->guis;
-        for( i = l->begin(); i != l->end(); ++i )
-        {
-            p = *i;
-            if( p->compareParentId( pid ) )
-                ll->push_back( p );
         }
     }
 

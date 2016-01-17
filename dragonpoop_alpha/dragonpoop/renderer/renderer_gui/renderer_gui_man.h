@@ -95,8 +95,6 @@ namespace dragonpoop
         virtual shared_obj_ref *genRef( shared_obj *p, std::shared_ptr<shared_obj_refkernal> *k );
         //delete guis
         void deleteGuis( void );
-        //return guis
-        void getChildrenGuis( std::list<renderer_gui *> *l, dpid pid );
         //process mouse input
         bool processGuiMouseInput( renderer_gui_man_writelock *r, float w, float h, float x, float y, bool lb, bool rb );
         //get hovering gui id

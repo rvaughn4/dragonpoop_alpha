@@ -25,6 +25,7 @@ namespace dragonpoop
     class render_api_indexbuffer_ref;
     class render_api_vertexbuffer_ref;
     class render_api_commandlist_writelock;
+    class renderer_gui_man_writelock;
 
     class renderer_gui : public shared_obj
     {
@@ -55,9 +56,9 @@ namespace dragonpoop
         //delete children
         void deleteChildren( void );
         //run children
-        void runChildren( dpthread_lock *thd, render_api_context_writelock *ctx );
+        void runChildren( dpthread_lock *thd, render_api_context_writelock *ctx, renderer_gui_man_writelock *mgr );
         //sync children
-        void syncChildren( dpthread_lock *thd );
+        void syncChildren( dpthread_lock *thd, renderer_gui_man_writelock *mgr );
 
     protected:
 
@@ -112,7 +113,7 @@ namespace dragonpoop
         //get focus gui id
         dpid getFocusId( void );
         //run gui from background task
-        void run( dpthread_lock *thd, render_api_context_writelock *ctx );
+        void run( dpthread_lock *thd, render_api_context_writelock *ctx, renderer_gui_man_writelock *mgr );
         //render model
         void render( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //override to handle bg texture update
