@@ -432,7 +432,7 @@ namespace dragonpoop
         if( lb )
             this->clickfade = 100;
 
-        std::cout << "processed mouse " << x << " " << y << " " << (int)lb << " " << (int)rb << " \r\n";
+        std::cout << "processed mouse " << p.x << " " << p.y << " " << (int)lb << " " << (int)rb << " \r\n";
 
         return 1;
     }
@@ -595,8 +595,8 @@ namespace dragonpoop
                     this->bIsHover = pl->isHoverable();
                     this->bIsEdit = pl->isEditable();
                     this->bIsFade = pl->isFade();
-                    this->updateVb( &this->pos, ctx );
-                    this->bSyncPos = 0;
+                    if( this->updateVb( &this->pos, ctx ) )
+                        this->bSyncPos = 0;
                 }
 
                 if( !this->bHasBg && this->bSyncBg )
@@ -605,8 +605,8 @@ namespace dragonpoop
                 if( this->bHasBg && this->bSyncBg )
                 {
                     bm = pl->getBg();
-                    this->updateBg( bm, ctx );
-                    this->bSyncBg = 0;
+                    if( this->updateBg( bm, ctx ) )
+                        this->bSyncBg = 0;
                 }
 
                 if( !this->bHasFg && this->bSyncFg )
@@ -615,8 +615,8 @@ namespace dragonpoop
                 if( this->bHasFg && this->bSyncFg )
                 {
                     bm = pl->getFg();
-                    this->updateFg( bm, ctx );
-                    this->bSyncFg = 0;
+                    if( this->updateFg( bm, ctx ) )
+                        this->bSyncFg = 0;
                 }
             }
         }
@@ -669,23 +669,25 @@ namespace dragonpoop
     }
 
     //override to handle bg texture update
-    void renderer_gui::updateBg( dpbitmap *bm, render_api_context_writelock *ctx )
+    bool renderer_gui::updateBg( dpbitmap *bm, render_api_context_writelock *ctx )
     {
         if( this->render_tex_bg )
             delete this->render_tex_bg;
         this->render_tex_bg = ctx->makeTexture( bm );
+        return this->render_tex_bg != 0;
     }
 
     //override to handle fg texture update
-    void renderer_gui::updateFg( dpbitmap *bm, render_api_context_writelock *ctx )
+    bool renderer_gui::updateFg( dpbitmap *bm, render_api_context_writelock *ctx )
     {
         if( this->render_tex_fg )
             delete this->render_tex_fg;
         this->render_tex_fg = ctx->makeTexture( bm );
+        return this->render_tex_fg != 0;
     }
 
     //override to handle vb update in renderer task
-    void renderer_gui::updateVb( gui_dims *p, render_api_context_writelock *ctx )
+    bool renderer_gui::updateVb( gui_dims *p, render_api_context_writelock *ctx )
     {
         dpvertexindex_buffer vb;
         float w, h, bw, tw;
@@ -695,15 +697,18 @@ namespace dragonpoop
         w = p->w;
         h = p->h;
 
-
         //fg
         makeBox( &vb, 0, 0, w, h, 0, 0, 1, 1 );
         if( this->render_vb_fg )
             delete this->render_vb_fg;
         this->render_vb_fg = ctx->makeVertexBuffer( vb.getVB() );
+        if( !this->render_vb_fg )
+            return 0;
         if( this->render_ib_fg )
             delete this->render_ib_fg;
         this->render_ib_fg = ctx->makeIndexBuffer( vb.getIB() );
+        if( !this->render_ib_fg )
+            return 0;
 
         //bg
 
@@ -729,9 +734,15 @@ namespace dragonpoop
         if( this->render_vb_bg )
             delete this->render_vb_bg;
         this->render_vb_bg = ctx->makeVertexBuffer( vb.getVB() );
+        if( !this->render_vb_bg )
+            return 0;
         if( this->render_ib_bg )
             delete this->render_ib_bg;
         this->render_ib_bg = ctx->makeIndexBuffer( vb.getIB() );
+        if( !this->render_ib_bg )
+            return 0;
+
+        return 1;
     }
 
     //delete children

@@ -115,11 +115,11 @@ namespace dragonpoop
         //render model
         void render( dpthread_lock *thd, renderer_gui_man_writelock *ml, dpmatrix *m_world, render_api_context_writelock *ctx, render_api_commandlist_writelock *clist );
         //override to handle bg texture update
-        void updateBg( dpbitmap *bm, render_api_context_writelock *ctx );
+        bool updateBg( dpbitmap *bm, render_api_context_writelock *ctx );
         //override to handle fg texture update
-        void updateFg( dpbitmap *bm, render_api_context_writelock *ctx );
+        bool updateFg( dpbitmap *bm, render_api_context_writelock *ctx );
         //override to handle vb update
-        void updateVb( gui_dims *p, render_api_context_writelock *ctx );
+        bool updateVb( gui_dims *p, render_api_context_writelock *ctx );
 
     public:
 

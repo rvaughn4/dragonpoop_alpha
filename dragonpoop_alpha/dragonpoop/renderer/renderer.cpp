@@ -377,10 +377,14 @@ namespace dragonpoop
             this->new_sky_cl = 0;
         }
 
-        renderer_commandlist_passer::waitForFlag( &this->clpasser->model_ready, 1, 5 );
-        renderer_commandlist_passer::waitForFlag( &this->clpasser->gui_ready, 1, 5 );
-        renderer_commandlist_passer::waitForFlag( &this->clpasser->land_ready, 1, 5 );
-        renderer_commandlist_passer::waitForFlag( &this->clpasser->sky_ready, 1, 5 );
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->model_ready, 1, 5 ) )
+            return;
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->gui_ready, 1, 5 ) )
+            return;
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->land_ready, 1, 5 ) )
+            return;
+        if( !renderer_commandlist_passer::waitForFlag( &this->clpasser->sky_ready, 1, 5 ) )
+            return;
 
         cpl = (renderer_commandlist_passer_writelock *)o.tryWriteLock( this->clpasser, 30, "renderer::render" );
         if( cpl )
@@ -589,11 +593,13 @@ namespace dragonpoop
         dpheight_cache_writelock *hwl;
         dpmatrix m;
         input_passer_writelock *ipl;
+        uint64_t t;
 
         sw = 1920.0f;
         sh = 1080.0f;
         w = this->getWidth();
         h = this->getHeight();
+        t = thd->getTicks();
 
         rw = sw / w;
         rh = sh / h;
@@ -625,7 +631,7 @@ namespace dragonpoop
             this->m_sky_cam.rotateZ( this->cam_rot_smooth.z );
             this->m_cam.multiply( &this->m_sky_cam );
 
-            this->cam_pos.getDifference( &pp, thd->getTicks(), &px );
+            this->cam_pos.getDifference( &pp, t, &px );
             rx = px;
             this->m_cam.transform( &rx );
             ch = hl->getHeight( rx.x, rx.z ) + 1.0f;
@@ -657,6 +663,10 @@ namespace dragonpoop
 
         this->m_gui.setOrtho( -dw, sh + dh, 0.0f, sw + dw, -dh, ss );
         this->m_gui_undo.inverse( &this->m_gui );
+
+        if( t - this->t_last_input < 200 )
+            return;
+        this->t_last_input = t;
 
         ipl = (input_passer_writelock *)o.tryWriteLock( this->ip, 10, "renderer::calcMatrix" );
         if( ipl )

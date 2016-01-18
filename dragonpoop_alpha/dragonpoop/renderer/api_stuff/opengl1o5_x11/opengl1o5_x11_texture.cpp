@@ -62,6 +62,12 @@ namespace dragonpoop
             this->gl->glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB8, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer );
         if( bits == 32 )
             this->gl->glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer );
+
+        if( this->gl->glGetError() != 0 )
+        {
+            this->gl->glDeleteTextures( 1, &this->glTex );
+            this->glTex = 0;
+        }
     }
 
     //delete texture
@@ -74,6 +80,12 @@ namespace dragonpoop
     unsigned int opengl1o5_x11_texture::getTex( void )
     {
         return this->glTex;
+    }
+
+    //returns true if works
+    bool opengl1o5_x11_texture::works( void )
+    {
+        return this->glTex != 0;
     }
 
 };

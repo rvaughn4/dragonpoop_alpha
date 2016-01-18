@@ -128,7 +128,7 @@ namespace dragonpoop
         this->runChildren( thd, g );
 
         t = thd->getTicks();
-        if( this->bIsEdit || this->bWasSel )
+        if( 1 )//this->bIsEdit || this->bWasSel )
         {
             this->redraw_timer = 300;
             this->bWasSel = 0;
@@ -713,7 +713,7 @@ namespace dragonpoop
         if( isDown )
         {
 
-            if( this->bIsEdit )
+            if( 1 )//this->bIsEdit )
             {
 
                 if( skey->size() == 1 )

@@ -1548,7 +1548,7 @@
 	"openglx_1o5_renderer_writelock.h"
 	"openglx_1o5_renderer.h"
 
-1453033111 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
+1453045380 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer.cpp
 	"renderer.h"
 	"../core/core.h"
 	"../core/dptask/dptasks.h"
@@ -4258,7 +4258,7 @@
 1452981300 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/button_gui/button_gui.h
 	"../gui.h"
 
-1452981245 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.cpp
+1453045857 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/gfx/gui/gui.cpp
 	"gui.h"
 	"gui_ref.h"
 	"gui_readlock.h"
@@ -4287,7 +4287,7 @@
 	<string>
 	<list>
 
-1453027173 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.h
+1453043917 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.h
 	"../../gfx/gui/gui.h"
 	"../../gfx/dpmatrix/dpmatrix.h"
 	"../../gfx/dpvertex/dpvertexindex_buffer.h"
@@ -5136,7 +5136,7 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_texture_readlock.h
 	"../render_api/render_api_texture_readlock.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture_readlock.h
+1453044342 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture_readlock.h
 	"../../../core/shared_obj/shared_obj_readlock.h"
 
 1448127511 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_vertexbuffer_readlock.h
@@ -5166,11 +5166,11 @@
 	"opengl1o5_x11_shader_sky.h"
 	"../../../core/dpthread/dpthread_lock.h"
 
-1448108112 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_texture.h
+1453044442 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_texture.h
 	"opengl1o5_x11.h"
 	"../render_api/render_api_texture.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture.h
+1453044323 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture.h
 	"render_api.h"
 	"../../../gfx/dpbitmap/dpbitmap.h"
 
@@ -5313,7 +5313,7 @@
 	"../../../gfx/dpvertex/dpvertex_buffer.h"
 	"../../../gfx/dpmatrix/dpmatrix.h"
 
-1448108640 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_texture.cpp
+1453044524 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/opengl1o5_x11/opengl1o5_x11_texture.cpp
 	"opengl1o5_x11_texture.h"
 	"../../../gfx/dpbitmap/dpbitmap.h"
 	"../../../core/shared_obj/shared_obj_guard.h"
@@ -5416,7 +5416,7 @@
 1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_command_set_texture.h
 	"render_api_command.h"
 
-1447319775 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture_writelock.h
+1453044387 /home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture_writelock.h
 	"../../../core/shared_obj/shared_obj_writelock.h"
 
 1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_command_set_vertexbuffer.cpp
@@ -5487,7 +5487,7 @@
 	"render_api_commandlist_writelock.h"
 	"render_api_commandlist.h"
 
-1448099823 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context.cpp
+1453044609 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_context.cpp
 	"render_api_context.h"
 	"render_api_ref.h"
 	"render_api_writelock.h"
@@ -5576,7 +5576,7 @@
 	"render_api_shader_writelock.h"
 	"render_api_shader.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture.cpp
+1453044316 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture.cpp
 	"render_api_texture.h"
 	"render_api_context_ref.h"
 	"render_api_context_writelock.h"
@@ -5586,7 +5586,7 @@
 	"render_api_texture_readlock.h"
 	"render_api_texture_writelock.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture_readlock.cpp
+1453044368 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture_readlock.cpp
 	"render_api_texture_readlock.h"
 	"render_api_texture.h"
 
@@ -5594,7 +5594,7 @@
 	"render_api_texture_ref.h"
 	"render_api_texture.h"
 
-1447319775 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture_writelock.cpp
+1453044414 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/api_stuff/render_api/render_api_texture_writelock.cpp
 	"render_api_texture_writelock.h"
 	"render_api_texture.h"
 
@@ -5742,7 +5742,7 @@
 	"../core/core.h"
 	"renderer.h"
 
-1453027870 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp
+1453044049 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp
 	"renderer_gui.h"
 	"renderer_gui_readlock.h"
 	"renderer_gui_writelock.h"

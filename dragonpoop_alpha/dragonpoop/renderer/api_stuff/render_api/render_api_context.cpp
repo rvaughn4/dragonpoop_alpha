@@ -349,6 +349,9 @@ namespace dragonpoop
         if( !l )
             return 0;
 
+        if( !l->works() )
+            return 0;
+
         return (render_api_texture_ref *)l->getRef();
     }
 

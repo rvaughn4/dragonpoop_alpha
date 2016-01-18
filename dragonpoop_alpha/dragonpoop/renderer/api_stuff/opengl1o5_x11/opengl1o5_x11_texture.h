@@ -27,6 +27,8 @@ namespace dragonpoop
         virtual shared_obj_readlock *genReadLock( shared_obj *p, dpmutex_readlock *l );
         //return tex
         unsigned int getTex( void );
+        //returns true if works
+        virtual bool works( void );
 
     public:
 
