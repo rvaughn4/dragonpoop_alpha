@@ -42,11 +42,11 @@ namespace dragonpoop
         //retrieve keyboard input
         bool getKeyboardInput( std::string *sname, bool *bIsDown );
         //retrieve mouse input
-        bool getMouseInput( int *px, int *py, bool *bIsLeft, bool *bIsRight, bool *bIsDown );
+        bool getMouseInput( float *px, float *py, bool *bIsLeft, bool *bIsRight, bool *bIsDown );
         //add keyboard input
         bool addKeyboardInput( std::string *sname, bool bIsDown );
         //add mouse input
-        bool addMouseInput( int x, int y, bool bIsLeft, bool bIsRight, bool bIsDown );
+        bool addMouseInput( float x, float y, bool bIsLeft, bool bIsRight, bool bIsDown );
         //clear all input
         void clear( void );
         //set matrix

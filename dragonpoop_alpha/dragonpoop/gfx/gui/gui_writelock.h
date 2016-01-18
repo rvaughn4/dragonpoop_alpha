@@ -102,6 +102,10 @@ namespace dragonpoop
         void getText( std::string *s );
         //get children
         void getChildren( std::list<gui_ref *> *l );
+        //set mouse cursor follow mode
+        void setFollowCursor( bool b, float x, float y );
+        //returns true if follows cursor
+        bool followsCursor( float *px, float *py );
 
         friend class gui;
     };

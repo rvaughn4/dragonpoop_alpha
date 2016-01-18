@@ -50,12 +50,25 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         input_passer_writelock *l;
+        float w, h, fx, fy;
 
         l = (input_passer_writelock *)o.tryWriteLock( this->ip, 100, "window::addMouseInput" );
         if( !l )
             return;
 
-        l->addMouseInput( x, y, bLb, bRb, bDown );
+        w = this->getWidth();
+        h = this->getHeight();
+        fx = 0;
+        fy = 0;
+
+        if( w > 0 )
+            fx = (float)x / w;
+        if( h > 0 )
+            fy = (float)y / h;
+        fx = ( 2.0f * fx ) - 1.0f;
+        fy = ( 2.0f * fy ) - 1.0f;
+
+        l->addMouseInput( fx, -fy, bLb, bRb, bDown );
         l->setTime( t );
     }
 

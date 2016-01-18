@@ -65,7 +65,7 @@ namespace dragonpoop
         shared_obj_guard o;
         std::string skey;
         bool bDown, bLb, bRb;
-        int x, y;
+        float x, y;
 
         if( r->getTime() == this->getTime() )
             return;
@@ -107,7 +107,7 @@ namespace dragonpoop
     }
 
     //retrieve mouse input
-    bool input_passer::getMouseInput( int *px, int *py, bool *bIsLeft, bool *bIsRight, bool *bIsDown )
+    bool input_passer::getMouseInput( float *px, float *py, bool *bIsLeft, bool *bIsRight, bool *bIsDown )
     {
         return this->_popMouse( px, py, bIsLeft, bIsRight, bIsDown );
     }
@@ -119,7 +119,7 @@ namespace dragonpoop
     }
 
     //add mouse input
-    bool input_passer::addMouseInput( int x, int y, bool bIsLeft, bool bIsRight, bool bIsDown )
+    bool input_passer::addMouseInput( float x, float y, bool bIsLeft, bool bIsRight, bool bIsDown )
     {
         dpxyz_f t;
 
@@ -153,7 +153,7 @@ namespace dragonpoop
     }
 
     //attempts to push mouse input at current index, increments index
-    bool input_passer::_pushMouseOnce( int x, int y, bool bLb, bool bRb, bool bDown )
+    bool input_passer::_pushMouseOnce( float x, float y, bool bLb, bool bRb, bool bDown )
     {
         input_passer_mouse_input *v;
 
@@ -190,7 +190,7 @@ namespace dragonpoop
     }
 
     //calls pushmouseonce until unused array index found or max tries
-    bool input_passer::_pushMouse( int x, int y, bool bLb, bool bRb, bool bDown )
+    bool input_passer::_pushMouse( float x, float y, bool bLb, bool bRb, bool bDown )
     {
         unsigned int i;
 
@@ -225,7 +225,7 @@ namespace dragonpoop
     }
 
     //attempts to pop mouse input at current index, increments index
-    bool input_passer::_popMouseOnce( int *x, int *y, bool *bLb, bool *bRb, bool *bDown )
+    bool input_passer::_popMouseOnce( float *x, float *y, bool *bLb, bool *bRb, bool *bDown )
     {
         input_passer_mouse_input *v;
 
@@ -262,7 +262,7 @@ namespace dragonpoop
     }
 
     //calls popmouseonce until used array index found or max tries
-    bool input_passer::_popMouse( int *x, int *y, bool *bLb, bool *bRb, bool *bDown )
+    bool input_passer::_popMouse( float *x, float *y, bool *bLb, bool *bRb, bool *bDown )
     {
         unsigned int i;
 

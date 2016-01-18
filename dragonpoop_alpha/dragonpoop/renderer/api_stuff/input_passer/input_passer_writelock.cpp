@@ -60,7 +60,7 @@ namespace dragonpoop
     }
 
     //retrieve mouse input
-    bool input_passer_writelock::getMouseInput( int *px, int *py, bool *bIsLeft, bool *bIsRight, bool *bIsDown )
+    bool input_passer_writelock::getMouseInput( float *px, float *py, bool *bIsLeft, bool *bIsRight, bool *bIsDown )
     {
         return this->t->getMouseInput( px, py, bIsLeft, bIsRight, bIsDown );
     }
@@ -72,7 +72,7 @@ namespace dragonpoop
     }
 
     //add mouse input
-    bool input_passer_writelock::addMouseInput( int x, int y, bool bIsLeft, bool bIsRight, bool bIsDown )
+    bool input_passer_writelock::addMouseInput( float x, float y, bool bIsLeft, bool bIsRight, bool bIsDown )
     {
         return this->t->addMouseInput( x, y, bIsLeft, bIsRight, bIsDown );
     }

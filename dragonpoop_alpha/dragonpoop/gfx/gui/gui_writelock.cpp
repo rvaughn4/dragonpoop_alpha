@@ -215,4 +215,16 @@ namespace dragonpoop
         this->t->getChildren( l );
     }
 
+    //set mouse cursor follow mode
+    void gui_writelock::setFollowCursor( bool b, float x, float y )
+    {
+        this->t->setFollowCursor( b, x, y );
+    }
+
+    //returns true if follows cursor
+    bool gui_writelock::followsCursor( float *px, float *py )
+    {
+        return this->t->followsCursor( px, py );
+    }
+
 };

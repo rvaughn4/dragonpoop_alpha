@@ -22,7 +22,7 @@ namespace dragonpoop
 
     struct input_passer_mouse_input
     {
-        int x, y;
+        float x, y;
         bool isLb, isRb;
         bool bDown;
         bool bAlive;
@@ -55,19 +55,19 @@ namespace dragonpoop
         //attempts to push keyboard input at current index, increments index
         bool _pushKBOnce( std::string *sname, bool bDown );
         //attempts to push mouse input at current index, increments index
-        bool _pushMouseOnce( int x, int y, bool bLb, bool bRb, bool bDown );
+        bool _pushMouseOnce( float x, float y, bool bLb, bool bRb, bool bDown );
         //calls pushkbonce until unused array index found or max tries
         bool _pushKB( std::string *sname, bool bDown );
         //calls pushmouseonce until unused array index found or max tries
-        bool _pushMouse( int x, int y, bool bLb, bool bRb, bool bDown );
+        bool _pushMouse( float x, float y, bool bLb, bool bRb, bool bDown );
         //attempts to pop keyboard input at current index, increments index
         bool _popKBOnce( std::string *sname, bool *bDown );
         //attempts to pop mouse input at current index, increments index
-        bool _popMouseOnce( int *x, int *y, bool *bLb, bool *bRb, bool *bDown );
+        bool _popMouseOnce( float *x, float *y, bool *bLb, bool *bRb, bool *bDown );
         //calls popkbonce until used array index found or max tries
         bool _popKB( std::string *sname, bool *bDown );
         //calls popmouseonce until used array index found or max tries
-        bool _popMouse( int *x, int *y, bool *bLb, bool *bRb, bool *bDown );
+        bool _popMouse( float *x, float *y, bool *bLb, bool *bRb, bool *bDown );
 
     protected:
 
@@ -92,11 +92,11 @@ namespace dragonpoop
         //retrieve keyboard input
         bool getKeyboardInput( std::string *sname, bool *bIsDown );
         //retrieve mouse input
-        bool getMouseInput( int *px, int *py, bool *bIsLeft, bool *bIsRight, bool *bIsDown );
+        bool getMouseInput( float *px, float *py, bool *bIsLeft, bool *bIsRight, bool *bIsDown );
         //add keyboard input
         bool addKeyboardInput( std::string *sname, bool bIsDown );
         //add mouse input
-        bool addMouseInput( int x, int y, bool bIsLeft, bool bIsRight, bool bIsDown );
+        bool addMouseInput( float x, float y, bool bIsLeft, bool bIsRight, bool bIsDown );
         //clear all input
         void clear( void );
         //set matrix

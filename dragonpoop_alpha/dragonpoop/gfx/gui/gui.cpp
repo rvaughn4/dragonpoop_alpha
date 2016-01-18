@@ -55,6 +55,7 @@ namespace dragonpoop
         this->margin_size = 0;
         this->top_margin = 0;
         this->bIsFade = 1;
+        this->cursor_follow.bEnabled = 0;
     }
 
     //dtor
@@ -1243,6 +1244,24 @@ namespace dragonpoop
             p = *i;
             delete p;
         }
+    }
+
+    //set mouse cursor follow mode
+    void gui::setFollowCursor( bool b, float x, float y )
+    {
+        this->cursor_follow.bEnabled = b;
+        this->cursor_follow.x = x;
+        this->cursor_follow.y = y;
+    }
+
+    //returns true if follows cursor
+    bool gui::followsCursor( float *px, float *py )
+    {
+        if( px )
+            *px = this->cursor_follow.x;
+        if( py )
+            *py = this->cursor_follow.y;
+        return this->cursor_follow.bEnabled;
     }
 
 };

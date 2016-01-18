@@ -101,4 +101,10 @@ namespace dragonpoop
         this->t->getChildren( l );
     }
 
+    //returns true if follows cursor
+    bool gui_readlock::followsCursor( float *px, float *py )
+    {
+        return this->t->followsCursor( px, py );
+    }
+
 };

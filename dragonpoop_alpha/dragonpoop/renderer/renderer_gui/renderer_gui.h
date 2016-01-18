@@ -52,6 +52,11 @@ namespace dragonpoop
         } drag_pos;
         std::list<renderer_gui *> children;
         uint64_t t_last_children_sync;
+        struct
+        {
+            bool bEnabled;
+            float x, y, cx, cy;
+        } follow_cursor;
 
         //delete children
         void deleteChildren( void );
@@ -85,7 +90,7 @@ namespace dragonpoop
         //redo matrix
         void redoMatrix( dpthread_lock *thd, renderer_gui_man_writelock *r, dpmatrix *p_matrix );
         //process mouse input
-        bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id );
+        bool processMouse( renderer_gui_man_writelock *r, float x, float y, float px, float py, bool lb, bool rb, dpid focus_id );
         //process kb input
         bool processKb( renderer_gui_man_writelock *r, std::string *sname, bool bIsDown );
         //returns opacity

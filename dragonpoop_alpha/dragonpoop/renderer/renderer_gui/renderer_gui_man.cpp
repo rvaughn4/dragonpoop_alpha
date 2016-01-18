@@ -76,6 +76,7 @@ namespace dragonpoop
         this->hover_gui = this->focus_gui;
         this->ip = new input_passer( c->getMutexMaster() );
         this->ipr = (input_passer_ref *)ipl->getRef();
+        this->lb = this->rb = 0;
 
         this->g = c->getGfx();
         gl = (gfx_writelock *)o.writeLock( this->g, "renderer_gui_man::renderer_gui_man" );
@@ -191,7 +192,7 @@ namespace dragonpoop
     {
         shared_obj_guard o;
         input_passer_writelock *ipl;
-        int x, y, w, h;
+        float x, y, w, h;
         bool bLeft, bRight, bDown;
         std::string skey;
 
@@ -511,13 +512,6 @@ namespace dragonpoop
         int max_z, z;
         dpxyz_f t;
 
-        x = x / w;
-        y = y / h;
-
-        x = ( 2.0f * x ) - 1.0f;
-        y = ( 2.0f * y ) - 1.0f;
-        y = -y;
-
         t.x = x;
         t.y = y;
         t.z = 0;
@@ -546,7 +540,7 @@ namespace dragonpoop
                 pl = (renderer_gui_writelock *)o.tryWriteLock( p, 30, "renderer::processGuiMouseInput" );
                 if( !pl )
                     continue;
-                if( pl->processMouse( r, t.x, t.y, lb, rb, this->focus_gui ) )
+                if( pl->processMouse( r, t.x, t.y, t.x, t.y, lb, rb, this->focus_gui ) )
                 {
                     this->hover_gui = pl->getHoverId();
                     this->focus_gui = pl->getFocusId();

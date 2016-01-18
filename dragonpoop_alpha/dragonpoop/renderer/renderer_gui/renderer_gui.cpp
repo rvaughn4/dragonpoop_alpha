@@ -54,19 +54,19 @@ namespace dragonpoop
         this->focus_id = dpid_null();
         this->hover_id = this->focus_id;
         memset( &this->drag_pos, 0, sizeof( this->drag_pos ) );
+        this->follow_cursor.bEnabled = g->followsCursor( &this->follow_cursor.x, &this->follow_cursor.y );
     }
 
     //dtor
     renderer_gui::~renderer_gui( void )
     {
         shared_obj_guard o;
-        shared_obj_writelock *r;
 
-        r = o.tryWriteLock( this, 1000, "renderer_gui::~renderer_gui" );
+        o.tryWriteLock( this, 1000, "renderer_gui::~renderer_gui" );
         o.unlock();
         this->unlink();
 
-        r = o.tryWriteLock( this, 1000, "renderer_gui::~renderer_gui" );
+        o.tryWriteLock( this, 1000, "renderer_gui::~renderer_gui" );
         o.unlock();
 
         this->deleteChildren();
@@ -263,7 +263,10 @@ namespace dragonpoop
             this->mat.setIdentity();
 
         z = (float)this->z / -8.0f;
-        this->mat.translate( this->pos.x + this->drag_pos.ox, this->pos.y + this->drag_pos.oy, z );
+        if( this->follow_cursor.bEnabled )
+            this->mat.translate( this->follow_cursor.cx + this->follow_cursor.x, this->follow_cursor.cy + this->follow_cursor.y, z );
+        else
+            this->mat.translate( this->pos.x + this->drag_pos.ox, this->pos.y + this->drag_pos.oy, z );
 
         if( this->bIsHover )
         {
@@ -312,7 +315,7 @@ namespace dragonpoop
     }
 
     //process mouse input
-    bool renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id )
+    bool renderer_gui::processMouse( renderer_gui_man_writelock *r, float x, float y, float px, float py, bool lb, bool rb, dpid focus_id )
     {
         dpxyz_f p;
         gui_writelock *g;
@@ -323,6 +326,9 @@ namespace dragonpoop
         renderer_gui_writelock *pl;
         bool bIsFocus;
         unsigned int z, max_z;
+
+        this->follow_cursor.cx = px;
+        this->follow_cursor.cy = py;
 
         p.x = x;
         p.y = y;
@@ -402,7 +408,7 @@ namespace dragonpoop
                 if( !pl )
                     continue;
                 //if( pl->)
-                if( pl->processMouse( r, x, y, lb, rb, focus_id ) )
+                if( pl->processMouse( r, x, y, p.x, p.y, lb, rb, focus_id ) )
                 {
                     this->hover_id = pl->getHoverId();
                     if( lb )
@@ -595,6 +601,7 @@ namespace dragonpoop
                     this->bIsHover = pl->isHoverable();
                     this->bIsEdit = pl->isEditable();
                     this->bIsFade = pl->isFade();
+                    this->follow_cursor.bEnabled = pl->followsCursor( &this->follow_cursor.x, &this->follow_cursor.y );
                     if( this->updateVb( &this->pos, ctx ) )
                         this->bSyncPos = 0;
                 }

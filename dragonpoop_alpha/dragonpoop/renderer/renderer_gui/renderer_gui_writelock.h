@@ -55,7 +55,7 @@ namespace dragonpoop
         //called to force fg update
         void syncFg( void );
         //process mouse input
-        bool processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id );
+        bool processMouse( renderer_gui_man_writelock *r, float x, float y, float px, float py, bool lb, bool rb, dpid focus_id );
         //process kb input
         bool processKb(  renderer_gui_man_writelock *r, std::string *sname, bool bIsDown );
         //returns true if alive

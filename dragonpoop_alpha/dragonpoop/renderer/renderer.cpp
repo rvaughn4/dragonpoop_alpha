@@ -542,7 +542,7 @@ namespace dragonpoop
     {
         render_api_writelock *al;
         shared_obj_guard o, o1;
-        uint64_t t;
+        //uint64_t t;
 
         al = (render_api_writelock *)o.tryWriteLock( this->api, 30, "renderer::runApi" );
         if( !al )
@@ -554,18 +554,18 @@ namespace dragonpoop
         this->dimensions.w = al->getWidth();
         this->dimensions.h = al->getHeight();
 
-        t = thd->getTicks();
-        if( t - this->t_last_input < 100 )
+/*        t = thd->getTicks();
+        if( t - this->t_last_input < 10 )
             return 1;
-
+*/
         if( this->mouse.x < -0.9f )
-            this->cam_rot.y -= 0.2f;
+            this->cam_rot.y -= 0.01f;
         if( this->mouse.x > 0.9f )
-            this->cam_rot.y += 0.2f;
+            this->cam_rot.y += 0.01f;
         if( this->mouse.y < -0.9f )
-            this->cam_rot.x += 0.2f;
+            this->cam_rot.x += 0.01f;
         if( this->mouse.y > 0.9f )
-            this->cam_rot.x -= 0.2f;
+            this->cam_rot.x -= 0.01f;
 
         return 1;
     }

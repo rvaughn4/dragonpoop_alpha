@@ -72,9 +72,9 @@ namespace dragonpoop
     }
 
     //process mouse input
-    bool renderer_gui_writelock::processMouse( renderer_gui_man_writelock *r, float x, float y, bool lb, bool rb, dpid focus_id )
+    bool renderer_gui_writelock::processMouse( renderer_gui_man_writelock *r, float x, float y, float px, float py, bool lb, bool rb, dpid focus_id )
     {
-        return this->t->processMouse( r, x, y, lb, rb, focus_id );
+        return this->t->processMouse( r, x, y, px, py, lb, rb, focus_id );
     }
 
     //process kb input

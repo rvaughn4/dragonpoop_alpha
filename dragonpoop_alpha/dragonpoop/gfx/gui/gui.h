@@ -78,6 +78,11 @@ namespace dragonpoop
         std::queue<gui_kb_event *> kbe;
         std::queue<gui_mouse_event *> mse;
         std::list<gui_ref *> children;
+        struct
+        {
+            bool bEnabled;
+            float x, y;
+        } cursor_follow;
 
         //reset text loc
         void resetTxtLoc( void );
@@ -218,6 +223,10 @@ namespace dragonpoop
         void setDraggable( bool b );
         //get children
         void getChildren( std::list<gui_ref *> *l );
+        //set mouse cursor follow mode
+        void setFollowCursor( bool b, float x, float y );
+        //returns true if follows cursor
+        bool followsCursor( float *px, float *py );
 
     public:
 
