@@ -5742,7 +5742,7 @@
 	"../core/core.h"
 	"renderer.h"
 
-1453132165 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp
+1453283377 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui.cpp
 	"renderer_gui.h"
 	"renderer_gui_readlock.h"
 	"renderer_gui_writelock.h"
@@ -5766,7 +5766,7 @@
 	<string.h>
 	<iostream>
 
-1453132067 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.cpp
+1453132287 source:/home/richard/projects/dragonpoop_alpha/dragonpoop_alpha/dragonpoop/renderer/renderer_gui/renderer_gui_man.cpp
 	"renderer_gui_man.h"
 	"renderer_gui_man_ref.h"
 	"renderer_gui_man_readlock.h"

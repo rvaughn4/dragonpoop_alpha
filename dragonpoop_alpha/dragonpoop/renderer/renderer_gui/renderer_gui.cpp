@@ -869,6 +869,8 @@ namespace dragonpoop
             p = mgr->genGui( gwl );
             if( !p )
                 continue;
+
+            gwl->setRenderer( p );
             this->children.push_back( p );
         }
 
